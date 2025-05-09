@@ -23,7 +23,7 @@
             <NuxtLink to="/explore" class="btn-secondary">
               Explore Creators
             </NuxtLink>
-            <a href="http://localhost:3001/auth/register" target="_blank" class="btn-outline border-white text-black hover:bg-white/10">
+            <a href="https://studious-lamp-creator.vercel.app/auth/register" target="_blank" class="btn-outline border-white text-black hover:bg-white/10">
               Become a Creator
             </a>
             <!-- <NuxtLink v-else-if="!authStore.isCreator" to="/creator/onboarding" class="btn-outline border-white text-white hover:bg-white/10">

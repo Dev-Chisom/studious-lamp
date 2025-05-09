@@ -58,7 +58,7 @@
       </form>
 
       <div v-if="resetComplete" class="mt-6">
-        <a href="http://localhost:3001/auth/login" target="_blank" class="btn-primary w-full">
+        <a href="https://studious-lamp-creator.vercel.app/auth/login" target="_blank" class="btn-primary w-full">
           Go to Login
         </a>
       </div>

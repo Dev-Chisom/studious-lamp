@@ -42,7 +42,7 @@
               />
               <span class="ml-2 text-sm text-gray-600">Remember me</span>
             </label>
-            <a href="http://localhost:3001/auth/forgot-password" target="_blank" class="text-sm text-primary-600 hover:text-primary-500">
+            <a href="https://studious-lamp-creator.vercel.app/auth/forgot-password" target="_blank" class="text-sm text-primary-600 hover:text-primary-500">
               Forgot password?
             </a>
           </div>
@@ -88,7 +88,7 @@
 
       <p class="text-center mt-8 text-gray-600">
         Don't have an account yet?
-        <a href="http://localhost:3001/auth/register" target="_blank" class="text-primary-600 hover:text-primary-500 font-medium">
+        <a href="https://studious-lamp-creator.vercel.app/auth/register" target="_blank" class="text-primary-600 hover:text-primary-500 font-medium">
           Sign up
         </a>
       </p>

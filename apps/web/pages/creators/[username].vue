@@ -263,7 +263,7 @@ function formatDate(dateString) {
 
 async function subscribe(plan) {
   if (!authStore.isAuthenticated) {
-    navigateTo('http://localhost:3001/auth/login');
+    navigateTo('https://studious-lamp-creator.vercel.app/auth/login');
     return;
   }
   

@@ -119,7 +119,7 @@
 
       <p class="text-center mt-8 text-gray-600">
         Already have an account?
-        <a href="http://localhost:3001/auth/login" target="_blank" class="text-primary-600 hover:text-primary-500 font-medium">
+        <a href="https://studious-lamp-creator.vercel.app/auth/login" target="_blank" class="text-primary-600 hover:text-primary-500 font-medium">
           Log in
         </a>
       </p>

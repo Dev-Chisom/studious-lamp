@@ -29,10 +29,10 @@
         <!-- Right section -->
         <div class="flex items-center space-x-3">
 
-          <a href="http://localhost:3001/auth/login" target="_blank" class="hidden sm:inline-flex btn-outline">
+          <a href="https://studious-lamp-creator.vercel.app/auth/login" target="_blank" class="hidden sm:inline-flex btn-outline">
             Sign in
           </a>
-          <a href="/http://localhost:3001/auth/register" target="_blank" class="btn-primary">
+          <a href="/https://studious-lamp-creator.vercel.app/auth/register" target="_blank" class="btn-primary">
             Sign up
           </a>
         </div>
