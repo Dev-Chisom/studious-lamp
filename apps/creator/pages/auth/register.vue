@@ -4,7 +4,7 @@
       <Title>Create an account - Whispers</Title>
     </Head>
 
-    <div class="card p-8">
+    <div class="card shadow-xl/20 p-8">
       <div class="text-center mb-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Create an account</h1>
         <p class="text-gray-600 dark:text-gray-400 mt-2">Join Whispers to connect with creators and fans.</p>

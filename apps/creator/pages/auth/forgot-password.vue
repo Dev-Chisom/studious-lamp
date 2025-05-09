@@ -4,7 +4,7 @@
       <Title>Forgot Password - Whispers</Title>
     </Head>
 
-    <div class="card p-8">
+    <div class="card shadow-xl/20 p-8">
       <div class="text-center mb-6">
         <h1 class="text-2xl font-bold">Forgot your password?</h1>
         <p class="text-gray-600 mt-2">Enter your email and we'll send you a reset link.</p>
