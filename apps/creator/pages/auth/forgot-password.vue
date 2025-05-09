@@ -4,7 +4,7 @@
       <Title>Forgot Password - Whispers</Title>
     </Head>
 
-    <div class="card shadow-xl/20 p-8">
+    <div class="card shadow-xl/20 p-8 dark:bg-gray-700">
       <div class="text-center mb-6">
         <h1 class="text-2xl font-bold">Forgot your password?</h1>
         <p class="text-gray-600 mt-2">Enter your email and we'll send you a reset link.</p>
@@ -58,9 +58,9 @@
 
       <p class="text-center mt-8 text-gray-600">
         Remembered your password?
-        <a href="https://studious-lamp-creator.vercel.app/auth/login" target="_blank" class="text-primary-600 hover:text-primary-500 font-medium">
+        <NuxtLink to="https://studious-lamp-creator.vercel.app/auth/login" class="text-primary-600 hover:text-primary-500 font-medium">
           Log in
-        </a>
+        </NuxtLink>
       </p>
     </div>
   </div>

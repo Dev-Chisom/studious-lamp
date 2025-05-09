@@ -1,6 +1,6 @@
 <template>
-  <div :class="rootClasses">
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-soft p-6 mb-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-soft p-6 mb-8">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Wallet Balance</h1>
         <span class="text-3xl font-bold text-primary-600 dark:text-primary-400">₦{{ formatAmount(balance) }}</span>
@@ -25,7 +25,7 @@
     </div>
 
     <!-- Recent Transactions -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-soft p-6">
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-soft p-6">
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Recent Transactions</h2>
       <div class="space-y-4">
         <div v-for="transaction in transactions" :key="transaction.id" 
@@ -126,13 +126,6 @@ const isClient = ref(false)
 
 onMounted(() => {
   isClient.value = true
-})
-
-const rootClasses = computed(() => {
-  return [
-    'max-w-4xl mx-auto',
-    isClient.value ? 'bg-gray-50 dark:bg-gray-900 dark:text-gray-100' : ''
-  ]
 })
 
 const notification = useNotification()

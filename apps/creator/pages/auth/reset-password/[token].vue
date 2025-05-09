@@ -4,7 +4,7 @@
       <Title>Reset Password - Whispers</Title>
     </Head>
 
-    <div class="card shadow-xl/20 p-8">
+    <div class="card shadow-xl/20 p-8 dark:bg-gray-700">
       <div class="text-center mb-6">
         <h1 class="text-2xl font-bold">Reset your password</h1>
         <p class="text-gray-600 mt-2">Please enter your new password.</p>

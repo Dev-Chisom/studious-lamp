@@ -4,7 +4,7 @@
       <Title>Create an account - Whispers</Title>
     </Head>
 
-    <div class="card shadow-xl/20 p-8">
+    <div class="card shadow-xl/20 p-8 dark:bg-gray-700">
       <div class="text-center mb-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Create an account</h1>
         <p class="text-gray-600 dark:text-gray-400 mt-2">Join Whispers to connect with creators and fans.</p>
@@ -64,14 +64,14 @@
             <div class="ml-3 text-sm">
               <label for="terms" class="text-gray-600 dark:text-gray-400">
                 I agree to the
-                <NuxtLink to="/terms" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
+                <a href="/terms" target="_blank" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
                   Terms of Service
-                </NuxtLink>
-                and
-                <NuxtLink to="/privacy" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
+                </a>
+               and
+                <a href="/privacy" target="_blank" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
                   Privacy Policy
-                </NuxtLink>
-              </label>
+                </a>
+             </label>
               <p v-if="errors.agreedToTerms" class="text-error-600 dark:text-error-400 mt-1">
                 {{ errors.agreedToTerms }}
               </p>
@@ -119,9 +119,9 @@
 
       <p class="text-center mt-8 text-gray-600 dark:text-gray-400">
         Already have an account?
-        <a href="https://studious-lamp-creator.vercel.app/auth/login" target="_blank" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-medium">
+        <NuxtLink to="https://studious-lamp-creator.vercel.app/auth/login" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-medium">
           Log in
-        </a>
+        </NuxtLink>
       </p>
     </div>
   </div>

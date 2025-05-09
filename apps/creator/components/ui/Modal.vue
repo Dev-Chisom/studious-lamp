@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed inset-0 z-50 overflow-y-auto" @click.self="$emit('close')">
+    <div class="fixed inset-0 overflow-y-auto" @click.self="$emit('close')" style="z-index: 3000">
       <div class="flex min-h-screen items-end justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-75 transition-opacity" />
         

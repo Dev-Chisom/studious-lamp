@@ -38,8 +38,9 @@ const props = defineProps({
 const route = useRoute();
 
 const isActive = computed(() => {
-  if (route.path === props.item.href) return true;
-  if (props.item.exact) return false;
+  if (props.item.href === '/') {
+    return route.path === '/';
+  }
   return route.path.startsWith(props.item.href);
 });
 </script>

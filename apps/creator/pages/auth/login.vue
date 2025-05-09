@@ -4,7 +4,7 @@
       <Title>Log in to Whispers</Title>
     </Head>
 
-    <div class="card shadow-xl/20 p-8">
+    <div class="card shadow-xl/20 p-8 dark:bg-gray-700">
       <div class="text-center mb-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Log in to your account</h1>
         <p class="text-gray-600 dark:text-gray-400 mt-2">Welcome back! Please enter your details.</p>
@@ -88,9 +88,9 @@
 
       <p class="text-center mt-8 text-gray-600 dark:text-gray-400">
         Don't have an account yet?
-        <a href="https://studious-lamp-creator.vercel.app/auth/register" target="_blank" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-medium">
+        <NuxtLink to="https://studious-lamp-creator.vercel.app/auth/register" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-medium">
           Sign up
-        </a>
+        </NuxtLink>
       </p>
     </div>
   </div>
