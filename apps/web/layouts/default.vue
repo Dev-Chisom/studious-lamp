@@ -7,10 +7,3 @@
     <TheFooter />
   </div>
 </template>
-
-<script setup>
-import { useToast } from 'vue-toastification';
-
-// Make toast available globally
-provide('toast', useToast());
-</script>
