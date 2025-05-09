@@ -80,12 +80,15 @@ defineProps({
 defineEmits(['close']);
 
 const navigationItems = [
+  { name: 'Home', href: '/', icon: 'lucide:home' },
   { name: 'Dashboard', href: '/creator/dashboard', icon: 'lucide:layout-dashboard' },
   { name: 'Content', href: '/creator/content', icon: 'lucide:image' },
   { name: 'Posts', href: '/creator/posts', icon: 'lucide:file-text' },
   { name: 'Messages', href: '/messages', icon: 'lucide:message-circle' },
   { name: 'Subscribers', href: '/creator/subscribers', icon: 'lucide:users' },
   { name: 'Earnings', href: '/creator/earnings', icon: 'lucide:dollar-sign' },
+  { name: 'Wallet', href: '/wallet', icon: 'lucide:wallet' },
+  { name: 'Subscriptions', href: '/subscriptions', icon: 'lucide:credit-card' },
   { name: 'Settings', href: '/settings', icon: 'lucide:settings' },
   { 
     name: 'View Profile', 

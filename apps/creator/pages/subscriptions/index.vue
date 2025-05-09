@@ -148,40 +148,111 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useSubscriptionStore } from '~/stores/subscription';
+// import { useSubscriptionStore } from '~/stores/subscription';
 
 definePageMeta({
+  layout: 'creator',
   middleware: ['auth'],
   meta: {
-    requiresAuth: true
+    requiresAuth: true,
   }
 });
 
-const subscriptionStore = useSubscriptionStore();
+// const subscriptionStore = useSubscriptionStore();
 const loading = ref(true);
 
-// Fetch subscriptions on mount
-onMounted(async () => {
-  try {
-    await subscriptionStore.fetchUserSubscriptions('current-user'); // In real app, use actual user ID
-    loading.value = false;
-  } catch (error) {
-    console.error('Failed to fetch subscriptions:', error);
-    loading.value = false;
+// Dummy data for 5 subscriptions
+const dummySubscriptions = [
+  {
+    id: '1',
+    isActive: true,
+    plan: 'monthly',
+    price: 9.99,
+    endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    autoRenew: true,
+    creator: {
+      displayName: 'Alice Smith',
+      username: 'alicesmith',
+      profileImage: 'https://randomuser.me/api/portraits/women/1.jpg',
+      isVerified: true
+    }
+  },
+  {
+    id: '2',
+    isActive: true,
+    plan: 'yearly',
+    price: 99.99,
+    endDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+    autoRenew: false,
+    creator: {
+      displayName: 'Bob Johnson',
+      username: 'bobjohnson',
+      profileImage: 'https://randomuser.me/api/portraits/men/2.jpg',
+      isVerified: false
+    }
+  },
+  {
+    id: '3',
+    isActive: true,
+    plan: 'monthly',
+    price: 9.99,
+    endDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+    autoRenew: true,
+    creator: {
+      displayName: 'Carol Lee',
+      username: 'carollee',
+      profileImage: 'https://randomuser.me/api/portraits/women/3.jpg',
+      isVerified: true
+    }
+  },
+  {
+    id: '4',
+    isActive: false,
+    plan: 'monthly',
+    price: 9.99,
+    endDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+    autoRenew: false,
+    creator: {
+      displayName: 'David Kim',
+      username: 'davidkim',
+      profileImage: 'https://randomuser.me/api/portraits/men/4.jpg',
+      isVerified: false
+    }
+  },
+  {
+    id: '5',
+    isActive: false,
+    plan: 'yearly',
+    price: 99.99,
+    endDate: new Date(Date.now() - 40 * 24 * 60 * 60 * 1000),
+    autoRenew: false,
+    creator: {
+      displayName: 'Eva Green',
+      username: 'evagreen',
+      profileImage: 'https://randomuser.me/api/portraits/women/5.jpg',
+      isVerified: true
+    }
   }
+];
+
+const subscriptions = ref(dummySubscriptions);
+
+onMounted(() => {
+  // await subscriptionStore.fetchUserSubscriptions('current-user');
+  // loading.value = false;
+  loading.value = false;
 });
 
-// Split subscriptions into active and expired
 const activeSubscriptions = computed(() => {
-  return subscriptionStore.subscriptions.filter(sub => sub.isActive);
+  return subscriptions.value.filter(sub => sub.isActive);
 });
 
 const expiredSubscriptions = computed(() => {
-  return subscriptionStore.subscriptions.filter(sub => !sub.isActive);
+  return subscriptions.value.filter(sub => !sub.isActive);
 });
 
-function formatDate(dateString) {
-  return new Date(dateString).toLocaleDateString('en-US', {
+function formatDate(date) {
+  return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
@@ -189,12 +260,7 @@ function formatDate(dateString) {
 }
 
 async function cancelSubscription(id) {
-  try {
-    await subscriptionStore.cancelSubscription(id);
-    // Show success message
-  } catch (error) {
-    // Handle error
-    console.error('Failed to cancel subscription:', error);
-  }
+  // await subscriptionStore.cancelSubscription(id);
+  // Show success message
 }
 </script>

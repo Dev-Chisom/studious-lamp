@@ -1,7 +1,7 @@
 <template>
-  <div class="relative">
+  <div class="relative" ref="notificationRef">
     <button
-      @click="isOpen = !isOpen"
+      @click="showContent"
       class="p-2 rounded-full text-gray-500 dark:text-gray-200 hover:text-gray-700 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:bg-gray-800 relative"
     >
       <Icon name="lucide:bell" class="w-5 h-5" />
@@ -88,6 +88,8 @@ const notifications = ref([
   }
 ]);
 
+const notificationRef = ref(null);
+
 const unreadCount = computed(() => {
   return notifications.value.filter(notification => !notification.isRead).length;
 });
@@ -107,10 +109,14 @@ function markAllAsRead() {
 
 // Close dropdown when clicking outside
 const closeDropdown = (e) => {
-  if (isOpen.value) {
+  if (notificationRef.value && !notificationRef.value.contains(e.target)) {
     isOpen.value = false;
   }
 };
+
+const showContent = () => {
+  isOpen.value = !isOpen.value
+}
 
 onMounted(() => {
   document.addEventListener('click', closeDropdown);

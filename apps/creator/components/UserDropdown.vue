@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative" ref="dropdownRef">
     <button 
       @click="isOpen = !isOpen"
       class="flex items-center space-x-2 text-gray-700 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 focus:outline-none"
@@ -30,7 +30,7 @@
 
     <div 
       v-if="isOpen" 
-      class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-900 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 dark:divide-gray-700 z-50"
+      class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-900 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 dark:divide-gray-700" style="z-index: 9999"
     >
       <div class="py-1">
         <div class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-gray-700">
@@ -80,6 +80,7 @@ import { useAuthStore } from '~/stores/auth';
 
 const authStore = useAuthStore();
 const isOpen = ref(false);
+const dropdownRef = ref(null)
 
 const userInitials = computed(() => {
   const name = authStore.user?.displayName || '';
@@ -112,7 +113,8 @@ function logout() {
 
 // Close dropdown when clicking outside
 const closeDropdown = (e) => {
-  if (isOpen.value) {
+  console.log('check here')
+  if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
     isOpen.value = false;
   }
 };

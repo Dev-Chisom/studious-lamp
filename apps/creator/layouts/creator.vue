@@ -5,7 +5,7 @@
 
     <!-- Main content -->
     <div class="flex-1 flex flex-col min-w-0">
-      <div class="sticky top-0 z-10 bg-white dark:bg-gray-900 shadow-sm">
+      <div class="sticky top-0 z-60 bg-white dark:bg-gray-900 shadow-sm">
         <div class="flex justify-end p-4">
       <button @click="toggleDark" class="p-2 rounded border bg-gray-200 dark:bg-gray-700">
         <span v-if="isDark">🌙 Dark</span>
@@ -41,6 +41,9 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import CreatorSidebar from '~/components/CreatorSidebar.vue'
+import NotificationBell from '~/components/NotificationBell.vue'
+import UserDropdown from '~/components/UserDropdown.vue'
 
 const isMobileOpen = ref(false);
 
