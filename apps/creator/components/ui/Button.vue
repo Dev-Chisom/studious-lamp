@@ -62,19 +62,19 @@ const props = defineProps({
 const variantClasses = computed(() => {
   switch (props.variant) {
     case 'primary':
-      return 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500';
+      return 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 dark:bg-primary-500 dark:text-gray-900 dark:hover:bg-primary-400';
     case 'secondary':
-      return 'bg-secondary-600 text-white hover:bg-secondary-700 focus:ring-secondary-500';
+      return 'bg-secondary-600 text-white hover:bg-secondary-700 focus:ring-secondary-500 dark:bg-secondary-500 dark:text-gray-900 dark:hover:bg-secondary-400';
     case 'outline':
-      return 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-primary-500';
+      return 'border border-gray-300 bg-white dark:bg-gray-900 text-gray-700 hover:bg-gray-50 focus:ring-primary-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800';
     case 'ghost':
-      return 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:ring-gray-500';
+      return 'text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:ring-gray-500 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-100';
     case 'link':
-      return 'text-primary-600 hover:text-primary-700 underline-offset-4 hover:underline p-0 h-auto';
+      return 'text-primary-600 hover:text-primary-700 underline-offset-4 hover:underline p-0 h-auto dark:text-primary-400 dark:hover:text-primary-300';
     case 'danger':
-      return 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500';
+      return 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 dark:bg-red-500 dark:text-gray-900 dark:hover:bg-red-400';
     default:
-      return 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500';
+      return 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 dark:bg-primary-500 dark:text-gray-900 dark:hover:bg-primary-400';
   }
 });
 

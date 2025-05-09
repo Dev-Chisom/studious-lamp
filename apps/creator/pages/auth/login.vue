@@ -6,8 +6,8 @@
 
     <div class="card p-8">
       <div class="text-center mb-6">
-        <h1 class="text-2xl font-bold">Log in to your account</h1>
-        <p class="text-gray-600 mt-2">Welcome back! Please enter your details.</p>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Log in to your account</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">Welcome back! Please enter your details.</p>
       </div>
 
       <form @submit.prevent="handleSubmit">
@@ -40,9 +40,9 @@
                 type="checkbox"
                 class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
               />
-              <span class="ml-2 text-sm text-gray-600">Remember me</span>
+              <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
             </label>
-            <a href="https://studious-lamp-creator.vercel.app/auth/forgot-password" target="_blank" class="text-sm text-primary-600 hover:text-primary-500">
+            <a href="https://studious-lamp-creator.vercel.app/auth/forgot-password" target="_blank" class="text-sm text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
               Forgot password?
             </a>
           </div>
@@ -64,7 +64,7 @@
             <div class="w-full border-t border-gray-300"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-2 bg-white text-gray-500">Or continue with</span>
+            <span class="px-2 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-200 dark:text-gray-400">Or continue with</span>
           </div>
         </div>
 
@@ -86,9 +86,9 @@
         </div>
       </div>
 
-      <p class="text-center mt-8 text-gray-600">
+      <p class="text-center mt-8 text-gray-600 dark:text-gray-400">
         Don't have an account yet?
-        <a href="https://studious-lamp-creator.vercel.app/auth/register" target="_blank" class="text-primary-600 hover:text-primary-500 font-medium">
+        <a href="https://studious-lamp-creator.vercel.app/auth/register" target="_blank" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-medium">
           Sign up
         </a>
       </p>

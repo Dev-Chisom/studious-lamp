@@ -6,8 +6,8 @@
 
     <div class="sm:flex sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Content Management</h1>
-        <p class="mt-1 text-sm text-gray-500">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Content Management</h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
           Create, edit, and manage your content.
         </p>
       </div>
@@ -20,7 +20,7 @@
     </div>
 
     <!-- Filters -->
-    <div class="mt-6 bg-white rounded-lg shadow-sm p-4 sm:flex sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+    <div class="mt-6 bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 sm:flex sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
       <div class="flex-1">
         <label for="search" class="sr-only">Search</label>
         <div class="relative rounded-md shadow-sm">
@@ -60,20 +60,20 @@
     </div>
 
     <!-- Content table/list -->
-    <div class="mt-6 bg-white shadow-sm rounded-lg overflow-hidden">
-      <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 text-xs font-medium text-gray-500 uppercase tracking-wider">
+    <div class="mt-6 bg-white dark:bg-gray-900 shadow-sm rounded-lg overflow-hidden">
+      <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 uppercase tracking-wider">
         Content List
       </div>
 
       <div v-if="loading" class="p-8 text-center">
         <Icon name="lucide:loader" class="h-8 w-8 mx-auto animate-spin text-primary-500" />
-        <p class="mt-2 text-gray-500">Loading content...</p>
+        <p class="mt-2 text-gray-500 dark:text-gray-200 dark:text-gray-400">Loading content...</p>
       </div>
 
       <div v-else-if="filteredPosts.length === 0" class="p-8 text-center">
-        <Icon name="lucide:file-x" class="h-12 w-12 mx-auto text-gray-400" />
-        <h3 class="mt-2 text-sm font-medium text-gray-900">No content found</h3>
-        <p class="mt-1 text-sm text-gray-500">
+        <Icon name="lucide:file-x" class="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 dark:text-gray-200" />
+        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No content found</h3>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
           {{ search ? 'Try adjusting your search or filters.' : 'Get started by creating your first post.' }}
         </p>
         <div class="mt-6">
@@ -85,7 +85,7 @@
       </div>
 
       <ul v-else class="divide-y divide-gray-200">
-        <li v-for="post in filteredPosts" :key="post.id" class="hover:bg-gray-50">
+        <li v-for="post in filteredPosts" :key="post.id" class="hover:bg-gray-50 hover:dark:bg-gray-700">
           <div class="px-4 py-4 sm:px-6 flex items-center">
             <div class="w-16 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-100 mr-4">
               <img
@@ -101,7 +101,7 @@
             
             <div class="min-w-0 flex-1">
               <div class="flex items-center">
-                <h3 class="text-sm font-medium text-gray-900 truncate">{{ post.title }}</h3>
+                <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ post.title }}</h3>
                 <span 
                   v-if="post.visibility === 'subscribers'" 
                   class="ml-2 badge badge-primary"
@@ -129,12 +129,12 @@
               </div>
               
               <div class="mt-1">
-                <p class="text-sm text-gray-500 truncate">
+                <p class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400 truncate">
                   {{ truncateContent(post.content) }}
                 </p>
               </div>
               
-              <div class="mt-2 flex items-center text-xs text-gray-500 space-x-4">
+              <div class="mt-2 flex items-center text-xs text-gray-500 dark:text-gray-200 dark:text-gray-400 space-x-4">
                 <span class="flex items-center">
                   <Icon name="lucide:calendar" class="h-4 w-4 mr-1" />
                   {{ formatDate(post.createdAt) }}
@@ -156,14 +156,14 @@
             
             <div class="ml-4 flex-shrink-0 flex space-x-2">
               <button
-                class="p-2 text-gray-500 hover:text-primary-600 rounded-md hover:bg-gray-100"
+                class="p-2 text-gray-500 dark:text-gray-200 hover:text-primary-600 rounded-md hover:bg-gray-100"
                 @click="editPost(post.id)"
               >
                 <Icon name="lucide:pencil" class="h-5 w-5" />
                 <span class="sr-only">Edit</span>
               </button>
               <button
-                class="p-2 text-gray-500 hover:text-error-600 rounded-md hover:bg-gray-100"
+                class="p-2 text-gray-500 dark:text-gray-200 hover:text-error-600 rounded-md hover:bg-gray-100"
                 @click="confirmDelete(post.id)"
               >
                 <Icon name="lucide:trash-2" class="h-5 w-5" />
@@ -182,18 +182,18 @@
           <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="inline-block align-bottom bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div class="bg-white dark:bg-gray-900 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div class="sm:flex sm:items-start">
               <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-error-100 sm:mx-0 sm:h-10 sm:w-10">
                 <Icon name="lucide:alert-triangle" class="h-6 w-6 text-error-600" />
               </div>
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                   Delete Content
                 </h3>
                 <div class="mt-2">
-                  <p class="text-sm text-gray-500">
+                  <p class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
                     Are you sure you want to delete this content? This action cannot be undone.
                   </p>
                 </div>
@@ -209,7 +209,7 @@
             </button>
             <button
               @click="showDeleteModal = false"
-              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white dark:bg-gray-900 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
             >
               Cancel
             </button>

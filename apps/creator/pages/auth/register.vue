@@ -6,8 +6,8 @@
 
     <div class="card p-8">
       <div class="text-center mb-6">
-        <h1 class="text-2xl font-bold">Create an account</h1>
-        <p class="text-gray-600 mt-2">Join Whispers to connect with creators and fans.</p>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Create an account</h1>
+        <p class="text-gray-600 dark:text-gray-400 mt-2">Join Whispers to connect with creators and fans.</p>
       </div>
 
       <form @submit.prevent="handleSubmit">
@@ -62,17 +62,17 @@
               />
             </div>
             <div class="ml-3 text-sm">
-              <label for="terms" class="text-gray-600">
+              <label for="terms" class="text-gray-600 dark:text-gray-400">
                 I agree to the
-                <NuxtLink to="/terms" class="text-primary-600 hover:text-primary-500">
+                <NuxtLink to="/terms" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
                   Terms of Service
                 </NuxtLink>
                 and
-                <NuxtLink to="/privacy" class="text-primary-600 hover:text-primary-500">
+                <NuxtLink to="/privacy" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
                   Privacy Policy
                 </NuxtLink>
               </label>
-              <p v-if="errors.agreedToTerms" class="text-error-600 mt-1">
+              <p v-if="errors.agreedToTerms" class="text-error-600 dark:text-error-400 mt-1">
                 {{ errors.agreedToTerms }}
               </p>
             </div>
@@ -95,7 +95,7 @@
             <div class="w-full border-t border-gray-300"></div>
           </div>
           <div class="relative flex justify-center text-sm">
-            <span class="px-2 bg-white text-gray-500">Or continue with</span>
+            <span class="px-2 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-200 dark:text-gray-400">Or continue with</span>
           </div>
         </div>
 
@@ -117,9 +117,9 @@
         </div>
       </div>
 
-      <p class="text-center mt-8 text-gray-600">
+      <p class="text-center mt-8 text-gray-600 dark:text-gray-400">
         Already have an account?
-        <a href="https://studious-lamp-creator.vercel.app/auth/login" target="_blank" class="text-primary-600 hover:text-primary-500 font-medium">
+        <a href="https://studious-lamp-creator.vercel.app/auth/login" target="_blank" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300 font-medium">
           Log in
         </a>
       </p>

@@ -8,18 +8,18 @@
       <div class="flex items-center">
         <NuxtLink 
           to="/creator/content"
-          class="mr-2 text-gray-500 hover:text-gray-700"
+          class="mr-2 text-gray-500 dark:text-gray-200 hover:text-gray-700"
         >
           <Icon name="lucide:arrow-left" class="h-5 w-5" />
         </NuxtLink>
-        <h1 class="text-2xl font-bold text-gray-900">Create New Post</h1>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Create New Post</h1>
       </div>
-      <p class="mt-1 text-sm text-gray-500">
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-200">
         Share new content with your subscribers.
       </p>
     </div>
 
-    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+    <div class="bg-white dark:bg-gray-900 shadow-sm rounded-lg overflow-hidden">
       <form @submit.prevent="handleSubmit">
         <div class="p-6 space-y-6">
           <!-- Title -->
@@ -59,7 +59,7 @@
               multiple
               :error="errors.mediaFiles"
             />
-            <p class="mt-1 text-xs text-gray-500">
+            <p class="mt-1 text-xs text-gray-500 dark:text-gray-200">
               Upload images or videos to share with your subscribers. Max 10 files.
             </p>
           </div>
@@ -83,8 +83,8 @@
                     />
                   </div>
                   <div class="ml-3 text-sm">
-                    <label for="visibility-public" class="font-medium text-gray-700">Public</label>
-                    <p class="text-gray-500">Visible to everyone, including non-subscribers</p>
+                    <label for="visibility-public" class="font-medium text-gray-700 dark:text-gray-200">Public</label>
+                    <p class="text-gray-500 dark:text-gray-200">Visible to everyone, including non-subscribers</p>
                   </div>
                 </div>
                 <div class="flex items-start">
@@ -98,8 +98,8 @@
                     />
                   </div>
                   <div class="ml-3 text-sm">
-                    <label for="visibility-subscribers" class="font-medium text-gray-700">Subscribers Only</label>
-                    <p class="text-gray-500">Only visible to your paid subscribers</p>
+                    <label for="visibility-subscribers" class="font-medium text-gray-700 dark:text-gray-200">Subscribers Only</label>
+                    <p class="text-gray-500 dark:text-gray-200">Only visible to your paid subscribers</p>
                   </div>
                 </div>
                 <div class="flex items-start">
@@ -113,8 +113,8 @@
                     />
                   </div>
                   <div class="ml-3 text-sm">
-                    <label for="visibility-ppv" class="font-medium text-gray-700">Pay-per-view</label>
-                    <p class="text-gray-500">Users must pay a one-time fee to access</p>
+                    <label for="visibility-ppv" class="font-medium text-gray-700 dark:text-gray-200">Pay-per-view</label>
+                    <p class="text-gray-500 dark:text-gray-200">Users must pay a one-time fee to access</p>
                   </div>
                 </div>
               </div>
@@ -147,8 +147,8 @@
                   />
                 </div>
                 <div class="ml-3 text-sm">
-                  <label for="schedule" class="font-medium text-gray-700">Schedule for later</label>
-                  <p class="text-gray-500">Set a future date and time to publish this post</p>
+                  <label for="schedule" class="font-medium text-gray-700 dark:text-gray-200">Schedule for later</label>
+                  <p class="text-gray-500 dark:text-gray-200">Set a future date and time to publish this post</p>
                 </div>
               </div>
 
@@ -166,7 +166,7 @@
           </div>
         </div>
 
-        <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-between">
+        <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 flex justify-between">
           <button
             type="button"
             class="btn-outline"

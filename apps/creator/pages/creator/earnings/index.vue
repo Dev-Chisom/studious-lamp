@@ -5,15 +5,15 @@
     </Head>
 
     <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">Earnings</h1>
-      <p class="mt-1 text-sm text-gray-500">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Earnings</h1>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
         Track your earnings and manage payouts.
       </p>
     </div>
 
     <!-- Stats cards -->
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-      <div v-for="stat in stats" :key="stat.name" class="bg-white overflow-hidden shadow-sm rounded-lg">
+      <div v-for="stat in stats" :key="stat.name" class="bg-white dark:bg-gray-900 overflow-hidden shadow-sm rounded-lg">
         <div class="p-5">
           <div class="flex items-center">
             <div class="flex-shrink-0">
@@ -25,11 +25,11 @@
             </div>
             <div class="ml-5 w-0 flex-1">
               <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 truncate">
                   {{ stat.name }}
                 </dt>
                 <dd>
-                  <div class="text-lg font-medium text-gray-900">
+                  <div class="text-lg font-medium text-gray-900 dark:text-gray-100">
                     {{ stat.value }}
                   </div>
                 </dd>
@@ -43,10 +43,10 @@
                 :class="`flex-shrink-0 self-center h-5 w-5 ${stat.trend >= 0 ? 'text-success-500' : 'text-error-500'}`"
                 aria-hidden="true"
               />
-              <span :class="stat.trend >= 0 ? 'text-success-700' : 'text-error-700'">
+              <span :class="stat.trend >= 0 ? 'text-success-700 dark:text-success-400' : 'text-error-700 dark:text-error-400'">
                 {{ Math.abs(stat.trend) }}%
               </span>
-              <span class="ml-2 text-gray-500">from last month</span>
+              <span class="ml-2 text-gray-500 dark:text-gray-200 dark:text-gray-400">from last month</span>
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@
     </div>
 
     <!-- Earnings chart -->
-    <div class="bg-white shadow-sm rounded-lg mb-8">
+    <div class="bg-white dark:bg-gray-900 shadow-sm rounded-lg mb-8">
       <div class="p-6">
         <div class="sm:flex sm:items-center sm:justify-between mb-6">
           <h2 class="text-lg font-medium text-gray-900">Earnings Overview</h2>
@@ -71,20 +71,20 @@
           </div>
         </div>
         
-        <div class="h-72 bg-gray-50 rounded-lg flex items-center justify-center">
-          <p class="text-gray-500">Chart placeholder - In a real app, implement chart using a library like Chart.js</p>
+        <div class="h-72 bg-gray-50 dark:bg-gray-600 rounded-lg flex items-center justify-center">
+          <p class="text-gray-500 dark:text-gray-200">Chart placeholder - In a real app, implement chart using a library like Chart.js</p>
         </div>
       </div>
     </div>
 
     <!-- Revenue breakdown -->
-    <div class="bg-white shadow-sm rounded-lg mb-8">
+    <div class="bg-white dark:bg-gray-900 shadow-sm rounded-lg mb-8">
       <div class="p-6">
-        <h2 class="text-lg font-medium text-gray-900 mb-6">Revenue Breakdown</h2>
+        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-6">Revenue Breakdown</h2>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h3 class="text-sm font-medium text-gray-500 mb-4">By Revenue Type</h3>
+            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 mb-4">By Revenue Type</h3>
             <div class="space-y-4">
               <div v-for="item in revenueByType" :key="item.name" class="flex items-center sm:flex-col md:flex-row">
                 <div class="w-full bg-gray-200 rounded-full h-2.5">
@@ -95,11 +95,11 @@
                   ></div>
                 </div>
                 <div class="ml-4">
-                  <p class="text-sm font-medium text-gray-900">
+                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {{ item.name }}
                   </p>
                 </div>
-                  <p class="ml-4 text-sm font-medium text-gray-900">
+                  <p class="ml-4 text-sm font-medium text-gray-900 dark:text-gray-100">
                     ${{ item.amount.toFixed(2) }}
                   </p>
               </div>
@@ -107,7 +107,7 @@
           </div>
           
           <div>
-            <h3 class="text-sm font-medium text-gray-500 mb-4">By Subscription Type</h3>
+            <h3 class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 mb-4">By Subscription Type</h3>
             <div class="space-y-4">
               <div v-for="item in revenueBySubscription" :key="item.name" class="flex items-center sm:flex-col md:flex-row">
                 <div class="w-full bg-gray-200 rounded-full h-2.5">
@@ -118,11 +118,11 @@
                   ></div>
                 </div>
                 <div class="ml-4">
-                  <p class="text-sm font-medium text-gray-900">
+                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {{ item.name }}
                   </p>
                 </div>
-                <p class="ml-4 text-sm font-medium text-gray-900">
+                <p class="ml-4 text-sm font-medium text-gray-900 dark:text-gray-100">
                   ${{ item.amount.toFixed(2) }}
                 </p>
               </div>
@@ -133,10 +133,10 @@
     </div>
 
     <!-- Recent transactions -->
-    <div class="bg-white shadow-sm rounded-lg">
+    <div class="bg-white dark:bg-gray-900 shadow-sm rounded-lg">
       <div class="p-6">
         <div class="sm:flex sm:items-center sm:justify-between mb-6">
-          <h2 class="text-lg font-medium text-gray-900">Recent Transactions</h2>
+          <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">Recent Transactions</h2>
           <div class="mt-3 sm:mt-0">
             <button class="btn-outline">
               Download CSV
@@ -148,26 +148,26 @@
           <table class="min-w-full divide-y divide-gray-200">
             <thead>
               <tr>
-                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-left text-xs font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 uppercase tracking-wider">
                   Date
                 </th>
-                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-left text-xs font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 uppercase tracking-wider">
                   Type
                 </th>
-                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-left text-xs font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 uppercase tracking-wider">
                   Customer
                 </th>
-                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-left text-xs font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 uppercase tracking-wider">
                   Amount
                 </th>
-                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-left text-xs font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 uppercase tracking-wider">
                   Status
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="transaction in transactions" :key="transaction.id" class="hover:bg-gray-50">
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200">
+              <tr v-for="transaction in transactions" :key="transaction.id" class="hover:bg-gray-50 hover:dark:bg-gray-600">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
                   {{ formatDate(transaction.date) }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -192,18 +192,18 @@
                       />
                     </div>
                     <div class="ml-4">
-                      <div class="text-sm font-medium text-gray-900">
+                      <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
                         {{ transaction.customer.name }}
                       </div>
-                      <div class="text-sm text-gray-500">
+                      <div class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
                         {{ transaction.customer.email }}
                       </div>
                     </div>
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">${{ transaction.amount.toFixed(2) }}</div>
-                  <div class="text-xs text-gray-500">After fees: ${{ (transaction.amount * 0.8).toFixed(2) }}</div>
+                  <div class="text-sm text-gray-900 dark:text-gray-100">${{ transaction.amount.toFixed(2) }}</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-200 dark:text-gray-400">After fees: ${{ (transaction.amount * 0.8).toFixed(2) }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span
@@ -255,7 +255,7 @@
             <div>
               <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
                 <button
-                  class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white dark:bg-gray-900 text-sm font-medium text-gray-500 dark:text-gray-200 hover:bg-gray-50"
                   :disabled="currentPage === 1"
                   @click="currentPage--"
                 >
@@ -264,14 +264,14 @@
                 <button
                   v-for="page in displayedPages"
                   :key="page"
-                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium"
-                  :class="page === currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'text-gray-500 hover:bg-gray-50'"
+                  class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white dark:bg-gray-900 text-sm font-medium"
+                  :class="page === currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'text-gray-500 dark:text-gray-200 hover:bg-gray-50'"
                   @click="currentPage = page"
                 >
                   {{ page }}
                 </button>
                 <button
-                  class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                  class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white dark:bg-gray-900 text-sm font-medium text-gray-500 dark:text-gray-200 hover:bg-gray-50"
                   :disabled="currentPage === totalPages"
                   @click="currentPage++"
                 >

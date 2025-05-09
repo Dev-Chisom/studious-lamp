@@ -6,8 +6,8 @@
 
     <div class="sm:flex sm:items-center sm:justify-between mb-6">
       <div>
-        <h1 class="text-2xl font-bold text-gray-900">Posts</h1>
-        <p class="mt-1 text-sm text-gray-500">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Posts</h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
           Manage and create new posts for your subscribers.
         </p>
       </div>
@@ -20,17 +20,18 @@
     </div>
 
     <!-- Filters -->
-    <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+    <div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 mb-6">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <FormInput
           v-model="filters.search"
           placeholder="Search posts..."
           icon="lucide:search"
+          class="dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:border-gray-700 focus:dark:border-primary-400 hover:dark:border-primary-400"
         />
         
         <select
           v-model="filters.visibility"
-          class="form-input"
+          class="form-input dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 focus:dark:border-primary-400 hover:dark:border-primary-400"
         >
           <option value="">All Visibility</option>
           <option value="public">Public</option>
@@ -40,7 +41,7 @@
         
         <select
           v-model="filters.sortBy"
-          class="form-input"
+          class="form-input dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 focus:dark:border-primary-400 hover:dark:border-primary-400"
         >
           <option value="newest">Newest First</option>
           <option value="oldest">Oldest First</option>
@@ -51,16 +52,16 @@
     </div>
 
     <!-- Posts list -->
-    <div class="bg-white rounded-lg shadow-sm">
+    <div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
       <div v-if="loading" class="p-8 text-center">
         <Icon name="lucide:loader" class="h-8 w-8 mx-auto animate-spin text-primary-500" />
-        <p class="mt-2 text-gray-500">Loading posts...</p>
+        <p class="mt-2 text-gray-500 dark:text-gray-200 dark:text-gray-400">Loading posts...</p>
       </div>
 
       <div v-else-if="filteredPosts.length === 0" class="p-8 text-center">
         <Icon name="lucide:file-x" class="h-12 w-12 mx-auto text-gray-400" />
-        <h3 class="mt-2 text-sm font-medium text-gray-900">No posts found</h3>
-        <p class="mt-1 text-sm text-gray-500">
+        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No posts found</h3>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
           {{ filters.search ? 'Try adjusting your search or filters.' : 'Get started by creating your first post.' }}
         </p>
         <div class="mt-6">
@@ -76,28 +77,28 @@
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">
                   Post
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">
                   Visibility
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">
                   Stats
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">
                   Earnings
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">
                   Date
                 </th>
-                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="post in filteredPosts" :key="post.id" class="hover:bg-gray-50">
+            <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200">
+              <tr v-for="post in filteredPosts" :key="post.id" class="hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors duration-200 p-4 rounded-md">
                 <td class="px-6 py-4">
                   <div class="flex items-center">
                     <div class="h-10 w-10 flex-shrink-0">
@@ -108,14 +109,14 @@
                         class="h-10 w-10 rounded object-cover"
                       />
                       <div v-else class="h-10 w-10 rounded bg-gray-100 flex items-center justify-center">
-                        <Icon name="lucide:file" class="h-5 w-5 text-gray-400" />
+                        <Icon name="lucide:file" class="h-5 w-5 text-gray-400 dark:text-gray-100" />
                       </div>
                     </div>
                     <div class="ml-4">
-                      <div class="text-sm font-medium text-gray-900">
+                      <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
                         {{ post.title }}
                       </div>
-                      <div class="text-sm text-gray-500">
+                      <div class="text-sm text-gray-500 dark:text-gray-200">
                         {{ truncateText(post.content, 50) }}
                       </div>
                     </div>
@@ -132,39 +133,39 @@
                   >
                     {{ post.visibility === 'ppv' ? 'Pay-per-view' : post.visibility }}
                   </span>
-                  <div v-if="post.price" class="mt-1 text-sm text-gray-500">
+                  <div v-if="post.price" class="mt-1 text-sm text-gray-500 dark:text-gray-200">
                     ${{ post.price }}
                   </div>
                 </td>
                 <td class="px-6 py-4">
                   <div class="text-sm text-gray-900 space-y-1">
                     <div class="flex items-center">
-                      <Icon name="lucide:eye" class="h-4 w-4 text-gray-400 mr-1" />
-                      {{ post.views }} views
+                      <Icon name="lucide:eye" class="h-4 w-4 text-gray-400 dark:text-gray-100 mr-1" />
+                      <span class="text-gray-400 dark:text-gray-100">{{ post.views }} views</span>
                     </div>
                     <div class="flex items-center">
-                      <Icon name="lucide:heart" class="h-4 w-4 text-gray-400 mr-1" />
-                      {{ post.likes }} likes
+                      <Icon name="lucide:heart" class="h-4 w-4 text-gray-400 dark:text-gray-100 mr-1" />
+                      <span class="text-gray-400 dark:text-gray-100">{{ post.likes }} likes</span>
                     </div>
                     <div class="flex items-center">
-                      <Icon name="lucide:message-square" class="h-4 w-4 text-gray-400 mr-1" />
-                      {{ post.comments }} comments
+                      <Icon name="lucide:message-square" class="h-4 w-4 text-gray-400 dark:text-gray-100 mr-1" />
+                      <span class="text-gray-400 dark:text-gray-100">{{ post.comments }} comments</span>
                     </div>
                   </div>
                 </td>
                 <td class="px-6 py-4">
-                  <div class="text-sm text-gray-900">${{ post.earnings.toFixed(2) }}</div>
-                  <div class="text-xs text-gray-500">
+                  <div class="text-sm text-gray-900 dark:text-gray-100"">${{ post.earnings.toFixed(2) }}</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-100">
                     {{ post.purchases }} purchases
                   </div>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-500">
+                <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-200">
                   {{ formatDate(post.createdAt) }}
                 </td>
                 <td class="px-6 py-4 text-right text-sm font-medium">
                   <div class="flex justify-end space-x-2">
                     <button
-                      class="text-gray-400 hover:text-gray-500"
+                      class="text-gray-400 hover:text-gray-500 dark:text-gray-200"
                       @click="editPost(post.id)"
                     >
                       <Icon name="lucide:pencil" class="h-5 w-5" />
@@ -183,7 +184,7 @@
         </div>
 
         <!-- Pagination -->
-        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+        <div class="bg-white dark:bg-gray-900 px-4 py-3 border-t border-gray-200 sm:px-6">
           <div class="flex items-center justify-between">
             <div class="flex-1 flex justify-between sm:hidden">
               <button
@@ -216,7 +217,7 @@
               <div>
                 <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
                   <button
-                    class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white dark:bg-gray-900 text-sm font-medium text-gray-500 dark:text-gray-200 hover:bg-gray-50"
                     :disabled="currentPage === 1"
                     @click="currentPage--"
                   >
@@ -225,14 +226,14 @@
                   <button
                     v-for="page in displayedPages"
                     :key="page"
-                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium"
-                    :class="page === currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'text-gray-500 hover:bg-gray-50'"
+                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white dark:bg-gray-900 text-sm font-medium"
+                    :class="page === currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'text-gray-500 dark:text-gray-200 hover:bg-gray-50'"
                     @click="currentPage = page"
                   >
                     {{ page }}
                   </button>
                   <button
-                    class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white dark:bg-gray-900 text-sm font-medium text-gray-500 dark:text-gray-200 hover:bg-gray-50"
                     :disabled="currentPage === totalPages"
                     @click="currentPage++"
                   >
@@ -253,18 +254,18 @@
           <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
         </div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div class="inline-block align-bottom bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div class="bg-white dark:bg-gray-900 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div class="sm:flex sm:items-start">
               <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-error-100 sm:mx-0 sm:h-10 sm:w-10">
                 <Icon name="lucide:alert-triangle" class="h-6 w-6 text-error-600" />
               </div>
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                   Delete Post
                 </h3>
                 <div class="mt-2">
-                  <p class="text-sm text-gray-500">
+                  <p class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
                     Are you sure you want to delete this post? This action cannot be undone.
                   </p>
                 </div>
@@ -281,7 +282,7 @@
             </button>
             <button
               type="button"
-              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white dark:bg-gray-900 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
               @click="showDeleteModal = false"
             >
               Cancel
@@ -295,7 +296,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { useContentStore } from '~/stores/content';
+import FormInput from '@/components/ui/FormInput.vue'
 
 definePageMeta({
   layout: 'creator',
@@ -306,7 +307,6 @@ definePageMeta({
   }
 });
 
-const contentStore = useContentStore();
 const toast = inject('toast');
 
 // State

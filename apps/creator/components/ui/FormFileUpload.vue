@@ -3,17 +3,17 @@
     <label 
       v-if="label" 
       :for="id" 
-      class="form-label"
+      class="form-label text-gray-700 dark:text-gray-200"
     >
       {{ label }}
-      <span v-if="required" class="text-error-500 ml-1">*</span>
+      <span v-if="required" class="text-error-500 dark:text-error-400 ml-1">*</span>
     </label>
     
     <div
       class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md"
       :class="[
-        error ? 'border-error-300' : 'border-gray-300',
-        isDragging ? 'border-primary-300 bg-primary-50' : 'hover:border-primary-300'
+        error ? 'border-error-300' : 'border-gray-300 dark:border-gray-700',
+        isDragging ? 'border-primary-300 bg-primary-50 dark:bg-primary-900' : 'hover:border-primary-300 dark:hover:border-primary-400'
       ]"
       @dragover.prevent="isDragging = true"
       @dragleave.prevent="isDragging = false"
@@ -28,24 +28,24 @@
               alt="Preview"
               class="object-cover w-full h-full rounded-md"
             />
-            <div v-else class="flex items-center justify-center w-full h-full bg-gray-100 rounded-md">
-              <Icon name="lucide:file" class="h-8 w-8 text-gray-400" />
+            <div v-else class="flex items-center justify-center w-full h-full bg-gray-100 dark:bg-gray-800 rounded-md">
+              <Icon name="lucide:file" class="h-8 w-8 text-gray-400 dark:text-gray-500 dark:text-gray-200" />
             </div>
             <button
               @click.prevent="removeFile(index)"
-              class="absolute -top-2 -right-2 bg-error-100 rounded-full p-1 text-error-600 hover:bg-error-200"
+              class="absolute -top-2 -right-2 bg-error-100 dark:bg-error-700 rounded-full p-1 text-error-600 dark:text-error-200 hover:bg-error-200 dark:hover:bg-error-600"
             >
               <Icon name="lucide:x" class="h-3 w-3" />
             </button>
           </div>
         </div>
         <div v-else>
-          <Icon name="lucide:upload-cloud" class="mx-auto h-12 w-12 text-gray-400" />
+          <Icon name="lucide:upload-cloud" class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-300" />
         </div>
-        <div class="flex text-sm text-gray-600">
+        <div class="flex text-sm text-gray-600 dark:text-gray-300">
           <label
             :for="id"
-            class="relative cursor-pointer rounded-md font-medium text-primary-600 hover:text-primary-500"
+            class="relative cursor-pointer rounded-md font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300"
           >
             <span>{{ previewUrls.length ? 'Upload more files' : 'Upload files' }}</span>
             <input
@@ -59,13 +59,13 @@
           </label>
           <p class="pl-1">or drag and drop</p>
         </div>
-        <p class="text-xs text-gray-500">
+        <p class="text-xs text-gray-500 dark:text-gray-200 dark:text-gray-400">
           {{ acceptText }}
         </p>
       </div>
     </div>
     
-    <p v-if="error" class="form-error">{{ error }}</p>
+    <p v-if="error" class="form-error text-error-600 dark:text-error-400">{{ error }}</p>
   </div>
 </template>
 

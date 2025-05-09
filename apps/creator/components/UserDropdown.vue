@@ -2,9 +2,9 @@
   <div class="relative">
     <button 
       @click="isOpen = !isOpen"
-      class="flex items-center space-x-2 text-gray-700 hover:text-primary-600 focus:outline-none"
+      class="flex items-center space-x-2 text-gray-700 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 focus:outline-none"
     >
-      <div class="avatar h-8 w-8 bg-primary-100">
+      <div class="avatar h-8 w-8 bg-primary-100 dark:bg-primary-900">
         <img
           v-if="authStore.user?.profileImage"
           :src="authStore.user.profileImage"
@@ -13,36 +13,36 @@
         />
         <div 
           v-else 
-          class="h-full w-full flex items-center justify-center text-primary-600 font-medium"
+          class="h-full w-full flex items-center justify-center text-primary-600 dark:text-primary-400 font-medium"
         >
           {{ userInitials }}
         </div>
       </div>
-      <span class="hidden md:block text-sm font-medium">
+      <span class="hidden md:block text-sm font-medium text-gray-900 dark:text-gray-100">
         {{ authStore.user?.displayName || 'Account' }}
       </span>
       <Icon 
         name="lucide:chevron-down" 
-        class="h-4 w-4" 
+        class="h-4 w-4 text-gray-500 dark:text-gray-200 dark:text-gray-400" 
         aria-hidden="true"
       />
     </button>
 
     <div 
       v-if="isOpen" 
-      class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 z-50"
+      class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-900 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 dark:divide-gray-700 z-50"
     >
       <div class="py-1">
-        <div class="px-4 py-2 text-sm text-gray-900 border-b border-gray-100">
+        <div class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-gray-700">
           <p class="font-medium">{{ authStore.user?.displayName || 'User' }}</p>
-          <p class="text-gray-500 truncate">{{ authStore.user?.email || 'user@example.com' }}</p>
+          <p class="text-gray-500 dark:text-gray-200 dark:text-gray-400 truncate">{{ authStore.user?.email || 'user@example.com' }}</p>
         </div>
 
         <NuxtLink
           v-for="item in userLinks"
           :key="item.name"
           :to="item.href"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
           @click="isOpen = false"
         >
           {{ item.name }}
@@ -55,7 +55,7 @@
           v-for="item in creatorLinks"
           :key="item.name"
           :to="item.href"
-          class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
           @click="isOpen = false"
         >
           {{ item.name }}
@@ -65,7 +65,7 @@
       <div class="py-1">
         <button
           @click="logout"
-          class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
         >
           Sign out
         </button>

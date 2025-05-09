@@ -11,7 +11,7 @@
         <slot />
       </div>
     </main>
-    <footer class="py-4 text-center text-sm text-gray-500">
+    <footer class="py-4 text-center text-sm text-gray-500 dark:text-gray-200">
       <p>© {{ new Date().getFullYear() }} Whispers. All rights reserved.</p>
     </footer>
   </div>

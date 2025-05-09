@@ -9,13 +9,13 @@
         
         <div v-if="loading" class="text-center py-12">
           <Icon name="lucide:loader" class="h-8 w-8 mx-auto animate-spin text-primary-500" />
-          <p class="mt-2 text-gray-500">Loading subscriptions...</p>
+          <p class="mt-2 text-gray-500 dark:text-gray-200">Loading subscriptions...</p>
         </div>
         
-        <div v-else-if="activeSubscriptions.length === 0" class="bg-white rounded-lg shadow-sm p-8 text-center">
+        <div v-else-if="activeSubscriptions.length === 0" class="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-8 text-center">
           <Icon name="lucide:users" class="h-12 w-12 mx-auto text-gray-400" />
           <h3 class="mt-2 text-lg font-medium text-gray-900">No active subscriptions</h3>
-          <p class="mt-1 text-gray-500">
+          <p class="mt-1 text-gray-500 dark:text-gray-200">
             Explore creators and subscribe to unlock exclusive content.
           </p>
           <NuxtLink to="/explore" class="btn-primary mt-4">
@@ -27,7 +27,7 @@
           <div
             v-for="subscription in activeSubscriptions"
             :key="subscription.id"
-            class="bg-white rounded-lg shadow-sm overflow-hidden"
+            class="bg-white dark:bg-gray-900 rounded-lg shadow-sm overflow-hidden"
           >
             <div class="p-6">
               <div class="flex items-center space-x-4">
@@ -47,25 +47,25 @@
                       <Icon name="lucide:badge-check" class="h-4 w-4" />
                     </span>
                   </div>
-                  <p class="text-sm text-gray-500">@{{ subscription.creator.username }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-200">@{{ subscription.creator.username }}</p>
                 </div>
               </div>
               
               <div class="mt-4 space-y-2">
                 <div class="flex justify-between text-sm">
-                  <span class="text-gray-500">Plan</span>
+                  <span class="text-gray-500 dark:text-gray-200">Plan</span>
                   <span class="font-medium">{{ subscription.plan === 'monthly' ? 'Monthly' : 'Yearly' }}</span>
                 </div>
                 <div class="flex justify-between text-sm">
-                  <span class="text-gray-500">Price</span>
+                  <span class="text-gray-500 dark:text-gray-200">Price</span>
                   <span class="font-medium">${{ subscription.price }}/{{ subscription.plan === 'monthly' ? 'month' : 'year' }}</span>
                 </div>
                 <div class="flex justify-between text-sm">
-                  <span class="text-gray-500">Next billing date</span>
+                  <span class="text-gray-500 dark:text-gray-200">Next billing date</span>
                   <span class="font-medium">{{ formatDate(subscription.endDate) }}</span>
                 </div>
                 <div class="flex justify-between text-sm">
-                  <span class="text-gray-500">Auto-renew</span>
+                  <span class="text-gray-500 dark:text-gray-200">Auto-renew</span>
                   <span :class="subscription.autoRenew ? 'text-success-600' : 'text-error-600'">
                     {{ subscription.autoRenew ? 'Enabled' : 'Disabled' }}
                   </span>
@@ -100,7 +100,7 @@
           <div
             v-for="subscription in expiredSubscriptions"
             :key="subscription.id"
-            class="bg-white rounded-lg shadow-sm overflow-hidden opacity-75"
+            class="bg-white dark:bg-gray-900 rounded-lg shadow-sm overflow-hidden opacity-75"
           >
             <div class="p-6">
               <div class="flex items-center space-x-4">
@@ -120,12 +120,12 @@
                       <Icon name="lucide:badge-check" class="h-4 w-4" />
                     </span>
                   </div>
-                  <p class="text-sm text-gray-500">@{{ subscription.creator.username }}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-200">@{{ subscription.creator.username }}</p>
                 </div>
               </div>
               
               <div class="mt-4">
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-gray-500 dark:text-gray-200">
                   Subscription expired on {{ formatDate(subscription.endDate) }}
                 </p>
               </div>

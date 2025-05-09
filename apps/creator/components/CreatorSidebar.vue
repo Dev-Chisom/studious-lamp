@@ -9,22 +9,22 @@
     >
       <!-- Background overlay -->
       <div
-        class="fixed inset-0 bg-gray-600 bg-opacity-75"
+        class="fixed inset-0 bg-gray-600 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-80"
         @click="$emit('close')"
       ></div>
 
       <!-- Sidebar panel -->
-      <div class="fixed inset-y-0 left-0 flex max-w-xs w-full bg-white shadow-lg">
+      <div class="fixed inset-y-0 left-0 flex max-w-xs w-full bg-white dark:bg-gray-900 dark:bg-gray-800 shadow-lg">
         <div class="flex flex-col w-full">
-          <div class="px-4 py-6 bg-primary-700 sm:px-6">
+          <div class="px-4 py-6 bg-primary-700 dark:bg-primary-900 sm:px-6">
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-2">
                 <img src="/logo-white.svg" alt="Whispers" class="h-8 w-auto" />
-                <span class="text-xl font-bold text-white">Creator Studio</span>
+                <span class="text-xl font-bold text-white dark:text-gray-100">Creator Studio</span>
               </div>
               <button
                 type="button"
-                class="text-white hover:text-gray-200"
+                class="text-white hover:text-gray-200 dark:text-gray-100 dark:hover:text-gray-200"
                 @click="$emit('close')"
               >
                 <span class="sr-only">Close sidebar</span>
@@ -45,13 +45,13 @@
     </div>
 
     <!-- Desktop sidebar -->
-    <div class="sticky bottom-0 top-0 hidden lg:flex lg:flex-shrink-0 bg-white h-screen">
+    <div class="sticky bottom-0 top-0 hidden lg:flex lg:flex-shrink-0 bg-white dark:bg-gray-900 dark:bg-gray-800 h-screen">
       <div class="flex flex-col w-64">
         <div class="flex flex-col h-0 flex-1">
-          <div class="px-4 py-6 bg-primary-700 flex items-center">
+          <div class="px-4 py-6 bg-primary-700 dark:bg-primary-900 flex items-center">
             <div class="flex items-center space-x-2">
               <img src="/logo-white.svg" alt="Whispers" class="h-8 w-auto" />
-              <span class="text-xl font-bold text-white">Creator Studio</span>
+              <span class="text-xl font-bold text-white dark:text-gray-100">Creator Studio</span>
             </div>
           </div>
           <div class="flex-1 flex flex-col overflow-y-auto">

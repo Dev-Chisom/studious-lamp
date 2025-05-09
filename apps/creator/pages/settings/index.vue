@@ -3,7 +3,7 @@
     <div class="max-w-4xl mx-auto">
       <h1 class="text-2xl font-bold mb-6">Account Settings</h1>
 
-      <div class="bg-white rounded-lg shadow-sm divide-y divide-gray-200">
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm divide-y divide-gray-200">
         <!-- Profile section -->
         <div class="p-6">
           <h2 class="text-lg font-medium mb-4">Profile Information</h2>
@@ -25,7 +25,7 @@
                 </div>
               </div>
               <button
-                class="absolute bottom-0 right-0 bg-white rounded-full p-1.5 shadow-sm border border-gray-200 text-gray-500 hover:text-gray-700"
+                class="absolute bottom-0 right-0 bg-white dark:bg-gray-900 rounded-full p-1.5 shadow-sm border border-gray-200 text-gray-500 dark:text-gray-200 hover:text-gray-700"
                 @click="$refs.imageInput.click()"
               >
                 <Icon name="lucide:camera" class="h-4 w-4" />
@@ -40,7 +40,7 @@
             </div>
             
             <div>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-gray-500 dark:text-gray-200">
                 Upload a new profile picture. Recommended size: 400x400px.
               </p>
             </div>
@@ -172,7 +172,7 @@
               </div>
               <div class="ml-3 text-sm">
                 <label :for="key" class="font-medium text-gray-700">{{ getNotificationLabel(key) }}</label>
-                <p class="text-gray-500">{{ getNotificationDescription(key) }}</p>
+                <p class="text-gray-500 dark:text-gray-200">{{ getNotificationDescription(key) }}</p>
               </div>
             </div>
             
@@ -193,7 +193,7 @@
         <div class="p-6">
           <h2 class="text-lg font-medium text-error-600 mb-4">Delete Account</h2>
           
-          <p class="text-sm text-gray-500 mb-4">
+          <p class="text-sm text-gray-500 dark:text-gray-200 mb-4">
             Once you delete your account, there is no going back. Please be certain.
           </p>
           

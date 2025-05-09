@@ -1,7 +1,7 @@
 <template>
   <div 
-    class="px-4 py-3 hover:bg-gray-50 flex items-start space-x-3 cursor-pointer"
-    :class="{ 'bg-primary-50': !notification.isRead }"
+    class="px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 flex items-start space-x-3 cursor-pointer"
+    :class="{ 'bg-primary-50 dark:bg-primary-900': !notification.isRead }"
     @click="handleClick"
   >
     <div class="avatar h-10 w-10 flex-shrink-0">
@@ -11,22 +11,22 @@
         alt="User" 
         class="h-full w-full object-cover"
       />
-      <div v-else class="h-full w-full flex items-center justify-center bg-primary-100 text-primary-600">
+      <div v-else class="h-full w-full flex items-center justify-center bg-primary-100 dark:bg-primary-800 text-primary-600 dark:text-primary-400">
         <Icon :name="getIcon(notification.type)" class="h-5 w-5" />
       </div>
     </div>
 
     <div class="flex-1 min-w-0">
-      <p class="text-sm text-gray-900" :class="{ 'font-semibold': !notification.isRead }">
+      <p class="text-sm text-gray-900 dark:text-gray-100" :class="{ 'font-semibold': !notification.isRead }">
         {{ notification.content }}
       </p>
-      <p class="text-xs text-gray-500 mt-1">
+      <p class="text-xs text-gray-500 dark:text-gray-200 dark:text-gray-200 mt-1">
         {{ formatTime(notification.createdAt) }}
       </p>
     </div>
 
     <div v-if="!notification.isRead" class="flex-shrink-0">
-      <div class="h-2 w-2 rounded-full bg-primary-500"></div>
+      <div class="h-2 w-2 rounded-full bg-primary-500 dark:bg-primary-400"></div>
     </div>
   </div>
 </template>

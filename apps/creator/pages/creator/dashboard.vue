@@ -5,8 +5,8 @@
     </Head>
 
     <div>
-      <h1 class="text-2xl font-bold text-gray-900">Dashboard</h1>
-      <p class="mt-1 text-sm text-gray-500">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h1>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
         Overview of your creator stats and recent activity.
       </p>
     </div>
@@ -21,9 +21,9 @@
             </div>
             <div class="ml-5 w-0 flex-1">
               <dl>
-                <dt class="text-sm font-medium text-gray-500 truncate">{{ stat.name }}</dt>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 truncate">{{ stat.name }}</dt>
                 <dd>
-                  <div class="text-lg font-medium text-gray-900">{{ stat.value }}</div>
+                  <div class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ stat.value }}</div>
                 </dd>
               </dl>
             </div>
@@ -34,10 +34,10 @@
                 :name="stat.trend > 0 ? 'lucide:trending-up' : 'lucide:trending-down'" 
                 :class="`flex-shrink-0 mr-1.5 h-5 w-5 ${stat.trend > 0 ? 'text-success-500' : 'text-error-500'}`" 
               />
-              <div :class="stat.trend > 0 ? 'text-success-700' : 'text-error-700'">
+              <div :class="stat.trend > 0 ? 'text-success-700 dark:text-success-400' : 'text-error-700 dark:text-error-400'">
                 {{ Math.abs(stat.trend) }}%
               </div>
-              <div class="ml-1 text-gray-500">from last month</div>
+              <div class="ml-1 text-gray-500 dark:text-gray-200 dark:text-gray-400">from last month</div>
             </div>
           </div>
         </div>
@@ -48,7 +48,7 @@
       <!-- Recent subscriptions -->
       <div class="card">
         <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-          <h3 class="text-lg font-medium leading-6 text-gray-900">Recent Subscriptions</h3>
+          <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">Recent Subscriptions</h3>
         </div>
         <ul class="divide-y divide-gray-200">
           <li v-for="subscription in recentSubscriptions" :key="subscription.id" class="px-4 py-4 sm:px-6">
@@ -61,19 +61,19 @@
                 />
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 truncate">
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                   {{ subscription.userName }}
                 </p>
-                <p class="text-sm text-gray-500">
+                <p class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
                   {{ subscription.plan }} plan · ${{ subscription.amount }}
                 </p>
               </div>
-              <div class="text-sm text-gray-500">
+              <div class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
                 {{ formatDate(subscription.date) }}
               </div>
             </div>
           </li>
-          <li v-if="recentSubscriptions.length === 0" class="px-4 py-6 text-center text-gray-500">
+          <li v-if="recentSubscriptions.length === 0" class="px-4 py-6 text-center text-gray-500 dark:text-gray-200 dark:text-gray-400">
             No recent subscriptions
           </li>
         </ul>
@@ -88,7 +88,7 @@
       <!-- Recent content performance -->
       <div class="card">
         <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-          <h3 class="text-lg font-medium leading-6 text-gray-900">Content Performance</h3>
+          <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">Content Performance</h3>
         </div>
         <ul class="divide-y divide-gray-200">
           <li v-for="post in recentPosts" :key="post.id" class="px-4 py-4 sm:px-6">
@@ -105,10 +105,10 @@
                 </div>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 truncate">
+                <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                   {{ post.title }}
                 </p>
-                <div class="flex items-center text-xs text-gray-500 space-x-2">
+                <div class="flex items-center text-xs text-gray-500 dark:text-gray-200 dark:text-gray-400 space-x-2">
                   <span class="flex items-center">
                     <Icon name="lucide:heart" class="h-3 w-3 mr-1" />
                     {{ post.likes }}
@@ -123,12 +123,12 @@
                   </span>
                 </div>
               </div>
-              <div class="text-sm text-gray-500">
+              <div class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
                 {{ formatDate(post.date) }}
               </div>
             </div>
           </li>
-          <li v-if="recentPosts.length === 0" class="px-4 py-6 text-center text-gray-500">
+          <li v-if="recentPosts.length === 0" class="px-4 py-6 text-center text-gray-500 dark:text-gray-200 dark:text-gray-400">
             No content yet
           </li>
         </ul>
@@ -145,7 +145,7 @@
     <div class="mt-8">
       <div class="card">
         <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center">
-          <h3 class="text-lg font-medium leading-6 text-gray-900">Upcoming Payout</h3>
+          <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">Upcoming Payout</h3>
           <NuxtLink to="/creator/earnings" class="text-sm text-primary-600 hover:text-primary-500 font-medium">
             View earnings details
           </NuxtLink>
@@ -153,31 +153,31 @@
         <div class="px-4 py-5 sm:p-6">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between">
             <div>
-              <p class="text-2xl font-semibold text-gray-900">${{ nextPayout.amount.toFixed(2) }}</p>
-              <p class="mt-1 text-sm text-gray-500">Next payout on {{ formatDate(nextPayout.date) }}</p>
+              <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100">${{ nextPayout.amount.toFixed(2) }}</p>
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">Next payout on {{ formatDate(nextPayout.date) }}</p>
             </div>
             <button class="mt-4 md:mt-0 btn-primary">
               Request Early Payout
             </button>
           </div>
           <div class="mt-6">
-            <h4 class="text-sm font-medium text-gray-500">Payout Breakdown</h4>
+            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">Payout Breakdown</h4>
             <dl class="mt-2 grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
               <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-500">Subscription Revenue</dt>
-                <dd class="mt-1 text-sm text-gray-900">${{ nextPayout.subscriptionRevenue.toFixed(2) }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">Subscription Revenue</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${{ nextPayout.subscriptionRevenue.toFixed(2) }}</dd>
               </div>
               <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-500">Tips</dt>
-                <dd class="mt-1 text-sm text-gray-900">${{ nextPayout.tips.toFixed(2) }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">Tips</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${{ nextPayout.tips.toFixed(2) }}</dd>
               </div>
               <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-500">Pay-per-view</dt>
-                <dd class="mt-1 text-sm text-gray-900">${{ nextPayout.ppv.toFixed(2) }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">Pay-per-view</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${{ nextPayout.ppv.toFixed(2) }}</dd>
               </div>
               <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-500">Platform Fee</dt>
-                <dd class="mt-1 text-sm text-gray-900">-${{ nextPayout.platformFee.toFixed(2) }}</dd>
+                <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">Platform Fee</dt>
+                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">-${{ nextPayout.platformFee.toFixed(2) }}</dd>
               </div>
             </dl>
           </div>

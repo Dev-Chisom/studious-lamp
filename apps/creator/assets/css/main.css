@@ -4,15 +4,21 @@
 
 @layer base {
   html {
-    @apply text-gray-900;
-    -webkit-tap-highlight-color: transparent;
-  }
-  
-  body {
-    @apply antialiased bg-gray-50;
+    font-family: 'Inter', sans-serif;
+    @apply antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  body {
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-semibold;
   }
 
@@ -26,6 +32,15 @@
 
   h3 {
     @apply text-xl md:text-2xl;
+  }
+
+  a {
+    @apply text-primary-600 dark:text-primary-400;
+    transition: color 0.3s;
+  }
+
+  a:hover {
+    @apply text-primary-700 dark:text-primary-300;
   }
 }
 
@@ -48,26 +63,42 @@
 
   .btn-outline {
     @apply btn border-gray-300 bg-white text-gray-700 hover:bg-gray-50 focus:ring-primary-500;
+    @apply dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800;
   }
 
   .form-input {
-    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm;
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm bg-white text-gray-900 placeholder-gray-400;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+  }
+
+  .form-input:focus,
+  .form-input:hover {
+    @apply border-primary-400;
+  }
+
+  .dark .form-input {
+    @apply bg-gray-800 text-gray-100 placeholder-gray-400 border-gray-700;
+  }
+
+  .dark .form-input:focus,
+  .dark .form-input:hover {
+    @apply border-primary-400;
   }
 
   .form-label {
-    @apply block text-sm font-medium text-gray-700 mb-1;
+    @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1;
   }
 
   .form-error {
-    @apply mt-1 text-sm text-error-600;
+    @apply mt-1 text-sm text-error-600 dark:text-error-400;
   }
 
   .card {
-    @apply bg-white shadow-soft rounded-xl overflow-hidden transition-shadow hover:shadow-hover;
+    @apply bg-white dark:bg-gray-900 shadow-soft rounded-xl overflow-hidden transition-shadow hover:shadow-hover;
   }
 
   .avatar {
-    @apply relative inline-block rounded-full overflow-hidden bg-gray-100;
+    @apply relative inline-block rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800;
   }
 
   .badge {
@@ -75,23 +106,64 @@
   }
 
   .badge-primary {
-    @apply bg-primary-100 text-primary-800;
+    @apply bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-100;
   }
 
   .badge-secondary {
-    @apply bg-secondary-100 text-secondary-800;
+    @apply bg-secondary-100 text-secondary-800 dark:bg-secondary-900 dark:text-secondary-100;
   }
 
   .badge-success {
-    @apply bg-success-100 text-success-800;
+    @apply bg-success-100 text-success-800 dark:bg-success-900 dark:text-success-100;
   }
 
   .badge-warning {
-    @apply bg-warning-100 text-warning-800;
+    @apply bg-warning-100 text-warning-800 dark:bg-warning-900 dark:text-warning-100;
   }
 
   .badge-error {
-    @apply bg-error-100 text-error-800;
+    @apply bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-100;
+  }
+
+  select.form-input,
+  .form-select {
+    @apply bg-white text-gray-900 border-gray-300 dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+  }
+
+  select.form-input:focus,
+  select.form-input:hover,
+  .form-select:focus,
+  .form-select:hover {
+    @apply border-primary-400;
+  }
+
+  textarea.form-input {
+    @apply bg-white text-gray-900 border-gray-300 placeholder-gray-400;
+    @apply dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-400 dark:border-gray-700;
+    transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+  }
+
+  textarea.form-input:focus,
+  textarea.form-input:hover {
+    @apply border-primary-400;
+  }
+
+  .dark textarea.form-input:focus,
+  .dark textarea.form-input:hover {
+    @apply border-primary-400;
+  }
+
+  .modal {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-xl transition-all;
+  }
+
+  .modal-header {
+    @apply border-b border-gray-200 dark:border-gray-700 px-4 py-3;
+  }
+
+  .modal-footer {
+    @apply border-t border-gray-200 dark:border-gray-700 px-4 py-3 flex justify-end space-x-2;
   }
 }
 
@@ -113,6 +185,7 @@
 .page-leave-active {
   transition: all 0.3s;
 }
+
 .page-enter-from,
 .page-leave-to {
   opacity: 0;

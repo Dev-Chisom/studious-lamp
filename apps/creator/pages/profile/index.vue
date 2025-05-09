@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-800">
     <!-- Cover image -->
     <div class="h-64 bg-gray-200 relative">
       <img
@@ -26,7 +26,7 @@
                 />
                 <div
                   v-else
-                  class="h-full w-full flex items-center justify-center bg-primary-100 text-primary-600 text-4xl font-medium"
+                  class="h-full w-full flex items-center justify-center bg-primary-100 text-primary-600 text-4xl font-medium dark:bg-primary-900 dark:text-primary-200"
                 >
                   {{ userInitials }}
                 </div>
@@ -34,14 +34,14 @@
             </div>
             <div class="mt-6 sm:flex-1 sm:min-w-0 sm:flex sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
               <div class="sm:hidden md:block mt-6 min-w-0 flex-1">
-                <h1 class="text-2xl font-bold text-white truncate">
+                <h1 class="text-2xl font-bold text-white dark:text-gray-100 truncate">
                   {{ user.displayName }}
                 </h1>
               </div>
               <div class="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
                 <button
                   v-if="isCurrentUser"
-                  class="btn-outline border-white text-white hover:bg-white/10"
+                  class="btn-outline border-white text-white hover:bg-white dark:bg-gray-900/10"
                   @click="navigateTo('/settings')"
                 >
                   <Icon name="lucide:settings" class="h-5 w-5 mr-2" />
@@ -62,7 +62,7 @@
             </div>
           </div>
           <div class="hidden sm:block md:hidden mt-6 min-w-0 flex-1">
-            <h1 class="text-2xl font-bold text-gray-900 truncate">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">
               {{ user.displayName }}
             </h1>
           </div>
@@ -74,12 +74,12 @@
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <!-- Sidebar -->
           <div class="lg:col-span-1">
-            <div class="bg-white shadow-sm rounded-lg p-6">
+            <div class="bg-white dark:bg-gray-900 shadow-sm rounded-lg p-6">
               <div class="space-y-6">
                 <!-- Bio -->
                 <div>
-                  <h2 class="text-lg font-medium text-gray-900">About</h2>
-                  <div class="mt-2 text-sm text-gray-500">
+                  <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">About</h2>
+                  <div class="mt-2 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
                     {{ user.bio || 'No bio yet.' }}
                   </div>
                 </div>
@@ -88,14 +88,14 @@
                 <div class="border-t border-gray-200 pt-6">
                   <dl class="grid grid-cols-2 gap-4">
                     <div>
-                      <dt class="text-sm font-medium text-gray-500">Posts</dt>
-                      <dd class="mt-1 text-xl font-semibold text-gray-900">
+                      <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">Posts</dt>
+                      <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
                         {{ user.stats.posts }}
                       </dd>
                     </div>
                     <div>
-                      <dt class="text-sm font-medium text-gray-500">Followers</dt>
-                      <dd class="mt-1 text-xl font-semibold text-gray-900">
+                      <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">Followers</dt>
+                      <dd class="mt-1 text-xl font-semibold text-gray-900 dark:text-gray-100">
                         {{ user.stats.followers }}
                       </dd>
                     </div>
@@ -104,7 +104,7 @@
 
                 <!-- Social links -->
                 <div class="border-t border-gray-200 pt-6">
-                  <h2 class="text-sm font-medium text-gray-500">Social</h2>
+                  <h2 class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">Social</h2>
                   <div class="mt-4 space-y-3">
                     <a
                       v-for="social in user.social"
@@ -112,7 +112,7 @@
                       :href="social.url"
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="flex items-center text-gray-700 hover:text-primary-600"
+                      class="flex items-center text-gray-700 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400"
                     >
                       <Icon :name="`lucide:${social.icon}`" class="h-5 w-5 mr-2" />
                       <span class="text-sm">{{ social.handle }}</span>
@@ -122,7 +122,7 @@
 
                 <!-- Joined date -->
                 <div class="border-t border-gray-200 pt-6">
-                  <div class="flex items-center text-sm text-gray-500">
+                  <div class="flex items-center text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
                     <Icon name="lucide:calendar" class="h-5 w-5 mr-2" />
                     Joined {{ formatDate(user.joinedAt) }}
                   </div>
@@ -134,7 +134,7 @@
           <!-- Main content -->
           <div class="lg:col-span-2 space-y-6">
             <!-- Create post -->
-            <div v-if="isCurrentUser" class="bg-white shadow-sm rounded-lg p-6">
+            <div v-if="isCurrentUser" class="bg-white dark:bg-gray-900 shadow-sm rounded-lg p-6">
               <div class="flex space-x-3">
                 <div class="avatar h-10 w-10">
                   <img
@@ -145,7 +145,7 @@
                   />
                   <div
                     v-else
-                    class="h-full w-full flex items-center justify-center bg-primary-100 text-primary-600 text-lg font-medium"
+                    class="h-full w-full flex items-center justify-center bg-primary-100 text-primary-600 text-lg font-medium dark:bg-primary-900 dark:text-primary-200"
                   >
                     {{ userInitials }}
                   </div>
@@ -159,13 +159,13 @@
                   ></textarea>
                   <div class="mt-3 flex items-center justify-between">
                     <div class="flex items-center space-x-2">
-                      <button class="p-2 text-gray-400 hover:text-gray-500">
+                      <button class="p-2 text-gray-400 hover:text-gray-500 dark:text-gray-200">
                         <Icon name="lucide:image" class="h-5 w-5" />
                       </button>
-                      <button class="p-2 text-gray-400 hover:text-gray-500">
+                      <button class="p-2 text-gray-400 hover:text-gray-500 dark:text-gray-200">
                         <Icon name="lucide:video" class="h-5 w-5" />
                       </button>
-                      <button class="p-2 text-gray-400 hover:text-gray-500">
+                      <button class="p-2 text-gray-400 hover:text-gray-500 dark:text-gray-200">
                         <Icon name="lucide:link" class="h-5 w-5" />
                       </button>
                     </div>
@@ -186,7 +186,7 @@
               <div
                 v-for="post in posts"
                 :key="post.id"
-                class="bg-white shadow-sm rounded-lg overflow-hidden"
+                class="bg-white dark:bg-gray-900 shadow-sm rounded-lg overflow-hidden"
               >
                 <!-- Post header -->
                 <div class="p-6">
@@ -199,20 +199,20 @@
                       />
                     </div>
                     <div class="min-w-0 flex-1">
-                      <p class="text-sm font-medium text-gray-900">
+                      <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
                         {{ user.displayName }}
                       </p>
-                      <p class="text-sm text-gray-500">
+                      <p class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
                         {{ formatDate(post.createdAt) }}
                       </p>
                     </div>
                     <div class="flex-shrink-0">
-                      <button class="text-gray-400 hover:text-gray-500">
+                      <button class="text-gray-400 hover:text-gray-500 dark:text-gray-200">
                         <Icon name="lucide:more-vertical" class="h-5 w-5" />
                       </button>
                     </div>
                   </div>
-                  <p class="mt-4 text-gray-900">{{ post.content }}</p>
+                  <p class="mt-4 text-gray-900 dark:text-gray-100">{{ post.content }}</p>
                 </div>
 
                 <!-- Post media -->
@@ -231,7 +231,7 @@
                   <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                       <button
-                        class="flex items-center text-gray-500 hover:text-primary-600"
+                        class="flex items-center text-gray-500 dark:text-gray-200 hover:text-primary-600"
                         @click="toggleLike(post)"
                       >
                         <Icon
@@ -242,11 +242,11 @@
                         />
                         <span class="text-sm">{{ post.likes }}</span>
                       </button>
-                      <button class="flex items-center text-gray-500 hover:text-gray-600">
+                      <button class="flex items-center text-gray-500 dark:text-gray-200 hover:text-gray-600">
                         <Icon name="lucide:message-circle" class="h-5 w-5 mr-1" />
                         <span class="text-sm">{{ post.comments }}</span>
                       </button>
-                      <button class="flex items-center text-gray-500 hover:text-gray-600">
+                      <button class="flex items-center text-gray-500 dark:text-gray-200 hover:text-gray-600">
                         <Icon name="lucide:share" class="h-5 w-5 mr-1" />
                         <span class="text-sm">Share</span>
                       </button>
@@ -266,11 +266,11 @@
             <!-- Empty state -->
             <div
               v-else
-              class="bg-white shadow-sm rounded-lg p-8 text-center"
+              class="bg-white dark:bg-gray-900 shadow-sm rounded-lg p-8 text-center"
             >
               <Icon name="lucide:file-text" class="mx-auto h-12 w-12 text-gray-400" />
-              <h3 class="mt-2 text-sm font-medium text-gray-900">No posts yet</h3>
-              <p class="mt-1 text-sm text-gray-500">
+              <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No posts yet</h3>
+              <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
                 {{ isCurrentUser ? 'Get started by creating your first post.' : 'This user hasn\'t posted anything yet.' }}
               </p>
               <div v-if="isCurrentUser" class="mt-6">

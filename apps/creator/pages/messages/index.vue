@@ -3,7 +3,7 @@
     <div class="max-w-6xl mx-auto">
       <h1 class="text-2xl font-bold mb-6">Messages</h1>
       
-      <div class="bg-white rounded-lg shadow-sm">
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
         <div class="grid grid-cols-1 md:grid-cols-3">
           <!-- Conversations list -->
           <div class="border-r border-gray-200">
@@ -36,11 +36,11 @@
                       <p class="text-sm font-medium text-gray-900 truncate">
                         {{ chat.user.name }}
                       </p>
-                      <p class="text-xs text-gray-500">
+                      <p class="text-xs text-gray-500 dark:text-gray-200">
                         {{ formatTime(chat.lastMessage.timestamp) }}
                       </p>
                     </div>
-                    <p class="text-sm text-gray-500 truncate">
+                    <p class="text-sm text-gray-500 dark:text-gray-200 truncate">
                       {{ chat.lastMessage.content }}
                     </p>
                   </div>
@@ -52,7 +52,7 @@
                 </div>
               </div>
               
-              <div v-if="filteredChats.length === 0" class="p-8 text-center text-gray-500">
+              <div v-if="filteredChats.length === 0" class="p-8 text-center text-gray-500 dark:text-gray-200">
                 No messages found
               </div>
             </div>
@@ -73,7 +73,7 @@
                   </div>
                   <div>
                     <h2 class="text-lg font-medium">{{ selectedChat.user.name }}</h2>
-                    <p class="text-sm text-gray-500">
+                    <p class="text-sm text-gray-500 dark:text-gray-200">
                       {{ selectedChat.user.isOnline ? 'Online' : 'Offline' }}
                     </p>
                   </div>
@@ -135,7 +135,7 @@
                 <!-- Typing indicator -->
                 <div
                   v-if="selectedChat.isTyping"
-                  class="flex items-center space-x-2 text-gray-500"
+                  class="flex items-center space-x-2 text-gray-500 dark:text-gray-200"
                 >
                   <div class="flex space-x-1">
                     <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
@@ -204,14 +204,14 @@
                       
                       <button
                         type="button"
-                        class="p-2 text-gray-500 hover:text-primary-600 hover:bg-gray-100 rounded-full"
+                        class="p-2 text-gray-500 dark:text-gray-200 hover:text-primary-600 hover:bg-gray-100 rounded-full"
                         @click="$refs.imageInput.click()"
                       >
                         <Icon name="lucide:image" class="h-5 w-5" />
                       </button>
                       <button
                         type="button"
-                        class="p-2 text-gray-500 hover:text-primary-600 hover:bg-gray-100 rounded-full"
+                        class="p-2 text-gray-500 dark:text-gray-200 hover:text-primary-600 hover:bg-gray-100 rounded-full"
                         @click="$refs.videoInput.click()"
                       >
                         <Icon name="lucide:video" class="h-5 w-5" />
@@ -226,7 +226,7 @@
               </div>
             </template>
 
-            <div v-else class="flex-1 flex items-center justify-center text-gray-500">
+            <div v-else class="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-200">
               <div class="text-center">
                 <Icon name="lucide:message-square" class="h-12 w-12 mx-auto mb-2" />
                 <p>Select a conversation to start messaging</p>
