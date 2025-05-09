@@ -42,9 +42,9 @@
               />
               <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
             </label>
-            <a href="https://studious-lamp-creator.vercel.app/auth/forgot-password" target="_blank" class="text-sm text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
+            <NuxtLink to="https://studious-lamp-creator.vercel.app/auth/forgot-password" class="text-sm text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
               Forgot password?
-            </a>
+            </NuxtLink>
           </div>
 
           <button

@@ -58,9 +58,9 @@
       </form>
 
       <div v-if="resetComplete" class="mt-6">
-        <a href="https://studious-lamp-creator.vercel.app/auth/login" target="_blank" class="btn-primary w-full">
+        <NuxtLink to="https://studious-lamp-creator.vercel.app/auth/login" class="btn-primary w-full">
           Go to Login
-        </a>
+        </NuxtLink>
       </div>
     </div>
   </div>

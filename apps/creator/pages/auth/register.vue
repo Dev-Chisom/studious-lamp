@@ -64,11 +64,11 @@
             <div class="ml-3 text-sm">
               <label for="terms" class="text-gray-600 dark:text-gray-400">
                 I agree to the
-                <a href="/terms" target="_blank" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
+                <a href="https://studious-lamp-web.vercel.app/terms" target="_blank" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
                   Terms of Service
                 </a>
                and
-                <a href="/privacy" target="_blank" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
+                <a href="https://studious-lamp-web.vercel.app/privacy" target="_blank" class="text-primary-600 hover:text-primary-500 dark:text-primary-400 dark:hover:text-primary-300">
                   Privacy Policy
                 </a>
              </label>
