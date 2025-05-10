@@ -252,7 +252,10 @@
             <NuxtLink to="/explore" class="btn bg-white text-primary-600 hover:bg-gray-100">
               Explore Creators
             </NuxtLink>
-            <NuxtLink to="/creators/apply" class="btn-outline border-white text-white hover:bg-white/10">
+            <NuxtLink
+              to="/creators/apply"
+              class="btn bg-primary-600 text-white hover:bg-primary-700 dark:bg-primary-400 dark:text-gray-900 dark:hover:bg-primary-500"
+            >
               Become a Creator
             </NuxtLink>
           </div>
