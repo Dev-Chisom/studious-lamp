@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-800">
+  <div class="min-h-screen max-w-6xl mx-auto bg-gray-50 dark:bg-gray-800">
     <!-- Cover image -->
     <div class="h-64 bg-gray-200 relative">
       <img
@@ -34,7 +34,7 @@
             </div>
             <div class="mt-6 sm:flex-1 sm:min-w-0 sm:flex sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
               <div class="sm:hidden md:block mt-6 min-w-0 flex-1">
-                <h1 class="text-2xl font-bold text-white dark:text-gray-100 truncate">
+                <h1 class="text-2xl font-bold text-gray-800 mt-2 dark:text-gray-100 truncate">
                   {{ user.displayName }}
                 </h1>
               </div>

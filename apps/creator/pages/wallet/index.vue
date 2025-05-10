@@ -1,5 +1,11 @@
 <template>
-  <div class="max-w-4xl mx-auto">
+  <div class="max-w-6xl mx-auto">
+    <Head>
+      <Title>Subscribers - Creator Dashboard</Title>
+    </Head>
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Wallet</h1>
+    </div>
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-soft p-6 mb-8">
       <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Wallet Balance</h1>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="max-w-6xl mx-auto">
     <Head>
       <Title>Posts - Creator Dashboard</Title>
     </Head>
@@ -7,7 +7,7 @@
     <div class="sm:flex sm:items-center sm:justify-between mb-6">
       <div>
         <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Posts</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">
           Manage and create new posts for your subscribers.
         </p>
       </div>
@@ -55,13 +55,13 @@
     <div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
       <div v-if="loading" class="p-8 text-center">
         <Icon name="lucide:loader" class="h-8 w-8 mx-auto animate-spin text-primary-500" />
-        <p class="mt-2 text-gray-500 dark:text-gray-200 dark:text-gray-400">Loading posts...</p>
+        <p class="mt-2 text-gray-500 dark:text-gray-300">Loading posts...</p>
       </div>
 
       <div v-else-if="filteredPosts.length === 0" class="p-8 text-center">
         <Icon name="lucide:file-x" class="h-12 w-12 mx-auto text-gray-400" />
         <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No posts found</h3>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-300">
           {{ filters.search ? 'Try adjusting your search or filters.' : 'Get started by creating your first post.' }}
         </p>
         <div class="mt-6">
@@ -74,8 +74,8 @@
 
       <div v-else>
         <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-800">
               <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider">
                   Post
@@ -97,8 +97,8 @@
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200">
-              <tr v-for="post in filteredPosts" :key="post.id" class="hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors duration-200 p-4 rounded-md">
+            <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+              <tr v-for="post in filteredPosts.slice(startIndex, endIndex)" :key="post.id" class="hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-100 transition-colors duration-200 p-4 rounded-md">
                 <td class="px-6 py-4">
                   <div class="flex items-center">
                     <div class="h-10 w-10 flex-shrink-0">
@@ -108,7 +108,7 @@
                         :alt="post.title"
                         class="h-10 w-10 rounded object-cover"
                       />
-                      <div v-else class="h-10 w-10 rounded bg-gray-100 flex items-center justify-center">
+                      <div v-else class="h-10 w-10 rounded bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                         <Icon name="lucide:file" class="h-5 w-5 text-gray-400 dark:text-gray-100" />
                       </div>
                     </div>
@@ -116,7 +116,7 @@
                       <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
                         {{ post.title }}
                       </div>
-                      <div class="text-sm text-gray-500 dark:text-gray-200">
+                      <div class="text-sm text-gray-500 dark:text-gray-300">
                         {{ truncateText(post.content, 50) }}
                       </div>
                     </div>
@@ -133,12 +133,12 @@
                   >
                     {{ post.visibility === 'ppv' ? 'Pay-per-view' : post.visibility }}
                   </span>
-                  <div v-if="post.price" class="mt-1 text-sm text-gray-500 dark:text-gray-200">
+                  <div v-if="post.price" class="mt-1 text-sm text-gray-500 dark:text-gray-300">
                     ${{ post.price }}
                   </div>
                 </td>
                 <td class="px-6 py-4">
-                  <div class="text-sm text-gray-900 space-y-1">
+                  <div class="text-sm text-gray-900 dark:text-gray-100 space-y-1">
                     <div class="flex items-center">
                       <Icon name="lucide:eye" class="h-4 w-4 text-gray-400 dark:text-gray-100 mr-1" />
                       <span class="text-gray-400 dark:text-gray-100">{{ post.views }} views</span>
@@ -154,24 +154,24 @@
                   </div>
                 </td>
                 <td class="px-6 py-4">
-                  <div class="text-sm text-gray-900 dark:text-gray-100"">${{ post.earnings.toFixed(2) }}</div>
-                  <div class="text-xs text-gray-500 dark:text-gray-100">
+                  <div class="text-sm text-gray-900 dark:text-gray-100">${{ post.earnings.toFixed(2) }}</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-300">
                     {{ post.purchases }} purchases
                   </div>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-200">
+                <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
                   {{ formatDate(post.createdAt) }}
                 </td>
                 <td class="px-6 py-4 text-right text-sm font-medium">
                   <div class="flex justify-end space-x-2">
                     <button
-                      class="text-gray-400 hover:text-gray-500 dark:text-gray-200"
+                      class="text-gray-400 hover:text-gray-500 dark:text-gray-200 dark:hover:text-white"
                       @click="editPost(post.id)"
                     >
                       <Icon name="lucide:pencil" class="h-5 w-5" />
                     </button>
                     <button
-                      class="text-gray-400 hover:text-error-500"
+                      class="text-gray-400 hover:text-error-500 dark:text-gray-200 dark:hover:text-error-400"
                       @click="confirmDelete(post.id)"
                     >
                       <Icon name="lucide:trash-2" class="h-5 w-5" />
@@ -184,18 +184,18 @@
         </div>
 
         <!-- Pagination -->
-        <div class="bg-white dark:bg-gray-900 px-4 py-3 border-t border-gray-200 sm:px-6">
+        <div class="bg-white dark:bg-gray-900 px-4 py-3 border-t border-gray-200 dark:border-gray-700 sm:px-6">
           <div class="flex items-center justify-between">
             <div class="flex-1 flex justify-between sm:hidden">
               <button
-                class="btn-outline"
+                class="btn-outline dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
                 :disabled="currentPage === 1"
                 @click="currentPage--"
               >
                 Previous
               </button>
               <button
-                class="btn-outline"
+                class="btn-outline dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700"
                 :disabled="currentPage === totalPages"
                 @click="currentPage++"
               >
@@ -204,7 +204,7 @@
             </div>
             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
               <div>
-                <p class="text-sm text-gray-700">
+                <p class="text-sm text-gray-700 dark:text-gray-300">
                   Showing
                   <span class="font-medium">{{ startIndex + 1 }}</span>
                   to
@@ -217,7 +217,7 @@
               <div>
                 <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
                   <button
-                    class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white dark:bg-gray-900 text-sm font-medium text-gray-500 dark:text-gray-200 hover:bg-gray-50"
+                    class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm font-medium text-gray-500 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
                     :disabled="currentPage === 1"
                     @click="currentPage--"
                   >
@@ -226,14 +226,14 @@
                   <button
                     v-for="page in displayedPages"
                     :key="page"
-                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white dark:bg-gray-900 text-sm font-medium"
-                    :class="page === currentPage ? 'z-10 bg-primary-50 border-primary-500 text-primary-600' : 'text-gray-500 dark:text-gray-200 hover:bg-gray-50'"
+                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm font-medium"
+                    :class="page === currentPage ? 'z-10 bg-primary-50 dark:bg-primary-900/40 border-primary-500 text-primary-600 dark:text-primary-400' : 'text-gray-500 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800'"
                     @click="currentPage = page"
                   >
                     {{ page }}
                   </button>
                   <button
-                    class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white dark:bg-gray-900 text-sm font-medium text-gray-500 dark:text-gray-200 hover:bg-gray-50"
+                    class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-sm font-medium text-gray-500 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
                     :disabled="currentPage === totalPages"
                     @click="currentPage++"
                   >
@@ -248,16 +248,16 @@
     </div>
 
     <!-- Delete confirmation modal -->
-    <div v-if="showDeleteModal" class="fixed inset-0 z-50 overflow-y-auto">
+    <div v-if="showDeleteModal" class="fixed inset-0 overflow-y-auto" style="z-index: 400">
       <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity">
-          <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+          <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
         </div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
         <div class="inline-block align-bottom bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
           <div class="bg-white dark:bg-gray-900 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div class="sm:flex sm:items-start">
-              <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-error-100 sm:mx-0 sm:h-10 sm:w-10">
+              <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-error-100 dark:bg-error-900 sm:mx-0 sm:h-10 sm:w-10">
                 <Icon name="lucide:alert-triangle" class="h-6 w-6 text-error-600" />
               </div>
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
@@ -265,14 +265,14 @@
                   Delete Post
                 </h3>
                 <div class="mt-2">
-                  <p class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
+                  <p class="text-sm text-gray-500 dark:text-gray-300">
                     Are you sure you want to delete this post? This action cannot be undone.
                   </p>
                 </div>
               </div>
             </div>
           </div>
-          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <div class="bg-gray-50 dark:bg-gray-800 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
             <button
               type="button"
               class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-error-600 text-base font-medium text-white hover:bg-error-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error-500 sm:ml-3 sm:w-auto sm:text-sm"
@@ -282,7 +282,7 @@
             </button>
             <button
               type="button"
-              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white dark:bg-gray-900 text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-700 shadow-sm px-4 py-2 bg-white dark:bg-gray-900 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
               @click="showDeleteModal = false"
             >
               Cancel

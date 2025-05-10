@@ -1,6 +1,6 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <div class="max-w-6xl mx-auto">
+  <div class="container mx-auto max-w-6xl">
+    <div>
       <h1 class="text-2xl font-bold mb-6 dark:text-white">Messages</h1>
       
       <div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm">

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="max-w-6xl mx-auto">
     <Head>
       <Title>Earnings - Creator Dashboard</Title>
     </Head>

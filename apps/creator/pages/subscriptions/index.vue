@@ -1,6 +1,6 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <div class="max-w-5xl mx-auto">
+  <div class="container mx-auto max-w-6xl">
+    <div>
       <h1 class="text-2xl font-bold mb-6">Your Subscriptions</h1>
 
       <!-- Active subscriptions -->
@@ -23,7 +23,7 @@
           </NuxtLink>
         </div>
         
-        <div v-else class="grid gap-6 md:grid-cols-2">
+        <div v-else class="grid gap-6 md:grid-cols-3">
           <div
             v-for="subscription in activeSubscriptions"
             :key="subscription.id"
