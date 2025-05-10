@@ -231,13 +231,6 @@
 import { ref, reactive } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 
-definePageMeta({
-  middleware: ['auth'],
-  meta: {
-    requiresAuth: true
-  }
-});
-
 const authStore = useAuthStore();
 const toast = inject('toast');
 const router = useRouter();
