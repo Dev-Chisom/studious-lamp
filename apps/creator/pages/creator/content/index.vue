@@ -223,6 +223,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useContentStore } from '~/stores/content';
+import { toast } from 'vue3-toastify'
 
 definePageMeta({
   layout: 'creator',
@@ -234,7 +235,6 @@ definePageMeta({
 });
 
 const contentStore = useContentStore();
-const toast = inject('toast');
 
 // State
 const loading = ref(true);

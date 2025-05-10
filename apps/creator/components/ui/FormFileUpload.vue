@@ -20,19 +20,36 @@
       @drop.prevent="onDrop"
     >
       <div class="space-y-1 text-center">
-        <div v-if="previewUrls.length > 0" class="flex justify-center">
-          <div v-for="(url, index) in previewUrls" :key="index" class="relative w-20 h-20 m-1">
+        <div v-if="previewUrls.length > 0" class="flex justify-center flex-wrap">
+          <div v-for="(preview, index) in previewUrls" :key="index" class="relative w-20 h-20 m-1">
+            <!-- Image Preview -->
             <img
-              v-if="isImage(url)"
-              :src="url"
+              v-if="preview.type === 'image'"
+              :src="preview.url"
               alt="Preview"
-              class="object-cover w-full h-full rounded-md"
+              class="object-cover w-full h-full rounded-md cursor-pointer"
+              @click.stop="openPreview(index)"
             />
+            <!-- Video Preview -->
+            <div
+              v-else-if="preview.type === 'video'"
+              class="relative w-full h-full rounded-md cursor-pointer bg-gray-100 dark:bg-gray-800"
+              @click.stop="openPreview(index)"
+            >
+              <video
+                :src="preview.url"
+                class="w-full h-full object-cover rounded-md"
+              ></video>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <Icon name="lucide:play" class="h-8 w-8 text-white bg-black/50 rounded-full p-1" />
+              </div>
+            </div>
+            <!-- Other File Preview -->
             <div v-else class="flex items-center justify-center w-full h-full bg-gray-100 dark:bg-gray-800 rounded-md">
-              <Icon name="lucide:file" class="h-8 w-8 text-gray-400 dark:text-gray-500 dark:text-gray-200" />
+              <Icon name="lucide:file" class="h-8 w-8 text-gray-400 dark:text-gray-500" />
             </div>
             <button
-              @click.prevent="removeFile(index)"
+              @click.stop="removeFile(index)"
               class="absolute -top-2 -right-2 bg-error-100 dark:bg-error-700 rounded-full p-1 text-error-600 dark:text-error-200 hover:bg-error-200 dark:hover:bg-error-600"
             >
               <Icon name="lucide:x" class="h-3 w-3" />
@@ -59,18 +76,30 @@
           </label>
           <p class="pl-1">or drag and drop</p>
         </div>
-        <p class="text-xs text-gray-500 dark:text-gray-200 dark:text-gray-400">
+        <p class="text-xs text-gray-500 dark:text-gray-400">
           {{ acceptText }}
         </p>
       </div>
     </div>
     
     <p v-if="error" class="form-error text-error-600 dark:text-error-400">{{ error }}</p>
+
+    <!-- Media Preview Modal -->
+    <Teleport to="body">
+      <MediaPreviewModal
+        :is-open="previewModal.isOpen"
+        :media-items="previewModal.items"
+        :current-index="previewModal.currentIndex"
+        @close="closePreview"
+        @update:current-index="previewModal.currentIndex = $event"
+      />
+    </Teleport>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
+import MediaPreviewModal from './MediaPreviewModal.vue';
 
 const props = defineProps({
   modelValue: {
@@ -83,7 +112,7 @@ const props = defineProps({
   },
   accept: {
     type: String,
-    default: 'image/*'
+    default: 'image/*,video/*'
   },
   multiple: {
     type: Boolean,
@@ -113,6 +142,13 @@ const isDragging = ref(false);
 const files = ref([]);
 const previewUrls = ref([]);
 
+// Preview modal state
+const previewModal = ref({
+  isOpen: false,
+  items: [],
+  currentIndex: 0
+});
+
 const acceptText = computed(() => {
   if (props.accept === 'image/*') {
     return `PNG, JPG, GIF up to ${formatSize(props.maxSize)}`;
@@ -131,8 +167,12 @@ function formatSize(bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
-function isImage(url) {
-  return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+function isImage(file) {
+  return file.type.startsWith('image/');
+}
+
+function isVideo(file) {
+  return file.type.startsWith('video/');
 }
 
 function onFileChange(event) {
@@ -197,7 +237,10 @@ function createPreviews(newFiles, append = false) {
   newFiles.forEach(file => {
     const reader = new FileReader();
     reader.onload = (e) => {
-      previewUrls.value.push(e.target.result);
+      previewUrls.value.push({
+        type: isImage(file) ? 'image' : isVideo(file) ? 'video' : 'file',
+        url: e.target.result
+      });
     };
     reader.readAsDataURL(file);
   });
@@ -207,5 +250,17 @@ function removeFile(index) {
   files.value.splice(index, 1);
   previewUrls.value.splice(index, 1);
   emit('update:modelValue', files.value);
+}
+
+function openPreview(index) {
+  previewModal.value = {
+    isOpen: true,
+    items: previewUrls.value,
+    currentIndex: index
+  };
+}
+
+function closePreview() {
+  previewModal.value.isOpen = false;
 }
 </script>

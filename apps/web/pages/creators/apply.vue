@@ -231,9 +231,9 @@
 import { ref, reactive } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import FormInput from '~/components/FormInput.vue'
+import { toast } from 'vue3-toastify'
 
 const authStore = useAuthStore();
-const toast = inject('toast');
 const router = useRouter();
 
 const loading = ref(false);

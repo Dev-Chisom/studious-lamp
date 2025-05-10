@@ -206,12 +206,12 @@ import { computed, onMounted } from 'vue';
 import { useSubscriptionStore } from '~/stores/subscription';
 import { useContentStore } from '~/stores/content';
 import { useAuthStore } from '~/stores/auth';
+import { toast } from 'vue3-toastify'
 
 const route = useRoute();
 const subscriptionStore = useSubscriptionStore();
 const contentStore = useContentStore();
 const authStore = useAuthStore();
-const toast = inject('toast');
 
 // Fetch creator data
 onMounted(async () => {

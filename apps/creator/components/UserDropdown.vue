@@ -113,7 +113,6 @@ function logout() {
 
 // Close dropdown when clicking outside
 const closeDropdown = (e) => {
-  console.log('check here')
   if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
     isOpen.value = false;
   }

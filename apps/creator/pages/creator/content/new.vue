@@ -201,6 +201,7 @@
 import { ref, reactive, computed } from 'vue';
 import { useContentStore } from '~/stores/content';
 import FormFileUpload from '@/components/ui/FormFileUpload.vue'
+import { toast } from 'vue3-toastify'
 
 definePageMeta({
   layout: 'creator',
@@ -213,7 +214,6 @@ definePageMeta({
 
 const router = useRouter();
 const contentStore = useContentStore();
-const toast = inject('toast');
 
 // Form state
 const post = reactive({

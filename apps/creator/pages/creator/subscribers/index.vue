@@ -294,6 +294,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { toast } from 'vue3-toastify'
 
 definePageMeta({
   layout: 'creator',
@@ -303,8 +304,6 @@ definePageMeta({
     requiresCreator: true
   }
 });
-
-const toast = inject('toast');
 
 // Stats data
 const stats = [

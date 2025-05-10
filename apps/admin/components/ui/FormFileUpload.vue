@@ -26,7 +26,8 @@
               v-if="isImage(url)"
               :src="url"
               alt="Preview"
-              class="object-cover w-full h-full rounded-md"
+              class="object-cover w-full h-full rounded-md cursor-pointer"
+              @click="openPreview(index)"
             />
             <div v-else class="flex items-center justify-center w-full h-full bg-gray-100 rounded-md">
               <Icon name="lucide:file" class="h-8 w-8 text-gray-400" />
@@ -66,11 +67,21 @@
     </div>
     
     <p v-if="error" class="form-error">{{ error }}</p>
+
+    <!-- Media Preview Modal -->
+    <MediaPreviewModal
+      :is-open="previewModal.isOpen"
+      :media-items="previewModal.items"
+      :current-index="previewModal.currentIndex"
+      @close="closePreview"
+      @update:current-index="previewModal.currentIndex = $event"
+    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
+import MediaPreviewModal from './MediaPreviewModal.vue';
 
 const props = defineProps({
   modelValue: {
@@ -112,6 +123,13 @@ const emit = defineEmits(['update:modelValue', 'error']);
 const isDragging = ref(false);
 const files = ref([]);
 const previewUrls = ref([]);
+
+// Preview modal state
+const previewModal = ref({
+  isOpen: false,
+  items: [],
+  currentIndex: 0
+});
 
 const acceptText = computed(() => {
   if (props.accept === 'image/*') {
@@ -207,5 +225,21 @@ function removeFile(index) {
   files.value.splice(index, 1);
   previewUrls.value.splice(index, 1);
   emit('update:modelValue', files.value);
+}
+
+function openPreview(index) {
+  console.log('preview')
+  previewModal.value = {
+    isOpen: true,
+    items: previewUrls.value.map(url => ({
+      type: isImage(url) ? 'image' : 'file',
+      url
+    })),
+    currentIndex: index
+  };
+}
+
+function closePreview() {
+  previewModal.value.isOpen = false;
 }
 </script>

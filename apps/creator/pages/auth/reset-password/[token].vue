@@ -70,6 +70,7 @@
 import { ref, reactive } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import FormInput from '@/components/ui/FormInput.vue'
+import { toast } from 'vue3-toastify'
 
 definePageMeta({
   layout: 'auth'
@@ -77,7 +78,6 @@ definePageMeta({
 
 const route = useRoute();
 const authStore = useAuthStore();
-const toast = inject('toast');
 
 const token = route.params.token;
 const password = ref('');

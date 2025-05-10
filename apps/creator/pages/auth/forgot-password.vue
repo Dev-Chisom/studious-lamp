@@ -70,13 +70,13 @@
 import { ref, reactive } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import FormInput from '@/components/ui/FormInput.vue'
+import { toast } from 'vue3-toastify'
 
 definePageMeta({
   layout: 'auth'
 });
 
 const authStore = useAuthStore();
-const toast = inject('toast');
 
 const email = ref('');
 const errors = reactive({

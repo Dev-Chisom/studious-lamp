@@ -213,6 +213,7 @@
 import { ref, computed } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import FormInput from '@/components/ui/FormInput.vue'
+import { toast } from 'vue3-toastify'
 
 definePageMeta({
   middleware: ['auth'],
@@ -223,7 +224,6 @@ definePageMeta({
 });
 
 const authStore = useAuthStore();
-const toast = inject('toast');
 
 const loading = ref(false);
 const profileImage = ref(authStore.user?.profileImage || '');

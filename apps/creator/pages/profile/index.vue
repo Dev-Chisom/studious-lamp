@@ -290,13 +290,13 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useAuthStore } from '~/stores/auth';
+import { toast } from 'vue3-toastify'
 
 definePageMeta({
   layout: 'creator',
 });
 
 const authStore = useAuthStore();
-const toast = inject('toast');
 
 // Mock user data
 const user = ref({
