@@ -16,29 +16,30 @@
       </div>
       <!-- Suggestions Panel -->
       <div class="hidden lg:block">
-        <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-800 p-4 w-full max-w-xs mx-auto">
-          <div class="mb-4">
-            <input
-              v-model="suggestionSearch"
-              type="text"
-              placeholder="Search posts"
-              class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-primary-500 focus:ring-primary-500 px-3 py-2 text-sm"
-            />
-          </div>
-          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">SUGGESTIONS</h3>
-          <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
-            <div
-              v-for="user in filteredSuggestions"
-              :key="user.id"
-              class="flex items-center bg-gray-50 dark:bg-gray-800 rounded-lg p-2 hover:bg-primary-50 dark:hover:bg-primary-900/40 transition cursor-pointer"
-            >
-              <img :src="user.avatar" :alt="user.name" class="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-gray-700">
-              <div class="ml-3 flex-1 min-w-0">
-                <div class="flex items-center space-x-1">
-                  <span class="font-medium text-gray-900 dark:text-white truncate">{{ user.name }}</span>
-                  <span class="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full ml-1">Free</span>
+        <div class="sticky top-20">
+          <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-800 p-4 w-full max-w-xs mx-auto">
+            <div class="mb-4">
+              <input
+                v-model="suggestionSearch"
+                type="text"
+                placeholder="Search posts"
+                class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-primary-500 focus:ring-primary-500 px-3 py-2 text-sm"
+              />
+            </div>
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">SUGGESTIONS</h3>
+            <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
+              <div
+                v-for="user in filteredSuggestions"
+                :key="user.id"
+                class="flex items-center bg-gray-50 dark:bg-gray-800 rounded-lg p-2 hover:bg-primary-50 dark:hover:bg-primary-900/40 transition cursor-pointer"
+              >
+                <img :src="user.avatar" :alt="user.name" class="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-gray-700">
+                <div class="ml-3 flex-1 min-w-0">
+                  <div class="flex items-center space-x-1">
+                    <span class="font-medium text-gray-900 dark:text-white truncate">{{ user.name }}</span>
+                  </div>
+                  <span class="text-xs text-gray-500 dark:text-gray-300 truncate">@{{ user.username }}</span>
                 </div>
-                <span class="text-xs text-gray-500 dark:text-gray-300 truncate">@{{ user.username }}</span>
               </div>
             </div>
           </div>

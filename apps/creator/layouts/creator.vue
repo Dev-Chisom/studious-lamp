@@ -7,10 +7,10 @@
     <div class="flex-1 flex flex-col min-w-0">
       <div class="sticky top-0 bg-white dark:bg-gray-900 shadow-sm" style="z-index: 200">
         <div class="flex justify-end p-4">
-      <button @click="toggleDark" class="p-2 rounded border bg-gray-200 dark:bg-gray-700">
+      <!-- <button @click="toggleDark" class="p-2 rounded border bg-gray-200 dark:bg-gray-700">
         <span v-if="isDark">🌙 Dark</span>
         <span v-else>☀️ Light</span>
-      </button>
+      </button> -->
     </div>
         <div class="flex items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
           <!-- Mobile menu button -->
@@ -40,32 +40,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import CreatorSidebar from '~/components/CreatorSidebar.vue'
 import NotificationBell from '~/components/NotificationBell.vue'
 import UserDropdown from '~/components/UserDropdown.vue'
 
 const isMobileOpen = ref(false);
-
-const isDark = ref(false)
-
-onMounted(() => {
-  isDark.value = localStorage.getItem('theme') === 'dark' ||
-    (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)
-  setHtmlClass()
-})
-
-function toggleDark() {
-  isDark.value = !isDark.value
-  localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
-  setHtmlClass()
-}
-
-function setHtmlClass() {
-  if (isDark.value) {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
-}
 </script>
