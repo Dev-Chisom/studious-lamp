@@ -91,6 +91,7 @@ const navigationItems = [
   { name: 'Earnings', href: '/creator/earnings', icon: 'lucide:dollar-sign' },
   { name: 'Wallet', href: '/wallet', icon: 'lucide:wallet' },
   { name: 'Subscriptions', href: '/subscriptions', icon: 'lucide:credit-card' },
+  { name: 'Become A Creator', href: '/apply', icon: 'lucide:user-plus' },
   { name: 'Settings', href: '/settings', icon: 'lucide:settings' },
   { 
     name: 'View Profile', 

@@ -40,13 +40,15 @@
               </div>
               <div class="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
                 <button
-                  v-if="isCurrentUser"
-                  class="btn-outline border-white text-white hover:bg-white dark:bg-gray-900/10"
+                  v-if="!isCurrentUser"
+                  class="btn-outline border-white text-gray-700 hover:bg-white hover:text-black dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                   @click="navigateTo('/settings')"
                 >
                   <Icon name="lucide:settings" class="h-5 w-5 mr-2" />
                   Edit Profile
                 </button>
+
+
                 <button
                   v-else
                   class="btn-primary"
@@ -234,22 +236,23 @@
                         class="flex items-center text-gray-500 dark:text-gray-200 hover:text-primary-600"
                         @click="toggleLike(post)"
                       >
-                        <Icon
+                        <!-- <Icon
                           :name="'lucide:heart'"
                            :fill="post.isLiked ? 'currentColor' : 'none'"
                            :class="post.isLiked ? 'text-red-600' : 'text-gray-400'"
                            class="h-5 w-5 mr-1"
-                        />
+                        /> -->
+                        <Heart :class="{ 'fill-current text-primary-600 dark:text-primary-400': post.isLiked  }" class="h-5 w-5 mr-1" />
                         <span class="text-sm">{{ post.likes }}</span>
                       </button>
                       <button class="flex items-center text-gray-500 dark:text-gray-200 hover:text-gray-600">
                         <Icon name="lucide:message-circle" class="h-5 w-5 mr-1" />
                         <span class="text-sm">{{ post.comments }}</span>
                       </button>
-                      <button class="flex items-center text-gray-500 dark:text-gray-200 hover:text-gray-600">
+                      <!-- <button class="flex items-center text-gray-500 dark:text-gray-200 hover:text-gray-600">
                         <Icon name="lucide:share" class="h-5 w-5 mr-1" />
                         <span class="text-sm">Share</span>
-                      </button>
+                      </button> -->
                     </div>
                     <button
                       v-if="isCurrentUser"
@@ -291,6 +294,7 @@
 import { ref, computed } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import { toast } from 'vue3-toastify'
+import { Heart } from 'lucide-vue-next'
 
 definePageMeta({
   layout: 'creator',

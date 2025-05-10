@@ -158,10 +158,10 @@
                   <Icon name="lucide:message-circle" class="h-5 w-5 mr-1" />
                   <span class="text-sm">{{ post.comments.length }}</span>
                 </button>
-                <button class="flex items-center text-gray-500 hover:text-gray-600">
+                <!-- <button class="flex items-center text-gray-500 hover:text-gray-600">
                   <Icon name="lucide:share" class="h-5 w-5 mr-1" />
                   <span class="text-sm">Share</span>
-                </button>
+                </button> -->
               </div>
               <div v-if="post.visibility === 'subscribers'" class="badge badge-primary">
                 Subscribers Only
