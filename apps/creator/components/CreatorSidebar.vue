@@ -3,9 +3,10 @@
     <!-- Mobile sidebar -->
     <div
       v-if="isMobileOpen"
-      class="fixed inset-0 z-40 lg:hidden"
+      class="fixed inset-0 lg:hidden"
       role="dialog"
       aria-modal="true"
+      style="z-index: 400"
     >
       <!-- Background overlay -->
       <div

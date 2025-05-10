@@ -5,7 +5,7 @@
 
     <!-- Main content -->
     <div class="flex-1 flex flex-col min-w-0">
-      <div class="sticky top-0 bg-white dark:bg-gray-900 shadow-sm" style="z-index: 2000">
+      <div class="sticky top-0 bg-white dark:bg-gray-900 shadow-sm" style="z-index: 200">
         <div class="flex justify-end p-4">
       <button @click="toggleDark" class="p-2 rounded border bg-gray-200 dark:bg-gray-700">
         <span v-if="isDark">🌙 Dark</span>
