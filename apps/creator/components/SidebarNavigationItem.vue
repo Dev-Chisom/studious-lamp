@@ -7,7 +7,7 @@
         isActive
           ? 'bg-primary-50 text-primary-700 dark:bg-primary-900 dark:text-primary-200'
           : 'text-gray-700 hover:text-primary-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:text-primary-200 dark:hover:bg-gray-800',
-        'group flex items-center px-4 py-3 text-sm font-semibold rounded-lg transition-all duration-150'
+        'group flex items-center px-3 py-2 text-sm font-semibold rounded-lg transition-all duration-150'
       ]"
     >
       <Icon 
