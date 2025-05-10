@@ -71,6 +71,7 @@
 </template>
 
 <script setup>
+import SidebarNavigationItem from './SidebarNavigationItem.vue'
 defineProps({
   isMobileOpen: {
     type: Boolean,
