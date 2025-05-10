@@ -230,6 +230,7 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { useAuthStore } from '~/stores/auth';
+import FormInput from '~/components/FormInput.vue'
 
 const authStore = useAuthStore();
 const toast = inject('toast');
