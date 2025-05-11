@@ -80,7 +80,7 @@ const userInitials = computed(() => {
 });
 
 const userLinks = [
-  { name: 'Your Profile', href: '/profile' },
+  { name: 'Your Profile', href: authStore.user?.displayName ? `/@${authStore.user.displayName}` : '/@user' },
   { name: 'Subscriptions', href: '/subscriptions' },
   { name: 'Settings', href: '/settings' },
 ];

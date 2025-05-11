@@ -4,13 +4,20 @@
     <!-- Header -->
     <div class="flex items-center justify-between px-4 py-3">
       <div class="flex items-center">
-        <img :src="post.creator.avatar" :alt="post.creator.name"
-          class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700">
+        <NuxtLink to="/@user" class="flex-shrink-0">
+          <img :src="post.creator.avatar" :alt="post.creator.name"
+            class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700">
+        </NuxtLink>
         <div class="ml-3">
-          <h3 class="font-semibold text-sm text-gray-900 dark:text-white">{{ post.creator.name }}</h3>
+          <NuxtLink to="/@user">
+            <h3 class="font-semibold text-sm text-gray-900 dark:text-white hover:underline">
+              {{ post.creator.name }}
+            </h3>
+          </NuxtLink>
           <p class="text-xs text-gray-500 dark:text-gray-400">{{ post.location || 'Unknown location' }}</p>
         </div>
       </div>
+
       <button class="text-gray-500 dark:text-gray-400">
         <Icon name="lucide:more-vertical" class="w-5 h-5" />
       </button>

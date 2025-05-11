@@ -72,6 +72,9 @@
 
 <script setup>
 import SidebarNavigationItem from './SidebarNavigationItem.vue'
+import { useAuthStore } from '~/stores/auth';
+
+const authStore = useAuthStore();
 defineProps({
   isMobileOpen: {
     type: Boolean,
@@ -95,7 +98,7 @@ const navigationItems = [
   { name: 'Settings', href: '/settings', icon: 'lucide:settings' },
   { 
     name: 'View Profile', 
-    href: '/profile', 
+    href: authStore.user?.displayName ? `/@${authStore.user.displayName}` : '/@user', 
     icon: 'lucide:external-link',
     divider: true
   },

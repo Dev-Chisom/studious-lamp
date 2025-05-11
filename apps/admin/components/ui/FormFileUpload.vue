@@ -228,7 +228,6 @@ function removeFile(index) {
 }
 
 function openPreview(index) {
-  console.log('preview')
   previewModal.value = {
     isOpen: true,
     items: previewUrls.value.map(url => ({
