@@ -1,143 +1,254 @@
 <template>
-  <div class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-800 mb-8 overflow-hidden">
+  <div
+    class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-800 mb-8 overflow-hidden">
     <!-- Header -->
-    <div class="flex items-center justify-between px-6 pt-5 pb-3">
-        <div class="flex items-center">
-        <img :src="props.post.creator.avatar" :alt="props.post.creator.name" class="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-gray-700">
-          <div class="ml-3">
-          <h3 class="font-semibold text-gray-900 dark:text-white">{{ props.post.creator.name }}</h3>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ formatDate(props.post.createdAt) }}</p>
+    <div class="flex items-center justify-between px-4 py-3">
+      <div class="flex items-center">
+        <img :src="post.creator.avatar" :alt="post.creator.name"
+          class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700">
+        <div class="ml-3">
+          <h3 class="font-semibold text-sm text-gray-900 dark:text-white">{{ post.creator.name }}</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ post.location || 'Unknown location' }}</p>
         </div>
       </div>
-      <Button v-if="!props.isSubscribed" @click="$emit('subscribe')" variant="outline" class="text-xs px-4 py-1">
-          Subscribe
-        </Button>
-      </div>
-  
-    <!-- Media -->
-    <BlurredPost v-if="props.post.isPremium && !props.isSubscribed" @subscribe="$emit('subscribe')">
-      <div class="relative aspect-video w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-        <img v-if="props.post.image" :src="props.post.image" :alt="props.post.title" class="object-cover w-full h-full rounded-none">
-        <video v-if="props.post.video" class="object-cover w-full h-full rounded-none" controls>
-          <source :src="props.post.video" type="video/mp4">
+      <button class="text-gray-500 dark:text-gray-400">
+        <Icon name="lucide:more-vertical" class="w-5 h-5" />
+      </button>
+    </div>
+
+    <!-- Media Container with Blurred Feature -->
+    <div class="relative aspect-video w-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+      <BlurredPost v-if="post.isPremium && !isSubscribed" @subscribe="$emit('subscribe')">
+        <template #default>
+          <img v-if="post.image" :src="post.image" class="w-full h-full object-cover" alt="Post content">
+          <video v-else-if="post.video" class="w-full h-full object-cover" :poster="post.image">
+            <source :src="post.video" type="video/mp4">
           </video>
-        <div class="absolute inset-0 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm flex flex-col items-center justify-center">
-          <p class="font-semibold text-lg text-gray-700 dark:text-gray-200">Subscribe to unlock</p>
-        </div>
-        </div>
+        </template>
       </BlurredPost>
-    <div v-else>
-      <div v-if="props.post.image || props.post.video" class="relative aspect-video w-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-        <img v-if="props.post.image" :src="props.post.image" :alt="props.post.title" class="object-cover w-full h-full">
-        <video v-if="props.post.video" class="object-cover w-full h-full" controls>
-          <source :src="props.post.video" type="video/mp4">
+      <div v-else class="absolute inset-0 w-full h-full cursor-pointer" @click="openModal(0)">
+        <img v-if="post.image" :src="post.image" class="w-full h-full object-cover">
+        <video v-if="post.video" class="w-full h-full object-cover" :poster="post.image">
+          <source :src="post.video" type="video/mp4">
         </video>
       </div>
     </div>
 
-    <!-- Content -->
-    <div class="px-6 py-4">
-      <p class="text-gray-800 dark:text-gray-100 text-base mb-2">{{ props.post.content }}</p>
-      </div>
-  
+
     <!-- Actions -->
-    <div class="px-6 pb-4 flex items-center justify-between border-t border-gray-100 dark:border-gray-800">
-      <div class="flex items-center space-x-6">
-        <button @click="toggleLike" class="flex items-center space-x-1 text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition">
-          <Heart :class="{ 'fill-current text-primary-600 dark:text-primary-400': isLiked }" />
-          <span class="text-sm">{{ props.post.likes }}</span>
+    <div class="px-4 py-3">
+      <div class="flex items-center justify-between mb-2">
+        <div class="flex items-center space-x-4">
+          <button @click="toggleLike" class="text-gray-900 dark:text-white">
+            <Icon :name="isLiked ? 'lucide:heart' : 'lucide:heart'" class="w-6 h-6"
+              :class="{ 'fill-red-500 text-red-500': isLiked }" />
           </button>
-        <button @click="showComments = !showComments" class="flex items-center space-x-1 text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition">
-            <MessageCircle />
-          <span class="text-sm">{{ props.post.comments.length }}</span>
+          <!-- Open modal with comments -->
+          <button @click="openModal(0, true)" class="text-gray-900 dark:text-white comment-button">
+            <Icon name="lucide:message-circle" class="w-6 h-6" />
+          </button>
+          <button class="text-gray-900 dark:text-white">
+            <Icon name="lucide:send" class="w-6 h-6" />
           </button>
         </div>
-      <Button @click="$emit('tip')" variant="outline" class="text-xs px-4 py-1">
-          Send Tip
-        </Button>
+        <button class="text-gray-900 dark:text-white">
+          <Icon name="lucide:bookmark" class="w-6 h-6" />
+        </button>
       </div>
-  
-    <!-- Comments -->
-    <div v-if="showComments" class="px-6 pb-6 pt-2 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
-      <div v-for="comment in props.post.comments" :key="comment.id" class="mb-4">
-          <div class="flex items-start">
-          <img :src="comment.user.avatar" :alt="comment.user.name" class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700">
-            <div class="ml-3">
-            <p class="font-medium text-gray-900 dark:text-white">{{ comment.user.name }}</p>
-            <p class="text-gray-700 dark:text-gray-200">{{ comment.content }}</p>
-            <p class="text-xs text-gray-500 dark:text-gray-400">{{ formatDate(comment.createdAt) }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="mt-4">
-          <textarea
-            v-model="newComment"
-            placeholder="Add a comment..."
-          class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-primary-500 focus:ring-primary-500"
-            rows="2"
-          ></textarea>
-          <Button @click="addComment" variant="primary" class="mt-2">
-            Post Comment
-          </Button>
-        </div>
+
+      <!-- Likes count -->
+      <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">
+        {{ formatNumber(post.likes) }} likes
+      </p>
+
+      <!-- Caption with username -->
+      <p class="text-sm text-gray-900 dark:text-white mb-1">
+        <span class="font-semibold">{{ post.creator.name }}</span> {{ post.content }}
+      </p>
+
+      <!-- View comments -->
+      <button v-if="post.comments.length > 0 || localComments.length > 0" @click="openModal(0, true)" <!-- Open modal
+        with comments -->
+        class="text-sm text-gray-500 dark:text-gray-400 mb-1"
+        >
+        View all {{ post.comments.length + localComments.length }} comments
+      </button>
+
+      <!-- Display local comments -->
+      <div v-for="(comment, index) in localComments" :key="'local-' + index" class="mb-1">
+        <p class="text-sm text-gray-900 dark:text-white">
+          <span class="font-semibold">{{ currentUser.name }}</span> {{ comment }}
+        </p>
       </div>
+
+      <!-- Timestamp -->
+      <p class="text-xs text-gray-400 dark:text-gray-500 uppercase mt-2">
+        {{ formatTimeAgo(post.createdAt) }}
+      </p>
+    </div>
+
+    <!-- Add comment (quick) -->
+    <div class="px-4 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center">
+      <input v-model="quickComment" type="text" placeholder="Add a comment..."
+        class="flex-1 bg-transparent border-none text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0"
+        @keyup.enter="addComment">
+      <button @click="addComment"
+        class="text-primary-600 dark:text-primary-400 font-semibold text-sm disabled:opacity-50"
+        :disabled="!quickComment.trim()">
+        Post
+      </button>
+    </div>
   </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref } from 'vue'
-  import { Heart, MessageCircle } from 'lucide-vue-next'
-  import BlurredPost from '~/components/ui/BlurredPost.vue'
-  import Button from '~/components/ui/Button.vue'
-  
-  const props = defineProps<{
-    post: {
-      id: string
+
+  <!-- Media Preview Modal -->
+  <MediaPreviewModal v-if="showModal" :isOpen="showModal" :mediaItems="mediaItemsForModal"
+    :currentIndex="currentMediaIndex" :showSidebar="true" :messages="allCommentsForModal" :currentUser="currentUser"
+    @close="closeModal" @update:currentIndex="updateMediaIndex" @send-message="handleNewComment" />
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import MediaPreviewModal from './ui/MediaPreviewModal.vue'
+import BlurredPost from './ui/BlurredPost.vue'
+
+// Current user data
+const currentUser = ref({
+  name: 'YourUsername',
+  avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
+})
+
+const props = defineProps({
+  post: {
+    type: Object,
+    required: true,
+    default: () => ({
+      id: String,
       creator: {
-        name: string
-        avatar: string
-      }
-      content: string
-      image?: string
-      video?: string
-      createdAt: Date
-      likes: number
-      isPremium: boolean
-      comments: Array<{
-        id: string
-        user: {
-          name: string
-          avatar: string
-        }
-        content: string
-        createdAt: Date
-      }>
-    }
-    isSubscribed: boolean
-  }>()
-  
-defineEmits(['subscribe', 'tip'])
-  
-  const showComments = ref(false)
-  const newComment = ref('')
-  const isLiked = ref(false)
-  
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
-    }).format(new Date(date))
+        name: String,
+        avatar: String,
+      },
+      content: String,
+      location: String,
+      image: String,
+      video: String,
+      createdAt: new Date(),
+      likes: Number,
+      isPremium: Boolean,
+      comments: [],
+    })
+  },
+  isSubscribed: {
+    type: Boolean,
+    default: false
   }
-  
-  const toggleLike = () => {
-    isLiked.value = !isLiked.value
+})
+
+const emit = defineEmits(['subscribe', 'tip', 'add-comment'])
+
+const showModal = ref(false)
+const quickComment = ref('')
+const isLiked = ref(false)
+const currentMediaIndex = ref(0)
+const showComments = ref(false)
+const localComments = ref<string[]>([])
+
+const formatNumber = (num: number) => {
+  return new Intl.NumberFormat('en-US').format(num)
+}
+
+// Format media items for the modal
+const mediaItemsForModal = computed(() => {
+  return [{
+    url: props.post.video || props.post.image,
+    type: props.post.video ? 'video' : 'image'
+  }]
+})
+
+// Combine post comments and local comments for modal
+const allCommentsForModal = computed(() => {
+  const captionMessage = {
+    text: props.post.content,
+    timestamp: props.post.createdAt,
+    user: {
+      name: props.post.creator.name,
+      avatar: props.post.creator.avatar
+    },
+    isCurrentUser: false
   }
-  
-  const addComment = () => {
-    if (newComment.value.trim()) {
-      // Add comment logic here
-      newComment.value = ''
-    }
+
+  const postComments = props.post.comments.map(comment => ({
+    text: comment.content,
+    timestamp: comment.createdAt,
+    user: {
+      name: comment.user.name,
+      avatar: comment.user.avatar
+    },
+    isCurrentUser: false
+  }))
+
+  const localCommentMessages = localComments.value.map(comment => ({
+    text: comment,
+    timestamp: new Date(),
+    user: {
+      name: currentUser.value.name,
+      avatar: currentUser.value.avatar
+    },
+    isCurrentUser: true
+  }))
+
+  return [captionMessage, ...postComments, ...localCommentMessages]
+})
+
+const formatTimeAgo = (date: Date) => {
+  const now = new Date()
+  const diffInSeconds = Math.floor((now.getTime() - new Date(date).getTime()) / 1000)
+
+  if (diffInSeconds < 60) return `${diffInSeconds}s ago`
+  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`
+  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`
+  return `${Math.floor(diffInSeconds / 86400)}d ago`
+}
+
+const toggleLike = () => {
+  isLiked.value = !isLiked.value
+}
+
+const openModal = (index = 0, withComments = false) => {
+  if (props.post.isPremium && !props.isSubscribed) {
+    emit('subscribe')
+    return
   }
-  </script>
+  currentMediaIndex.value = index
+  showComments.value = withComments
+  showModal.value = true
+}
+
+const closeModal = () => {
+  showModal.value = false
+  showComments.value = false
+}
+
+const addComment = () => {
+  if (quickComment.value.trim()) {
+    localComments.value.push(quickComment.value.trim())
+    emit('add-comment', quickComment.value.trim())
+    quickComment.value = ''
+  }
+}
+
+const handleNewComment = (comment: string) => {
+  localComments.value.push(comment)
+  emit('add-comment', comment)
+}
+
+const updateMediaIndex = (index: number) => {
+  currentMediaIndex.value = index
+}
+</script>
+
+<style scoped>
+/* Custom styles for the post card */
+video {
+  background-color: #000;
+}
+</style>
