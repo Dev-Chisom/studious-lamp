@@ -40,19 +40,19 @@
                 v-if="media.type === 'image'"
                 :src="media.url"
                 class="max-w-full max-h-[70vh] w-auto h-auto object-contain rounded-lg shadow"
-                @click.stop
-              />
-              <video
+        @click.stop
+      />
+      <video
                 v-else-if="media.type === 'video'"
                 ref="videoPlayer"
                 :src="media.url"
-                controls
+        controls
                 class="max-w-full max-h-[70vh] w-auto h-auto rounded-lg shadow"
-                @click.stop
+        @click.stop
                 @play="handleVideoPlay"
                 @pause="handleVideoPause"
                 @ended="handleVideoEnded"
-              ></video>
+      ></video>
             </div>
           </SwiperSlide>
         </Swiper>
@@ -144,7 +144,7 @@ function handleVideoPause() {
 function handleVideoEnded() {
   isVideoPlaying.value = false;
 }
-</script>
+</script> 
 
 <style>
 .swiper-button-next,

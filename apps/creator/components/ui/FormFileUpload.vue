@@ -86,13 +86,13 @@
 
     <!-- Media Preview Modal -->
     <Teleport to="body">
-      <MediaPreviewModal
-        :is-open="previewModal.isOpen"
-        :media-items="previewModal.items"
-        :current-index="previewModal.currentIndex"
-        @close="closePreview"
-        @update:current-index="previewModal.currentIndex = $event"
-      />
+    <MediaPreviewModal
+      :is-open="previewModal.isOpen"
+      :media-items="previewModal.items"
+      :current-index="previewModal.currentIndex"
+      @close="closePreview"
+      @update:current-index="previewModal.currentIndex = $event"
+    />
     </Teleport>
   </div>
 </template>

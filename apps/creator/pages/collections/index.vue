@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
       <div class="flex justify-between items-center mb-8">
         <h1 class="text-2xl font-bold text-gray-900">My Collections</h1>
         <Button @click="showNewCollectionModal = true" variant="primary">

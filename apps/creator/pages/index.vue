@@ -3,8 +3,8 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Main Feed -->
       <div class="lg:col-span-2">
-        <div class="space-y-6">
-          <div v-for="post in posts" :key="post.id">
+      <div class="space-y-6">
+        <div v-for="post in posts" :key="post.id">
             <PostCard :post="post" :is-subscribed="isSubscribedToCreator(post.creator.id)"
               @subscribe="subscribeToCreator(post.creator.id)" @tip="showTipModal(post)" />
           </div>
@@ -61,66 +61,66 @@
         </div>
       </Modal>
     </div>
-  </div>
+</div>
 </template>
-
+  
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useUserStore } from '~/stores/user'
-import { toast } from 'vue3-toastify'
-import Modal from '~/components/ui/Modal.vue'
-import Button from '~/components/ui/Button.vue'
+  import { useUserStore } from '~/stores/user'
+  import { toast } from 'vue3-toastify'
+  import Modal from '~/components/ui/Modal.vue'
+  import Button from '~/components/ui/Button.vue'
 import PostCard from '@/components/PostCard.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination, Keyboard } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/pagination'
 
-definePageMeta({
+  definePageMeta({
   layout: 'creator',
   middleware: ['auth'],
   meta: {
     requiresAuth: true,
   }
 });
-
-const userStore = useUserStore()
-
-const posts = ref([
-  {
-    id: '1',
-    creator: {
-      id: 'creator1',
-      name: 'John Doe',
-      avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg'
+  
+  const userStore = useUserStore()
+  
+  const posts = ref([
+    {
+      id: '1',
+      creator: {
+        id: 'creator1',
+        name: 'John Doe',
+        avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg'
+      },
+      content: 'This is a free post that everyone can see!',
+      image: 'https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg',
+      createdAt: new Date('2024-03-01'),
+      likes: 42,
+      isPremium: false,
+      comments: []
     },
-    content: 'This is a free post that everyone can see!',
-    image: 'https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg',
-    createdAt: new Date('2024-03-01'),
-    likes: 42,
-    isPremium: false,
-    comments: []
-  },
-  {
-    id: '2',
-    creator: {
-      id: 'creator2',
-      name: 'Jane Smith',
-      avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg'
-    },
-    content: 'This is a premium post that requires subscription!',
-    image: 'https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg',
-    createdAt: new Date('2024-03-02'),
-    likes: 156,
-    isPremium: true,
-    comments: []
-  }
-])
-
-const showingTipModal = ref(false)
-const selectedPost = ref(null)
-const tipAmount = ref(1000)
-const isSendingTip = ref(false)
+    {
+      id: '2',
+      creator: {
+        id: 'creator2',
+        name: 'Jane Smith',
+        avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg'
+      },
+      content: 'This is a premium post that requires subscription!',
+      image: 'https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg',
+      createdAt: new Date('2024-03-02'),
+      likes: 156,
+      isPremium: true,
+      comments: []
+    }
+  ])
+  
+  const showingTipModal = ref(false)
+  const selectedPost = ref(null)
+  const tipAmount = ref(1000)
+  const isSendingTip = ref(false)
 
 const suggestionSearch = ref('')
 const suggestions = ref([
@@ -215,53 +215,53 @@ function chunkArray(array, size) {
   return result
 }
 const chunkedSuggestions = computed(() => chunkArray(filteredSuggestions.value, usersPerSlide))
-
-const isSubscribedToCreator = (creatorId: string) => {
-  return userStore.getSubscriptions.includes(creatorId)
-}
-
-const subscribeToCreator = async (creatorId: string) => {
-  try {
-    await userStore.addSubscription(creatorId)
-    toast.success('Successfully subscribed to creator!')
-  } catch (error) {
-    toast.error('Failed to subscribe to creator')
+  
+  const isSubscribedToCreator = (creatorId: string) => {
+    return userStore.getSubscriptions.includes(creatorId)
   }
-}
-
-const showTipModal = (post: any) => {
-  selectedPost.value = post
-  showingTipModal.value = true
-}
-
-const sendTip = async () => {
-  if (!selectedPost.value || tipAmount.value < 100) return
-
-  isSendingTip.value = true
-  try {
-    // Here you would typically make an API call to process the tip
-    await new Promise(resolve => setTimeout(resolve, 1000)) // Simulated API call
-    toast.success(`Successfully sent tip to ${selectedPost.value.creator.name}!`)
-    showingTipModal.value = false
-  } catch (error) {
-    toast.error('Failed to send tip')
-  } finally {
-    isSendingTip.value = false
+  
+  const subscribeToCreator = async (creatorId: string) => {
+    try {
+      await userStore.addSubscription(creatorId)
+      toast.success('Successfully subscribed to creator!')
+    } catch (error) {
+      toast.error('Failed to subscribe to creator')
+    }
   }
-}
-
-onMounted(async () => {
-  // Fetch posts from API
-})
-</script>
+  
+  const showTipModal = (post: any) => {
+    selectedPost.value = post
+    showingTipModal.value = true
+  }
+  
+  const sendTip = async () => {
+    if (!selectedPost.value || tipAmount.value < 100) return
+  
+    isSendingTip.value = true
+    try {
+      // Here you would typically make an API call to process the tip
+      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulated API call
+      toast.success(`Successfully sent tip to ${selectedPost.value.creator.name}!`)
+      showingTipModal.value = false
+    } catch (error) {
+      toast.error('Failed to send tip')
+    } finally {
+      isSendingTip.value = false
+    }
+  }
+  
+  onMounted(async () => {
+    // Fetch posts from API
+  })
+  </script>
 
 <style scoped>
-.swiper-pagination-bullet {
-  background: #3b82f6 !important; /* Tailwind primary-500 */
+::v-deep(.swiper-pagination-bullet) {
+  background-color: theme('colors.primary.500') !important;
   opacity: 0.4;
 }
-.swiper-pagination-bullet-active {
-  background: #2563eb !important; /* Tailwind primary-600 */
+::v-deep(.swiper-pagination-bullet-active) {
+  background-color: theme('colors.primary.700') !important;
   opacity: 1;
 }
 </style>

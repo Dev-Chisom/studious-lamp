@@ -5,7 +5,7 @@
 @layer base {
   html {
     font-family: 'Inter', sans-serif;
-    @apply antialiased;
+    @apply antialiased overflow-y-scroll;
   }
 
   body {
@@ -195,4 +195,29 @@
 /* Toast customization */
 .Vue-Toastification__toast {
   @apply rounded-xl font-sans !important;
+}
+/* Global CSS for blur overlay */
+#screen-protect-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.7);       /* semi-transparent dark */
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+/* Visible state of overlay */
+#screen-protect-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* Optionally, blur the underlying content for extra security */
+body.blurred {
+  filter: blur(40px);
+  transition: filter 0.2s ease;
 }

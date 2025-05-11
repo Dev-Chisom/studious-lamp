@@ -6,7 +6,8 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vueuse/nuxt',
     'nuxt-icon',
-    '@nuxtjs/tailwindcss' 
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/color-mode'
   ],
   css: ['~/assets/css/main.css'],
   app: {
@@ -39,5 +40,11 @@ export default defineNuxtConfig({
     configPath: 'tailwind.config.ts',
     exposeConfig: false,
     viewer: true,
+  },
+  colorMode: {
+    classSuffix: '',
+    preference: 'system',
+    fallback: 'light',
+    storageKey: 'theme'
   }
 })
