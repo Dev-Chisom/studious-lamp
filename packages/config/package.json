@@ -1,19 +1,19 @@
 {
-  "name": "@whispers/config",
-  "version": "0.1.0",
-  "private": true,
-  "main": "index.ts",
-  "files": [
-    "tailwind",
-    "eslint"
-  ],
-  "dependencies": {
-    "@tailwindcss/forms": "^0.5.7",
-    "@tailwindcss/typography": "^0.5.10",
-    "tailwindcss": "^3.4.1"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.30",
-    "typescript": "^5.4.3"
-  }
+	"name": "@whispers/config",
+	"version": "0.1.0",
+	"private": true,
+	"main": "index.ts",
+	"files": [
+		"tailwind",
+		"eslint"
+	],
+	"dependencies": {
+		"@tailwindcss/forms": "^0.5.7",
+		"@tailwindcss/typography": "^0.5.10",
+		"tailwindcss": "^3.4.1"
+	},
+	"devDependencies": {
+		"@types/node": "^20.11.30",
+		"typescript": "^5.4.3"
+	}
 }
