@@ -294,10 +294,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue';
-import FormInput from '@/components/ui/FormInput.vue'
-import { toast } from 'vue3-toastify'
+import { useContentStore } from '~/stores/content';
+import { toast } from 'vue3-toastify';
 
 definePageMeta({
   layout: 'creator',
@@ -308,27 +308,60 @@ definePageMeta({
   }
 });
 
-// State
-const loading = ref(true);
-const filters = ref({
+interface Post {
+  id: string
+  title: string
+  content: string
+  mediaUrls: string[]
+  visibility: 'public' | 'subscribers' | 'ppv'
+  price?: number
+  views: number
+  likes: number
+  comments: number
+  earnings: number
+  purchases: number
+  createdAt: Date
+}
+
+interface Filters {
+  search: string
+  visibility: string
+  sortBy: string
+}
+
+const contentStore = useContentStore();
+const loading = ref<boolean>(true);
+const currentPage = ref<number>(1);
+const itemsPerPage = 10;
+
+const filters = ref<Filters>({
   search: '',
   visibility: '',
   sortBy: 'newest'
 });
-const currentPage = ref(1);
-const itemsPerPage = 10;
-const showDeleteModal = ref(false);
-const postToDelete = ref(null);
 
 // Mock data for posts
-const posts = ref([
+const posts = ref<Post[]>([
   {
     id: '1',
-    title: 'Welcome to my page!',
-    content: 'Thank you for supporting my content.',
-    mediaUrls: ['https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=200'],
+    title: 'Getting Started with Content Creation',
+    content: 'Learn the basics of creating engaging content for your subscribers.',
+    mediaUrls: ['https://images.pexels.com/photos/3000001/pexels-photo-3000001.jpeg?auto=compress&cs=tinysrgb&w=800'],
     visibility: 'public',
     views: 1234,
+    likes: 245,
+    comments: 32,
+    earnings: 0,
+    purchases: 0,
+    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
+  },
+  {
+    id: '2',
+    title: 'Exclusive Content for Subscribers',
+    content: 'Special content only available to our valued subscribers.',
+    mediaUrls: ['https://images.pexels.com/photos/3000002/pexels-photo-3000002.jpeg?auto=compress&cs=tinysrgb&w=800'],
+    visibility: 'subscribers',
+    views: 567,
     likes: 89,
     comments: 12,
     earnings: 0,
@@ -336,68 +369,46 @@ const posts = ref([
     createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
   },
   {
-    id: '2',
-    title: 'Exclusive Content',
-    content: 'This is premium content only for my subscribers.',
-    mediaUrls: ['https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg?auto=compress&cs=tinysrgb&w=200'],
-    visibility: 'subscribers',
-    views: 456,
-    likes: 45,
-    comments: 8,
-    earnings: 0,
-    purchases: 0,
-    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
-  },
-  {
     id: '3',
     title: 'Premium Tutorial',
-    content: 'Step-by-step guide available for purchase.',
-    mediaUrls: ['https://images.pexels.com/photos/5417678/pexels-photo-5417678.jpeg?auto=compress&cs=tinysrgb&w=200'],
+    content: 'Advanced techniques and strategies for content creators.',
+    mediaUrls: ['https://images.pexels.com/photos/3000003/pexels-photo-3000003.jpeg?auto=compress&cs=tinysrgb&w=800'],
     visibility: 'ppv',
     price: 9.99,
-    views: 789,
-    likes: 67,
-    comments: 15,
-    earnings: 249.75,
-    purchases: 25,
-    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000)
+    views: 234,
+    likes: 45,
+    comments: 8,
+    earnings: 299.70,
+    purchases: 30,
+    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
   }
 ]);
 
-// Fetch posts on mount
-onMounted(async () => {
-  try {
-    // In a real app, fetch posts from API
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    loading.value = false;
-  } catch (error) {
-    toast.error('Failed to load posts');
-    loading.value = false;
-  }
-});
-
 // Computed properties
-const filteredPosts = computed(() => {
+const filteredPosts = computed<Post[]>(() => {
   let result = [...posts.value];
-  
+
   // Apply search filter
   if (filters.value.search) {
-    const search = filters.value.search.toLowerCase();
-    result = result.filter(post => 
-      post.title.toLowerCase().includes(search) ||
-      post.content.toLowerCase().includes(search)
+    const searchLower = filters.value.search.toLowerCase();
+    result = result.filter(post =>
+      post.title.toLowerCase().includes(searchLower) ||
+      post.content.toLowerCase().includes(searchLower)
     );
   }
-  
+
   // Apply visibility filter
   if (filters.value.visibility) {
     result = result.filter(post => post.visibility === filters.value.visibility);
   }
-  
+
   // Apply sorting
   switch (filters.value.sortBy) {
+    case 'newest':
+      result.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      break;
     case 'oldest':
-      result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      result.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
       break;
     case 'popular':
       result.sort((a, b) => b.views - a.views);
@@ -405,21 +416,19 @@ const filteredPosts = computed(() => {
     case 'earnings':
       result.sort((a, b) => b.earnings - a.earnings);
       break;
-    default: // newest
-      result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }
-  
+
   return result;
 });
 
-const totalPosts = computed(() => filteredPosts.value.length);
-const totalPages = computed(() => Math.ceil(totalPosts.value / itemsPerPage));
+const totalPosts = computed<number>(() => filteredPosts.value.length);
+const totalPages = computed<number>(() => Math.ceil(totalPosts.value / itemsPerPage));
 
-const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage);
-const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage, totalPosts.value));
+const startIndex = computed<number>(() => (currentPage.value - 1) * itemsPerPage);
+const endIndex = computed<number>(() => Math.min(startIndex.value + itemsPerPage, totalPosts.value));
 
-const displayedPages = computed(() => {
-  const pages = [];
+const displayedPages = computed<number[]>(() => {
+  const pages: number[] = [];
   const maxPages = 5;
   
   if (totalPages.value <= maxPages) {
@@ -443,12 +452,12 @@ const displayedPages = computed(() => {
 });
 
 // Methods
-function truncateText(text, length) {
+function truncateText(text: string, length: number): string {
   if (text.length <= length) return text;
   return text.substring(0, length) + '...';
 }
 
-function formatDate(date) {
+function formatDate(date: Date): string {
   return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
@@ -456,28 +465,24 @@ function formatDate(date) {
   });
 }
 
-function editPost(id) {
+function editPost(id: string): void {
   navigateTo(`/creator/content/edit/${id}`);
 }
 
-function confirmDelete(id) {
-  postToDelete.value = id;
-  showDeleteModal.value = true;
+function confirmDelete(id: string): void {
+  // Implement delete confirmation logic
+  toast.info('Delete functionality to be implemented');
 }
 
-async function deletePost() {
+// Load posts on mount
+onMounted(async () => {
   try {
-    // In a real app, make API call to delete post
-    const index = posts.value.findIndex(post => post.id === postToDelete.value);
-    if (index !== -1) {
-      posts.value.splice(index, 1);
-    }
-    
-    showDeleteModal.value = false;
-    postToDelete.value = null;
-    toast.success('Post deleted successfully');
+    // In a real app, this would fetch from the API
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    loading.value = false;
   } catch (error) {
-    toast.error('Failed to delete post');
+    toast.error('Failed to load posts');
+    loading.value = false;
   }
-}
+});
 </script>

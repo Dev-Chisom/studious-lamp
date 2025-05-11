@@ -65,14 +65,26 @@
   import { toast } from 'vue3-toastify'
   import Button from '~/components/ui/Button.vue'
   
+  interface CollectionPost {
+    id: string
+    image: string
+    title: string
+  }
+  
+  interface Collection {
+    id: string
+    name: string
+    posts: CollectionPost[]
+  }
+  
   const userStore = useUserStore()
-  const collections = ref(userStore.getCollections)
+  const collections = ref<Collection[]>(userStore.getCollections)
   
   const showNewCollectionModal = ref(false)
   const newCollectionName = ref('')
   const isCreating = ref(false)
   
-  const createNewCollection = async () => {
+  const createNewCollection = async (): Promise<void> => {
     if (!newCollectionName.value.trim()) return
   
     isCreating.value = true
@@ -89,7 +101,7 @@
     }
   }
   
-  const viewCollection = (collection: any) => {
+  const viewCollection = (collection: Collection): void => {
     // Navigate to collection detail view
     navigateTo(`/collections/${collection.id}`)
   }

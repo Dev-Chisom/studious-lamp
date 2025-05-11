@@ -57,11 +57,23 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import NotificationItem from './NotificationItem.vue'
 
-const isOpen = ref(false);
-const notifications = ref([
+type NotificationType = 'subscription' | 'tip' | 'message' | 'post_like' | 'post_comment' | 'other'
+
+interface Notification {
+  id: number
+  type: NotificationType
+  content: string
+  isRead: boolean
+  createdAt: Date
+  image?: string
+}
+
+const isOpen = ref(false)
+const notifications = ref<Notification[]>([
   {
     id: 1,
     type: 'subscription',
@@ -86,43 +98,43 @@ const notifications = ref([
     createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
     image: ''
   }
-]);
+])
 
-const notificationRef = ref(null);
+const notificationRef = ref<HTMLElement | null>(null)
 
-const unreadCount = computed(() => {
-  return notifications.value.filter(notification => !notification.isRead).length;
-});
+const unreadCount = computed((): number => {
+  return notifications.value.filter(notification => !notification.isRead).length
+})
 
-function markAsRead(id) {
-  const notification = notifications.value.find(n => n.id === id);
+function markAsRead(id: number): void {
+  const notification = notifications.value.find(n => n.id === id)
   if (notification) {
-    notification.isRead = true;
+    notification.isRead = true
   }
 }
 
-function markAllAsRead() {
+function markAllAsRead(): void {
   notifications.value.forEach(notification => {
-    notification.isRead = true;
-  });
+    notification.isRead = true
+  })
 }
 
 // Close dropdown when clicking outside
-const closeDropdown = (e) => {
-  if (notificationRef.value && !notificationRef.value.contains(e.target)) {
-    isOpen.value = false;
+const closeDropdown = (e: MouseEvent): void => {
+  if (notificationRef.value && !notificationRef.value.contains(e.target as Node)) {
+    isOpen.value = false
   }
-};
+}
 
-const showContent = () => {
+const showContent = (): void => {
   isOpen.value = !isOpen.value
 }
 
 onMounted(() => {
-  document.addEventListener('click', closeDropdown);
-});
+  document.addEventListener('click', closeDropdown)
+})
 
 onUnmounted(() => {
-  document.removeEventListener('click', closeDropdown);
-});
+  document.removeEventListener('click', closeDropdown)
+})
 </script>

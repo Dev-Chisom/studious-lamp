@@ -66,33 +66,37 @@
   import { ref } from 'vue'
   import Button from './../ui/Button.vue'
   
+  interface Creator {
+    name: string
+    avatar: string
+  }
+  
   interface Notification {
     id: string
-    creator: {
-      name: string
-      avatar: string
-    }
+    creator: Creator
     message: string
     link?: string
   }
   
   const notifications = ref<Notification[]>([])
   
-  const viewContent = (notification: Notification) => {
+  const viewContent = (notification: Notification): void => {
     if (notification.link) {
       navigateTo(notification.link)
     }
     dismissNotification(notification.id)
   }
   
-  const dismissNotification = (id: string) => {
+  const dismissNotification = (id: string): void => {
     notifications.value = notifications.value.filter((n: Notification) => n.id !== id)
   }
   
-  const addNotification = (notification: Notification) => {
+  const addNotification = (notification: Notification): void => {
     notifications.value.push(notification)
     setTimeout(() => dismissNotification(notification.id), 5000)
   }
   
-  defineExpose({ addNotification })
+  defineExpose<{
+    addNotification: (notification: Notification) => void
+  }>({ addNotification })
   </script>

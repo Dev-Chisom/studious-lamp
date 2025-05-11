@@ -223,40 +223,84 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import PostCard from '~/components/PostCard.vue'
 import { useRoute } from 'vue-router'
 
+interface SocialLink {
+  platform: string
+  icon: string
+  handle: string
+  url: string
+}
+
+interface UserStats {
+  posts: number
+  followers: number
+}
+
+interface UserProfile {
+  displayName: string
+  username: string
+  profileImage: string | null
+  coverImage: string | null
+  bio: string
+  stats: UserStats
+  social: SocialLink[]
+  joinedAt: Date
+}
+
+interface CommentUser {
+  name: string
+  avatar: string
+}
+
+interface PostComment {
+  id: string
+  user: CommentUser
+  content: string
+  createdAt: Date
+}
+
+interface UserPost {
+  id: string
+  content: string
+  media: string | null
+  video: string | null
+  createdAt: Date
+  likes: number
+  isPremium: boolean
+  comments: PostComment[]
+}
+
 const route = useRoute()
-const username = computed(() => route.params.username)
+const username = computed<string>(() => route.params.username as string)
 const authStore = useAuthStore()
 
 definePageMeta({
   layout: 'creator',
 });
 
-// Mock user data - replace with actual API call
-const user = ref({
-  displayName: 'John Doe', // Hardcoded fallback display name
-  username: username.value || 'johndoe', // Fallback username if route param is not present
-  profileImage: null, // Fallback to no image
-  coverImage: null, // Fallback to no cover image
-  bio: 'Digital creator and content enthusiast', // Hardcoded fallback bio
+const user = ref<UserProfile>({
+  displayName: 'John Doe',
+  username: username.value || 'johndoe',
+  profileImage: null,
+  coverImage: null,
+  bio: 'Digital creator and content enthusiast',
   stats: {
-    posts: 42, // Fallback number of posts
-    followers: 1234 // Fallback number of followers
+    posts: 42,
+    followers: 1234
   },
   social: [
     { platform: 'twitter', icon: 'twitter', handle: '@johndoe', url: 'https://twitter.com/johndoe' },
     { platform: 'instagram', icon: 'instagram', handle: '@johndoe', url: 'https://instagram.com/johndoe' }
   ],
-  joinedAt: new Date('2023-01-01') // Fallback join date
+  joinedAt: new Date('2023-01-01')
 })
 
-// Mock posts data
-const posts = ref([
+const posts = ref<UserPost[]>([
   {
     id: '1',
     content: 'Just posted a new video! Check it out!',
@@ -282,23 +326,23 @@ const posts = ref([
     content: 'Premium content coming soon!',
     media: 'https://picsum.photos/800/451',
     video: null,
-    createdAt: new Date(Date.now() - 86400000), // 1 day ago
+    createdAt: new Date(Date.now() - 86400000),
     likes: 15,
     isPremium: true,
     comments: []
   }
 ])
 
-const newPost = ref('')
-const isFollowing = ref(false)
-const isSubscribed = ref(false)
+const newPost = ref<string>('')
+const isFollowing = ref<boolean>(false)
+const isSubscribed = ref<boolean>(false)
 
-const isCurrentUser = computed(() => {
+const isCurrentUser = computed<boolean>(() => {
   return authStore.user?.username === username.value
 })
 
-const userInitials = computed(() => {
-  const name = user.value?.displayName || 'User' // Fallback text if no display name
+const userInitials = computed<string>(() => {
+  const name = user.value?.displayName || 'User'
   if (!name) return '?'
   const parts = name.split(' ')
   if (parts.length > 1) {
@@ -307,7 +351,8 @@ const userInitials = computed(() => {
   return name.substring(0, 2).toUpperCase()
 })
 
-const formatDate = (date) => {
+const formatDate = (date: Date | string | undefined): string => {
+  if (!date) return ''
   return new Intl.DateTimeFormat('en-US', {
     day: 'numeric',
     month: 'short',
@@ -315,27 +360,23 @@ const formatDate = (date) => {
   }).format(new Date(date))
 }
 
-const followUser = async () => {
-  // Implement follow/unfollow logic
+const followUser = async (): Promise<void> => {
   isFollowing.value = !isFollowing.value
 }
 
-const createPost = async () => {
+const createPost = async (): Promise<void> => {
   if (!newPost.value.trim()) return
-  // Implement post creation logic
   newPost.value = ''
 }
 
-const handleSubscribe = async () => {
-  // Implement subscription logic
+const handleSubscribe = async (): Promise<void> => {
   isSubscribed.value = true
 }
 
-const handleTip = async () => {
+const handleTip = async (): Promise<void> => {
   // Implement tip logic
 }
 
-// Fetch user data and posts
 onMounted(async () => {
   // Implement API calls to fetch user data and posts
 })

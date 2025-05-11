@@ -302,9 +302,53 @@
   
   <script setup lang="ts">
   import { ref, reactive } from 'vue';
+  import { useRouter } from 'vue-router';
   import { useAuthStore } from '~/stores/auth';
   import FormInput from '@/components/ui/FormInput.vue'
   import { toast } from 'vue3-toastify'
+
+  interface SocialLinks {
+    facebook: string
+    instagram: string
+    twitter: string
+    tiktok: string
+  }
+
+  interface Discounts {
+    quarterly: number | string
+    biAnnual: number | string
+    yearly: number | string
+  }
+
+  interface CreatorApplicationForm {
+    displayName: string
+    username: string
+    bio: string
+    categories: string[]
+    contentDescription: string
+    monthlyPrice: number | string
+    quarterlyPrice: string | null
+    biAnnualPrice: string | null
+    yearlyPrice: string | null
+    discounts: Discounts
+    social: SocialLinks
+    agreedToTerms: boolean
+    isAdult: boolean
+  }
+
+  interface ApplicationFormErrors {
+    displayName?: string
+    username?: string
+    bio?: string
+    categories?: string
+    contentDescription?: string
+    monthlyPrice?: string
+    quarterlyPrice?: string
+    biAnnualPrice?: string
+    yearlyPrice?: string
+    agreedToTerms?: string
+    isAdult?: string
+  }
 
   definePageMeta({
   middleware: ['auth'],
@@ -318,9 +362,9 @@
   const router = useRouter();
   const isSubmitting = ref(false)
   const loading = ref(false);
-  const errors = reactive({});
+  const errors = reactive<ApplicationFormErrors>({});
   
-  const form = reactive({
+  const form = reactive<CreatorApplicationForm>({
     displayName: authStore.user?.displayName || '',
     username: '',
     bio: '',
@@ -345,7 +389,7 @@
     isAdult: false
   });
   
-  const availableCategories = [
+  const availableCategories = ref<string[]>([
     'Fitness',
     'Lifestyle',
     'Education',
@@ -356,9 +400,9 @@
     'Sports',
     'Music',
     'Art'
-  ];
+  ]);
   
-  function toggleCategory(category) {
+  function toggleCategory(category: string): void {
     const index = form.categories.indexOf(category);
     if (index === -1) {
       if (form.categories.length < 3) {
@@ -371,32 +415,32 @@
     }
   }
   
-  function removeCategory(category) {
+  function removeCategory(category: string): void {
     const index = form.categories.indexOf(category);
     if (index !== -1) {
       form.categories.splice(index, 1);
     }
   }
   
-  function calculatePeriodPrices() {
-    const monthlyPrice = parseFloat(form.monthlyPrice) || 0;
+  function calculatePeriodPrices(): void {
+    const monthlyPrice = parseFloat(form.monthlyPrice as string) || 0;
     
     // Calculate quarterly price
-    const quarterlyDiscount = parseInt(form.discounts.quarterly) / 100;
+    const quarterlyDiscount = parseInt(form.discounts.quarterly as string) / 100;
     form.quarterlyPrice = (monthlyPrice * 3 * (1 - quarterlyDiscount)).toFixed(2);
     
     // Calculate bi-annual price
-    const biAnnualDiscount = parseInt(form.discounts.biAnnual) / 100;
+    const biAnnualDiscount = parseInt(form.discounts.biAnnual as string) / 100;
     form.biAnnualPrice = (monthlyPrice * 6 * (1 - biAnnualDiscount)).toFixed(2);
     
     // Calculate annual price
-    const yearlyDiscount = parseInt(form.discounts.yearly) / 100;
+    const yearlyDiscount = parseInt(form.discounts.yearly as string) / 100;
     form.yearlyPrice = (monthlyPrice * 12 * (1 - yearlyDiscount)).toFixed(2);
   }
   
-  async function submitApplication() {
+  async function submitApplication(): Promise<void> {
     loading.value = true;
-    errors.value = {};
+    Object.keys(errors).forEach(key => delete errors[key as keyof ApplicationFormErrors]);
     
     try {
       // Validate form
@@ -430,12 +474,12 @@
         isValid = false;
       }
       
-      if (!form.monthlyPrice || form.monthlyPrice < 4.99) {
+      if (!form.monthlyPrice || Number(form.monthlyPrice) < 4.99) {
         errors.monthlyPrice = 'Monthly price must be at least $4.99';
         isValid = false;
       }
       
-      if (form.yearlyPrice && form.yearlyPrice < form.monthlyPrice * 10) {
+      if (form.yearlyPrice && Number(form.yearlyPrice) < Number(form.monthlyPrice) * 10) {
         errors.yearlyPrice = 'Yearly price should offer at least a 15% discount';
         isValid = false;
       }

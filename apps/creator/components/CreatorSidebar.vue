@@ -70,19 +70,28 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import SidebarNavigationItem from './SidebarNavigationItem.vue'
 
-defineProps({
-  isMobileOpen: {
-    type: Boolean,
-    default: false
-  }
-});
+interface NavigationItem {
+  name: string
+  href: string
+  icon: string
+  divider?: boolean
+}
 
-defineEmits(['close']);
+interface CreatorSidebarProps {
+  isMobileOpen: boolean
+}
 
-const navigationItems = [
+interface CreatorSidebarEmits {
+  (e: 'close'): void
+}
+
+const props = defineProps<CreatorSidebarProps>()
+const emit = defineEmits<CreatorSidebarEmits>()
+
+const navigationItems: NavigationItem[] = [
   { name: 'Home', href: '/', icon: 'lucide:home' },
   { name: 'Analytics', href: '/creator/analytics', icon: 'lucide:bar-chart' },
   { name: 'Content', href: '/creator/content', icon: 'lucide:image' },
@@ -91,6 +100,6 @@ const navigationItems = [
   { name: 'Earnings', href: '/creator/earnings', icon: 'lucide:dollar-sign' },
   { name: 'Wallet', href: '/wallet', icon: 'lucide:wallet' },
   { name: 'Subscriptions', href: '/subscriptions', icon: 'lucide:credit-card' },
-  { name: 'Become A Creator', href: '/apply', icon: 'lucide:user-plus', divider: true },
-];
+  { name: 'Become A Creator', href: '/apply', icon: 'lucide:user-plus', divider: true }
+]
 </script>

@@ -31,55 +31,69 @@
   </div>
 </template>
 
-<script setup>
-const props = defineProps({
-  notification: {
-    type: Object,
-    required: true
-  }
-});
+<script setup lang="ts">
+type NotificationType = 'subscription' | 'tip' | 'message' | 'post_like' | 'post_comment' | 'other'
 
-const emit = defineEmits(['read']);
+interface Notification {
+  id: string
+  type: NotificationType
+  content: string
+  image?: string
+  isRead: boolean
+  createdAt: Date | string
+  link?: string
+}
 
-function getIcon(type) {
+interface NotificationItemProps {
+  notification: Notification
+}
+
+interface NotificationItemEmits {
+  (e: 'read'): void
+}
+
+const props = defineProps<NotificationItemProps>()
+const emit = defineEmits<NotificationItemEmits>()
+
+function getIcon(type: NotificationType): string {
   switch (type) {
     case 'subscription':
-      return 'lucide:user-plus';
+      return 'lucide:user-plus'
     case 'tip':
-      return 'lucide:dollar-sign';
+      return 'lucide:dollar-sign'
     case 'message':
-      return 'lucide:message-circle';
+      return 'lucide:message-circle'
     case 'post_like':
-      return 'lucide:heart';
+      return 'lucide:heart'
     case 'post_comment':
-      return 'lucide:message-square';
+      return 'lucide:message-square'
     default:
-      return 'lucide:bell';
+      return 'lucide:bell'
   }
 }
 
-function formatTime(date) {
-  const now = new Date();
-  const diff = now - new Date(date);
+function formatTime(date: Date | string): string {
+  const now = new Date()
+  const diff = now.getTime() - new Date(date).getTime()
   
-  const minutes = Math.floor(diff / (1000 * 60));
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const minutes = Math.floor(diff / (1000 * 60))
+  const hours = Math.floor(diff / (1000 * 60 * 60))
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
   
   if (minutes < 60) {
-    return `${minutes}m ago`;
+    return `${minutes}m ago`
   } else if (hours < 24) {
-    return `${hours}h ago`;
+    return `${hours}h ago`
   } else if (days < 7) {
-    return `${days}d ago`;
+    return `${days}d ago`
   } else {
-    return new Date(date).toLocaleDateString();
+    return new Date(date).toLocaleDateString()
   }
 }
 
-function handleClick() {
+function handleClick(): void {
   if (!props.notification.isRead) {
-    emit('read');
+    emit('read')
   }
   // Handle click based on notification type
   // e.g., navigateTo(props.notification.link)

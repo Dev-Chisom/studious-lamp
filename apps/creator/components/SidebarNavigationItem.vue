@@ -24,23 +24,29 @@
   </div>
 </template>
 
-<script setup>
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+<script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
-const props = defineProps({
-  item: {
-    type: Object,
-    required: true
-  }
-});
+interface NavigationItem {
+  name: string
+  href: string
+  icon: string
+  divider?: boolean
+}
 
-const route = useRoute();
+interface SidebarNavigationItemProps {
+  item: NavigationItem
+}
 
-const isActive = computed(() => {
+const props = defineProps<SidebarNavigationItemProps>()
+
+const route = useRoute()
+
+const isActive = computed((): boolean => {
   if (props.item.href === '/') {
-    return route.path === '/';
+    return route.path === '/'
   }
-  return route.path.startsWith(props.item.href);
-});
+  return route.path.startsWith(props.item.href)
+})
 </script>

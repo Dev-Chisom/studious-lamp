@@ -187,7 +187,9 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { ref } from 'vue';
+
 definePageMeta({
   layout: 'creator',
   middleware: ['auth'],
@@ -197,40 +199,50 @@ definePageMeta({
   }
 });
 
-// Mock data for dashboard stats
-const stats = [
-  { 
-    name: 'Subscribers', 
-    value: '278', 
-    icon: 'lucide:users', 
-    color: 'primary', 
-    trend: 12 
-  },
-  { 
-    name: 'Revenue This Month', 
-    value: '$1,458.90', 
-    icon: 'lucide:dollar-sign', 
-    color: 'success', 
-    trend: 8 
-  },
-  { 
-    name: 'Content Views', 
-    value: '4,239', 
-    icon: 'lucide:eye', 
-    color: 'secondary', 
-    trend: 24 
-  },
-  { 
-    name: 'Total Posts', 
-    value: '32', 
-    icon: 'lucide:file-text', 
-    color: 'accent', 
-    trend: -3 
-  }
-];
+interface StatCard {
+  name: string
+  value: string
+  icon: string
+  color: string
+  trend: number
+}
 
-// Mock data for recent subscriptions
-const recentSubscriptions = [
+interface Subscription {
+  id: string
+  userName: string
+  userAvatar: string
+  plan: string
+  amount: string
+  date: Date
+}
+
+interface ContentPost {
+  id: string
+  title: string
+  thumbnail: string
+  likes: number
+  comments: number
+  views: number
+  date: Date
+}
+
+interface Payout {
+  amount: number
+  date: Date
+  subscriptionRevenue: number
+  tips: number
+  ppv: number
+  platformFee: number
+}
+
+const stats = ref<StatCard[]>([
+  { name: 'Subscribers', value: '278', icon: 'lucide:users', color: 'primary', trend: 12 },
+  { name: 'Revenue This Month', value: '$1,458.90', icon: 'lucide:dollar-sign', color: 'success', trend: 8 },
+  { name: 'Content Views', value: '4,239', icon: 'lucide:eye', color: 'secondary', trend: 24 },
+  { name: 'Total Posts', value: '32', icon: 'lucide:file-text', color: 'accent', trend: -3 }
+]);
+
+const recentSubscriptions = ref<Subscription[]>([
   {
     id: '1',
     userName: 'Alex Johnson',
@@ -242,68 +254,48 @@ const recentSubscriptions = [
   {
     id: '2',
     userName: 'Sarah Williams',
-    userAvatar: 'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=200',
+    userAvatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=200',
     plan: 'Yearly',
     amount: '99.99',
-    date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
-  },
-  {
-    id: '3',
-    userName: 'Michael Chen',
-    userAvatar: 'https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&w=200',
-    plan: 'Monthly',
-    amount: '9.99',
-    date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
   }
-];
+]);
 
-// Mock data for recent posts
-const recentPosts = [
+const recentPosts = ref<ContentPost[]>([
   {
     id: '1',
-    title: 'Behind the scenes from my latest photoshoot',
-    thumbnail: 'https://images.pexels.com/photos/3062541/pexels-photo-3062541.jpeg?auto=compress&cs=tinysrgb&w=200',
-    likes: 45,
-    comments: 12,
-    views: 230,
+    title: 'Getting Started with Content Creation',
+    thumbnail: 'https://images.pexels.com/photos/3000001/pexels-photo-3000001.jpeg?auto=compress&cs=tinysrgb&w=800',
+    likes: 245,
+    comments: 32,
+    views: 1234,
     date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
   },
   {
     id: '2',
-    title: 'Q&A Session: Ask me anything',
-    thumbnail: 'https://images.pexels.com/photos/4009409/pexels-photo-4009409.jpeg?auto=compress&cs=tinysrgb&w=200',
-    likes: 67,
-    comments: 34,
-    views: 412,
-    date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
-  },
-  {
-    id: '3',
-    title: 'Exclusive cooking tutorial for subscribers',
-    thumbnail: 'https://images.pexels.com/photos/5711395/pexels-photo-5711395.jpeg?auto=compress&cs=tinysrgb&w=200',
-    likes: 28,
-    comments: 8,
-    views: 145,
-    date: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
+    title: 'Tips for Better Engagement',
+    thumbnail: 'https://images.pexels.com/photos/3000002/pexels-photo-3000002.jpeg?auto=compress&cs=tinysrgb&w=800',
+    likes: 189,
+    comments: 24,
+    views: 987,
+    date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
   }
-];
+]);
 
-// Mock data for next payout
-const nextPayout = {
-  amount: 1287.65,
+const nextPayout = ref<Payout>({
+  amount: 1245.67,
   date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-  subscriptionRevenue: 1056.75,
-  tips: 320.00,
-  ppv: 125.00,
-  platformFee: 214.10
-};
+  subscriptionRevenue: 987.45,
+  tips: 156.78,
+  ppv: 101.44,
+  platformFee: 200.00
+});
 
-// Format date helper
-function formatDate(date) {
+function formatDate(date: Date): string {
   return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
     month: 'short',
-    day: 'numeric',
-    year: 'numeric'
+    day: 'numeric'
   });
 }
 </script>

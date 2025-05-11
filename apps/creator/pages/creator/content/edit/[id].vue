@@ -37,8 +37,8 @@
     </div>
   </template>
   
-  <script setup>
-  import { reactive, computed } from 'vue';
+  <script setup lang="ts">
+  import { ref, reactive, computed } from 'vue';
   import { useContentStore } from '~/stores/content';
   import PostForm from '@/components/PostForm.vue';
   import { toast } from 'vue3-toastify'
@@ -56,7 +56,24 @@
   }
 });
   
-  const errors = reactive({
+  interface PostFormData {
+    title: string
+    content: string
+    visibility: 'public' | 'subscribers' | 'ppv'
+    price: number
+    mediaUrls: string[]
+  }
+
+  interface PostFormErrors {
+    title: string
+    content: string
+    mediaFiles: string
+    visibility: string
+    price: string
+    scheduledDate: string
+  }
+
+  const errors = reactive<PostFormErrors>({
     title: '',
     content: '',
     mediaFiles: '',
@@ -65,19 +82,21 @@
     scheduledDate: ''
   });
   
-  const minScheduleDate = computed(() => {
+  const minScheduleDate = computed<string>(() => {
     const date = new Date();
     date.setMinutes(date.getMinutes() + 10);
     return date.toISOString().slice(0, 16);
   });
 
-  const postData = ref(   {title: 'Sample Post Title',
-        content: 'This is a sample post content for editing.',
-        visibility: 'public',
-        price: 4.99,
-        mediaUrls: [
-          'https://images.pexels.com/photos/3000001/pexels-photo.jpeg?auto=compress&cs=tinysrgb&w=800'
- ]})
+  const postData = ref<PostFormData | null>({
+    title: 'Sample Post Title',
+    content: 'This is a sample post content for editing.',
+    visibility: 'public',
+    price: 4.99,
+    mediaUrls: [
+      'https://images.pexels.com/photos/3000001/pexels-photo.jpeg?auto=compress&cs=tinysrgb&w=800'
+    ]
+  });
   
 //   const { data: postData, pending } = await useAsyncData('edit-post', async () => {
 //     try {
@@ -107,9 +126,9 @@
 //     }
 //   });
   
-  function validateForm(formData) {
+  function validateForm(formData: any): boolean {
     let isValid = true;
-    Object.keys(errors).forEach(key => { errors[key] = ''; });
+    Object.keys(errors).forEach(key => { (errors as any)[key] = ''; });
     if (!formData.title || !formData.title.trim()) {
       errors.title = 'Title is required';
       isValid = false;
@@ -150,7 +169,7 @@
     return isValid;
   }
   
-  async function handleSubmit(formData) {
+  async function handleSubmit(formData: any): Promise<void> {
     if (!validateForm(formData)) {
       toast.error('Please fix the errors in the form');
       return;
@@ -164,7 +183,7 @@
     }
   }
   
-  function saveAsDraft(formData) {
+  function saveAsDraft(formData: any): void {
     toast.info('Draft saved successfully');
   }
   </script>

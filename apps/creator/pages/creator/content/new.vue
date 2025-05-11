@@ -33,7 +33,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
 import { useContentStore } from '~/stores/content';
 import PostForm from '@/components/PostForm.vue';
@@ -50,8 +50,24 @@ definePageMeta({
   }
 });
 
-// Form state
-const post = reactive({
+interface PostFormData {
+  title: string
+  content: string
+  visibility: 'public' | 'subscribers' | 'ppv'
+  price: number
+  mediaUrls: string[]
+}
+
+interface PostFormErrors {
+  title: string
+  content: string
+  mediaFiles: string
+  visibility: string
+  price: string
+  scheduledDate: string
+}
+
+const post = reactive<PostFormData>({
   title: '',
   content: '',
   visibility: 'public',
@@ -59,7 +75,7 @@ const post = reactive({
   mediaUrls: []
 });
 
-const errors = reactive({
+const errors = reactive<PostFormErrors>({
   title: '',
   content: '',
   mediaFiles: '',
@@ -68,16 +84,15 @@ const errors = reactive({
   scheduledDate: ''
 });
 
-// Get minimum schedule date (current time + 10 minutes)
-const minScheduleDate = computed(() => {
+const minScheduleDate = computed<string>(() => {
   const date = new Date();
   date.setMinutes(date.getMinutes() + 10);
   return date.toISOString().slice(0, 16);
 });
 
-function validateForm(formData) {
+function validateForm(formData: any): boolean {
   let isValid = true;
-  Object.keys(errors).forEach(key => { errors[key] = ''; });
+  Object.keys(errors).forEach(key => { (errors as any)[key] = ''; });
   if (!formData.title || !formData.title.trim()) {
     errors.title = 'Title is required';
     isValid = false;
@@ -118,7 +133,7 @@ function validateForm(formData) {
   return isValid;
 }
 
-async function handleSubmit(formData) {
+async function handleSubmit(formData: any): Promise<void> {
   if (!validateForm(formData)) {
     toast.error('Please fix the errors in the form');
     return;
@@ -128,10 +143,10 @@ async function handleSubmit(formData) {
     post.content = formData.content;
     post.visibility = formData.visibility;
     post.price = formData.price;
-    post.mediaUrls = formData.mediaFiles.map((_, index) => 
+    post.mediaUrls = formData.mediaFiles.map((_: any, index: number) => 
       `https://images.pexels.com/photos/${3000000 + index}/pexels-photo.jpeg?auto=compress&cs=tinysrgb&w=800`
     );
-    const postData = {
+    const postData: any = {
       ...post,
       creatorId: '123'
     };
@@ -146,7 +161,7 @@ async function handleSubmit(formData) {
   }
 }
 
-function saveAsDraft(formData) {
+function saveAsDraft(formData: any): void {
   toast.info('Draft saved successfully');
 }
 </script>

@@ -60,17 +60,34 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '~/stores/auth';
 import { useColorMode } from '#imports';
 
-const authStore = useAuthStore();
-const isOpen = ref(false);
-const dropdownRef = ref(null)
-const colorMode = useColorMode()
+interface User {
+  displayName?: string;
+  email?: string;
+  profileImage?: string;
+  isCreator?: boolean;
+}
 
-const userInitials = computed(() => {
+interface NavLink {
+  name: string;
+  href: string;
+}
+
+interface AuthStore {
+  user: User | null;
+  logout: () => void;
+}
+
+const authStore = useAuthStore() as AuthStore;
+const isOpen = ref(false);
+const dropdownRef = ref<HTMLElement | null>(null);
+const colorMode = useColorMode();
+
+const userInitials = computed((): string => {
   const name = authStore.user?.displayName || '';
   if (!name) return '?';
 
@@ -81,41 +98,41 @@ const userInitials = computed(() => {
   return name.substring(0, 2).toUpperCase();
 });
 
-const profileHref = computed(() => {
+const profileHref = computed((): string => {
   if (authStore.user && authStore.user.displayName) {
-    return `/@${encodeURIComponent(authStore.user.displayName)}`
+    return `/@${encodeURIComponent(authStore.user.displayName)}`;
   }
-  return '/@user'
-})
+  return '/@user';
+});
 
-const userLinks = [
+const userLinks: NavLink[] = [
   { name: 'Your Profile', href: profileHref.value },
   { name: 'Subscriptions', href: '/subscriptions' },
   { name: 'Settings', href: '/settings' },
 ];
 
-const creatorLinks = [
+const creatorLinks: NavLink[] = [
   { name: 'Creator Dashboard', href: '/creator/analytics' },
   { name: 'Content Manager', href: '/creator/content' },
   { name: 'Earnings', href: '/creator/earnings' },
 ];
 
-function logout() {
+function logout(): void {
   authStore.logout();
   isOpen.value = false;
   navigateTo('/');
 }
 
 // Close dropdown when clicking outside
-const closeDropdown = (e) => {
-  if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
+const closeDropdown = (e: MouseEvent): void => {
+  if (dropdownRef.value && !dropdownRef.value.contains(e.target as Node)) {
     isOpen.value = false;
   }
 };
 
-const isDarkMode = ref(false)
+const isDarkMode = ref(false);
 
-function toggleDarkMode() {
+function toggleDarkMode(): void {
   colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
   isOpen.value = false;
 }

@@ -138,39 +138,62 @@ import { ref, computed } from 'vue'
 import MediaPreviewModal from './ui/MediaPreviewModal.vue'
 import BlurredPost from './ui/BlurredPost.vue'
 
+interface User {
+  name: string
+  avatar: string
+}
+
+interface Comment {
+  content: string
+  createdAt: Date
+  user: User
+}
+
+interface Post {
+  id: string
+  creator: User
+  content: string
+  location?: string
+  image?: string
+  video?: string
+  createdAt: Date
+  likes: number
+  isPremium: boolean
+  comments: Comment[]
+}
+
+interface PostCardProps {
+  post: Post
+  isSubscribed: boolean
+}
+
+interface PostCardEmits {
+  (e: 'subscribe'): void
+  (e: 'tip'): void
+  (e: 'add-comment', comment: string): void
+}
+
+interface MediaItem {
+  url: string
+  type: 'image' | 'video'
+}
+
+interface Message {
+  text: string
+  timestamp: Date
+  user: User
+  isCurrentUser: boolean
+}
+
 // Current user data
-const currentUser = ref({
+const currentUser = ref<User>({
   name: 'YourUsername',
   avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
 })
 
-const props = defineProps({
-  post: {
-    type: Object,
-    required: true,
-    default: () => ({
-      id: String,
-      creator: {
-        name: String,
-        avatar: String,
-      },
-      content: String,
-      location: String,
-      image: String,
-      video: String,
-      createdAt: new Date(),
-      likes: Number,
-      isPremium: Boolean,
-      comments: [],
-    })
-  },
-  isSubscribed: {
-    type: Boolean,
-    default: false
-  }
-})
+const props = defineProps<PostCardProps>()
 
-const emit = defineEmits(['subscribe', 'tip', 'add-comment'])
+const emit = defineEmits<PostCardEmits>()
 
 const showModal = ref(false)
 const quickComment = ref('')
@@ -179,21 +202,21 @@ const currentMediaIndex = ref(0)
 const showComments = ref(false)
 const localComments = ref<string[]>([])
 
-const formatNumber = (num: number) => {
+const formatNumber = (num: number): string => {
   return new Intl.NumberFormat('en-US').format(num)
 }
 
 // Format media items for the modal
-const mediaItemsForModal = computed(() => {
+const mediaItemsForModal = computed<MediaItem[]>(() => {
   return [{
-    url: props.post.video || props.post.image,
+    url: props.post.video || props.post.image || '',
     type: props.post.video ? 'video' : 'image'
   }]
 })
 
 // Combine post comments and local comments for modal
-const allCommentsForModal = computed(() => {
-  const captionMessage = {
+const allCommentsForModal = computed<Message[]>(() => {
+  const captionMessage: Message = {
     text: props.post.content,
     timestamp: props.post.createdAt,
     user: {
@@ -203,7 +226,7 @@ const allCommentsForModal = computed(() => {
     isCurrentUser: false
   }
 
-  const postComments = props.post.comments.map(comment => ({
+  const postComments: Message[] = props.post.comments.map(comment => ({
     text: comment.content,
     timestamp: comment.createdAt,
     user: {
@@ -213,7 +236,7 @@ const allCommentsForModal = computed(() => {
     isCurrentUser: false
   }))
 
-  const localCommentMessages = localComments.value.map(comment => ({
+  const localCommentMessages: Message[] = localComments.value.map(comment => ({
     text: comment,
     timestamp: new Date(),
     user: {
@@ -226,7 +249,7 @@ const allCommentsForModal = computed(() => {
   return [captionMessage, ...postComments, ...localCommentMessages]
 })
 
-const formatTimeAgo = (date: Date) => {
+const formatTimeAgo = (date: Date): string => {
   const now = new Date()
   const diffInSeconds = Math.floor((now.getTime() - new Date(date).getTime()) / 1000)
 
@@ -236,11 +259,11 @@ const formatTimeAgo = (date: Date) => {
   return `${Math.floor(diffInSeconds / 86400)}d ago`
 }
 
-const toggleLike = () => {
+const toggleLike = (): void => {
   isLiked.value = !isLiked.value
 }
 
-const openModal = (index = 0, withComments = false) => {
+const openModal = (index = 0, withComments = false): void => {
   if (props.post.isPremium && !props.isSubscribed) {
     emit('subscribe')
     return
@@ -250,26 +273,26 @@ const openModal = (index = 0, withComments = false) => {
   showModal.value = true
 }
 
-const closeModal = () => {
+const closeModal = (): void => {
   showModal.value = false
   showComments.value = false
 }
 
-const addComment = () => {
-  if (quickComment.value.trim()) {
-    localComments.value.push(quickComment.value.trim())
-    emit('add-comment', quickComment.value.trim())
-    quickComment.value = ''
-  }
+const updateMediaIndex = (index: number): void => {
+  currentMediaIndex.value = index
 }
 
-const handleNewComment = (comment: string) => {
+const addComment = (): void => {
+  if (!quickComment.value.trim()) return
+  
+  localComments.value.push(quickComment.value)
+  emit('add-comment', quickComment.value)
+  quickComment.value = ''
+}
+
+const handleNewComment = (comment: string): void => {
   localComments.value.push(comment)
   emit('add-comment', comment)
-}
-
-const updateMediaIndex = (index: number) => {
-  currentMediaIndex.value = index
 }
 </script>
 

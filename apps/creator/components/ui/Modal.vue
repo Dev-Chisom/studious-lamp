@@ -22,7 +22,9 @@
   </template>
   
   <script setup lang="ts">
-  const emit = defineEmits<{
+  interface ModalEmits {
     (e: 'close'): void
-  }>()
+  }
+  
+  const emit = defineEmits<ModalEmits>()
   </script>

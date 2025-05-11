@@ -174,36 +174,73 @@
   </form>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue';
 import FormInput from '@/components/ui/FormInput.vue';
 import FormFileUpload from '@/components/ui/FormFileUpload.vue';
 
-const props = defineProps({
-  initialValues: { type: Object, default: () => ({}) },
-  errors: { type: Object, default: () => ({}) },
-  loading: { type: Boolean, default: false },
-  minScheduleDate: { type: String, default: '' }
-});
-const emit = defineEmits(['submit', 'draft', 'cancel']);
+type Visibility = 'public' | 'subscribers' | 'ppv';
 
-const form = reactive({
+interface FormData {
+  title: string;
+  content: string;
+  visibility: Visibility;
+  price: number;
+  mediaUrls: string[];
+}
+
+interface FormErrors {
+  title?: string;
+  content?: string;
+  visibility?: string;
+  price?: string;
+  mediaFiles?: string;
+  scheduledDate?: string;
+}
+
+interface PostFormProps {
+  initialValues?: Partial<FormData>;
+  errors?: FormErrors;
+  loading?: boolean;
+  minScheduleDate?: string;
+}
+
+interface PostFormEmits {
+  (e: 'submit', data: FormData & { mediaFiles: File[], isScheduled: boolean, scheduledDate: string }): void;
+  (e: 'draft', data: FormData & { mediaFiles: File[], isScheduled: boolean, scheduledDate: string }): void;
+  (e: 'cancel'): void;
+}
+
+const props = withDefaults(defineProps<PostFormProps>(), {
+  initialValues: () => ({}),
+  errors: () => ({}),
+  loading: false,
+  minScheduleDate: ''
+});
+
+const emit = defineEmits<PostFormEmits>();
+
+const form = reactive<FormData>({
   title: '',
   content: '',
   visibility: 'public',
   price: 4.99,
   mediaUrls: []
 });
-const mediaFiles = ref([]);
+const mediaFiles = ref<File[]>([]);
 const isScheduled = ref(false);
 const scheduledDate = ref('');
 
 watch(() => props.initialValues, (val) => {
-  Object.assign(form, val || {});
-  if (val && val.mediaUrls) mediaFiles.value = val.mediaUrls;
+  if (val) {
+    Object.assign(form, val);
+    if (val.mediaUrls) {
+      mediaFiles.value = val.mediaUrls.map(url => new File([], url));
+    }
+  }
 }, { immediate: true });
 
-function onSubmit() {
+function onSubmit(): void {
   emit('submit', {
     ...form,
     mediaFiles: mediaFiles.value,
@@ -211,7 +248,8 @@ function onSubmit() {
     scheduledDate: scheduledDate.value
   });
 }
-function onDraft() {
+
+function onDraft(): void {
   emit('draft', {
     ...form,
     mediaFiles: mediaFiles.value,

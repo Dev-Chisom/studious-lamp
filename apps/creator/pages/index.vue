@@ -66,64 +66,88 @@
   
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-  import { useUserStore } from '~/stores/user'
-  import { toast } from 'vue3-toastify'
-  import Modal from '~/components/ui/Modal.vue'
-  import Button from '~/components/ui/Button.vue'
+import { useUserStore } from '~/stores/user'
+import { toast } from 'vue3-toastify'
+import Modal from '~/components/ui/Modal.vue'
+import Button from '~/components/ui/Button.vue'
 import PostCard from '@/components/PostCard.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination, Keyboard } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/pagination'
 
-  definePageMeta({
+definePageMeta({
   layout: 'creator',
   middleware: ['auth'],
   meta: {
     requiresAuth: true,
   }
 });
-  
-  const userStore = useUserStore()
-  
-  const posts = ref([
-    {
-      id: '1',
-      creator: {
-        id: 'creator1',
-        name: 'John Doe',
-        avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg'
-      },
-      content: 'This is a free post that everyone can see!',
-      image: 'https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg',
-      createdAt: new Date('2024-03-01'),
-      likes: 42,
-      isPremium: false,
-      comments: []
+
+interface Creator {
+  id: string
+  name: string
+  avatar: string
+}
+
+interface Post {
+  id: string
+  creator: Creator
+  content: string
+  image: string
+  createdAt: Date
+  likes: number
+  isPremium: boolean
+  comments: any[]
+}
+
+interface SuggestionUser {
+  id: string
+  name: string
+  username: string
+  avatar: string
+}
+
+const userStore = useUserStore()
+
+const posts = ref<Post[]>([
+  {
+    id: '1',
+    creator: {
+      id: 'creator1',
+      name: 'John Doe',
+      avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg'
     },
-    {
-      id: '2',
-      creator: {
-        id: 'creator2',
-        name: 'Jane Smith',
-        avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg'
-      },
-      content: 'This is a premium post that requires subscription!',
-      image: 'https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg',
-      createdAt: new Date('2024-03-02'),
-      likes: 156,
-      isPremium: true,
-      comments: []
-    }
-  ])
-  
-  const showingTipModal = ref(false)
-  const selectedPost = ref(null)
-  const tipAmount = ref(1000)
-  const isSendingTip = ref(false)
+    content: 'This is a free post that everyone can see!',
+    image: 'https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg',
+    createdAt: new Date('2024-03-01'),
+    likes: 42,
+    isPremium: false,
+    comments: []
+  },
+  {
+    id: '2',
+    creator: {
+      id: 'creator2',
+      name: 'Jane Smith',
+      avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg'
+    },
+    content: 'This is a premium post that requires subscription!',
+    image: 'https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg',
+    createdAt: new Date('2024-03-02'),
+    likes: 156,
+    isPremium: true,
+    comments: []
+  }
+])
+
+const showingTipModal = ref(false)
+const selectedPost = ref<Post | null>(null)
+const tipAmount = ref<number>(1000)
+const isSendingTip = ref(false)
 
 const suggestionSearch = ref('')
-const suggestions = ref([
+const suggestions = ref<SuggestionUser[]>([
   {
     id: '1',
     name: 'Remy Rune',
@@ -198,7 +222,7 @@ const suggestions = ref([
   }
 ])
 
-const filteredSuggestions = computed(() => {
+const filteredSuggestions = computed<SuggestionUser[]>(() => {
   if (!suggestionSearch.value) return suggestions.value
   return suggestions.value.filter(user =>
     user.name.toLowerCase().includes(suggestionSearch.value.toLowerCase()) ||
@@ -207,53 +231,51 @@ const filteredSuggestions = computed(() => {
 })
 
 const usersPerSlide = 3
-function chunkArray(array, size) {
-  const result = []
+function chunkArray<T>(array: T[], size: number): T[][] {
+  const result: T[][] = []
   for (let i = 0; i < array.length; i += size) {
     result.push(array.slice(i, i + size))
   }
   return result
 }
-const chunkedSuggestions = computed(() => chunkArray(filteredSuggestions.value, usersPerSlide))
-  
-  const isSubscribedToCreator = (creatorId: string) => {
-    return userStore.getSubscriptions.includes(creatorId)
+const chunkedSuggestions = computed<SuggestionUser[][]>(() => chunkArray(filteredSuggestions.value, usersPerSlide))
+
+const isSubscribedToCreator = (creatorId: string): boolean => {
+  return userStore.getSubscriptions.includes(creatorId)
+}
+
+const subscribeToCreator = async (creatorId: string): Promise<void> => {
+  try {
+    await userStore.addSubscription(creatorId)
+    toast.success('Successfully subscribed to creator!')
+  } catch (error) {
+    toast.error('Failed to subscribe to creator')
   }
-  
-  const subscribeToCreator = async (creatorId: string) => {
-    try {
-      await userStore.addSubscription(creatorId)
-      toast.success('Successfully subscribed to creator!')
-    } catch (error) {
-      toast.error('Failed to subscribe to creator')
-    }
+}
+
+const showTipModal = (post: Post): void => {
+  selectedPost.value = post
+  showingTipModal.value = true
+}
+
+const sendTip = async (): Promise<void> => {
+  if (!selectedPost.value || tipAmount.value < 100) return
+  isSendingTip.value = true
+  try {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+    toast.success(`Successfully sent tip to ${selectedPost.value.creator.name}!`)
+    showingTipModal.value = false
+  } catch (error) {
+    toast.error('Failed to send tip')
+  } finally {
+    isSendingTip.value = false
   }
-  
-  const showTipModal = (post: any) => {
-    selectedPost.value = post
-    showingTipModal.value = true
-  }
-  
-  const sendTip = async () => {
-    if (!selectedPost.value || tipAmount.value < 100) return
-  
-    isSendingTip.value = true
-    try {
-      // Here you would typically make an API call to process the tip
-      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulated API call
-      toast.success(`Successfully sent tip to ${selectedPost.value.creator.name}!`)
-      showingTipModal.value = false
-    } catch (error) {
-      toast.error('Failed to send tip')
-    } finally {
-      isSendingTip.value = false
-    }
-  }
-  
-  onMounted(async () => {
-    // Fetch posts from API
-  })
-  </script>
+}
+
+onMounted(async () => {
+  // Fetch posts from API
+})
+</script>
 
 <style scoped>
 ::v-deep(.swiper-pagination-bullet) {

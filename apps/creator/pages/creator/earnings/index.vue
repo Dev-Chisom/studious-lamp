@@ -286,7 +286,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue';
 
 definePageMeta({
@@ -298,8 +298,38 @@ definePageMeta({
   }
 });
 
+interface StatCard {
+  name: string
+  value: string
+  icon: string
+  color: string
+  trend: number
+}
+
+interface RevenueItem {
+  name: string
+  amount: number
+  percentage: number
+  color: string
+}
+
+interface Customer {
+  name: string
+  email: string
+  avatar: string
+}
+
+interface Transaction {
+  id: string
+  date: Date
+  type: 'subscription' | 'tip' | 'ppv'
+  customer: Customer
+  amount: number
+  status: 'completed' | 'pending' | 'failed'
+}
+
 // Stats data
-const stats = [
+const stats = ref<StatCard[]>([
   {
     name: 'Total Earnings',
     value: '$12,847',
@@ -328,13 +358,13 @@ const stats = [
     color: 'accent',
     trend: 15
   }
-];
+]);
 
 // Chart period
-const chartPeriod = ref('30d');
+const chartPeriod = ref<string>('30d');
 
 // Revenue breakdown data
-const revenueByType = [
+const revenueByType = ref<RevenueItem[]>([
   {
     name: 'Subscriptions',
     amount: 9458,
@@ -353,9 +383,9 @@ const revenueByType = [
     percentage: 8,
     color: 'accent'
   }
-];
+]);
 
-const revenueBySubscription = [
+const revenueBySubscription = ref<RevenueItem[]>([
   {
     name: 'Monthly',
     amount: 5675,
@@ -368,10 +398,10 @@ const revenueBySubscription = [
     percentage: 40,
     color: 'secondary'
   }
-];
+]);
 
 // Mock transactions data
-const transactions = ref([
+const transactions = ref<Transaction[]>([
   {
     id: '1',
     date: new Date(Date.now() - 2 * 60 * 60 * 1000),
@@ -411,17 +441,17 @@ const transactions = ref([
 ]);
 
 // Pagination
-const currentPage = ref(1);
+const currentPage = ref<number>(1);
 const itemsPerPage = 10;
 
-const totalTransactions = computed(() => transactions.value.length);
-const totalPages = computed(() => Math.ceil(totalTransactions.value / itemsPerPage));
+const totalTransactions = computed<number>(() => transactions.value.length);
+const totalPages = computed<number>(() => Math.ceil(totalTransactions.value / itemsPerPage));
 
-const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage);
-const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage, totalTransactions.value));
+const startIndex = computed<number>(() => (currentPage.value - 1) * itemsPerPage);
+const endIndex = computed<number>(() => Math.min(startIndex.value + itemsPerPage, totalTransactions.value));
 
-const displayedPages = computed(() => {
-  const pages = [];
+const displayedPages = computed<number[]>(() => {
+  const pages: number[] = [];
   const maxPages = 5;
   
   if (totalPages.value <= maxPages) {
@@ -445,13 +475,11 @@ const displayedPages = computed(() => {
 });
 
 // Methods
-function formatDate(date) {
+function formatDate(date: Date): string {
   return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric'
+    day: 'numeric'
   });
 }
 </script>

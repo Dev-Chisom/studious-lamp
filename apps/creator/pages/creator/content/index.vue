@@ -61,21 +61,8 @@
         <p class="mt-2 text-gray-500 dark:text-gray-200 dark:text-gray-400">Loading content...</p>
       </div>
 
-      <div v-else-if="filteredPosts.length === 0" class="p-8 text-center">
-        <Icon name="lucide:file-x" class="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 dark:text-gray-200" />
-        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No content found</h3>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
-          {{ search ? 'Try adjusting your search or filters.' : 'Get started by creating your first post.' }}
-        </p>
-        <div class="mt-6">
-          <NuxtLink to="/creator/content/new" class="btn-primary">
-            <Icon name="lucide:plus" class="mr-2 h-4 w-4" />
-            Create New Post
-          </NuxtLink>
-        </div>
-      </div>
 
-      <ul v-else class="divide-y divide-gray-200">
+      <ul v-else-if="filteredPosts.length !== 0" class="divide-y divide-gray-200">
         <li v-for="post in filteredPosts" :key="post.id" class="hover:bg-gray-50 hover:dark:bg-gray-700">
           <div class="px-4 py-4 sm:px-6 flex items-center">
             <div class="w-16 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-100 mr-4">
@@ -146,6 +133,20 @@
           </div>
         </li>
       </ul>
+
+      <div v-else class="p-8 text-center">
+        <Icon name="lucide:file-x" class="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 dark:text-gray-200" />
+        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No content found</h3>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
+          {{ search ? 'Try adjusting your search or filters.' : 'Get started by creating your first post.' }}
+        </p>
+        <div class="mt-6">
+          <NuxtLink to="/creator/content/new" class="btn-primary">
+            <Icon name="lucide:plus" class="mr-2 h-4 w-4" />
+            Create New Post
+          </NuxtLink>
+        </div>
+      </div>
     </div>
 
     <!-- Delete confirmation modal -->
@@ -205,7 +206,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useContentStore } from '~/stores/content';
 import { toast } from 'vue3-toastify'
@@ -219,15 +220,28 @@ definePageMeta({
   }
 });
 
+interface Post {
+  id: string
+  title: string
+  content: string
+  mediaUrls: string[]
+  createdAt: string | Date
+  likes: number
+  comments: number
+  visibility: 'public' | 'subscribers' | 'ppv'
+  price?: number
+  scheduledFor?: string | Date
+}
+
 const contentStore = useContentStore();
 
 // State
-const loading = ref(true);
-const search = ref('');
-const visibilityFilter = ref('');
-const sortBy = ref('newest');
-const showDeleteModal = ref(false);
-const postToDelete = ref(null);
+const loading = ref<boolean>(true);
+const search = ref<string>('');
+const visibilityFilter = ref<string>('');
+const sortBy = ref<string>('newest');
+const showDeleteModal = ref<boolean>(false);
+const postToDelete = ref<string | null>(null);
 
 // Fetch posts on mount
 onMounted(async () => {
@@ -241,13 +255,13 @@ onMounted(async () => {
 });
 
 // Computed properties
-const filteredPosts = computed(() => {
-  let result = [...contentStore.posts];
+const filteredPosts = computed<Post[]>(() => {
+  let result = [...contentStore.posts] as Post[];
 
   // Apply search filter
   if (search.value) {
     const searchLower = search.value.toLowerCase();
-    result = result.filter(post =>
+    result = result.filter((post: Post) =>
       post.title.toLowerCase().includes(searchLower) ||
       post.content.toLowerCase().includes(searchLower)
     );
@@ -255,19 +269,19 @@ const filteredPosts = computed(() => {
 
   // Apply visibility filter
   if (visibilityFilter.value) {
-    result = result.filter(post => post.visibility === visibilityFilter.value);
+    result = result.filter((post: Post) => post.visibility === visibilityFilter.value);
   }
 
   // Apply sorting
   switch (sortBy.value) {
     case 'newest':
-      result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      result.sort((a: Post, b: Post) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
       break;
     case 'oldest':
-      result.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+      result.sort((a: Post, b: Post) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
       break;
     case 'popular':
-      result.sort((a, b) => b.likes - a.likes);
+      result.sort((a: Post, b: Post) => b.likes - a.likes);
       break;
   }
 
@@ -275,12 +289,12 @@ const filteredPosts = computed(() => {
 });
 
 // Methods
-function truncateContent(content, length = 80) {
+function truncateContent(content: string, length = 80): string {
   if (content.length <= length) return content;
   return content.substring(0, length) + '...';
 }
 
-function formatDate(dateString) {
+function formatDate(dateString: string | Date): string {
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
@@ -289,16 +303,16 @@ function formatDate(dateString) {
   });
 }
 
-function editPost(id) {
+function editPost(id: string): void {
   navigateTo(`/creator/content/edit/${id}`);
 }
 
-function confirmDelete(id) {
+function confirmDelete(id: string): void {
   postToDelete.value = id;
   showDeleteModal.value = true;
 }
 
-async function deletePost() {
+async function deletePost(): Promise<void> {
   if (!postToDelete.value) return;
 
   try {

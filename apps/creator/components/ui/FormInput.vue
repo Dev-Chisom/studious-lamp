@@ -56,74 +56,62 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue';
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
 
-const props = defineProps({
-  modelValue: {
-    type: [String, Number],
-    default: ''
-  },
-  label: {
-    type: String,
-    default: ''
-  },
-  placeholder: {
-    type: String,
-    default: ''
-  },
-  type: {
-    type: String,
-    default: 'text'
-  },
-  id: {
-    type: String,
-    default: () => `input-${Math.random().toString(36).substring(2, 9)}`
-  },
-  error: {
-    type: String,
-    default: ''
-  },
-  hint: {
-    type: String,
-    default: ''
-  },
-  icon: {
-    type: String,
-    default: ''
-  },
-  required: {
-    type: Boolean,
-    default: false
-  },
-  showPasswordToggle: {
-    type: Boolean,
-    default: true
-  },
-  autofocus: {
-    type: Boolean,
-    default: false
-  }
-});
+type InputType = 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search'
 
-defineEmits(['update:modelValue']);
+interface FormInputProps {
+  modelValue?: string | number
+  label?: string
+  placeholder?: string
+  type?: InputType
+  id?: string
+  error?: string
+  hint?: string
+  icon?: string
+  required?: boolean
+  showPasswordToggle?: boolean
+  autofocus?: boolean
+}
 
-const input = ref(null);
-const passwordVisible = ref(false);
-const inputType = computed(() => {
+interface FormInputEmits {
+  (e: 'update:modelValue', value: string): void
+}
+
+const props = withDefaults(defineProps<FormInputProps>(), {
+  modelValue: '',
+  label: '',
+  placeholder: '',
+  type: 'text',
+  id: () => `input-${Math.random().toString(36).substring(2, 9)}`,
+  error: '',
+  hint: '',
+  icon: '',
+  required: false,
+  showPasswordToggle: true,
+  autofocus: false
+})
+
+const emit = defineEmits<FormInputEmits>()
+
+const input = ref<HTMLInputElement | null>(null)
+const passwordVisible = ref(false)
+
+const inputType = computed<InputType>(() => {
   if (props.type === 'password' && passwordVisible.value) {
-    return 'text';
+    return 'text'
   }
-  return props.type;
-});
+  return props.type
+})
 
-function togglePasswordVisibility() {
-  passwordVisible.value = !passwordVisible.value;
+function togglePasswordVisibility(): void {
+  passwordVisible.value = !passwordVisible.value
 }
 
 onMounted(() => {
   if (props.autofocus && input.value) {
-    input.value.focus();
+    input.value.focus()
   }
-});
+})
 </script>

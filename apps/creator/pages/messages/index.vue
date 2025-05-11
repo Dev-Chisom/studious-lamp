@@ -268,7 +268,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onUnmounted } from 'vue';
 import FormInput from '@/components/ui/FormInput.vue'
 import MediaPreviewModal from '@/components/ui/MediaPreviewModal.vue';
@@ -281,20 +281,62 @@ definePageMeta({
   }
 });
 
-// State
-const searchQuery = ref('');
-const selectedChat = ref(null);
-const newMessage = ref('');
-const typingTimeout = ref(null);
-const mediaPreview = ref([]);
-const mediaModal = ref({
+interface User {
+  name: string;
+  avatar: string;
+  isOnline: boolean;
+}
+
+interface MediaItem {
+  type: 'image' | 'video';
+  url: string;
+  preview?: string;
+  file?: File;
+  _msgId?: string;
+}
+
+interface Message {
+  id: string;
+  content: string;
+  timestamp: Date;
+  isSelf: boolean;
+  isRead: boolean;
+  media?: MediaItem | MediaItem[];
+}
+
+interface Chat {
+  id: string;
+  user: User;
+  lastMessage: {
+    content: string;
+    timestamp: Date;
+  };
+  unreadCount: number;
+  isTyping: boolean;
+  messages: Message[];
+}
+
+interface MediaModal {
+  isOpen: boolean;
+  mediaItems?: MediaItem[];
+  currentIndex?: number;
+  type?: string | null;
+  url?: string | null;
+}
+
+const searchQuery = ref<string>('');
+const selectedChat = ref<Chat | null>(null);
+const newMessage = ref<string>('');
+const typingTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
+const mediaPreview = ref<MediaItem[]>([]);
+const mediaModal = ref<MediaModal>({
   isOpen: false,
   type: null,
   url: null
 });
 
 // Mock data for chats
-const chats = ref([
+const chats = ref<Chat[]>([
   {
     id: '1',
     user: {
@@ -373,25 +415,25 @@ const chats = ref([
 ]);
 
 // Computed
-const filteredChats = computed(() => {
+const filteredChats = computed<Chat[]>(() => {
   if (!searchQuery.value) return chats.value;
   
   const query = searchQuery.value.toLowerCase();
-  return chats.value.filter(chat => 
+  return chats.value.filter((chat: Chat) => 
     chat.user.name.toLowerCase().includes(query) ||
     chat.lastMessage.content.toLowerCase().includes(query)
   );
 });
 
-const allChatMedia = computed(() => {
+const allChatMedia = computed<MediaItem[]>(() => {
   if (!selectedChat.value) return [];
-  const mediaList = [];
-  selectedChat.value.messages.forEach(msg => {
+  const mediaList: MediaItem[] = [];
+  selectedChat.value.messages.forEach((msg: Message) => {
     if (msg.media) {
       if (Array.isArray(msg.media)) {
-        msg.media.forEach(m => mediaList.push({ ...m, _msgId: msg.id }));
+        (msg.media as MediaItem[]).forEach((m: MediaItem) => mediaList.push({ ...m, _msgId: msg.id }));
       } else {
-        mediaList.push({ ...msg.media, _msgId: msg.id });
+        mediaList.push({ ...(msg.media as MediaItem), _msgId: msg.id });
       }
     }
   });
@@ -399,9 +441,10 @@ const allChatMedia = computed(() => {
 });
 
 // Methods
-function formatTime(date) {
+function formatTime(date: Date | string): string {
   const now = new Date();
-  const diff = now - new Date(date);
+  const d = new Date(date);
+  const diff = now.getTime() - d.getTime();
   
   const minutes = Math.floor(diff / (1000 * 60));
   const hours = Math.floor(diff / (1000 * 60 * 60));
@@ -414,15 +457,15 @@ function formatTime(date) {
   } else if (days < 7) {
     return `${days}d ago`;
   } else {
-    return new Date(date).toLocaleDateString();
+    return d.toLocaleDateString();
   }
 }
 
-function selectChat(chat) {
+function selectChat(chat: Chat): void {
   selectedChat.value = chat;
   // Mark messages as read
   chat.unreadCount = 0;
-  chat.messages.forEach(message => {
+  chat.messages.forEach((message: Message) => {
     if (!message.isSelf) {
       message.isRead = true;
     }
@@ -443,8 +486,9 @@ function handleTyping() {
   }, 3000);
 }
 
-async function handleImageUpload(event) {
-  const files = Array.from(event.target.files);
+async function handleImageUpload(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const files = Array.from(input.files || []);
   
   for (const file of files) {
     if (file.type.startsWith('image/')) {
@@ -456,12 +500,12 @@ async function handleImageUpload(event) {
       });
     }
   }
-  
-  event.target.value = '';
+  input.value = '';
 }
 
-async function handleVideoUpload(event) {
-  const file = event.target.files[0];
+async function handleVideoUpload(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files ? input.files[0] : undefined;
   
   if (file && file.type.startsWith('video/')) {
     const preview = URL.createObjectURL(file);
@@ -471,17 +515,18 @@ async function handleVideoUpload(event) {
       preview
     });
   }
-  
-  event.target.value = '';
+  input.value = '';
 }
 
-function removeMedia(index) {
+function removeMedia(index: number) {
   const media = mediaPreview.value[index];
-  URL.revokeObjectURL(media.preview);
+  if (media && media.preview) {
+    URL.revokeObjectURL(media.preview);
+  }
   mediaPreview.value.splice(index, 1);
 }
 
-function openMediaPreviewForChat(media, msgId) {
+function openMediaPreviewForChat(media: MediaItem, msgId: string) {
   const allMedia = allChatMedia.value;
   let globalIdx = 0;
   let found = false;
