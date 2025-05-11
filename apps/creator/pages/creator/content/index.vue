@@ -130,12 +130,14 @@
             </div>
 
             <div class="ml-4 flex-shrink-0 flex space-x-2">
-              <button class="p-2 text-gray-500 dark:text-gray-200 hover:text-primary-600 rounded-md hover:bg-gray-100"
+              <button
+                class="p-2 text-gray-500 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
                 @click="editPost(post.id)">
                 <Icon name="lucide:pencil" class="h-5 w-5" />
                 <span class="sr-only">Edit</span>
               </button>
-              <button class="p-2 text-gray-500 dark:text-gray-200 hover:text-error-600 rounded-md hover:bg-gray-100"
+              <button
+                class="p-2 text-gray-500 hover:text-error-600 dark:text-gray-200 dark:hover:text-error-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
                 @click="confirmDelete(post.id)">
                 <Icon name="lucide:trash-2" class="h-5 w-5" />
                 <span class="sr-only">Delete</span>

@@ -81,14 +81,21 @@ const userInitials = computed(() => {
   return name.substring(0, 2).toUpperCase();
 });
 
+const profileHref = computed(() => {
+  if (authStore.user && authStore.user.displayName) {
+    return `/@${encodeURIComponent(authStore.user.displayName)}`
+  }
+  return '/@user'
+})
+
 const userLinks = [
-  { name: 'Your Profile', href: authStore.user?.displayName ? `/@${authStore.user.displayName}` : '/@user' },
+  { name: 'Your Profile', href: profileHref.value },
   { name: 'Subscriptions', href: '/subscriptions' },
   { name: 'Settings', href: '/settings' },
 ];
 
 const creatorLinks = [
-  { name: 'Creator Dashboard', href: '/creator/dashboard' },
+  { name: 'Creator Dashboard', href: '/creator/analytics' },
   { name: 'Content Manager', href: '/creator/content' },
   { name: 'Earnings', href: '/creator/earnings' },
 ];

@@ -90,6 +90,7 @@
       :is-open="previewModal.isOpen"
       :media-items="previewModal.items"
       :current-index="previewModal.currentIndex"
+      :currentUser="currentUser"
       @close="closePreview"
       @update:current-index="previewModal.currentIndex = $event"
     />
@@ -135,6 +136,11 @@ const props = defineProps({
     default: false
   }
 });
+
+const currentUser = ref({
+  name: 'YourUsername',
+  avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
+})
 
 const emit = defineEmits(['update:modelValue', 'error']);
 

@@ -84,7 +84,7 @@ defineEmits(['close']);
 
 const navigationItems = [
   { name: 'Home', href: '/', icon: 'lucide:home' },
-  { name: 'Dashboard', href: '/creator/dashboard', icon: 'lucide:layout-dashboard' },
+  { name: 'Analytics', href: '/creator/analytics', icon: 'lucide:bar-chart' },
   { name: 'Content', href: '/creator/content', icon: 'lucide:image' },
   { name: 'Messages', href: '/messages', icon: 'lucide:message-circle' },
   { name: 'Subscribers', href: '/creator/subscribers', icon: 'lucide:users' },
