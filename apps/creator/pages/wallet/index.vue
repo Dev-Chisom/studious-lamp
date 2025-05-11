@@ -1,114 +1,150 @@
 <template>
+  	 	 	
   <div class="max-w-6xl mx-auto">
-    <Head>
-      <Title>Subscribers - Creator Dashboard</Title>
-    </Head>
+    		<Head> 			<Title>Subscribers - Creator Dashboard</Title> 		</Head> 		 		 		
     <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Wallet</h1>
+      			 			 			
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">				Wallet 			 			</h1>
+      		 		 		
     </div>
+    		 		 		
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-soft p-6 mb-8">
+      			 			 			
       <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Wallet Balance</h1>
-        <span class="text-3xl font-bold text-primary-600 dark:text-primary-400">₦{{ formatAmount(balance) }}</span>
+        				 				 				
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">					Wallet Balance 				 				</h1>
+        				<span class="text-3xl font-bold text-primary-600 dark:text-primary-400">₦{{ formatAmount(balance) }}</span> 			 			 			
       </div>
-      
+
+      			 			 			
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Button 
-          @click="showFundingModal = true"
-          class="w-full"
-          variant="primary"
-        >
-          Fund Wallet
-        </Button>
-        <Button 
-          @click="showTransactionHistory = true"
+        				<button class="w-full" variant="primary" @click="showFundingModal = true">					Fund Wallet 				 				</button> 				<button
           class="w-full"
           variant="secondary"
+          @click="showTransactionHistory = true"
         >
-          Transaction History
-        </Button>
+          					Transaction History 				 				 				
+        </button>
+        			 			 			
       </div>
+      		 		 		
     </div>
 
-    <!-- Recent Transactions -->
+    		<!-- Recent Transactions -->
+    		 		 		
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-soft p-6">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Recent Transactions</h2>
+      			 			 			
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">				Recent Transactions 			 			</h2>
+      			 			 			
       <div class="space-y-4">
-        <div v-for="transaction in transactions" :key="transaction.id" 
-             class="flex justify-between items-center p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
+        				 				 				
+        <div
+          v-for="transaction in transactions"
+          :key="transaction.id"
+          class="flex justify-between items-center p-4 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+        >
+          					 					 					
           <div>
-            <p class="font-medium text-gray-900 dark:text-white">{{ transaction.description }}</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(transaction.date) }}</p>
+            						 						 						
+            <p class="font-medium text-gray-900 dark:text-white">							{{ transaction.description }} 						 						</p>
+            						 						 						
+            <p class="text-sm text-gray-500 dark:text-gray-400">							{{ formatDate(transaction.date) }} 						 						</p>
+            					 					 					
           </div>
-          <div :class="[
-            'font-semibold',
-            transaction.type === 'credit' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-          ]">
-            {{ transaction.type === 'credit' ? '+' : '-' }}₦{{ formatAmount(transaction.amount) }}
+          					 					 					
+          <div
+            :class="[
+              'font-semibold',
+              transaction.type === 'credit' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400',
+            ]"
+          >
+            						{{ transaction.type === 'credit' ? '+' : '-' }}₦{{ formatAmount(transaction.amount) }} 					 					 					
           </div>
+          				 				 				
         </div>
+        			 			 			
       </div>
+      		 		 		
     </div>
 
-    <!-- Fund Wallet Modal -->
-    <Modal v-if="showFundingModal" @close="showFundingModal = false">
+    		<!-- Fund Wallet Modal -->
+    		<modal v-if="showFundingModal" @close="showFundingModal = false">
+      			 			 			
       <div class="p-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Fund Your Wallet</h2>
+        				 				 				
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">					Fund Your Wallet 				 				</h2>
+        				 				 				
         <div class="space-y-4">
+          					 					 					
           <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount (₦)</label>
-            <input 
+            						<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount (₦)</label> 						<input
               v-model="fundingAmount"
               type="number"
               class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:border-primary-500 focus:ring-primary-500"
               min="100"
             />
+            					 					 					
           </div>
-          
-          <div class="grid grid-cols-2 gap-4">
-            <Button 
-              @click="initializePaystack"
-              :loading="paystackLoading"
-              variant="primary"
-              class="w-full"
-            >
-              Pay with Paystack
-            </Button>
-            <Button 
-              @click="initializeBani"
-              :loading="baniLoading"
-              variant="secondary"
-              class="w-full"
-            >
-              Pay with Bani
-            </Button>
-          </div>
-        </div>
-      </div>
-    </Modal>
 
-    <!-- Transaction History Modal -->
-    <Modal v-if="showTransactionHistory" @close="showTransactionHistory = false">
-      <div class="p-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Transaction History</h2>
-        <div class="space-y-4 max-h-96 overflow-y-auto">
-          <div v-for="transaction in transactions" :key="transaction.id" 
-               class="flex justify-between items-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700">
-            <div>
-              <p class="font-medium text-gray-900 dark:text-white">{{ transaction.description }}</p>
-              <p class="text-sm text-gray-500 dark:text-gray-400">{{ formatDate(transaction.date) }}</p>
-              <p class="text-xs text-gray-500 dark:text-gray-400">ID: {{ transaction.id }}</p>
-            </div>
-            <div :class="[
-              'font-semibold',
-              transaction.type === 'credit' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-            ]">
-              {{ transaction.type === 'credit' ? '+' : '-' }}₦{{ formatAmount(transaction.amount) }}
-            </div>
+          					 					 					
+          <div class="grid grid-cols-2 gap-4">
+            						<button :loading="paystackLoading" variant="primary" class="w-full" @click="initializePaystack">
+              							Pay with Paystack 						 						 						
+            </button>
+            						<button :loading="baniLoading" variant="secondary" class="w-full" @click="initializeBani">
+              							Pay with Bani 						 						 						
+            </button>
+            					 					 					
           </div>
+          				 				 				
         </div>
+        			 			 			
       </div>
-    </Modal>
+      		</modal
+    >
+
+    		<!-- Transaction History Modal -->
+    		<modal v-if="showTransactionHistory" @close="showTransactionHistory = false">
+      			 			 			
+      <div class="p-6">
+        				 				 				
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">					Transaction History 				 				</h2>
+        				 				 				
+        <div class="space-y-4 max-h-96 overflow-y-auto">
+          					 					 					
+          <div
+            v-for="transaction in transactions"
+            :key="transaction.id"
+            class="flex justify-between items-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700"
+          >
+            						 						 						
+            <div>
+              							 							 							
+              <p class="font-medium text-gray-900 dark:text-white">								{{ transaction.description }} 							 							</p>
+              							 							 							
+              <p class="text-sm text-gray-500 dark:text-gray-400">								{{ formatDate(transaction.date) }} 							 							</p>
+              							 							 							
+              <p class="text-xs text-gray-500 dark:text-gray-400">								ID: {{ transaction.id }} 							 							</p>
+              						 						 						
+            </div>
+            						 						 						
+            <div
+              :class="[
+                'font-semibold',
+                transaction.type === 'credit' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400',
+              ]"
+            >
+              							{{ transaction.type === 'credit' ? '+' : '-' }}₦{{ formatAmount(transaction.amount) }} 						 						 						
+            </div>
+            					 					 					
+          </div>
+          				 				 				
+        </div>
+        			 			 			
+      </div>
+      		</modal
+    >
+    	 	 	
   </div>
 </template>
 
@@ -125,8 +161,8 @@ definePageMeta({
   middleware: ['auth'],
   meta: {
     requiresAuth: true,
-  }
-});
+  },
+})
 
 const isClient = ref(false)
 
@@ -149,22 +185,22 @@ const transactions = ref([
     description: 'Wallet Funding',
     amount: 5000,
     type: 'credit',
-    date: new Date('2024-04-01')
+    date: new Date('2024-04-01'),
   },
   {
     id: 'TXN-002',
     description: 'Subscription Payment',
     amount: 2000,
     type: 'debit',
-    date: new Date('2024-03-31')
+    date: new Date('2024-03-31'),
   },
   {
     id: 'TXN-003',
     description: 'Creator Tip',
     amount: 1000,
     type: 'debit',
-    date: new Date('2024-03-30')
-  }
+    date: new Date('2024-03-30'),
+  },
 ])
 
 const formatAmount = (amount: number) => {
@@ -177,7 +213,7 @@ const formatDate = (date: Date) => {
     month: 'short',
     year: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   }).format(new Date(date))
 }
 
@@ -196,14 +232,14 @@ const initializePaystack = () => {
           description: 'Wallet Funding via Paystack',
           amount: fundingAmount.value,
           type: 'credit',
-          date: new Date()
+          date: new Date(),
         })
         notification.success('Wallet funded successfully!')
       }
     },
     onClose: () => {
       showFundingModal.value = false
-    }
+    },
   })
 }
 
@@ -223,13 +259,13 @@ const initializeBani = () => {
         description: 'Wallet Funding via Bani',
         amount: fundingAmount.value,
         type: 'credit',
-        date: new Date()
+        date: new Date(),
       })
       notification.success('Wallet funded successfully!')
     },
     onClose: () => {
       showFundingModal.value = false
-    }
+    },
   })
 }
 </script>

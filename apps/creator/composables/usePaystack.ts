@@ -13,7 +13,7 @@ export function usePaystack() {
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
-  const initializePayment = async (config: PaystackConfig) => {
+  const initializePayment = (config: PaystackConfig) => {
     try {
       isLoading.value = true
       const handler = window.PaystackPop.setup({
@@ -28,7 +28,7 @@ export function usePaystack() {
         onClose: () => {
           isLoading.value = false
           config.onClose()
-        }
+        },
       })
       handler.openIframe()
     } catch (e: any) {
@@ -46,6 +46,6 @@ export function usePaystack() {
   return {
     initializePayment,
     isLoading,
-    error
+    error,
   }
 }

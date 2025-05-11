@@ -1,226 +1,238 @@
 <template>
+  	 	 	
   <div class="container mx-auto max-w-6xl">
+    		 		 		
     <div>
-      <h1 class="text-2xl font-bold mb-6">Account Settings</h1>
+      			 			 			
+      <h1 class="text-2xl font-bold mb-6">				Account Settings 			</h1>
 
+      			 			 			
       <div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm divide-y divide-gray-200">
-        <!-- Profile section -->
+        				<!-- Profile section -->
+        				 				 				
         <div class="p-6">
-          <h2 class="text-lg font-medium mb-4">Profile Information</h2>
-          
+          					 					 					
+          <h2 class="text-lg font-medium mb-4">						Profile Information 					</h2>
+
+          					 					 					
           <div class="flex items-center space-x-6 mb-6">
+            						 						 						
             <div class="relative">
+              							 							 							
               <div class="avatar h-24 w-24">
-                <img
-                  v-if="profileImage"
-                  :src="profileImage"
-                  alt="Profile"
-                  class="h-full w-full object-cover"
-                />
+                								<img v-if="profileImage" :src="profileImage" alt="Profile" class="h-full w-full object-cover" /> 								 								 								
                 <div
                   v-else
                   class="h-full w-full flex items-center justify-center bg-primary-100 text-primary-600 text-xl font-medium"
                 >
-                  {{ userInitials }}
+                  									{{ userInitials }} 								 								 								
                 </div>
+                							 							 							
               </div>
-              <button
+              							<button
                 class="absolute bottom-0 right-0 bg-white dark:bg-gray-900 rounded-full p-1.5 shadow-sm border border-gray-200 text-gray-500 dark:text-gray-200 hover:text-gray-700"
                 @click="$refs.imageInput.click()"
               >
-                <Icon name="lucide:camera" class="h-4 w-4" />
+                								<Icon name="lucide:camera" class="h-4 w-4" /> 							 							 							
               </button>
-              <input
-                ref="imageInput"
-                type="file"
-                accept="image/*"
-                class="hidden"
-                @change="handleImageUpload"
-              />
+              							<input ref="imageInput" type="file" accept="image/*" class="hidden" @change="handleImageUpload" /> 						 						 						
             </div>
-            
+
+            						 						 						
             <div>
+              							 							 							
               <p class="text-sm text-gray-500 dark:text-gray-200">
-                Upload a new profile picture. Recommended size: 400x400px.
+                								Upload a new profile picture. Recommended size: 400x400px. 							 							 							
               </p>
+              						 						 						
             </div>
+            					 					 					
           </div>
-          
-          <form @submit.prevent="updateProfile" class="space-y-4">
-            <FormInput
-              v-model="profile.displayName"
-              label="Display Name"
-              :error="errors.displayName"
-              required
-            />
-            
-            <FormInput
-              v-model="profile.username"
-              label="Username"
-              :error="errors.username"
-              required
-            />
-            
+
+          					 					 					
+          <form class="space-y-4" @submit.prevent="updateProfile">
+            						<form-input v-model="profile.displayName" label="Display Name" :error="errors.displayName" required />
+
+            						<form-input v-model="profile.username" label="Username" :error="errors.username" required />
+
+            						 						 						
             <div>
-              <label class="form-label">Bio</label>
-              <textarea
+              							<label class="form-label">Bio</label> 							<textarea
                 v-model="profile.bio"
                 rows="3"
                 class="form-input"
                 :class="errors.bio ? 'border-error-300 focus:border-error-500 focus:ring-error-500' : ''"
-              ></textarea>
-              <p v-if="errors.bio" class="form-error">{{ errors.bio }}</p>
+              />
+              							 							 							
+              <p v-if="errors.bio" class="form-error">								{{ errors.bio }} 							</p>
+              						 						 						
             </div>
-            
+
+            						 						 						
             <div class="pt-4">
-              <button type="submit" class="btn-primary" :disabled="loading">
-                <Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
-                Save Changes
+              							<button type="submit" class="btn-primary" :disabled="loading">
+                								<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" /> 								Save Changes 							 							 							
               </button>
+              						 						 						
             </div>
+            					 					 					
           </form>
+          				 				 				
         </div>
 
-        <!-- Email settings -->
+        				<!-- Email settings -->
+        				 				 				
         <div class="p-6">
-          <h2 class="text-lg font-medium mb-4">Email Settings</h2>
-          
-          <form @submit.prevent="updateEmail" class="space-y-4">
-            <FormInput
-              v-model="email.current"
-              label="Current Email"
-              type="email"
-              disabled
-            />
-            
-            <FormInput
-              v-model="email.new"
-              label="New Email"
-              type="email"
-              :error="errors.email"
-              required
-            />
-            
-            <FormInput
+          					 					 					
+          <h2 class="text-lg font-medium mb-4">						Email Settings 					</h2>
+
+          					 					 					
+          <form class="space-y-4" @submit.prevent="updateEmail">
+            						<form-input v-model="email.current" label="Current Email" type="email" disabled />
+
+            						<form-input v-model="email.new" label="New Email" type="email" :error="errors.email" required />
+
+            						<form-input
               v-model="email.password"
               label="Current Password"
               type="password"
               :error="errors.password"
               required
             />
-            
+
+            						 						 						
             <div class="pt-4">
-              <button type="submit" class="btn-primary" :disabled="loading">
-                <Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
-                Update Email
+              							<button type="submit" class="btn-primary" :disabled="loading">
+                								<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" /> 								Update Email 							 							 							
               </button>
+              						 						 						
             </div>
+            					 					 					
           </form>
+          				 				 				
         </div>
 
-        <!-- Password settings -->
+        				<!-- Password settings -->
+        				 				 				
         <div class="p-6">
-          <h2 class="text-lg font-medium mb-4">Change Password</h2>
-          
-          <form @submit.prevent="updatePassword" class="space-y-4">
-            <FormInput
+          					 					 					
+          <h2 class="text-lg font-medium mb-4">						Change Password 					</h2>
+
+          					 					 					
+          <form class="space-y-4" @submit.prevent="updatePassword">
+            						<form-input
               v-model="password.current"
               label="Current Password"
               type="password"
               :error="errors.currentPassword"
               required
             />
-            
-            <FormInput
+
+            						<form-input
               v-model="password.new"
               label="New Password"
               type="password"
               :error="errors.newPassword"
               required
             />
-            
-            <FormInput
+
+            						<form-input
               v-model="password.confirm"
               label="Confirm New Password"
               type="password"
               :error="errors.confirmPassword"
               required
             />
-            
+
+            						 						 						
             <div class="pt-4">
-              <button type="submit" class="btn-primary" :disabled="loading">
-                <Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
-                Update Password
+              							<button type="submit" class="btn-primary" :disabled="loading">
+                								<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" /> 								Update Password 							 							 							
               </button>
+              						 						 						
             </div>
+            					 					 					
           </form>
+          				 				 				
         </div>
 
-        <!-- Notification preferences -->
+        				<!-- Notification preferences -->
+        				 				 				
         <div class="p-6">
-          <h2 class="text-lg font-medium mb-4">Notification Preferences</h2>
-          
+          					 					 					
+          <h2 class="text-lg font-medium mb-4">						Notification Preferences 					</h2>
+
+          					 					 					
           <div class="space-y-4">
+            						 						 						
             <div v-for="(pref, key) in notifications" :key="key" class="flex items-start">
+              							 							 							
               <div class="flex items-center h-5">
-                <input
+                								<input
                   :id="key"
                   v-model="notifications[key]"
                   type="checkbox"
                   class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
                 />
+                							 							 							
               </div>
+              							 							 							
               <div class="ml-3 text-sm">
-                <label :for="key" class="font-medium text-gray-700">{{ getNotificationLabel(key) }}</label>
-                <p class="text-gray-500 dark:text-gray-200">{{ getNotificationDescription(key) }}</p>
+                								<label :for="key" class="font-medium text-gray-700">{{ getNotificationLabel(key) }}</label> 								 								 								
+                <p class="text-gray-500 dark:text-gray-200">									{{ getNotificationDescription(key) }} 								 								</p>
+                							 							 							
               </div>
+              						 						 						
             </div>
-            
+
+            						 						 						
             <div class="pt-4">
-              <button
-                @click="updateNotifications"
-                class="btn-primary"
-                :disabled="loading"
-              >
-                <Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
-                Save Preferences
+              							<button class="btn-primary" :disabled="loading" @click="updateNotifications">
+                								<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" /> 								Save Preferences 							 							 							
               </button>
+              						 						 						
             </div>
+            					 					 					
           </div>
+          				 				 				
         </div>
 
-        <!-- Delete account -->
+        				<!-- Delete account -->
+        				 				 				
         <div class="p-6">
-          <h2 class="text-lg font-medium text-error-600 mb-4">Delete Account</h2>
-          
+          					 					 					
+          <h2 class="text-lg font-medium text-error-600 mb-4">						Delete Account 					 					</h2>
+
+          					 					 					
           <p class="text-sm text-gray-500 dark:text-gray-200 mb-4">
-            Once you delete your account, there is no going back. Please be certain.
+            						Once you delete your account, there is no going back. Please be 						certain. 					 					 					
           </p>
-          
-          <button
-            @click="confirmDeleteAccount"
-            class="btn-outline border-error-300 text-error-700 hover:bg-error-50"
-          >
-            Delete Account
+
+          					<button class="btn-outline border-error-300 text-error-700 hover:bg-error-50" @click="confirmDeleteAccount">
+            						Delete Account 					 					 					
           </button>
+          				 				 				
         </div>
+        			 			 			
       </div>
+      		 		 		
     </div>
+    	 	 	
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
+import { toast } from 'vue3-toastify';
 import { useAuthStore } from '~/stores/auth';
-import FormInput from '@/components/ui/FormInput.vue'
-import { toast } from 'vue3-toastify'
+import FormInput from '@/components/ui/FormInput.vue';
 
 definePageMeta({
   middleware: ['auth'],
   layout: 'creator',
   meta: {
-    requiresAuth: true
-  }
+    requiresAuth: true,
+  },
 });
 
 const authStore = useAuthStore();
@@ -233,21 +245,21 @@ const errors = ref({});
 const profile = ref({
   displayName: authStore.user?.displayName || '',
   username: '',
-  bio: ''
+  bio: '',
 });
 
 // Email form
 const email = ref({
   current: authStore.user?.email || '',
   new: '',
-  password: ''
+  password: '',
 });
 
 // Password form
 const password = ref({
   current: '',
   new: '',
-  confirm: ''
+  confirm: '',
 });
 
 // Notification preferences
@@ -257,13 +269,15 @@ const notifications = ref({
   newComment: true,
   newTip: true,
   marketing: false,
-  newsletter: true
+  newsletter: true,
 });
 
 const userInitials = computed(() => {
   const name = profile.value.displayName;
-  if (!name) return '?';
-  
+  if (!name) {
+    return '?';
+  }
+
   const parts = name.split(' ');
   if (parts.length > 1) {
     return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
@@ -278,7 +292,7 @@ function getNotificationLabel(key) {
     newComment: 'Comments on Posts',
     newTip: 'Tips and Donations',
     marketing: 'Marketing Updates',
-    newsletter: 'Newsletter'
+    newsletter: 'Newsletter',
   };
   return labels[key];
 }
@@ -290,35 +304,37 @@ function getNotificationDescription(key) {
     newComment: 'Get notified when someone comments on your posts',
     newTip: 'Receive notifications for tips and donations',
     marketing: 'Receive updates about new features and promotions',
-    newsletter: 'Subscribe to our weekly newsletter'
+    newsletter: 'Subscribe to our weekly newsletter',
   };
   return descriptions[key];
 }
 
-async function handleImageUpload(event) {
+function handleImageUpload(event) {
   const file = event.target.files[0];
-  if (!file) return;
-  
+  if (!file) {
+    return;
+  }
+
   // In a real app, upload the file to a server
   // For now, create a local URL
   profileImage.value = URL.createObjectURL(file);
   toast.success('Profile picture updated');
 }
 
-async function updateProfile() {
+function updateProfile() {
   loading.value = true;
   errors.value = {};
-  
+
   try {
     // Validate
     if (!profile.value.displayName) {
       errors.value.displayName = 'Display name is required';
       return;
     }
-    
+
     // In a real app, make API call here
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     toast.success('Profile updated successfully');
   } catch (error) {
     toast.error('Failed to update profile');
@@ -327,10 +343,10 @@ async function updateProfile() {
   }
 }
 
-async function updateEmail() {
+function updateEmail() {
   loading.value = true;
   errors.value = {};
-  
+
   try {
     // Validate
     if (!email.value.new) {
@@ -341,10 +357,10 @@ async function updateEmail() {
       errors.value.password = 'Password is required';
       return;
     }
-    
+
     // In a real app, make API call here
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     toast.success('Email updated successfully');
     email.value.current = email.value.new;
     email.value.new = '';
@@ -356,10 +372,10 @@ async function updateEmail() {
   }
 }
 
-async function updatePassword() {
+function updatePassword() {
   loading.value = true;
   errors.value = {};
-  
+
   try {
     // Validate
     if (!password.value.current) {
@@ -374,10 +390,10 @@ async function updatePassword() {
       errors.value.confirmPassword = 'Passwords do not match';
       return;
     }
-    
+
     // In a real app, make API call here
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     toast.success('Password updated successfully');
     password.value = { current: '', new: '', confirm: '' };
   } catch (error) {
@@ -387,13 +403,13 @@ async function updatePassword() {
   }
 }
 
-async function updateNotifications() {
+function updateNotifications() {
   loading.value = true;
-  
+
   try {
     // In a real app, make API call here
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     toast.success('Notification preferences updated');
   } catch (error) {
     toast.error('Failed to update notification preferences');
@@ -404,7 +420,11 @@ async function updateNotifications() {
 
 function confirmDeleteAccount() {
   // In a real app, show a confirmation modal
-  if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+  if (
+    confirm(
+      'Are you sure you want to delete your account? This action cannot be undone.',
+    )
+  ) {
     // Handle account deletion
     toast.success('Account deleted successfully');
     authStore.logout();

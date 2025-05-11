@@ -1,0 +1,78 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:vue/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "@nuxtjs/eslint-config-typescript",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "parser": "@typescript-eslint/parser",
+    "sourceType": "module",
+    "extraFileExtensions": [".vue"]
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    // TypeScript
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "disallowTypeAnnotations": false
+      }
+    ],
+    "@typescript-eslint/no-unused-vars": "warn",
+
+    // Basic JavaScript
+    "semi": ["error", "always"],
+    // "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
+    "eqeqeq": "error",
+
+    // Formatting
+    "indent": [
+      "warn",
+      "tab",
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "max-len": [
+      "warn",
+      {
+        "code": 120,
+        "ignoreTemplateLiterals": true,
+        "ignoreStrings": true,
+        "ignoreRegExpLiterals": true
+      }
+    ],
+
+    // Vue Specific
+    "vue/html-indent": [
+      "error",
+      "tab",
+      {
+        "attribute": 1,
+        "baseIndent": 1,
+        "closeBracket": 0,
+        "alignAttributesVertically": true
+      }
+    ],
+    "vue/multi-word-component-names": "off",
+    "vue/component-name-in-template-casing": ["error", "kebab-case"],
+    "vue/attributes-order": "warn",
+    "vue/require-default-prop": "off"
+  },
+  "overrides": [
+    {
+      "files": ["*.vue"],
+      "rules": {
+        "indent": "off"
+      }
+    }
+  ]
+}

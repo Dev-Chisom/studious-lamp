@@ -1,142 +1,192 @@
 <template>
-  <div
-    class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-800 mb-8 overflow-hidden">
-    <!-- Header -->
-    <div class="flex items-center justify-between px-4 py-3">
-      <div class="flex items-center">
-        <NuxtLink to="/@user" class="flex-shrink-0">
-          <img :src="post.creator.avatar" :alt="post.creator.name"
-            class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700">
-        </NuxtLink>
-        <div class="ml-3">
-          <NuxtLink to="/@user">
-            <h3 class="font-semibold text-sm text-gray-900 dark:text-white hover:underline">
-              {{ post.creator.name }}
-            </h3>
+  <div>
+    <div
+      class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-800 mb-8 overflow-hidden"
+    >
+      <!-- Header -->
+
+      <div class="flex items-center justify-between px-4 py-3">
+        <div class="flex items-center">
+          <NuxtLink to="/@user" class="flex-shrink-0">
+            <img
+              :src="post.creator.avatar"
+              :alt="post.creator.name"
+              class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700"
+            />
           </NuxtLink>
-          <p class="text-xs text-gray-500 dark:text-gray-400">{{ post.location || 'Unknown location' }}</p>
-        </div>
-      </div>
 
-      <button class="text-gray-500 dark:text-gray-400">
-        <Icon name="lucide:more-vertical" class="w-5 h-5" />
-      </button>
-    </div>
+          <div class="ml-3">
+            <NuxtLink to="/@user">
+              <h3 class="font-semibold text-sm text-gray-900 dark:text-white hover:underline">
+                {{ post.creator.name }}
+              </h3>
+            </NuxtLink>
 
-    <!-- Media Container -->
-    <div class="relative aspect-video w-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-      <template v-if="post.isPremium && !isSubscribed">
-        <div class="absolute inset-0 z-10 flex flex-col justify-center items-center bg-white/70 dark:bg-gray-900/70">
-          <button @click="$emit('subscribe')" class="max-w-md rounded-full btn-primary text-white font-semibold py-4 px-6 text-lg transition-all">
-            SUBSCRIBE
-          </button>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ post.location || 'Unknown location' }}</p>
+          </div>
         </div>
-        <div class="absolute inset-0 w-full h-full filter blur-sm pointer-events-none select-none">
-          <img v-if="post.image" :src="post.image" class="w-full h-full object-cover" alt="Post content">
-          <video v-else-if="post.video" class="w-full h-full object-cover" :poster="post.image">
-            <source :src="post.video" type="video/mp4">
-          </video>
-        </div>
-      </template>
-      <template v-else>
-        <div class="absolute inset-0 w-full h-full cursor-pointer" @click="openModal(0)">
-          <img v-if="post.image" :src="post.image" class="w-full h-full object-cover">
-          <video v-if="post.video" class="w-full h-full object-cover" :poster="post.image">
-            <source :src="post.video" type="video/mp4">
-          </video>
-        </div>
-      </template>
-    </div>
 
-    <!-- Actions -->
-    <div class="px-4 py-3">
-      <div class="flex items-center justify-between mb-2">
-        <div class="flex items-center space-x-4">
-          <button
-            @click="toggleLike"
-            :disabled="post.isPremium && !isSubscribed"
-            :class="[post.isPremium && !isSubscribed ? 'opacity-50 cursor-not-allowed' : '', 'text-gray-900 dark:text-white']"
-          >
-            <Icon :name="isLiked ? 'lucide:heart' : 'lucide:heart'" class="w-6 h-6"
-              :class="{ 'fill-red-500 text-red-500': isLiked }" />
-          </button>
-          <button
-            @click="openModal(0, true)"
-            :disabled="post.isPremium && !isSubscribed"
-            :class="[post.isPremium && !isSubscribed ? 'opacity-50 cursor-not-allowed' : '', 'text-gray-900 dark:text-white']"
-          >
-            <Icon name="lucide:message-circle" class="w-6 h-6" />
-          </button>
-          <button
-            :disabled="post.isPremium && !isSubscribed"
-            :class="[post.isPremium && !isSubscribed ? 'opacity-50 cursor-not-allowed' : '', 'text-gray-900 dark:text-white']"
-          >
-            <Icon name="lucide:send" class="w-6 h-6" />
-          </button>
-        </div>
-        <button
-          :disabled="post.isPremium && !isSubscribed"
-          :class="[post.isPremium && !isSubscribed ? 'opacity-50 cursor-not-allowed' : '', 'text-gray-900 dark:text-white']"
-        >
-          <Icon name="lucide:bookmark" class="w-6 h-6" />
+        <button class="text-gray-500 dark:text-gray-400">
+          <Icon name="lucide:more-vertical" class="w-5 h-5" />
         </button>
       </div>
 
-      <!-- Likes count -->
-      <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">
-        {{ formatNumber(post.likes) }} likes
-      </p>
+      <!-- Media Container -->
 
-      <!-- Caption with username -->
-      <p class="text-sm text-gray-900 dark:text-white mb-1">
-        <span class="font-semibold">{{ post.creator.name }}</span> {{ post.content }}
-      </p>
+      <div class="relative aspect-video w-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+        <template v-if="post.isPremium && !isSubscribed">
+          <div class="absolute inset-0 z-10 flex flex-col justify-center items-center bg-white/70 dark:bg-gray-900/70">
+            <button
+              class="max-w-md rounded-full btn-primary text-white font-semibold py-4 px-6 text-lg transition-all"
+              @click="$emit('subscribe')"
+            >
+              SUBSCRIBE
+            </button>
+          </div>
 
-      <!-- View comments -->
-      <button
-        v-if="(post.comments.length > 0 || localComments.length > 0) && !(post.isPremium && !isSubscribed)"
-        @click="openModal(0, true)"
-        class="text-sm text-gray-500 dark:text-gray-400 mb-1"
-      >
-        View all {{ post.comments.length + localComments.length }} comments
-      </button>
-
-      <!-- Display local comments -->
-      <div v-if="!(post.isPremium && !isSubscribed)" v-for="(comment, index) in localComments" :key="'local-' + index" class="mb-1">
-        <p class="text-sm text-gray-900 dark:text-white">
-          <span class="font-semibold">{{ currentUser.name }}</span> {{ comment }}
-        </p>
+          <div class="absolute inset-0 w-full h-full filter blur-sm pointer-events-none select-none">
+            <img v-if="post.image" :src="post.image" class="w-full h-full object-cover" alt="Post content" />
+            <video v-else-if="post.video" class="w-full h-full object-cover" :poster="post.image">
+              <source :src="post.video" type="video/mp4" />
+            </video>
+          </div>
+        </template>
+        <template v-else>
+          <div class="absolute inset-0 w-full h-full cursor-pointer" @click="openModal(0)">
+            <img v-if="post.image" :src="post.image" class="w-full h-full object-cover" />
+            <video v-if="post.video" class="w-full h-full object-cover" :poster="post.image">
+              <source :src="post.video" type="video/mp4" />
+            </video>
+          </div>
+        </template>
       </div>
 
-      <!-- Timestamp -->
-      <p class="text-xs text-gray-400 dark:text-gray-500 uppercase mt-2">
-        {{ formatTimeAgo(post.createdAt) }}
-      </p>
+      <!-- Actions -->
+
+      <div class="px-4 py-3">
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center space-x-4">
+            <button
+              :disabled="post.isPremium && !isSubscribed"
+              :class="[
+                post.isPremium && !isSubscribed ? 'opacity-50 cursor-not-allowed' : '',
+                'text-gray-900 dark:text-white',
+              ]"
+              @click="toggleLike"
+            >
+              <Icon
+                :name="isLiked ? 'lucide:heart' : 'lucide:heart'"
+                class="w-6 h-6"
+                :class="{ 'fill-red-500 text-red-500': isLiked }"
+              />
+            </button>
+            <button
+              :disabled="post.isPremium && !isSubscribed"
+              :class="[
+                post.isPremium && !isSubscribed ? 'opacity-50 cursor-not-allowed' : '',
+                'text-gray-900 dark:text-white',
+              ]"
+              @click="openModal(0, true)"
+            >
+              <Icon name="lucide:message-circle" class="w-6 h-6" />
+            </button>
+            <button
+              :disabled="post.isPremium && !isSubscribed"
+              :class="[
+                post.isPremium && !isSubscribed ? 'opacity-50 cursor-not-allowed' : '',
+                'text-gray-900 dark:text-white',
+              ]"
+            >
+              <Icon name="lucide:send" class="w-6 h-6" />
+            </button>
+          </div>
+          <button
+            :disabled="post.isPremium && !isSubscribed"
+            :class="[
+              post.isPremium && !isSubscribed ? 'opacity-50 cursor-not-allowed' : '',
+              'text-gray-900 dark:text-white',
+            ]"
+          >
+            <Icon name="lucide:bookmark" class="w-6 h-6" />
+          </button>
+        </div>
+
+        <!-- Likes count -->
+
+        <p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">{{ formatNumber(post.likes) }} likes</p>
+
+        <!-- Caption with username -->
+
+        <p class="text-sm text-gray-900 dark:text-white mb-1">
+          <span class="font-semibold">{{ post.creator.name }}</span> {{ post.content }}
+        </p>
+
+        <!-- View comments -->
+        <button
+          v-if="(post.comments.length > 0 || localComments.length > 0) && !(post.isPremium && !isSubscribed)"
+          class="text-sm text-gray-500 dark:text-gray-400 mb-1"
+          @click="openModal(0, true)"
+        >
+          View all {{ post.comments.length + localComments.length }} comments
+        </button>
+
+        <!-- Display local comments -->
+
+        <template v-if="!(post.isPremium && !isSubscribed)">
+          <div v-for="(comment, index) in localComments" :key="'local-' + index" class="mb-1">
+            <p class="text-sm text-gray-900 dark:text-white">
+              <span class="font-semibold">{{ currentUser.name }}</span> {{ comment }}
+            </p>
+          </div>
+        </template>
+
+        <!-- Timestamp -->
+
+        <p class="text-xs text-gray-400 dark:text-gray-500 uppercase mt-2">{{ formatTimeAgo(post.createdAt) }}</p>
+      </div>
+
+      <!-- Add comment (quick) -->
+
+      <div
+        v-if="!(post.isPremium && !isSubscribed)"
+        class="px-4 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center"
+      >
+        <input
+          v-model="quickComment"
+          type="text"
+          placeholder="Add a comment..."
+          class="flex-1 bg-transparent border-none text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0"
+          @keyup.enter="addComment"
+        />
+        <button
+          class="text-primary-600 dark:text-primary-400 font-semibold text-sm disabled:opacity-50"
+          :disabled="!quickComment.trim()"
+          @click="addComment"
+        >
+          Post
+        </button>
+      </div>
     </div>
 
-    <!-- Add comment (quick) -->
-    <div v-if="!(post.isPremium && !isSubscribed)" class="px-4 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center">
-      <input v-model="quickComment" type="text" placeholder="Add a comment..."
-        class="flex-1 bg-transparent border-none text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0"
-        @keyup.enter="addComment">
-      <button @click="addComment"
-        class="text-primary-600 dark:text-primary-400 font-semibold text-sm disabled:opacity-50"
-        :disabled="!quickComment.trim()">
-        Post
-      </button>
-    </div>
+    <!-- Media Preview Modal -->
+    <media-preview-modal
+      v-if="showModal"
+      :is-open="showModal"
+      :media-items="mediaItemsForModal"
+      :current-index="currentMediaIndex"
+      :show-sidebar="true"
+      :messages="allCommentsForModal"
+      :current-user="currentUser"
+      @close="closeModal"
+      @update:current-index="updateMediaIndex"
+      @send-message="handleNewComment"
+    />
   </div>
-
-  <!-- Media Preview Modal -->
-  <MediaPreviewModal v-if="showModal" :isOpen="showModal" :mediaItems="mediaItemsForModal"
-    :currentIndex="currentMediaIndex" :showSidebar="true" :messages="allCommentsForModal" :currentUser="currentUser"
-    @close="closeModal" @update:currentIndex="updateMediaIndex" @send-message="handleNewComment" />
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import MediaPreviewModal from './ui/MediaPreviewModal.vue'
-import BlurredPost from './ui/BlurredPost.vue'
 
 interface User {
   name: string
@@ -188,7 +238,7 @@ interface Message {
 // Current user data
 const currentUser = ref<User>({
   name: 'YourUsername',
-  avatar: 'https://randomuser.me/api/portraits/men/1.jpg'
+  avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
 })
 
 const props = defineProps<PostCardProps>()
@@ -208,10 +258,12 @@ const formatNumber = (num: number): string => {
 
 // Format media items for the modal
 const mediaItemsForModal = computed<MediaItem[]>(() => {
-  return [{
-    url: props.post.video || props.post.image || '',
-    type: props.post.video ? 'video' : 'image'
-  }]
+  return [
+    {
+      url: props.post.video || props.post.image || '',
+      type: props.post.video ? 'video' : 'image',
+    },
+  ]
 })
 
 // Combine post comments and local comments for modal
@@ -221,29 +273,29 @@ const allCommentsForModal = computed<Message[]>(() => {
     timestamp: props.post.createdAt,
     user: {
       name: props.post.creator.name,
-      avatar: props.post.creator.avatar
+      avatar: props.post.creator.avatar,
     },
-    isCurrentUser: false
+    isCurrentUser: false,
   }
 
-  const postComments: Message[] = props.post.comments.map(comment => ({
+  const postComments: Message[] = props.post.comments.map((comment) => ({
     text: comment.content,
     timestamp: comment.createdAt,
     user: {
       name: comment.user.name,
-      avatar: comment.user.avatar
+      avatar: comment.user.avatar,
     },
-    isCurrentUser: false
+    isCurrentUser: false,
   }))
 
-  const localCommentMessages: Message[] = localComments.value.map(comment => ({
+  const localCommentMessages: Message[] = localComments.value.map((comment) => ({
     text: comment,
     timestamp: new Date(),
     user: {
       name: currentUser.value.name,
-      avatar: currentUser.value.avatar
+      avatar: currentUser.value.avatar,
     },
-    isCurrentUser: true
+    isCurrentUser: true,
   }))
 
   return [captionMessage, ...postComments, ...localCommentMessages]
@@ -253,9 +305,15 @@ const formatTimeAgo = (date: Date): string => {
   const now = new Date()
   const diffInSeconds = Math.floor((now.getTime() - new Date(date).getTime()) / 1000)
 
-  if (diffInSeconds < 60) return `${diffInSeconds}s ago`
-  if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`
-  if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`
+  if (diffInSeconds < 60) {
+    return `${diffInSeconds}s ago`
+  }
+  if (diffInSeconds < 3600) {
+    return `${Math.floor(diffInSeconds / 60)}m ago`
+  }
+  if (diffInSeconds < 86400) {
+    return `${Math.floor(diffInSeconds / 3600)}h ago`
+  }
   return `${Math.floor(diffInSeconds / 86400)}d ago`
 }
 
@@ -283,8 +341,10 @@ const updateMediaIndex = (index: number): void => {
 }
 
 const addComment = (): void => {
-  if (!quickComment.value.trim()) return
-  
+  if (!quickComment.value.trim()) {
+    return
+  }
+
   localComments.value.push(quickComment.value)
   emit('add-comment', quickComment.value)
   quickComment.value = ''

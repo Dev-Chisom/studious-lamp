@@ -14,7 +14,7 @@ export function useBani() {
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
-  const initializePayment = async (config: BaniConfig) => {
+  const initializePayment = (config: BaniConfig) => {
     try {
       isLoading.value = true
       const bani = new window.Bani({
@@ -30,7 +30,7 @@ export function useBani() {
         onClose: () => {
           isLoading.value = false
           config.onClose()
-        }
+        },
       })
       bani.initialize()
     } catch (e: any) {
@@ -42,6 +42,6 @@ export function useBani() {
   return {
     initializePayment,
     isLoading,
-    error
+    error,
   }
 }

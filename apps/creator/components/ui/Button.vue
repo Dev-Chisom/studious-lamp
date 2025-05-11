@@ -1,18 +1,21 @@
 <template>
-  <component
+  	<component
     :is="computedTag"
     :class="[
       'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none',
       sizeClasses,
       variantClasses,
-      className
+      className,
     ]"
     v-bind="buttonAttrs"
   >
-    <Icon v-if="loading" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" />
-    <Icon v-if="icon && !loading" :name="icon" class="mr-2 h-4 w-4" />
-    <slot />
-  </component>
+    		<Icon v-if="loading" name="lucide:loader-2" class="mr-2 h-4 w-4 animate-spin" /> 		<Icon
+      v-if="icon && !loading"
+      :name="icon"
+      class="mr-2 h-4 w-4"
+    />
+    		<slot /> 	</component
+  >
 </template>
 
 <script setup lang="ts">
@@ -43,7 +46,7 @@ const props = withDefaults(defineProps<ButtonProps>(), {
   to: undefined,
   href: undefined,
   type: 'button',
-  className: ''
+  className: '',
 })
 
 const variantClasses = computed(() => {
@@ -81,8 +84,12 @@ const sizeClasses = computed(() => {
 })
 
 const computedTag = computed(() => {
-  if (props.to) return 'NuxtLink'
-  if (props.href) return 'a'
+  if (props.to) {
+    return 'NuxtLink'
+  }
+  if (props.href) {
+    return 'a'
+  }
   return 'button'
 })
 
@@ -95,9 +102,9 @@ interface ButtonAttrs {
 
 const buttonAttrs = computed<ButtonAttrs>(() => {
   const attrs: ButtonAttrs = {
-    disabled: props.disabled || props.loading
+    disabled: props.disabled || props.loading,
   }
-  
+
   if (props.to) {
     attrs.to = props.to
   } else if (props.href) {
@@ -105,7 +112,7 @@ const buttonAttrs = computed<ButtonAttrs>(() => {
   } else {
     attrs.type = props.type
   }
-  
+
   return attrs
 })
 </script>

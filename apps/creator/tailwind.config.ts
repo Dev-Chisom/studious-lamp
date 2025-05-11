@@ -8,12 +8,12 @@ module.exports = {
     './pages/**/*.vue',
     './plugins/**/*.{js,ts}',
     './app.vue',
-    './error.vue'
+    './error.vue',
   ],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'sans-serif']
+        sans: ['Inter', 'sans-serif'],
       },
       colors: {
         primary: {
@@ -93,22 +93,22 @@ module.exports = {
           800: '#991b1b',
           900: '#7f1d1d',
           950: '#450a0a',
-        }
+        },
       },
       spacing: {
-        '72': '18rem',
-        '80': '20rem',
-        '96': '24rem',
-        '128': '32rem',
+        72: '18rem',
+        80: '20rem',
+        96: '24rem',
+        128: '32rem',
       },
       borderRadius: {
-        'xl': '1rem',
+        xl: '1rem',
         '2xl': '1.5rem',
         '3xl': '2rem',
       },
       boxShadow: {
-        'soft': '0 4px 20px rgba(0, 0, 0, 0.05)',
-        'hover': '0 8px 30px rgba(0, 0, 0, 0.12)',
+        soft: '0 4px 20px rgba(0, 0, 0, 0.05)',
+        hover: '0 8px 30px rgba(0, 0, 0, 0.12)',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
@@ -127,8 +127,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
-  ],
-} satisfies Config 
+  plugins: [require('@tailwindcss/forms'), require('@tailwindcss/typography')],
+} satisfies Config

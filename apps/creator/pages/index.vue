@@ -1,78 +1,139 @@
 <template>
+  	 	 	
   <div class="max-w-6xl mx-auto px-4 py-8">
+    		 		 		
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Main Feed -->
+      			<!-- Main Feed -->
+      			 			 			
       <div class="lg:col-span-2">
-      <div class="space-y-6">
-        <div v-for="post in posts" :key="post.id">
-            <PostCard :post="post" :is-subscribed="isSubscribedToCreator(post.creator.id)"
-              @subscribe="subscribeToCreator(post.creator.id)" @tip="showTipModal(post)" />
+        				 				 				
+        <div class="space-y-6">
+          					 					 					
+          <div v-for="post in posts" :key="post.id">
+            						<post-card
+              :post="post"
+              :is-subscribed="isSubscribedToCreator(post.creator.id)"
+              @subscribe="subscribeToCreator(post.creator.id)"
+              @tip="showTipModal(post)"
+            />
+            					 					 					
           </div>
+          				 				 				
         </div>
+        			 			 			
       </div>
-      <!-- Suggestions Panel -->
+      			<!-- Suggestions Panel -->
+      			 			 			
       <div class="hidden lg:block">
+        				 				 				
         <div class="sticky top-20">
+          					 					 					
           <div
-            class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-800 p-4 w-full max-w-xs mx-auto">
+            class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-800 p-4 w-full max-w-xs mx-auto"
+          >
+            						 						 						
             <div class="mb-4">
-              <input v-model="suggestionSearch" type="text" placeholder="Search posts"
-                class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-primary-500 focus:ring-primary-500 px-3 py-2 text-sm" />
+              							<input
+                v-model="suggestionSearch"
+                type="text"
+                placeholder="Search posts"
+                class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-primary-500 focus:ring-primary-500 px-3 py-2 text-sm"
+              />
+              						 						 						
             </div>
-            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">SUGGESTIONS</h3>
+            						 						 						
+            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">							SUGGESTIONS 						 						</h3>
+            						 						 						
             <div class="h-80">
-              <Swiper v-if="filteredSuggestions.length > 0" :modules="[Pagination, Keyboard]" :slides-per-view="1"
-                :keyboard="{ enabled: true }" :pagination="{ clickable: true }" :space-between="16"
-                :mousewheel="true" :speed="500" effect="slide" class="h-full">
-                <SwiperSlide v-for="(userGroup, slideIdx) in chunkedSuggestions" :key="slideIdx">
+              							<swiper
+                v-if="filteredSuggestions.length > 0"
+                :modules="[Pagination, Keyboard]"
+                :slides-per-view="1"
+                :keyboard="{ enabled: true }"
+                :pagination="{ clickable: true }"
+                :space-between="16"
+                :mousewheel="true"
+                :speed="500"
+                effect="slide"
+                class="h-full"
+              >
+                								<swiper-slide v-for="(userGroup, slideIdx) in chunkedSuggestions" :key="slideIdx">
+                  									 									 									
                   <div class="flex flex-col gap-2">
-                    <div v-for="user in userGroup" :key="user.id"
-                      class="flex items-center bg-gray-50 dark:bg-gray-800 rounded-lg p-2 hover:bg-primary-50 dark:hover:bg-primary-900/40 transition cursor-pointer">
-                      <img :src="user.avatar" :alt="user.name"
-                        class="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-gray-700">
+                    										 										 										
+                    <div
+                      v-for="user in userGroup"
+                      :key="user.id"
+                      class="flex items-center bg-gray-50 dark:bg-gray-800 rounded-lg p-2 hover:bg-primary-50 dark:hover:bg-primary-900/40 transition cursor-pointer"
+                    >
+                      											<img
+                        :src="user.avatar"
+                        :alt="user.name"
+                        class="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-gray-700"
+                      />
+                      											 											 											
                       <div class="ml-3 flex-1 min-w-0">
+                        												 												 												
                         <div class="flex items-center space-x-1">
-                          <span class="font-medium text-gray-900 dark:text-white truncate">{{ user.name }}</span>
+                          													<span class="font-medium text-gray-900 dark:text-white truncate">{{ user.name }}</span> 												 												 												
                         </div>
-                        <span class="text-xs text-gray-500 dark:text-gray-300 truncate">@{{ user.username }}</span>
+                        												<span class="text-xs text-gray-500 dark:text-gray-300 truncate">@{{ user.username }}</span> 											 											 											
                       </div>
+                      										 										 										
                     </div>
+                    									 									 									
                   </div>
-                </SwiperSlide>
-              </Swiper>
+                  								</swiper-slide
+                >
+                							</swiper
+              >
+              						 						 						
             </div>
+            					 					 					
           </div>
+          				 				 				
         </div>
+        			 			 			
       </div>
-      <!-- Tip Modal -->
-      <Modal v-if="showingTipModal" @close="showingTipModal = false">
+      			<!-- Tip Modal -->
+      			<modal v-if="showingTipModal" @close="showingTipModal = false">
+        				 				 				
         <div class="p-6">
-          <h2 class="text-xl font-semibold mb-4">Send Tip to {{ selectedPost?.creator.name }}</h2>
+          					 					 					
+          <h2 class="text-xl font-semibold mb-4">						Send Tip to {{ selectedPost?.creator.name }} 					 					</h2>
+          					 					 					
           <div class="space-y-4">
+            						 						 						
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Amount (₦)</label>
-              <input v-model="tipAmount" type="number"
-                class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500" min="100" />
+              							<label class="block text-sm font-medium text-gray-700 mb-1">Amount (₦)</label> 							<input
+                v-model="tipAmount"
+                type="number"
+                class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500"
+                min="100"
+              />
+              						 						 						
             </div>
-            <Button @click="sendTip" :loading="isSendingTip" variant="primary" class="w-full">
-              Send Tip
-            </Button>
+            						<button :loading="isSendingTip" variant="primary" class="w-full" @click="sendTip">							Send Tip 						 						</button> 					 					 					
           </div>
+          				 				 				
         </div>
-      </Modal>
+        			</modal
+      >
+      		 		 		
     </div>
-</div>
+    	 	 	
+  </div>
 </template>
-  
+
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useUserStore } from '~/stores/user'
 import { toast } from 'vue3-toastify'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Pagination, Keyboard } from 'swiper/modules'
+import { useUserStore } from '~/stores/user'
 import Modal from '~/components/ui/Modal.vue'
 import Button from '~/components/ui/Button.vue'
 import PostCard from '@/components/PostCard.vue'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Pagination, Keyboard } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/pagination'
 
@@ -81,8 +142,8 @@ definePageMeta({
   middleware: ['auth'],
   meta: {
     requiresAuth: true,
-  }
-});
+  },
+})
 
 interface Creator {
   id: string
@@ -116,29 +177,29 @@ const posts = ref<Post[]>([
     creator: {
       id: 'creator1',
       name: 'John Doe',
-      avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg'
+      avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg',
     },
     content: 'This is a free post that everyone can see!',
     image: 'https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg',
     createdAt: new Date('2024-03-01'),
     likes: 42,
     isPremium: false,
-    comments: []
+    comments: [],
   },
   {
     id: '2',
     creator: {
       id: 'creator2',
       name: 'Jane Smith',
-      avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg'
+      avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg',
     },
     content: 'This is a premium post that requires subscription!',
     image: 'https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg',
     createdAt: new Date('2024-03-02'),
     likes: 156,
     isPremium: true,
-    comments: []
-  }
+    comments: [],
+  },
 ])
 
 const showingTipModal = ref(false)
@@ -219,14 +280,17 @@ const suggestions = ref<SuggestionUser[]>([
     name: 'Sophie Taylor',
     username: 'sophiet',
     avatar: 'https://randomuser.me/api/portraits/women/55.jpg',
-  }
+  },
 ])
 
 const filteredSuggestions = computed<SuggestionUser[]>(() => {
-  if (!suggestionSearch.value) return suggestions.value
-  return suggestions.value.filter(user =>
-    user.name.toLowerCase().includes(suggestionSearch.value.toLowerCase()) ||
-    user.username.toLowerCase().includes(suggestionSearch.value.toLowerCase())
+  if (!suggestionSearch.value) {
+    return suggestions.value
+  }
+  return suggestions.value.filter(
+    (user) =>
+      user.name.toLowerCase().includes(suggestionSearch.value.toLowerCase()) ||
+      user.username.toLowerCase().includes(suggestionSearch.value.toLowerCase()),
   )
 })
 
@@ -259,10 +323,12 @@ const showTipModal = (post: Post): void => {
 }
 
 const sendTip = async (): Promise<void> => {
-  if (!selectedPost.value || tipAmount.value < 100) return
+  if (!selectedPost.value || tipAmount.value < 100) {
+    return
+  }
   isSendingTip.value = true
   try {
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     toast.success(`Successfully sent tip to ${selectedPost.value.creator.name}!`)
     showingTipModal.value = false
   } catch (error) {

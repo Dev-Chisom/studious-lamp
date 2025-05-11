@@ -16,14 +16,14 @@ export function useNotification() {
     const newNotification = {
       id,
       ...notification,
-      duration: notification.duration || 3000
+      duration: notification.duration || 3000,
     }
 
     notifications.value.push(newNotification)
-    
+
     toast[notification.type](notification.message, {
       autoClose: notification.duration,
-      position: toast.POSITION.TOP_RIGHT
+      position: toast.POSITION.TOP_RIGHT,
     })
 
     setTimeout(() => {
@@ -32,7 +32,7 @@ export function useNotification() {
   }
 
   const remove = (id: string) => {
-    notifications.value = notifications.value.filter(n => n.id !== id)
+    notifications.value = notifications.value.filter((n) => n.id !== id)
   }
 
   const success = (message: string, duration?: number) => {
@@ -58,6 +58,6 @@ export function useNotification() {
     success,
     error,
     info,
-    warning
+    warning,
   }
 }

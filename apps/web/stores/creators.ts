@@ -16,22 +16,22 @@ export const useCreatorsStore = defineStore('creators', {
         social: {
           instagram: 'sarahfit',
           twitter: 'sarahj',
-          tiktok: 'sarahmoves'
+          tiktok: 'sarahmoves',
         },
-        isVerified: true
-      }
-    ]
+        isVerified: true,
+      },
+    ],
   }),
   actions: {
     applyCreator(application) {
       this.creators.push({
         ...application,
         id: Date.now(),
-        isVerified: false
+        isVerified: false,
       })
     },
     getByUsername(username) {
-      return this.creators.find(c => c.username === username)
-    }
-  }
-}) 
+      return this.creators.find((c) => c.username === username)
+    },
+  },
+})

@@ -1,23 +1,18 @@
 <template>
+  	 	 	
   <div>
-    <label 
-      v-if="label" 
-      :for="id" 
-      class="form-label"
+    		<label v-if="label" :for="id" class="form-label">
+      			{{ label }} 			<span v-if="required" class="text-error-500 ml-1">*</span> 		</label
     >
-      {{ label }}
-      <span v-if="required" class="text-error-500 ml-1">*</span>
-    </label>
-    
+
+    		 		 		
     <div class="relative mt-1">
-      <div 
-        v-if="icon" 
-        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-      >
-        <Icon :name="icon" class="h-5 w-5 text-gray-400" />
+      			 			 			
+      <div v-if="icon" class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        				<Icon :name="icon" class="h-5 w-5 text-gray-400" /> 			 			 			
       </div>
-      
-      <input
+
+      			<input
         :id="id"
         ref="input"
         v-bind="$attrs"
@@ -32,97 +27,97 @@
         ]"
         @input="$emit('update:modelValue', $event.target.value)"
       />
-      
-      <div 
-        v-if="type === 'password' && showPasswordToggle" 
-        class="absolute inset-y-0 right-0 pr-3 flex items-center"
-      >
-        <button
+
+      			 			 			
+      <div v-if="type === 'password' && showPasswordToggle" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+        				<button
           type="button"
           class="text-gray-400 hover:text-gray-500 focus:outline-none"
           @click="togglePasswordVisibility"
         >
-          <Icon
-            :name="passwordVisible ? 'lucide:eye-off' : 'lucide:eye'"
-            class="h-5 w-5"
-          />
+          					<Icon :name="passwordVisible ? 'lucide:eye-off' : 'lucide:eye'" class="h-5 w-5" /> 				 				 				
         </button>
+        			 			 			
       </div>
+      		 		 		
     </div>
-    
-    <p v-if="error" class="form-error text-error-600">{{ error }}</p>
-    <p v-else-if="hint" class="mt-1 text-sm text-gray-500">{{ hint }}</p>
+
+    		 		 		
+    <p v-if="error" class="form-error text-error-600">			{{ error }} 		</p>
+    		 		 		
+    <p v-else-if="hint" class="mt-1 text-sm text-gray-500">			{{ hint }} 		</p>
+    	 	 	
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue'
 
 const props = defineProps({
   modelValue: {
     type: [String, Number],
-    default: ''
+    default: '',
   },
   label: {
     type: String,
-    default: ''
+    default: '',
   },
   placeholder: {
     type: String,
-    default: ''
+    default: '',
   },
   type: {
     type: String,
-    default: 'text'
+    default: 'text',
   },
   id: {
     type: String,
-    default: () => `input-${Math.random().toString(36).substring(2, 9)}`
+    default: () => `input-${Math.random().toString(36).substring(2, 9)}`,
   },
   error: {
     type: String,
-    default: ''
+    default: '',
   },
   hint: {
     type: String,
-    default: ''
+    default: '',
   },
   icon: {
     type: String,
-    default: ''
+    default: '',
   },
   required: {
     type: Boolean,
-    default: false
+    default: false,
   },
   showPasswordToggle: {
     type: Boolean,
-    default: true
+    default: true,
   },
   autofocus: {
     type: Boolean,
-    default: false
-  }
-});
+    default: false,
+  },
+})
 
-defineEmits(['update:modelValue']);
+defineEmits(['update:modelValue'])
 
-const input = ref(null);
-const passwordVisible = ref(false);
+const input = ref(null)
+const passwordVisible = ref(false)
 const inputType = computed(() => {
   if (props.type === 'password' && passwordVisible.value) {
-    return 'text';
+    return 'text'
   }
-  return props.type;
-});
+  return props.type
+})
 
 function togglePasswordVisibility() {
-  passwordVisible.value = !passwordVisible.value;
+  passwordVisible.value = !passwordVisible.value
 }
 
 onMounted(() => {
   if (props.autofocus && input.value) {
-    input.value.focus();
+    input.value.focus()
   }
-});
+})
 </script>
