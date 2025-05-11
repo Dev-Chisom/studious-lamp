@@ -52,7 +52,7 @@
                   @click="dismissNotification(notification.id)"
                 >
                   <span class="sr-only">Close</span>
-                  <X class="h-5 w-5" />
+                  <Icon name="lucide:x" class="h-5 w-5" />
                 </button>
               </div>
             </div>
@@ -64,8 +64,7 @@
   
   <script setup lang="ts">
   import { ref } from 'vue'
-  import { X } from 'lucide-vue-next'
-  import Button from './../ui/Button'
+  import Button from './../ui/Button.vue'
   
   interface Notification {
     id: string
@@ -87,7 +86,7 @@
   }
   
   const dismissNotification = (id: string) => {
-    notifications.value = notifications.value.filter(n => n.id !== id)
+    notifications.value = notifications.value.filter((n: Notification) => n.id !== id)
   }
   
   const addNotification = (notification: Notification) => {

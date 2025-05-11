@@ -247,13 +247,13 @@
                       <div class="ml-3 text-sm">
                         <label for="terms" class="font-medium text-gray-700 dark:text-gray-300">
                           I agree to the
-                          <NuxtLink to="/terms" class="text-primary-600 hover:text-primary-500">
+                          <a href="https://studious-lamp-web.vercel.app/terms" target="_blank" class="text-primary-600 hover:text-primary-500">
                             Terms of Service
-                          </NuxtLink>
+                          </a>
                           and
-                          <NuxtLink to="/privacy" class="text-primary-600 hover:text-primary-500">
+                          <a href="https://studious-lamp-web.vercel.app/privacy" target="_blank" class="text-primary-600 hover:text-primary-500">
                             Content Guidelines
-                          </NuxtLink>
+                          </a>
                         </label>
                         <p v-if="errors.agreedToTerms" class="form-error">{{ errors.agreedToTerms }}</p>
                       </div>
@@ -327,7 +327,6 @@
     categories: [],
     contentDescription: '',
     monthlyPrice: 9.99,
-    yearlyPrice: 99.99,
     quarterlyPrice: null,
     biAnnualPrice: null,
     yearlyPrice: null,
@@ -397,7 +396,7 @@
   
   async function submitApplication() {
     loading.value = true;
-    errors = {};
+    errors.value = {};
     
     try {
       // Validate form
