@@ -23,42 +23,61 @@
       </button>
     </div>
 
-    <!-- Media Container with Blurred Feature -->
+    <!-- Media Container -->
     <div class="relative aspect-video w-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-      <BlurredPost v-if="post.isPremium && !isSubscribed" @subscribe="$emit('subscribe')">
-        <template #default>
+      <template v-if="post.isPremium && !isSubscribed">
+        <div class="absolute inset-0 z-10 flex flex-col justify-center items-center bg-white/70 dark:bg-gray-900/70">
+          <button @click="$emit('subscribe')" class="max-w-md rounded-full btn-primary text-white font-semibold py-4 px-6 text-lg transition-all">
+            SUBSCRIBE
+          </button>
+        </div>
+        <div class="absolute inset-0 w-full h-full filter blur-sm pointer-events-none select-none">
           <img v-if="post.image" :src="post.image" class="w-full h-full object-cover" alt="Post content">
           <video v-else-if="post.video" class="w-full h-full object-cover" :poster="post.image">
             <source :src="post.video" type="video/mp4">
           </video>
-        </template>
-      </BlurredPost>
-      <div v-else class="absolute inset-0 w-full h-full cursor-pointer" @click="openModal(0)">
-        <img v-if="post.image" :src="post.image" class="w-full h-full object-cover">
-        <video v-if="post.video" class="w-full h-full object-cover" :poster="post.image">
-          <source :src="post.video" type="video/mp4">
-        </video>
-      </div>
+        </div>
+      </template>
+      <template v-else>
+        <div class="absolute inset-0 w-full h-full cursor-pointer" @click="openModal(0)">
+          <img v-if="post.image" :src="post.image" class="w-full h-full object-cover">
+          <video v-if="post.video" class="w-full h-full object-cover" :poster="post.image">
+            <source :src="post.video" type="video/mp4">
+          </video>
+        </div>
+      </template>
     </div>
-
 
     <!-- Actions -->
     <div class="px-4 py-3">
       <div class="flex items-center justify-between mb-2">
         <div class="flex items-center space-x-4">
-          <button @click="toggleLike" class="text-gray-900 dark:text-white">
+          <button
+            @click="toggleLike"
+            :disabled="post.isPremium && !isSubscribed"
+            :class="[post.isPremium && !isSubscribed ? 'opacity-50 cursor-not-allowed' : '', 'text-gray-900 dark:text-white']"
+          >
             <Icon :name="isLiked ? 'lucide:heart' : 'lucide:heart'" class="w-6 h-6"
               :class="{ 'fill-red-500 text-red-500': isLiked }" />
           </button>
-          <!-- Open modal with comments -->
-          <button @click="openModal(0, true)" class="text-gray-900 dark:text-white comment-button">
+          <button
+            @click="openModal(0, true)"
+            :disabled="post.isPremium && !isSubscribed"
+            :class="[post.isPremium && !isSubscribed ? 'opacity-50 cursor-not-allowed' : '', 'text-gray-900 dark:text-white']"
+          >
             <Icon name="lucide:message-circle" class="w-6 h-6" />
           </button>
-          <button class="text-gray-900 dark:text-white">
+          <button
+            :disabled="post.isPremium && !isSubscribed"
+            :class="[post.isPremium && !isSubscribed ? 'opacity-50 cursor-not-allowed' : '', 'text-gray-900 dark:text-white']"
+          >
             <Icon name="lucide:send" class="w-6 h-6" />
           </button>
         </div>
-        <button class="text-gray-900 dark:text-white">
+        <button
+          :disabled="post.isPremium && !isSubscribed"
+          :class="[post.isPremium && !isSubscribed ? 'opacity-50 cursor-not-allowed' : '', 'text-gray-900 dark:text-white']"
+        >
           <Icon name="lucide:bookmark" class="w-6 h-6" />
         </button>
       </div>
@@ -74,15 +93,16 @@
       </p>
 
       <!-- View comments -->
-      <button v-if="post.comments.length > 0 || localComments.length > 0" @click="openModal(0, true)" <!-- Open modal
-        with comments -->
+      <button
+        v-if="(post.comments.length > 0 || localComments.length > 0) && !(post.isPremium && !isSubscribed)"
+        @click="openModal(0, true)"
         class="text-sm text-gray-500 dark:text-gray-400 mb-1"
-        >
+      >
         View all {{ post.comments.length + localComments.length }} comments
       </button>
 
       <!-- Display local comments -->
-      <div v-for="(comment, index) in localComments" :key="'local-' + index" class="mb-1">
+      <div v-if="!(post.isPremium && !isSubscribed)" v-for="(comment, index) in localComments" :key="'local-' + index" class="mb-1">
         <p class="text-sm text-gray-900 dark:text-white">
           <span class="font-semibold">{{ currentUser.name }}</span> {{ comment }}
         </p>
@@ -95,7 +115,7 @@
     </div>
 
     <!-- Add comment (quick) -->
-    <div class="px-4 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center">
+    <div v-if="!(post.isPremium && !isSubscribed)" class="px-4 py-3 border-t border-gray-100 dark:border-gray-800 flex items-center">
       <input v-model="quickComment" type="text" placeholder="Add a comment..."
         class="flex-1 bg-transparent border-none text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0"
         @keyup.enter="addComment">

@@ -72,9 +72,7 @@
 
 <script setup>
 import SidebarNavigationItem from './SidebarNavigationItem.vue'
-import { useAuthStore } from '~/stores/auth';
 
-const authStore = useAuthStore();
 defineProps({
   isMobileOpen: {
     type: Boolean,
@@ -88,19 +86,11 @@ const navigationItems = [
   { name: 'Home', href: '/', icon: 'lucide:home' },
   { name: 'Dashboard', href: '/creator/dashboard', icon: 'lucide:layout-dashboard' },
   { name: 'Content', href: '/creator/content', icon: 'lucide:image' },
-  { name: 'Posts', href: '/creator/posts', icon: 'lucide:file-text' },
   { name: 'Messages', href: '/messages', icon: 'lucide:message-circle' },
   { name: 'Subscribers', href: '/creator/subscribers', icon: 'lucide:users' },
   { name: 'Earnings', href: '/creator/earnings', icon: 'lucide:dollar-sign' },
   { name: 'Wallet', href: '/wallet', icon: 'lucide:wallet' },
   { name: 'Subscriptions', href: '/subscriptions', icon: 'lucide:credit-card' },
-  { name: 'Become A Creator', href: '/apply', icon: 'lucide:user-plus' },
-  { name: 'Settings', href: '/settings', icon: 'lucide:settings' },
-  { 
-    name: 'View Profile', 
-    href: authStore.user?.displayName ? `/@${authStore.user.displayName}` : '/@user', 
-    icon: 'lucide:external-link',
-    divider: true
-  },
+  { name: 'Become A Creator', href: '/apply', icon: 'lucide:user-plus', divider: true },
 ];
 </script>

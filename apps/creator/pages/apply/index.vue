@@ -1,9 +1,9 @@
 <template>
-    <div class="min-h-screen max-w-6xl mx-auto bg-gray-50 dark:bg-gray-900">
+    <div class="min-h-screen max-w-6xl mx-auto">
         <Head>
-            <Title>Becaome a Creator - Creator Dashboard</Title>
+            <Title>Become a Creator - Creator Dashboard</Title>
         </Head>
-      <div class="container mx-auto">
+      <div class="container mx-auto px-4 py-8">
         <div>
           <div class="text-left mb-8">
             <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Become a Creator</h1>
@@ -11,12 +11,12 @@
   
           <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm overflow-hidden">
             <div class="p-6 sm:p-8">
-              <form @submit.prevent="submitApplication" class="space-y-6">
+              <form @submit.prevent="submitApplication" class="space-y-8">
                 <!-- Basic Information -->
-                <div>
-                  <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Basic Information</h2>
+                <section>
+                  <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">Basic Information</h2>
                   
-                  <div class="space-y-4">
+                  <div class="space-y-6">
                     <FormInput
                       v-model="form.displayName"
                       label="Display Name"
@@ -32,45 +32,37 @@
                       :error="errors.username"
                       required
                     />
-
-                    <FormInput
-                      v-model="form.email"
-                      label="Email"
-                      placeholder="Your email (e.g., johndoe@example.com)"
-                      :error="errors.email"
-                      required
-                    />
                     
                     <div>
-                      <label class="form-label text-gray-900 dark:text-gray-100">
+                      <label class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                         Bio
-                        <span class="text-error-500 ml-1">*</span>
+                        <span class="text-error-500">*</span>
                       </label>
                       <textarea
                         v-model="form.bio"
                         rows="3"
                         placeholder="Tell your potential subscribers about yourself"
-                        class="form-input dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
+                        class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:border-primary-500 focus:ring-primary-500"
                         :class="errors.bio ? 'border-error-300 focus:border-error-500 focus:ring-error-500' : ''"
                         required
                       ></textarea>
-                      <p v-if="errors.bio" class="form-error">{{ errors.bio }}</p>
+                      <p v-if="errors.bio" class="mt-1 text-sm text-error-500">{{ errors.bio }}</p>
                     </div>
                     
                     <div>
-                      <label class="form-label text-gray-900 dark:text-gray-100">
+                      <label class="block text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
                         Categories
-                        <span class="text-error-500 ml-1">*</span>
+                        <span class="text-error-500">*</span>
                       </label>
-                      <div class="mt-2 flex flex-wrap gap-2">
+                      <div class="flex flex-wrap gap-2">
                         <button
                           v-for="category in availableCategories"
                           :key="category"
                           type="button"
-                          class="inline-flex items-center px-3 py-1 rounded-full text-sm"
+                          class="inline-flex items-center px-3 py-1 rounded-full text-sm transition-colors"
                           :class="form.categories.includes(category)
                             ? 'bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-200'
-                            : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700'"
+                            : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'"
                           @click="toggleCategory(category)"
                         >
                           {{ category }}
@@ -82,72 +74,132 @@
                           />
                         </button>
                       </div>
-                      <p v-if="errors.categories" class="form-error">{{ errors.categories }}</p>
+                      <p v-if="errors.categories" class="mt-1 text-sm text-error-500">{{ errors.categories }}</p>
                     </div>
                   </div>
-                </div>
+                </section>
   
-                <!-- Content & Pricing -->
-                <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
-                  <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Content & Pricing</h2>
+                <!-- Pricing -->
+                <section class="pt-8 border-t border-gray-200 dark:border-gray-700">
+                  <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">Pricing</h2>
                   
-                  <div class="space-y-4">
-                    <div>
-                      <label class="form-label text-gray-900 dark:text-gray-100">
-                        What type of content will you share?
-                        <span class="text-error-500 ml-1">*</span>
-                      </label>
-                      <textarea
-                        v-model="form.contentDescription"
-                        rows="3"
-                        placeholder="Describe the type of content you plan to share with your subscribers"
-                        class="form-input dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700"
-                        :class="errors.contentDescription ? 'border-error-300 focus:border-error-500 focus:ring-error-500' : ''"
-                        required
-                      ></textarea>
-                      <p v-if="errors.contentDescription" class="form-error">{{ errors.contentDescription }}</p>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="space-y-6">
+                    <div class="mb-8">
+                      <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Monthly Subscription</h3>
                       <FormInput
                         v-model="form.monthlyPrice"
                         type="number"
-                        label="Monthly Subscription Price ($)"
+                        label="Monthly Price ($)"
                         placeholder="9.99"
                         min="4.99"
                         step="0.01"
                         :error="errors.monthlyPrice"
                         required
+                        @input="calculatePeriodPrices"
                       />
-                      
-                      <FormInput
-                        v-model="form.yearlyPrice"
-                        type="number"
-                        label="Yearly Subscription Price ($)"
-                        placeholder="99.99"
-                        min="49.99"
-                        step="0.01"
-                        :error="errors.yearlyPrice"
-                      />
+                      <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        Set your base monthly price. Other prices will be calculated automatically.
+                      </p>
                     </div>
-                    
-                    <p class="text-sm text-gray-500 dark:text-gray-300">
-                      Recommended: Set your yearly price at a discount to encourage longer subscriptions.
-                    </p>
+
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Subscription Plans</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      
+                      <!-- Quarterly -->
+                      <div class="p-4 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm">
+                        <div class="flex md:items-center justify-between flex-col md:flex-row mb-3">
+                          <div>
+                            <h4 class="font-medium text-gray-800 dark:text-gray-200">Quarterly Plan</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">3 months subscription</p>
+                          </div>
+                          <select 
+                            v-model="form.discounts.quarterly"
+                            class="border rounded-md px-3 py-1 text-sm bg-white dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                            @change="calculatePeriodPrices"
+                          >
+                            <option value="0">0% discount</option>
+                            <option value="10">10% discount</option>
+                            <option value="15">15% discount</option>
+                            <option value="20">20% discount</option>
+                          </select>
+                        </div>
+                        <FormInput
+                          v-model="form.quarterlyPrice"
+                          type="number"
+                          label="Total Quarterly Price"
+                          placeholder="Calculating..."
+                          step="0.01"
+                          readonly
+                        />
+                      </div>
+
+                      <!-- Bi-Annual -->
+                      <div class="p-4 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm">
+                        <div class="flex md:items-center justify-between flex-col md:flex-row mb-3">
+                          <div>
+                            <h4 class="font-medium text-gray-800 dark:text-gray-200">Bi-Annual Plan</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">6 months subscription</p>
+                          </div>
+                          <select 
+                            v-model="form.discounts.biAnnual"
+                            class="border rounded-md px-3 py-1 text-sm bg-white dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                            @change="calculatePeriodPrices"
+                          >
+                            <option value="0">0% discount</option>
+                            <option value="15">15% discount</option>
+                            <option value="20">20% discount</option>
+                            <option value="25">25% discount</option>
+                          </select>
+                        </div>
+                        <FormInput
+                          v-model="form.biAnnualPrice"
+                          type="number"
+                          label="Total Bi-Annual Price"
+                          placeholder="Calculating..."
+                          step="0.01"
+                          readonly
+                        />
+                      </div>
+
+                      <!-- Annual -->
+                      <div class="p-4 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm">
+                        <div class="flex md:items-center justify-between flex-col md:flex-row mb-3">
+                          <div>
+                            <h4 class="font-medium text-gray-800 dark:text-gray-200">Annual Plan</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">12 months subscription</p>
+                          </div>
+                          <select 
+                            v-model="form.discounts.yearly"
+                            class="border rounded-md px-3 py-1 text-sm bg-white dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                            @change="calculatePeriodPrices"
+                          >
+                            <option value="0">0% discount</option>
+                            <option value="20">20% discount</option>
+                            <option value="25">25% discount</option>
+                            <option value="30">30% discount</option>
+                            <option value="35">35% discount</option>
+                            <option value="40">40% discount</option>
+                            <option value="50">50% discount</option>
+                          </select>
+                        </div>
+                        <FormInput
+                          v-model="form.yearlyPrice"
+                          type="number"
+                          label="Total Annual Price"
+                          placeholder="Calculating..."
+                          step="0.01"
+                          readonly
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </section>
   
                 <!-- Social Media -->
-                <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
-                  <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Social Media</h2>
+                <section class="pt-8 border-t border-gray-200 dark:border-gray-700">
+                  <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">Social Media</h2>
                   
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormInput
-                      v-model="form.social.email"
-                      label="Email Address"
-                      placeholder="your@email.com"
-                      icon="lucide:mail"
-                    />
                     
                     <FormInput
                       v-model="form.social.facebook"
@@ -177,10 +229,10 @@
                       icon="lucide:music"
                     />
                   </div>
-                </div>
+                </section>
   
                 <!-- Terms and Conditions -->
-                <div class="pt-6 border-t border-gray-200 dark:border-gray-700">
+                <section class="pt-8 border-t border-gray-200 dark:border-gray-700">
                   <div class="space-y-4">
                     <div class="flex items-start">
                       <div class="flex items-center h-5">
@@ -228,19 +280,18 @@
                       </div>
                     </div>
                   </div>
-                </div>
+                </section>
   
                 <div class="pt-6 flex justify-end">
                   <button
                     type="submit"
-                    class="btn-primary"
-                    :disabled="loading"
+                    class="w-full sm:w-auto px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
+                    :disabled="isSubmitting"
                   >
-                    <Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
-                    Submit Application
+                    <span v-if="isSubmitting">Submitting...</span>
+                    <span v-else>Submit Application</span>
                   </button>
                 </div>
-           
               </form>
             </div>
           </div>
@@ -249,7 +300,7 @@
     </div>
   </template>
   
-  <script setup>
+  <script setup lang="ts">
   import { ref, reactive } from 'vue';
   import { useAuthStore } from '~/stores/auth';
   import FormInput from '@/components/ui/FormInput.vue'
@@ -265,7 +316,7 @@
   
   const authStore = useAuthStore();
   const router = useRouter();
-  
+  const isSubmitting = ref(false)
   const loading = ref(false);
   const errors = reactive({});
   
@@ -275,11 +326,17 @@
     bio: '',
     categories: [],
     contentDescription: '',
-    email: '',
     monthlyPrice: 9.99,
     yearlyPrice: 99.99,
+    quarterlyPrice: null,
+    biAnnualPrice: null,
+    yearlyPrice: null,
+    discounts: {
+      quarterly: 15, 
+      biAnnual: 20, 
+      yearly: 30
+    },
     social: {
-      email: '',
       facebook: '',
       instagram: '',
       twitter: '',
@@ -290,18 +347,16 @@
   });
   
   const availableCategories = [
-    'Art',
-    'Music',
-    'Gaming',
     'Fitness',
-    'Education',
-    'Photography',
-    'Technology',
-    'Fashion',
-    'Cooking',
     'Lifestyle',
-    'Travel',
-    'Beauty'
+    'Education',
+    'Entertainment',
+    'Technology',
+    'Business',
+    'Health',
+    'Sports',
+    'Music',
+    'Art'
   ];
   
   function toggleCategory(category) {
@@ -322,6 +377,22 @@
     if (index !== -1) {
       form.categories.splice(index, 1);
     }
+  }
+  
+  function calculatePeriodPrices() {
+    const monthlyPrice = parseFloat(form.monthlyPrice) || 0;
+    
+    // Calculate quarterly price
+    const quarterlyDiscount = parseInt(form.discounts.quarterly) / 100;
+    form.quarterlyPrice = (monthlyPrice * 3 * (1 - quarterlyDiscount)).toFixed(2);
+    
+    // Calculate bi-annual price
+    const biAnnualDiscount = parseInt(form.discounts.biAnnual) / 100;
+    form.biAnnualPrice = (monthlyPrice * 6 * (1 - biAnnualDiscount)).toFixed(2);
+    
+    // Calculate annual price
+    const yearlyDiscount = parseInt(form.discounts.yearly) / 100;
+    form.yearlyPrice = (monthlyPrice * 12 * (1 - yearlyDiscount)).toFixed(2);
   }
   
   async function submitApplication() {
@@ -347,11 +418,6 @@
       
       if (!form.bio) {
         errors.bio = 'Bio is required';
-        isValid = false;
-      }
-
-      if(!form.email){
-        errors.bio='Email is required'
         isValid = false;
       }
       

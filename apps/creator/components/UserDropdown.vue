@@ -36,8 +36,8 @@
 
       <div class="hover:bg-gray-50 dark:hover:bg-gray-800">
         <button @click="toggleDarkMode" class="text-sm px-4 py-2 border-0 flex items-center space-x-2 w-full">
-          <Icon :name="isDarkMode ? 'lucide:sun' : 'lucide:moon'" class="h-4 w-4" />
-          <span>{{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}</span>
+          <Icon :name="colorMode.value === 'dark' ? 'lucide:sun' : 'lucide:moon'" class="h-4 w-4" />
+          <span>{{ colorMode.value === 'dark' ? 'Light Mode' : 'Dark Mode' }}</span>
         </button>
       </div>
 
@@ -63,10 +63,12 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '~/stores/auth';
+import { useColorMode } from '#imports';
 
 const authStore = useAuthStore();
 const isOpen = ref(false);
 const dropdownRef = ref(null)
+const colorMode = useColorMode()
 
 const userInitials = computed(() => {
   const name = authStore.user?.displayName || '';
@@ -107,27 +109,12 @@ const closeDropdown = (e) => {
 const isDarkMode = ref(false)
 
 function toggleDarkMode() {
-  isDarkMode.value = !isDarkMode.value;
-  if (isDarkMode.value) {
-    document.documentElement.classList.add('dark');
-    localStorage.setItem('theme', 'dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-    localStorage.setItem('theme', 'light');
-  }
+  colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
+  isOpen.value = false;
 }
 
 onMounted(() => {
   document.addEventListener('click', closeDropdown);
-  // Set initial theme from localStorage or system preference
-  const saved = localStorage.getItem('theme');
-  if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    isDarkMode.value = true;
-    document.documentElement.classList.add('dark');
-  } else {
-    isDarkMode.value = false;
-    document.documentElement.classList.remove('dark');
-  }
 });
 
 onUnmounted(() => {
