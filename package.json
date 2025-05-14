@@ -10,7 +10,8 @@
 		"precommit": "pnpm -r exec eslint --fix",
 		"format": "prettier --write .",
 		"clean": "pnpm -r clean",
-		"prepare": "husky install"
+		"prepare": "husky install",
+    "postinstall": "pnpm --filter @whispers/api run build"
 	},
 	"lint-staged": {
 		"*.ts": "prettier --write",
