@@ -101,9 +101,9 @@ import { ref, computed, onMounted } from 'vue';
 import { toast } from 'vue3-toastify';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Pagination, Keyboard } from 'swiper/modules';
-import { useUserStore } from '~/stores/user';
+import { useUserStore } from '~/store/user';
 import Modal from '~/components/ui/Modal.vue';
-import Button from '~/components/ui/BaseButton.vue';
+import BaseButton from '~/components/ui/BaseButton.vue';
 import PostCard from '@/components/PostCard.vue';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -276,7 +276,7 @@ function chunkArray<T>(array: T[], size: number): T[][] {
 const chunkedSuggestions = computed<SuggestionUser[][]>(() => chunkArray(filteredSuggestions.value, usersPerSlide));
 
 const isSubscribedToCreator = (creatorId: string): boolean => {
-	return userStore.getSubscriptions.includes(creatorId);
+	return userStore?.getSubscriptions?.includes(creatorId) || false;
 };
 
 const subscribeToCreator = async (creatorId: string): Promise<void> => {

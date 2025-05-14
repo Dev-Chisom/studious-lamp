@@ -6,8 +6,8 @@
 		>
 			<div class="avatar h-8 w-8 bg-primary-100 dark:bg-primary-900">
 				<img
-					v-if="authStore.user?.profileImage"
-					:src="authStore.user.profileImage"
+					v-if="userStore.user?.profileImage"
+					:src="userStore.user.profileImage"
 					alt="Profile"
 					class="h-full w-full object-cover"
 				/>
@@ -20,7 +20,7 @@
 				</div>
 			</div>
 			<span class="hidden md:block text-sm font-medium text-gray-900 dark:text-gray-100">
-				{{ authStore.user?.displayName || 'Account' }}
+				{{ userStore.user?.displayName || 'Account' }}
 			</span>
 			<Icon
 				name="lucide:chevron-down"
@@ -36,10 +36,10 @@
 		>
 			<div class="py-1">
 				<div class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-gray-700">
-					<p class="font-medium">{{ authStore.user?.displayName || 'User' }}</p>
+					<p class="font-medium">{{ userStore.user?.displayName || 'User' }}</p>
 
 					<p class="text-gray-500 dark:text-gray-200 dark:text-gray-400 truncate">
-						{{ authStore.user?.email || 'user@example.com' }}
+						{{ userStore.user?.email || 'user@example.com' }}
 					</p>
 				</div>
 
@@ -63,7 +63,7 @@
 
 			<!-- Creator links -->
 
-			<div v-if="authStore.user?.isCreator" class="py-1">
+			<div v-if="userStore.user?.isCreator" class="py-1">
 				<NuxtLink
 					v-for="item in creatorLinks"
 					:key="item.name"
@@ -89,7 +89,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { useAuthStore } from '~/stores/auth';
+import { useUserStore } from '../store/user';
+import { useAuthStore } from '../store/auth';
 import { useColorMode } from '#imports';
 
 interface User {
@@ -104,18 +105,19 @@ interface NavLink {
 	href: string
 }
 
-interface AuthStore {
-	user: User | null
-	logout: () => void
-}
+// interface userStore {
+// 	user: User | null
+// 	logout: () => void
+// }
 
-const authStore = useAuthStore() as AuthStore;
+const userStore = useUserStore();
+const authStore = useAuthStore()
 const isOpen = ref(false);
 const dropdownRef = ref<HTMLElement | null>(null);
 const colorMode = useColorMode();
 
 const userInitials = computed((): string => {
-	const name = authStore.user?.displayName || '';
+	const name = userStore.user?.displayName || '';
 	if (!name) {
 		return '?';
 	}
@@ -128,8 +130,8 @@ const userInitials = computed((): string => {
 });
 
 const profileHref = computed((): string => {
-	if (authStore.user && authStore.user.displayName) {
-		return `/@${encodeURIComponent(authStore.user.displayName)}`;
+	if (userStore.user && userStore.user.displayName) {
+		return `/@${encodeURIComponent(userStore.user.displayName)}`;
 	}
 	return '/@user';
 });
@@ -146,7 +148,7 @@ const creatorLinks: NavLink[] = [
 	{ name: 'Earnings', href: '/creator/earnings' },
 ];
 
-function logout(): void {
+const logout = (): void => {
 	authStore.logout();
 	isOpen.value = false;
 	navigateTo('/');

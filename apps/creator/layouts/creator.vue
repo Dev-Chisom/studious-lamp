@@ -56,11 +56,15 @@
   </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import CreatorSidebar from '~/components/CreatorSidebar.vue';
 import NotificationBell from '~/components/NotificationBell.vue';
 import UserDropdown from '~/components/UserDropdown.vue';
+import { useUserStore } from '../store/user';
 
 const isMobileOpen = ref(false);
+const userStore = useUserStore();
+
+console.log(userStore)
 </script>

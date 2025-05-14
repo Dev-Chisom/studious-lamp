@@ -339,7 +339,7 @@
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { toast } from 'vue3-toastify';
-import { useAuthStore } from '~/stores/auth';
+import { useUserStore } from '../../store/user';
 import FormInput from '@/components/ui/BaseInput.vue';
 
 interface SocialLinks {
@@ -393,14 +393,14 @@ definePageMeta({
 	},
 });
 
-const authStore = useAuthStore();
+const userStore = useUserStore();
 const router = useRouter();
 const isSubmitting = ref(false);
 const loading = ref(false);
 const errors = reactive<ApplicationFormErrors>({});
 
 const form = reactive<CreatorApplicationForm>({
-	displayName: authStore.user?.displayName || '',
+	displayName: userStore.profile?.displayName || '',
 	username: '',
 	bio: '',
 	categories: [],

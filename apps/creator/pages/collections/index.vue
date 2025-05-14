@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { toast } from 'vue3-toastify';
-import { useUserStore } from '~/stores/user';
+import { useUserStore } from '~/store/user';
 import BaseButton from '~/components/ui/BaseButton.vue';
 
 interface CollectionPost {

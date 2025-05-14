@@ -1,77 +1,53 @@
 <template>
-	<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-		<div class="w-full max-w-md p-8 space-y-8 bg-white dark:bg-gray-800 rounded-lg shadow">
-			<div class="flex flex-col items-center">
-				<img src="/logo.svg" alt="Logo" class="h-12 w-12 mb-2" />
-				<h2 class="mt-2 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">Sign in to your account</h2>
-			</div>
-
-			<div class="space-y-4">
-				<button
-					class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-100 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-					@click="loginWithGoogle"
-				>
-					<Icon name="logos:google-icon" class="h-5 w-5 mr-2" /> Continue with Google
-				</button>
-				<button
-					class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-100 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition"
-					@click="loginWithTwitter"
-				>
-					<Icon name="logos:twitter" class="h-5 w-5 mr-2" /> Continue with Twitter
-				</button>
-			</div>
-		</div>
-	</div>
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div class="w-full max-w-md p-8 space-y-8 bg-white dark:bg-gray-800 rounded-lg shadow">
+      <div class="flex flex-col items-center">
+        <img src="/logo.svg" alt="Logo" class="h-12 w-12 mb-2" />
+        <h2 class="mt-2 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">Sign in to your account</h2>
+      </div>
+      <div v-if="loading">Loading...</div>
+      <div v-else-if="error">{{ error }}</div>
+      <div v-else>
+        <OAuthLogin />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { toast } from 'vue3-toastify';
+import { useRoute, useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { useAuthStore } from '../../store/auth';
+import OAuthLogin from '@/components/auth/OAuthLogin.vue';
 
+const route = useRoute();
 const router = useRouter();
+const authStore = useAuthStore();
+const loading = ref(false);
+const error = ref<string | null>(null);
 
-// Types for OAuth providers
-interface OAuthResponse {
-	success: boolean
-	error?: string
-}
+onMounted(async () => {
+  // If user is already authenticated, redirect to home
+  if (authStore.isAuthenticated) {
+    await router.replace('/');
+    return;
+  }
 
-const loading = ref<boolean>(false);
-
-async function loginWithGoogle(): Promise<void> {
-	loading.value = true;
-	try {
-		// Replace with your actual Google OAuth logic
-		// Example: await $auth.loginWith('google')
-		// Simulate success
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		toast.success('Logged in with Google!');
-		router.push('/');
-	} catch (error) {
-		toast.error('Google login failed.');
-	} finally {
-		loading.value = false;
-	}
-}
-
-async function loginWithTwitter(): Promise<void> {
-	loading.value = true;
-	try {
-		// Replace with your actual Twitter OAuth logic
-		// Example: await $auth.loginWith('twitter')
-		// Simulate success
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		toast.success('Logged in with Twitter!');
-		router.push('/');
-	} catch (error) {
-		toast.error('Twitter login failed.');
-	} finally {
-		loading.value = false;
-	}
-}
+  // Handle OAuth callback with tokens in query params
+  const { accessToken, refreshToken } = route.query;
+  
+  if (accessToken && typeof accessToken === 'string') {
+    loading.value = true;
+    
+    try {
+      authStore.setTokens(accessToken, refreshToken);
+      await router.replace('/');
+    } catch (e) {
+      error.value = 'Authentication failed. Please try again.';
+      console.log(e, 'skjsj')
+    } finally {
+      loading.value = false;
+    }
+  }
+});
 </script>
-
-<style scoped>
-/* Add any custom styles if needed */
-</style>

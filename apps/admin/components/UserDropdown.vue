@@ -6,8 +6,8 @@
 		>
 			<div class="avatar h-8 w-8 bg-primary-100">
 				<img
-					v-if="authStore.user?.profileImage"
-					:src="authStore.user.profileImage"
+					v-if="userStore.profile.user?.profileImage"
+					:src="userStore.profile.user.profileImage"
 					alt="Profile"
 					class="h-full w-full object-cover"
 				/>
@@ -16,7 +16,7 @@
 					{{ userInitials }}
 				</div>
 			</div>
-			<span class="hidden md:block text-sm font-medium"> {{ authStore.user?.displayName || 'Account' }} </span>
+			<span class="hidden md:block text-sm font-medium"> {{ userStore.profile.user?.displayName || 'Account' }} </span>
 			<Icon name="lucide:chevron-down" class="h-4 w-4" aria-hidden="true" />
 		</button>
 
@@ -26,9 +26,9 @@
 		>
 			<div class="py-1">
 				<div class="px-4 py-2 text-sm text-gray-900 border-b border-gray-100">
-					<p class="font-medium">{{ authStore.user?.displayName || 'User' }}</p>
+					<p class="font-medium">{{ userStore.profile.user?.displayName || 'User' }}</p>
 
-					<p class="text-gray-500 truncate">{{ authStore.user?.email || 'user@example.com' }}</p>
+					<p class="text-gray-500 truncate">{{ userStore.profile.user?.email || 'user@example.com' }}</p>
 				</div>
 
 				<NuxtLink
@@ -44,7 +44,7 @@
 
 			<!-- Creator links -->
 
-			<div v-if="authStore.user?.isCreator" class="py-1">
+			<div v-if="userStore.profile.user?.isCreator" class="py-1">
 				<NuxtLink
 					v-for="item in creatorLinks"
 					:key="item.name"
@@ -67,13 +67,13 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { useAuthStore } from '~/stores/auth';
+import { useUserStore } from '~/store/user';
 
-const authStore = useAuthStore();
+const userStore.profile = useUserStore();
 const isOpen = ref(false);
 
 const userInitials = computed(() => {
-	const name = authStore.user?.displayName || '';
+	const name = userStore.profile.user?.displayName || '';
 	if (!name) {
 		return '?';
 	}
@@ -98,7 +98,7 @@ const creatorLinks = [
 ];
 
 function logout() {
-	authStore.logout();
+	userStore.profile.logout();
 	isOpen.value = false;
 	navigateTo('/');
 }

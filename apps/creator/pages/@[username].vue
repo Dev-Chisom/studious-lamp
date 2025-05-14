@@ -229,7 +229,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useAuthStore } from '~/stores/auth';
+import { useUserStore } from '../store/user';
 import PostCard from '~/components/PostCard.vue';
 
 interface SocialLink {
@@ -280,7 +280,7 @@ interface UserPost {
 
 const route = useRoute();
 const username = computed<string>(() => route.params.username as string);
-const authStore = useAuthStore();
+const userStore = useUserStore();
 
 definePageMeta({
 	layout: 'creator',
@@ -351,7 +351,7 @@ const isFollowing = ref<boolean>(false);
 const isSubscribed = ref<boolean>(false);
 
 const isCurrentUser = computed<boolean>(() => {
-	return authStore.user?.username === username.value;
+	return userStore?.profile?.username === username.value;
 });
 
 const userInitials = computed<string>(() => {

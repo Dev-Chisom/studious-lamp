@@ -29,7 +29,7 @@ export default defineNuxtConfig({
 		autoImports: ['defineStore', 'acceptHMRUpdate'],
 	},
 	imports: {
-		dirs: ['stores'],
+		dirs: ['store'],
 	},
 	runtimeConfig: {
 		public: {

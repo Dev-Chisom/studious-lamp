@@ -152,7 +152,8 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { toast } from 'vue3-toastify';
-import { useAuthStore } from '~/stores/auth';
+import { useUserStore } from '~/store/user';
+import { useAuthStore } from '~/store/auth';
 import FormInput from '@/components/ui/BaseInput.vue';
 
 definePageMeta({
@@ -163,22 +164,23 @@ definePageMeta({
   },
 });
 
+const userStore = useUserStore();
 const authStore = useAuthStore();
 
 const loading = ref(false);
-const profileImage = ref(authStore.user?.profileImage || '');
+const profileImage = ref(userStore.user?.profileImage || '');
 const errors = ref({});
 
 // Profile form
 const profile = ref({
-  displayName: authStore.user?.displayName || '',
+  displayName: userStore.user?.displayName || '',
   username: '',
   bio: '',
 });
 
 // Email form
 const email = ref({
-  current: authStore.user?.email || '',
+  current: userStore.user?.email || '',
   new: '',
   password: '',
 });

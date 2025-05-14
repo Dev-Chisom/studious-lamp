@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
 import { toast } from 'vue3-toastify';
-import { useContentStore } from '~/stores/content';
+import { useContentStore } from '~/store/content';
 import PostForm from '@/components/PostForm.vue';
 
 const router = useRouter();

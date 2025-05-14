@@ -1,18 +1,14 @@
+import { useAuthStore } from '../store/auth'
+
 export default defineNuxtRouteMiddleware((to, from) => {
-	const authStore = useAuthStore(); // If the user is not authenticated and is trying to access a protected route
+	const authStore = useAuthStore()
 
-	if (!authStore.isAuthenticated && to.meta.requiresAuth) {
-		return navigateTo({
-			path: '/auth/login',
-			query: { redirect: to.fullPath },
-		});
-	} // If the user is authenticated and trying to access auth pages
-
-	if (authStore.isAuthenticated && to.path.startsWith('/auth/')) {
-		return navigateTo('/');
-	} // If the route requires creator role
-
-	if (to.meta.requiresCreator && !authStore.isCreator) {
-		return navigateTo('/');
+	if (!authStore.isAuthenticated && to.path !== '/auth') {
+		return navigateTo('/auth')
 	}
-});
+
+	// if authenticated and trying to access /auth page
+	if (authStore.isAuthenticated && to.path === '/auth') {
+		return navigateTo('/')
+	}
+})

@@ -51,3 +51,7 @@ export class ApiClient {
 
 // Export a singleton instance
 export const api = new ApiClient(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api');
+
+export * from './auth';
+export * from './api.service';
+export * from './creator.service';
