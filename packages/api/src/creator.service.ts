@@ -1,23 +1,34 @@
-import { createApiService } from './api.service';
+import { api } from './api.service'
+import type { CreatorApplicationPayload } from './types/creator-apply.types'
 
 export interface Creator {
-  id: string;
-  name: string;
-  email: string;
-  bio?: string;
-  createdAt: Date;
-  updatedAt: Date;
+	id: string
+	name: string
+	email: string
+	bio?: string
+	createdAt: Date
+	updatedAt: Date
 }
 
-export function createCreatorApi(token?: string) {
-  const api = createApiService(token);
+export interface CreatorPreference {
+	_id: string
+	discount: number
+	cycle: string
+	createdAt: string
+	updatedAt: string
+}
 
-  return {
-    setToken: api.setToken,
-    getAllCreators: () => api.get<Creator[]>('/creator'),
-    getCreatorById: (id: string) => api.get<Creator>(`/creator/${id}`),
-    createCreator: (creatorData: Partial<Creator>) => api.post<Creator>('/creator', creatorData),
-    updateCreator: (id: string, creatorData: Partial<Creator>) => api.put<Creator>(`/creator/${id}`, creatorData),
-    deleteCreator: (id: string) => api.del<void>(`/creator/${id}`),
-  };
-} 
+interface ApiResponse {
+	data: CreatorPreference[]
+}
+
+export function createCreatorApi() {
+	return {
+		createCreator: (creatorData: Partial<CreatorApplicationPayload>) => api.post('/creators', creatorData),
+		getAllCreators: () => api.get<Creator[]>('/creators'),
+		getCreatorById: (id: string) => api.get<Creator>(`/creator/${id}`),
+		updateCreator: (id: string, creatorData: Partial<Creator>) => api.put<Creator>(`/creator/${id}`, creatorData),
+		deleteCreator: (id: string) => api.del<void>(`/creator/${id}`),
+		getCreatorPreferences: () => api.get<ApiResponse>('/preferences/pricing-models'),
+	}
+}

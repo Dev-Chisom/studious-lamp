@@ -62,6 +62,10 @@ export const useAuthStore = defineStore('user', {
 	},
 
 	getters: {
-		isAuthenticated: (state) => !!state.accessToken,
+		isAuthenticated: (state) =>
+			!!state.accessToken &&
+			!!state.profile &&
+			typeof state.profile === 'object' &&
+			Object.keys(state.profile).length > 0,
 	},
 })

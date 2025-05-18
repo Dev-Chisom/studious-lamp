@@ -50,6 +50,7 @@ export function createApiService(token?: string, refreshToken?: string, onTokenR
 					}
 				} catch (refreshError) {
 					// Refresh failed, let the app handle logout
+					console.log(refreshError)
 				}
 			}
 			return Promise.reject(error)
@@ -65,7 +66,6 @@ export function createApiService(token?: string, refreshToken?: string, onTokenR
 		const response = await api.post<T>(endpoint, data)
 		return response.data
 	}
-
 	async function put<T>(endpoint: string, data?: any): Promise<T> {
 		const response = await api.put<T>(endpoint, data)
 		return response.data
@@ -78,3 +78,5 @@ export function createApiService(token?: string, refreshToken?: string, onTokenR
 
 	return { get, post, put, del, setToken }
 }
+
+export const api = createApiService()

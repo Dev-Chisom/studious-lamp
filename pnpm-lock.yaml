@@ -138,6 +138,12 @@ importers:
       vue3-toastify:
         specifier: ^0.2.1
         version: 0.2.8(vue@3.5.13(typescript@5.8.3))
+      yup:
+        specifier: ^1.4.0
+        version: 1.6.1
+      zod:
+        specifier: ^3.22.4
+        version: 3.24.4
     devDependencies:
       '@tailwindcss/forms':
         specifier: ^0.5.10

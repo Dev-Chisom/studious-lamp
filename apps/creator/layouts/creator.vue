@@ -61,10 +61,9 @@ import { ref, onMounted } from 'vue';
 import CreatorSidebar from '~/components/CreatorSidebar.vue';
 import NotificationBell from '~/components/NotificationBell.vue';
 import UserDropdown from '~/components/UserDropdown.vue';
-import { useUserStore } from '../store/user';
+import { useAuthStore } from '../store/auth';
 
 const isMobileOpen = ref(false);
-const userStore = useUserStore();
-
-console.log(userStore)
+const authStore = useAuthStore();
+authStore.hydrate();
 </script>

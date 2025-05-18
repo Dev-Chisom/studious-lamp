@@ -19,6 +19,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { useAuthStore } from '../../store/auth';
 import OAuthLogin from '@/components/auth/OAuthLogin.vue';
+import { createAuthApi } from '@whispers/api';
 
 const route = useRoute();
 const router = useRouter();
@@ -36,18 +37,31 @@ onMounted(async () => {
   // Handle OAuth callback with tokens in query params
   const { accessToken, refreshToken } = route.query;
   
-  if (accessToken && typeof accessToken === 'string') {
-    loading.value = true;
-    
+if (accessToken && typeof accessToken === 'string') {
+  loading.value = true;
+  try {
+    authStore.setTokens(accessToken, refreshToken);
+    // Validate token
+    const authApi = createAuthApi(accessToken);
+    const profile = await authApi.getProfile();
+    authStore.setProfile(profile);
+    await router.replace('/');
+  } catch (e) {
+    // Try refresh
     try {
-      authStore.setTokens(accessToken, refreshToken);
+      const authApi = createAuthApi();
+      const { accessToken: newAccessToken } = await authApi.refreshToken(refreshToken);
+      authStore.setTokens(newAccessToken, refreshToken);
+      const profile = await authApi.getProfile();
+      authStore.setProfile(profile);
       await router.replace('/');
-    } catch (e) {
+    } catch (refreshError) {
       error.value = 'Authentication failed. Please try again.';
-      console.log(e, 'skjsj')
-    } finally {
-      loading.value = false;
+      authStore.logout();
     }
+  } finally {
+    loading.value = false;
   }
+}
 });
 </script>

@@ -54,7 +54,7 @@ interface FormInputProps {
 	placeholder?: string
 	type?: InputType
 	id?: string
-	error?: string
+	error?: string | boolean 
 	hint?: string
 	icon?: string
 	required?: boolean

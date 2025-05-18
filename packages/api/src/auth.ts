@@ -13,6 +13,7 @@ export function createAuthApi(token?: string) {
 	const api = createApiService(token)
 
 	return {
+		setToken: api.setToken,
 		getProfile: () => api.get('/auth/profile'),
 		refreshToken: (refreshToken: string) => api.post<RefreshTokenResponse>('/auth/refresh-token', { refreshToken }),
 	}
