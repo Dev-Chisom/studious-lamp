@@ -111,6 +111,9 @@ importers:
       '@whispers/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@whispers/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@whispers/ui':
         specifier: workspace:*
         version: link:../../packages/ui
