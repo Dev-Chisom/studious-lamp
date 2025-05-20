@@ -7,4 +7,11 @@ export default defineConfig({
 	splitting: false,
 	sourcemap: true,
 	clean: true,
+	treeshake: true,
+	minify: false,
+	outExtension({ format }) {
+		return {
+			js: format === 'cjs' ? '.js' : '.mjs',
+		}
+	}
 });

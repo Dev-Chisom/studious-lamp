@@ -1,13 +1,29 @@
 {
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
+		"target": "ES2020",
+		"module": "ESNext",
+		"lib": ["ES2020"],
+		"moduleResolution": "node",
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"baseUrl": ".",
 		"paths": {
-			"@whispers/types": ["../types/dist"] // ← Point to DIST instead of SRC
-		}
+			"@whispers/types": ["../types/src"]
+		},
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": true,
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"allowJs": true,
+		"checkJs": false,
+		"composite": true,
+		"preserveSymlinks": true
 	},
-	"include": ["src/**/*"],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],
+	"exclude": ["node_modules", "dist"],
 	"references": [{ "path": "../types" }]
 }

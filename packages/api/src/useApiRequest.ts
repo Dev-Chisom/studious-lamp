@@ -1,25 +1,36 @@
-import { ref } from 'vue';
+interface State<T> {
+  isPending: boolean;
+  isSuccessful: boolean;
+  error: null | any;
+}
 
 export function useApiRequest<T = any>() {
-  const isPending = ref(false);
-  const isSuccessful = ref(false);
-  const error = ref<null | any>(null);
+  const state: State<T> = {
+    isPending: false,
+    isSuccessful: false,
+    error: null
+  };
 
   async function execute(request: () => Promise<T>): Promise<T | undefined> {
-    isPending.value = true;
-    isSuccessful.value = false;
-    error.value = null;
+    state.isPending = true;
+    state.isSuccessful = false;
+    state.error = null;
     try {
       const result = await request();
-      isSuccessful.value = true;
+      state.isSuccessful = true;
       return result;
     } catch (err) {
-      error.value = err;
+      state.error = err;
       return undefined;
     } finally {
-      isPending.value = false;
+      state.isPending = false;
     }
   }
 
-  return { isPending, isSuccessful, error, execute };
+  return {
+    get isPending() { return state.isPending; },
+    get isSuccessful() { return state.isSuccessful; },
+    get error() { return state.error; },
+    execute
+  };
 } 
