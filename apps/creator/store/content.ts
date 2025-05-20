@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import type { Content, ContentStore } from '~/types/content';
+import type { Content } from '../types/content';
 import { createContentApi } from '@whispers/api';
 
 export const useContentStore = defineStore('content', {
