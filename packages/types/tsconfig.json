@@ -1,9 +1,12 @@
+// packages/types/tsconfig.json
 {
-	"extends": "../../tsconfig.json",
-	"compilerOptions": {
-		"outDir": "./dist",
-		"rootDir": "./src"
-	},
-	"include": ["src", "components", "pages"],
-	"exclude": ["node_modules", "dist"]
+  "compilerOptions": {
+    "composite": true, // Required for project references
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true, // Required for composite projects
+    "declarationMap": true // Optional but useful for debugging
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

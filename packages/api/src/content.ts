@@ -1,5 +1,5 @@
 import { createApiClient } from './client';
-import type { Content } from '~/types/content';
+import type { Content } from '@whispers/types';
 
 export interface ContentApiResponse {
   data: Content[];

@@ -35,10 +35,10 @@
 import { ref, reactive, computed } from 'vue';
 import { toast } from 'vue3-toastify';
 import { useRoute, useRouter } from 'vue-router';
-import { useContentStore } from '~/store/content';
+import { useContentStore } from '../../../../store/content';
 import { useI18n } from 'vue-i18n';
 import PostForm from '@/components/PostForm.vue';
-import type { Content } from '~/types/content';
+import type { Content } from '../../../../types/content';
 
 const router = useRouter();
 const route = useRoute();

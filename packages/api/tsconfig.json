@@ -2,8 +2,12 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"outDir": "./dist",
-		"rootDir": "./src"
+		"rootDir": "./src",
+		"baseUrl": ".",
+		"paths": {
+			"@whispers/types": ["../types/dist"] // ← Point to DIST instead of SRC
+		}
 	},
 	"include": ["src/**/*"],
-	"exclude": ["node_modules", "dist"]
+	"references": [{ "path": "../types" }]
 }

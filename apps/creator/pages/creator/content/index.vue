@@ -206,10 +206,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { toast } from 'vue3-toastify';
-import { useContentStore } from '~/store/content';
+import { useContentStore } from '../../../store/content';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import { useI18n } from 'vue-i18n';
-import type { Content } from '~/types/content';
+import type { Content } from '../../../types/content';
 
 definePageMeta({
 	layout: 'creator',
