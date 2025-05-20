@@ -62,11 +62,11 @@
 						:for="id"
 						class="relative cursor-pointer rounded-md font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300"
 					>
-						<span>{{ previewUrls.length ? 'Upload more files' : 'Upload files' }}</span>
+						<span>{{ previewUrls.length ? $t('upload.uploadMore') : $t('upload.title') }}</span>
 						<input :id="id" type="file" :accept="accept" class="sr-only" :multiple="multiple" @change="onFileChange" />
 					</label>
 
-					<p class="pl-1">or drag and drop</p>
+					<p class="pl-1">{{ $t('upload.dragAndDrop') }}</p>
 				</div>
 
 				<p class="text-xs text-gray-500 dark:text-gray-400">{{ acceptText }}</p>
@@ -89,9 +89,12 @@
 	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import MediaPreviewModal from './MediaPreviewModal.vue';
+
+const { t } = useI18n();
 
 const props = defineProps({
 	modelValue: {
@@ -148,11 +151,11 @@ const previewModal = ref({
 
 const acceptText = computed(() => {
 	if (props.accept === 'image/*') {
-		return `PNG, JPG, GIF up to ${formatSize(props.maxSize)}`;
+		return t('upload.imageTypes', { size: formatSize(props.maxSize) });
 	} else if (props.accept.includes('video')) {
-		return `Video files up to ${formatSize(props.maxSize)}`;
+		return t('upload.videoTypes', { size: formatSize(props.maxSize) });
 	} else {
-		return `Files up to ${formatSize(props.maxSize)}`;
+		return t('upload.fileTypes', { size: formatSize(props.maxSize) });
 	}
 });
 
@@ -198,16 +201,16 @@ function processFiles(newFiles) {
 		if (props.accept && props.accept !== '*') {
 			const fileType = file.type;
 			const acceptTypes = props.accept.split(',').map((type) => type.trim());
-			const isValid = acceptTypes.some((type) => {
+			const isValidType = acceptTypes.some((type) => {
 				if (type.endsWith('/*')) {
-					const category = type.replace('/*', '');
-					return fileType.startsWith(category + '/');
+					const baseType = type.split('/')[0];
+					return fileType.startsWith(`${baseType}/`);
 				}
-				return type === fileType;
+				return fileType === type;
 			});
 
-			if (!isValid) {
-				emit('error', `File "${file.name}" has an invalid file type`);
+			if (!isValidType) {
+				emit('error', `File "${file.name}" is not an accepted file type`);
 				return false;
 			}
 		}
@@ -215,39 +218,25 @@ function processFiles(newFiles) {
 		return true;
 	});
 
-	if (!props.multiple) {
-		// Replace existing files
-		files.value = validFiles;
-		createPreviews(validFiles);
-	} else {
-		// Add to existing files
+	if (validFiles.length > 0) {
+		const newPreviewUrls = validFiles.map((file) => {
+			const url = URL.createObjectURL(file);
+			return {
+				url,
+				type: isImage(file) ? 'image' : isVideo(file) ? 'video' : 'other',
+			};
+		});
+
+		previewUrls.value = [...previewUrls.value, ...newPreviewUrls];
 		files.value = [...files.value, ...validFiles];
-		createPreviews(validFiles, true);
+		emit('update:modelValue', files.value);
 	}
-
-	emit('update:modelValue', files.value);
-}
-
-function createPreviews(newFiles, append = false) {
-	if (!append) {
-		previewUrls.value = [];
-	}
-
-	newFiles.forEach((file) => {
-		const reader = new FileReader();
-		reader.onload = (e) => {
-			previewUrls.value.push({
-				type: isImage(file) ? 'image' : isVideo(file) ? 'video' : 'file',
-				url: e.target.result,
-			});
-		};
-		reader.readAsDataURL(file);
-	});
 }
 
 function removeFile(index) {
-	files.value.splice(index, 1);
+	URL.revokeObjectURL(previewUrls.value[index].url);
 	previewUrls.value.splice(index, 1);
+	files.value.splice(index, 1);
 	emit('update:modelValue', files.value);
 }
 

@@ -1,16 +1,16 @@
 <template>
 	<div class="container mx-auto max-w-6xl">
 		<div>
-			<h1 class="text-2xl font-bold mb-6">Your Subscriptions</h1>
+			<h1 class="text-2xl font-bold mb-6">{{ $t('subscriptions.title') }}</h1>
 
 			<!-- Active subscriptions -->
 
 			<div class="mb-8">
-				<h2 class="text-lg font-semibold mb-4">Active Subscriptions</h2>
+				<h2 class="text-lg font-semibold mb-4">{{ $t('subscriptions.activeSubscriptions') }}</h2>
 
 				<div v-if="loading" class="text-center py-12">
 					<Icon name="lucide:loader" class="h-8 w-8 mx-auto animate-spin text-primary-500" />
-					<p class="mt-2 text-gray-500 dark:text-gray-200">Loading subscriptions...</p>
+					<p class="mt-2 text-gray-500 dark:text-gray-200">{{ $t('subscriptions.loading') }}</p>
 				</div>
 
 				<div
@@ -18,12 +18,12 @@
 					class="bg-white dark:bg-gray-900 rounded-lg shadow-sm p-8 text-center"
 				>
 					<Icon name="lucide:users" class="h-12 w-12 mx-auto text-gray-400" />
-					<h3 class="mt-2 text-lg font-medium text-gray-900">No active subscriptions</h3>
+					<h3 class="mt-2 text-lg font-medium text-gray-900">{{ $t('subscriptions.noActiveSubscriptions.title') }}</h3>
 
 					<p class="mt-1 text-gray-500 dark:text-gray-200">
-						Explore creators and subscribe to unlock exclusive content.
+						{{ $t('subscriptions.noActiveSubscriptions.description') }}
 					</p>
-					<NuxtLink to="/explore" class="btn-primary mt-4"> Explore Creators </NuxtLink>
+					<NuxtLink to="/explore" class="btn-primary mt-4">{{ $t('subscriptions.noActiveSubscriptions.cta') }}</NuxtLink>
 				</div>
 
 				<div v-else class="grid gap-6 md:grid-cols-3">
@@ -56,40 +56,38 @@
 
 							<div class="mt-4 space-y-2">
 								<div class="flex justify-between text-sm">
-									<span class="text-gray-500 dark:text-gray-200">Plan</span>
-									<span class="font-medium">{{ subscription.plan === 'monthly' ? 'Monthly' : 'Yearly' }}</span>
+									<span class="text-gray-500 dark:text-gray-200">{{ $t('subscriptions.plan') }}</span>
+									<span class="font-medium">{{ subscription.plan === 'monthly' ? $t('common.monthly') : $t('common.yearly') }}</span>
 								</div>
 
 								<div class="flex justify-between text-sm">
-									<span class="text-gray-500 dark:text-gray-200">Price</span>
-									<span class="font-medium"
-									>${{ subscription.price }}/{{ subscription.plan === 'monthly' ? 'month' : 'year' }}</span
-									>
+									<span class="text-gray-500 dark:text-gray-200">{{ $t('subscriptions.price') }}</span>
+									<span class="font-medium">${{ subscription.price }}/{{ subscription.plan === 'monthly' ? $t('common.month') : $t('common.year') }}</span>
 								</div>
 
 								<div class="flex justify-between text-sm">
-									<span class="text-gray-500 dark:text-gray-200">Next billing date</span>
+									<span class="text-gray-500 dark:text-gray-200">{{ $t('subscriptions.nextBillingDate') }}</span>
 									<span class="font-medium">{{ formatDate(subscription.endDate) }}</span>
 								</div>
 
 								<div class="flex justify-between text-sm">
-									<span class="text-gray-500 dark:text-gray-200">Auto-renew</span>
+									<span class="text-gray-500 dark:text-gray-200">{{ $t('subscriptions.autoRenew') }}</span>
 									<span :class="subscription.autoRenew ? 'text-success-600' : 'text-error-600'">
-										{{ subscription.autoRenew ? 'Enabled' : 'Disabled' }}
+										{{ subscription.autoRenew ? $t('subscriptions.enabled') : $t('subscriptions.disabled') }}
 									</span>
 								</div>
 							</div>
 
 							<div class="mt-6 flex space-x-3">
 								<NuxtLink :to="`/creators/${subscription.creator.username}`" class="btn-outline flex-1">
-									View Profile
+									{{ $t('subscriptions.viewProfile') }}
 								</NuxtLink>
 								<button
 									v-if="subscription.autoRenew"
 									class="btn-outline text-error-600 hover:bg-error-50 hover:border-error-600"
 									@click="cancelSubscription(subscription.id)"
 								>
-									Cancel
+									{{ $t('subscriptions.cancel') }}
 								</button>
 							</div>
 						</div>
@@ -100,7 +98,7 @@
 			<!-- Expired subscriptions -->
 
 			<div v-if="expiredSubscriptions.length > 0">
-				<h2 class="text-lg font-semibold mb-4">Expired Subscriptions</h2>
+				<h2 class="text-lg font-semibold mb-4">{{ $t('subscriptions.expiredSubscriptions') }}</h2>
 
 				<div class="grid gap-6 md:grid-cols-2">
 					<div
@@ -132,13 +130,13 @@
 
 							<div class="mt-4">
 								<p class="text-sm text-gray-500 dark:text-gray-200">
-									Subscription expired on {{ formatDate(subscription.endDate) }}
+									{{ $t('subscriptions.expiredOn') }} {{ formatDate(subscription.endDate) }}
 								</p>
 							</div>
 
 							<div class="mt-6">
 								<NuxtLink :to="`/creators/${subscription.creator.username}`" class="btn-primary w-full">
-									Renew Subscription
+									{{ $t('subscriptions.renewSubscription') }}
 								</NuxtLink>
 							</div>
 						</div>
@@ -151,7 +149,10 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 // import { useSubscriptionStore } from '~/stores/subscription';
+
+const { t } = useI18n();
 
 definePageMeta({
 	layout: 'creator',

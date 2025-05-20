@@ -1,13 +1,13 @@
 <template>
 	<div class="container mx-auto max-w-6xl">
 		<div>
-			<h1 class="text-2xl font-bold mb-6">Account Settings</h1>
+			<h1 class="text-2xl font-bold mb-6">{{ $t('settings.title') }}</h1>
 
 			<div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm divide-y divide-gray-200">
 				<!-- Profile section -->
 
 				<div class="p-6">
-					<h2 class="text-lg font-medium mb-4">Profile Information</h2>
+					<h2 class="text-lg font-medium mb-4">{{ $t('settings.profile.title') }}</h2>
 
 					<div class="flex items-center space-x-6 mb-6">
 						<div class="relative">
@@ -29,7 +29,7 @@
 
 						<div>
 							<p class="text-sm text-gray-500 dark:text-gray-200">
-								Upload a new profile picture. Recommended size: 400x400px.
+								{{ $t('settings.profile.pictureUpdated') }}
 							</p>
 						</div>
 					</div>
@@ -40,7 +40,7 @@
 						<FormInput v-model="profile.username" label="Username" :error="errors.username" required />
 
 						<div>
-							<label class="form-label">Bio</label>
+							<label class="form-label">{{ $t('settings.profile.bio') }}</label>
 							<textarea
 								v-model="profile.bio" rows="3" class="form-input"
 								:class="errors.bio ? 'border-error-300 focus:border-error-500 focus:ring-error-500' : ''" />
@@ -50,7 +50,7 @@
 
 						<div class="pt-4">
 							<button type="submit" class="btn-primary" :disabled="loading">
-								<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" /> Save Changes
+								<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" /> {{ $t('settings.profile.updateProfile') }}
 							</button>
 						</div>
 					</form>
@@ -59,7 +59,7 @@
 				<!-- Email settings -->
 
 				<div class="p-6">
-					<h2 class="text-lg font-medium mb-4">Email Settings</h2>
+					<h2 class="text-lg font-medium mb-4">{{ $t('settings.email.title') }}</h2>
 
 					<form class="space-y-4" @submit.prevent="updateEmail">
 						<FormInput v-model="email.current" label="Current Email" type="email" disabled />
@@ -72,7 +72,7 @@
 
 						<div class="pt-4">
 							<button type="submit" class="btn-primary" :disabled="loading">
-								<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" /> Update Email
+								<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" /> {{ $t('settings.email.updateEmail') }}
 							</button>
 						</div>
 					</form>
@@ -81,7 +81,7 @@
 				<!-- Password settings -->
 
 				<div class="p-6">
-					<h2 class="text-lg font-medium mb-4">Change Password</h2>
+					<h2 class="text-lg font-medium mb-4">{{ $t('settings.password.title') }}</h2>
 
 					<form class="space-y-4" @submit.prevent="updatePassword">
 						<FormInput
@@ -98,7 +98,7 @@
 
 						<div class="pt-4">
 							<button type="submit" class="btn-primary" :disabled="loading">
-								<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" /> Update Password
+								<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" /> {{ $t('settings.password.updatePassword') }}
 							</button>
 						</div>
 					</form>
@@ -107,7 +107,7 @@
 				<!-- Notification preferences -->
 
 				<div class="p-6">
-					<h2 class="text-lg font-medium mb-4">Notification Preferences</h2>
+					<h2 class="text-lg font-medium mb-4">{{ $t('settings.notifications.title') }}</h2>
 
 					<div class="space-y-4">
 						<div v-for="(pref, key) in notifications" :key="key" class="flex items-start">
@@ -125,7 +125,7 @@
 
 						<div class="pt-4">
 							<button class="btn-primary" :disabled="loading" @click="updateNotifications">
-								<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" /> Save Preferences
+								<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" /> {{ $t('settings.notifications.savePreferences') }}
 							</button>
 						</div>
 					</div>
@@ -134,14 +134,14 @@
 				<!-- Delete account -->
 
 				<div class="p-6">
-					<h2 class="text-lg font-medium text-error-600 mb-4">Delete Account</h2>
+					<h2 class="text-lg font-medium text-error-600 mb-4">{{ $t('settings.deleteAccount.title') }}</h2>
 
 					<p class="text-sm text-gray-500 dark:text-gray-200 mb-4">
-						Once you delete your account, there is no going back. Please be certain.
+						{{ $t('settings.deleteAccount.description') }}
 					</p>
 
 					<button class="btn-outline border-error-300 text-error-700 hover:bg-error-50" @click="confirmDeleteAccount">
-						Delete Account
+						{{ $t('settings.deleteAccount.deleteAccount') }}
 					</button>
 				</div>
 			</div>
@@ -150,18 +150,21 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { toast } from 'vue3-toastify';
 import { useUserStore } from '~/store/user';
 import { useAuthStore } from '~/store/auth';
 import FormInput from '@/components/ui/BaseInput.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 definePageMeta({
-  middleware: ['auth'],
-  layout: 'creator',
-  meta: {
-    requiresAuth: true,
-  },
+	middleware: ['auth'],
+	layout: 'creator',
+	meta: {
+		requiresAuth: true,
+	},
 });
 
 const userStore = useUserStore();
@@ -173,192 +176,205 @@ const errors = ref({});
 
 // Profile form
 const profile = ref({
-  displayName: userStore.user?.displayName || '',
-  username: '',
-  bio: '',
+	displayName: userStore.user?.displayName || '',
+	username: '',
+	bio: '',
 });
 
 // Email form
 const email = ref({
-  current: userStore.user?.email || '',
-  new: '',
-  password: '',
+	current: userStore.user?.email || '',
+	new: '',
+	password: '',
 });
 
 // Password form
 const password = ref({
-  current: '',
-  new: '',
-  confirm: '',
+	current: '',
+	new: '',
+	confirm: '',
 });
 
 // Notification preferences
 const notifications = ref({
-  newSubscriber: true,
-  newMessage: true,
-  newComment: true,
-  newTip: true,
-  marketing: false,
-  newsletter: true,
+	newSubscriber: true,
+	newMessage: true,
+	newComment: true,
+	newTip: true,
+	marketing: false,
+	newsletter: true,
 });
 
 const userInitials = computed(() => {
-  const name = profile.value.displayName;
-  if (!name) {
-    return '?';
-  }
+	const name = profile.value.displayName;
+	if (!name) {
+		return '?';
+	}
 
-  const parts = name.split(' ');
-  if (parts.length > 1) {
-    return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-  }
-  return name.substring(0, 2).toUpperCase();
+	const parts = name.split(' ');
+	if (parts.length > 1) {
+		return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+	}
+	return name.substring(0, 2).toUpperCase();
 });
 
 function getNotificationLabel(key) {
-  const labels = {
-    newSubscriber: 'New Subscribers',
-    newMessage: 'Direct Messages',
-    newComment: 'Comments on Posts',
-    newTip: 'Tips and Donations',
-    marketing: 'Marketing Updates',
-    newsletter: 'Newsletter',
-  };
-  return labels[key];
+	const labels = {
+		newSubscriber: t('settings.notifications.newSubscriber'),
+		newMessage: t('settings.notifications.newMessage'),
+		newComment: t('settings.notifications.newComment'),
+		newTip: t('settings.notifications.newTip'),
+		marketing: t('settings.notifications.marketing'),
+		newsletter: t('settings.notifications.newsletter'),
+	};
+	return labels[key] || key;
 }
 
 function getNotificationDescription(key) {
-  const descriptions = {
-    newSubscriber: 'Get notified when someone subscribes to your content',
-    newMessage: 'Receive notifications for new direct messages',
-    newComment: 'Get notified when someone comments on your posts',
-    newTip: 'Receive notifications for tips and donations',
-    marketing: 'Receive updates about new features and promotions',
-    newsletter: 'Subscribe to our weekly newsletter',
-  };
-  return descriptions[key];
+	const descriptions = {
+		newSubscriber: t('settings.notifications.newSubscriberDesc'),
+		newMessage: t('settings.notifications.newMessageDesc'),
+		newComment: t('settings.notifications.newCommentDesc'),
+		newTip: t('settings.notifications.newTipDesc'),
+		marketing: t('settings.notifications.marketingDesc'),
+		newsletter: t('settings.notifications.newsletterDesc'),
+	};
+	return descriptions[key] || '';
 }
 
 function handleImageUpload(event) {
-  const file = event.target.files[0];
-  if (!file) {
-    return;
-  }
+	const file = event.target.files[0];
+	if (!file) {
+		return;
+	}
 
-  // In a real app, upload the file to a server
-  // For now, create a local URL
-  profileImage.value = URL.createObjectURL(file);
-  toast.success('Profile picture updated');
+	// In a real app, upload the file to a server
+	// For now, create a local URL
+	profileImage.value = URL.createObjectURL(file);
+	toast.success('Profile picture updated');
 }
 
 function updateProfile() {
-  loading.value = true;
-  errors.value = {};
+	loading.value = true;
+	errors.value = {};
 
-  try {
-    // Validate
-    if (!profile.value.displayName) {
-      errors.value.displayName = 'Display name is required';
-      return;
-    }
+	try {
+		// Validate
+		if (!profile.value.displayName) {
+			errors.value.displayName = 'Display name is required';
+			return;
+		}
 
-    // In a real app, make API call here
-    // new Promise((resolve) => setTimeout(resolve, 1000));
+		// In a real app, make API call here
+		// new Promise((resolve) => setTimeout(resolve, 1000));
 
-    toast.success('Profile updated successfully');
-  } catch (error) {
-    toast.error('Failed to update profile');
-  } finally {
-    loading.value = false;
-  }
+		toast.success('Profile updated successfully');
+	} catch (error) {
+		toast.error('Failed to update profile');
+	} finally {
+		loading.value = false;
+	}
 }
 
 function updateEmail() {
-  loading.value = true;
-  errors.value = {};
+	loading.value = true;
+	errors.value = {};
 
-  try {
-    // Validate
-    if (!email.value.new) {
-      errors.value.email = 'New email is required';
-      return;
-    }
-    if (!email.value.password) {
-      errors.value.password = 'Password is required';
-      return;
-    }
+	try {
+		// Validate
+		if (!email.value.new) {
+			errors.value.email = 'New email is required';
+			return;
+		}
+		if (!email.value.password) {
+			errors.value.password = 'Password is required';
+			return;
+		}
 
-    // In a real app, make API call here
-    // new Promise((resolve) => setTimeout(resolve, 1000));
+		// In a real app, make API call here
+		// new Promise((resolve) => setTimeout(resolve, 1000));
 
-    toast.success('Email updated successfully');
-    email.value.current = email.value.new;
-    email.value.new = '';
-    email.value.password = '';
-  } catch (error) {
-    toast.error('Failed to update email');
-  } finally {
-    loading.value = false;
-  }
+		toast.success('Email updated successfully');
+		email.value.current = email.value.new;
+		email.value.new = '';
+		email.value.password = '';
+	} catch (error) {
+		toast.error('Failed to update email');
+	} finally {
+		loading.value = false;
+	}
 }
 
 function updatePassword() {
-  loading.value = true;
-  errors.value = {};
+	loading.value = true;
+	errors.value = {};
 
-  try {
-    // Validate
-    if (!password.value.current) {
-      errors.value.currentPassword = 'Current password is required';
-      return;
-    }
-    if (!password.value.new) {
-      errors.value.newPassword = 'New password is required';
-      return;
-    }
-    if (password.value.new !== password.value.confirm) {
-      errors.value.confirmPassword = 'Passwords do not match';
-      return;
-    }
+	try {
+		// Validate
+		if (!password.value.current) {
+			errors.value.currentPassword = 'Current password is required';
+			return;
+		}
+		if (!password.value.new) {
+			errors.value.newPassword = 'New password is required';
+			return;
+		}
+		if (password.value.new !== password.value.confirm) {
+			errors.value.confirmPassword = 'Passwords do not match';
+			return;
+		}
 
-    // In a real app, make API call here
-    // new Promise((resolve) => setTimeout(resolve, 1000));
+		// In a real app, make API call here
+		// new Promise((resolve) => setTimeout(resolve, 1000));
 
-    toast.success('Password updated successfully');
-    password.value = { current: '', new: '', confirm: '' };
-  } catch (error) {
-    toast.error('Failed to update password');
-  } finally {
-    loading.value = false;
-  }
+		toast.success('Password updated successfully');
+		password.value = { current: '', new: '', confirm: '' };
+	} catch (error) {
+		toast.error('Failed to update password');
+	} finally {
+		loading.value = false;
+	}
 }
 
 function updateNotifications() {
-  loading.value = true;
+	loading.value = true;
 
-  try {
-    // In a real app, make API call here
-    // new Promise((resolve) => setTimeout(resolve, 1000));
+	try {
+		// In a real app, make API call here
+		// new Promise((resolve) => setTimeout(resolve, 1000));
 
-    toast.success('Notification preferences updated');
-  } catch (error) {
-    toast.error('Failed to update notification preferences');
-  } finally {
-    loading.value = false;
-  }
+		toast.success('Notification preferences updated');
+	} catch (error) {
+		toast.error('Failed to update notification preferences');
+	} finally {
+		loading.value = false;
+	}
 }
 
 function confirmDeleteAccount() {
-  // In a real app, show a confirmation modal
-  if (
-    confirm(
-      'Are you sure you want to delete your account? This action cannot be undone.',
-    )
-  ) {
-    // Handle account deletion
-    toast.success('Account deleted successfully');
-    authStore.logout();
-    navigateTo('/');
-  }
+	// In a real app, show a confirmation modal
+	if (
+		confirm(
+			'Are you sure you want to delete your account? This action cannot be undone.',
+		)
+	) {
+		// Handle account deletion
+		toast.success('Account deleted successfully');
+		authStore.logout();
+		navigateTo('/');
+	}
 }
+
+onMounted(async () => {
+	// Load user profile data
+	try {
+		// Fetch user profile data here
+		profile.value.displayName = 'John Doe';
+		profile.value.username = 'johndoe';
+		profile.value.bio = 'Content creator and digital artist';
+		profileImage.value = '/images/default-avatar.png';
+	} catch (error) {
+		console.error('Error loading profile:', error);
+	}
+});
 </script>

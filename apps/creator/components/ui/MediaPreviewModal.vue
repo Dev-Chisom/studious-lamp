@@ -70,7 +70,7 @@
 					class="p-4 border-b border-gray-200 rounded-r-xl dark:border-gray-800 flex items-center sticky top-0 bg-white dark:bg-gray-900 z-10"
 				>
 					<Icon name="lucide:message-square" class="w-5 h-5 mr-2 text-gray-600 dark:text-gray-400" />
-					<h3 class="font-semibold text-gray-900 dark:text-white">Comments</h3>
+					<h3 class="font-semibold text-gray-900 dark:text-white">{{ $t('media.comments.title') }}</h3>
 					<span class="ml-2 text-sm text-gray-500 dark:text-gray-400">{{ messages.length }}</span>
 				</div>
 
@@ -88,8 +88,8 @@
 
 							<div class="flex items-center mt-2 space-x-4 text-xs text-gray-500 dark:text-gray-400">
 								<span>{{ formatTimeAgo(message.timestamp) }}</span>
-								<button class="font-semibold hover:text-gray-700 dark:hover:text-gray-300">Reply</button>
-								<button class="font-semibold hover:text-gray-700 dark:hover:text-gray-300">Like</button>
+								<button class="font-semibold hover:text-gray-700 dark:hover:text-gray-300">{{ $t('common.reply') }}</button>
+								<button class="font-semibold hover:text-gray-700 dark:hover:text-gray-300">{{ $t('common.like') }}</button>
 							</div>
 						</div>
 					</div>
@@ -105,7 +105,7 @@
 						<input
 							v-model="newComment"
 							type="text"
-							placeholder="Add a comment..."
+							:placeholder="$t('media.comments.addComment')"
 							class="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full py-2 px-4 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
 							@keydown.enter.prevent="sendComment"
 							@keydown.stop
@@ -116,7 +116,7 @@
 							:disabled="!newComment.trim()"
 							@click.stop="sendComment"
 						>
-							Post
+							{{ $t('media.comments.post') }}
 						</button>
 					</div>
 				</div>
@@ -140,83 +140,80 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation, Keyboard } from 'swiper/modules';
+import type { Swiper as SwiperType } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-const props = defineProps({
-	isOpen: {
-		type: Boolean,
-		required: true,
-	},
-	mediaItems: {
-		type: Array,
-		required: true,
-	},
-	currentIndex: {
-		type: Number,
-		required: true,
-	},
-	showSidebar: {
-		type: Boolean,
-		default: false,
-	},
-	messages: {
-		type: Array,
-		default: () => [],
-	},
-	currentUser: {
-		type: Object,
-		required: true,
-		default: () => ({
-			name: '',
-			avatar: '',
-		}),
-	},
+interface MediaItem {
+	type: 'image' | 'video';
+	url: string;
+}
+
+interface User {
+	name: string;
+	avatar: string;
+}
+
+interface Message {
+	user: User;
+	text: string;
+	timestamp: Date;
+}
+
+interface Props {
+	isOpen: boolean;
+	mediaItems: MediaItem[];
+	currentIndex: number;
+	showSidebar?: boolean;
+	messages?: Message[];
+	currentUser: User;
+}
+
+const { t } = useI18n();
+
+const props = withDefaults(defineProps<Props>(), {
+	showSidebar: false,
+	messages: () => [],
 });
 
-const emit = defineEmits(['close', 'update:currentIndex', 'send-message']);
+const emit = defineEmits<{
+	(e: 'close'): void;
+	(e: 'update:currentIndex', index: number): void;
+	(e: 'send-message', message: string): void;
+}>();
 
-const videoPlayer = ref(null);
+const videoPlayer = ref<HTMLVideoElement | null>(null);
 const isVideoPlaying = ref(false);
-const swiper = ref(null);
+const swiper = ref<SwiperType | null>(null);
 const newComment = ref('');
-
-// const currentMedia = computed(() => props.mediaItems[props.currentIndex] || {});
 
 const formatTimeAgo = (date: Date) => {
 	const now = new Date();
 	const diffInSeconds = Math.floor((now.getTime() - new Date(date).getTime()) / 1000);
 
 	if (diffInSeconds < 60) {
-		return `${diffInSeconds}s ago`;
+		return t('media.comments.timeAgo.seconds', { count: diffInSeconds });
 	}
 	if (diffInSeconds < 3600) {
-		return `${Math.floor(diffInSeconds / 60)}m ago`;
+		return t('media.comments.timeAgo.minutes', { count: Math.floor(diffInSeconds / 60) });
 	}
 	if (diffInSeconds < 86400) {
-		return `${Math.floor(diffInSeconds / 3600)}h ago`;
+		return t('media.comments.timeAgo.hours', { count: Math.floor(diffInSeconds / 3600) });
 	}
-	return `${Math.floor(diffInSeconds / 86400)}d ago`;
+	return t('media.comments.timeAgo.days', { count: Math.floor(diffInSeconds / 86400) });
 };
 
-function onSwiper(swiperInstance) {
+function onSwiper(swiperInstance: SwiperType) {
 	swiper.value = swiperInstance;
 }
 
 function onSlideChange() {
-	if (swiper.value) {
-		emit('update:currentIndex', swiper.value.activeIndex);
-	}
-}
-
-function close() {
 	if (videoPlayer.value) {
 		videoPlayer.value.pause();
-		isVideoPlaying.value = false;
 	}
-	emit('close');
 }
 
 function handleVideoPlay() {
@@ -231,9 +228,13 @@ function handleVideoEnded() {
 	isVideoPlaying.value = false;
 }
 
+function close() {
+	emit('close');
+}
+
 function sendComment() {
 	if (newComment.value.trim()) {
-		emit('send-message', newComment.value.trim());
+		emit('send-message', newComment.value);
 		newComment.value = '';
 	}
 }

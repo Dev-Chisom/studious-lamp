@@ -25,8 +25,8 @@
 							<p class="mt-1 text-sm text-gray-500">{{ notification.message }}</p>
 
 							<div class="mt-4 flex">
-								<button variant="primary" class="text-sm mr-2" @click="viewContent(notification)">View</button>
-								<button variant="outline" class="text-sm" @click="dismissNotification(notification.id)">Dismiss</button>
+								<button variant="primary" class="text-sm mr-2" @click="viewContent(notification)">{{ $t('notifications.view') }}</button>
+								<button variant="outline" class="text-sm" @click="dismissNotification(notification.id)">{{ $t('notifications.dismiss') }}</button>
 							</div>
 						</div>
 

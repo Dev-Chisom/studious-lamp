@@ -31,6 +31,8 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
 type NotificationType = 'subscription' | 'tip' | 'message' | 'post_like' | 'post_comment' | 'other'
 
 interface Notification {
@@ -53,6 +55,7 @@ interface NotificationItemEmits {
 
 const props = defineProps<NotificationItemProps>();
 const emit = defineEmits<NotificationItemEmits>();
+const { t } = useI18n();
 
 function getIcon(type: NotificationType): string {
 	switch (type) {
@@ -80,11 +83,11 @@ function formatTime(date: Date | string): string {
 	const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
 	if (minutes < 60) {
-		return `${minutes}m ago`;
+		return t('time.minutesAgo', { count: minutes });
 	} else if (hours < 24) {
-		return `${hours}h ago`;
+		return t('time.hoursAgo', { count: hours });
 	} else if (days < 7) {
-		return `${days}d ago`;
+		return t('time.daysAgo', { count: days });
 	} else {
 		return new Date(date).toLocaleDateString();
 	}

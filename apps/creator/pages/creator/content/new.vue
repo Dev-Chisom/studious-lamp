@@ -1,6 +1,6 @@
 <template>
 	<div class="max-w-6xl mx-auto">
-		<Head> <Title>Create New Post - Whispers</Title> </Head>
+		<Head> <Title>{{ $t('content.new.title') }} - Whispers</Title> </Head>
 
 		<div class="mb-6">
 			<div class="flex items-center">
@@ -8,10 +8,10 @@
 					<Icon name="lucide:arrow-left" class="h-5 w-5" />
 				</NuxtLink>
 
-				<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Create New Post</h1>
+				<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $t('content.new.title') }}</h1>
 			</div>
 
-			<p class="mt-1 text-sm text-gray-500 dark:text-gray-200">Share new content with your subscribers.</p>
+			<p class="mt-1 text-sm text-gray-500 dark:text-gray-200">{{ $t('content.new.description') }}</p>
 		</div>
 
 		<div class="bg-white dark:bg-gray-900 shadow-sm rounded-lg overflow-hidden">
@@ -31,35 +31,40 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
 import { toast } from 'vue3-toastify';
+import { useRouter } from 'vue-router';
 import { useContentStore } from '~/store/content';
+import { useI18n } from 'vue-i18n';
 import PostForm from '@/components/PostForm.vue';
+import type { Content } from '~/types/content';
 
 const router = useRouter();
 const contentStore = useContentStore();
+const { t } = useI18n();
 
 definePageMeta({
 	middleware: ['auth'],
 	layout: 'creator',
 	meta: {
 		requiresAuth: true,
+		requiresCreator: true,
 	},
 });
 
 interface PostFormData {
-	title: string
-	content: string
-	visibility: 'public' | 'subscribers' | 'ppv'
-	price: number
-	mediaUrls: string[]
+	title: string;
+	content: string;
+	visibility: 'public' | 'private' | 'premium';
+	price: number;
+	mediaUrls: string[];
 }
 
 interface PostFormErrors {
-	title: string
-	content: string
-	mediaFiles: string
-	visibility: string
-	price: string
-	scheduledDate: string
+	title: string;
+	content: string;
+	mediaFiles: string;
+	visibility: string;
+	price: string;
+	scheduledDate: string;
 }
 
 const post = reactive<PostFormData>({
@@ -85,54 +90,41 @@ const minScheduleDate = computed<string>(() => {
 	return date.toISOString().slice(0, 16);
 });
 
-function validateForm(formData: any): boolean {
+function validateForm(formData: PostFormData): boolean {
 	let isValid = true;
 	Object.keys(errors).forEach((key) => {
-		;(errors as any)[key] = '';
+		(errors as any)[key] = '';
 	});
 	if (!formData.title || !formData.title.trim()) {
-		errors.title = 'Title is required';
+		errors.title = t('validation.required', { field: t('content.form.title') });
 		isValid = false;
 	} else if (formData.title.length > 100) {
-		errors.title = 'Title must be less than 100 characters';
+		errors.title = t('validation.maxLength', { field: t('content.form.title'), max: 100 });
 		isValid = false;
 	}
 	if (!formData.content || !formData.content.trim()) {
-		errors.content = 'Content is required';
+		errors.content = t('validation.required', { field: t('content.form.content') });
 		isValid = false;
 	}
-	if (formData.mediaFiles && formData.mediaFiles.length > 10) {
-		errors.mediaFiles = 'Maximum 10 files allowed';
+	if (formData.mediaUrls && formData.mediaUrls.length > 10) {
+		errors.mediaFiles = t('validation.maxFiles', { max: 10 });
 		isValid = false;
 	}
-	if (formData.visibility === 'ppv') {
+	if (formData.visibility === 'premium') {
 		if (!formData.price) {
-			errors.price = 'Price is required for pay-per-view content';
+			errors.price = t('validation.required', { field: t('content.form.price') });
 			isValid = false;
 		} else if (formData.price < 1 || formData.price > 100) {
-			errors.price = 'Price must be between $1 and $100';
+			errors.price = t('validation.priceRange');
 			isValid = false;
-		}
-	}
-	if (formData.isScheduled) {
-		if (!formData.scheduledDate) {
-			errors.scheduledDate = 'Please select a publish date';
-			isValid = false;
-		} else {
-			const scheduleTime = new Date(formData.scheduledDate).getTime();
-			const minTime = new Date(minScheduleDate.value).getTime();
-			if (scheduleTime < minTime) {
-				errors.scheduledDate = 'Schedule time must be at least 10 minutes in the future';
-				isValid = false;
-			}
 		}
 	}
 	return isValid;
 }
 
-async function handleSubmit(formData: any): Promise<void> {
+async function handleSubmit(formData: PostFormData): Promise<void> {
 	if (!validateForm(formData)) {
-		toast.error('Please fix the errors in the form');
+		toast.error(t('validation.fixErrors'));
 		return;
 	}
 	try {
@@ -140,26 +132,20 @@ async function handleSubmit(formData: any): Promise<void> {
 		post.content = formData.content;
 		post.visibility = formData.visibility;
 		post.price = formData.price;
-		post.mediaUrls = formData.mediaFiles.map(
-			(_: any, index: number) =>
-				`https://images.pexels.com/photos/${3000000 + index}/pexels-photo.jpeg?auto=compress&cs=tinysrgb&w=800`,
-		);
-		const postData: any = {
+		post.mediaUrls = formData.mediaUrls;
+		const postData = {
 			...post,
-			creatorId: '123',
+			creatorId: '123', // This should come from the auth store
 		};
-		if (formData.isScheduled && formData.scheduledDate) {
-			postData.scheduledFor = new Date(formData.scheduledDate).toISOString();
-		}
 		await contentStore.createPost(postData);
-		toast.success(formData.isScheduled ? 'Post scheduled successfully' : 'Post published successfully');
+		toast.success(t('notifications.contentCreated'));
 		router.push('/creator/content');
 	} catch (error) {
-		toast.error('Failed to create post. Please try again.');
+		toast.error(t('notifications.contentCreateFailed'));
 	}
 }
 
-function saveAsDraft(formData: any): void {
-	toast.info('Draft saved successfully');
+function saveAsDraft(formData: PostFormData): void {
+	toast.info(t('notifications.draftSaved'));
 }
 </script>

@@ -3,9 +3,9 @@
     <div class="w-full max-w-md p-8 space-y-8 bg-white dark:bg-gray-800 rounded-lg shadow">
       <div class="flex flex-col items-center">
         <img src="/logo.svg" alt="Logo" class="h-12 w-12 mb-2" />
-        <h2 class="mt-2 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">Sign in to your account</h2>
+        <h2 class="mt-2 text-center text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $t('auth.signInTitle') }}</h2>
       </div>
-      <div v-if="loading">Loading...</div>
+      <div v-if="loading">{{ $t('common.loading') }}</div>
       <div v-else-if="error">{{ error }}</div>
       <div v-else>
         <OAuthLogin />
@@ -37,31 +37,31 @@ onMounted(async () => {
   // Handle OAuth callback with tokens in query params
   const { accessToken, refreshToken } = route.query;
   
-if (accessToken && typeof accessToken === 'string') {
-  loading.value = true;
-  try {
-    authStore.setTokens(accessToken, refreshToken);
-    // Validate token
-    const authApi = createAuthApi(accessToken);
-    const profile = await authApi.getProfile();
-    authStore.setProfile(profile);
-    await router.replace('/');
-  } catch (e) {
-    // Try refresh
+  if (accessToken && typeof accessToken === 'string') {
+    loading.value = true;
     try {
-      const authApi = createAuthApi();
-      const { accessToken: newAccessToken } = await authApi.refreshToken(refreshToken);
-      authStore.setTokens(newAccessToken, refreshToken);
+      authStore.setTokens(accessToken, refreshToken);
+      // Validate token
+      const authApi = createAuthApi(accessToken);
       const profile = await authApi.getProfile();
       authStore.setProfile(profile);
       await router.replace('/');
-    } catch (refreshError) {
-      error.value = 'Authentication failed. Please try again.';
-      authStore.logout();
+    } catch (e) {
+      // Try refresh
+      try {
+        const authApi = createAuthApi();
+        const { accessToken: newAccessToken } = await authApi.refreshToken(refreshToken);
+        authStore.setTokens(newAccessToken, refreshToken);
+        const profile = await authApi.getProfile();
+        authStore.setProfile(profile);
+        await router.replace('/');
+      } catch (refreshError) {
+        error.value = t('auth.authenticationFailed');
+        authStore.logout();
+      }
+    } finally {
+      loading.value = false;
     }
-  } finally {
-    loading.value = false;
   }
-}
 });
 </script>

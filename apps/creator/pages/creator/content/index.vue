@@ -1,219 +1,205 @@
 <template>
 	<div class="max-w-6xl mx-auto">
-		<Head> <Title>Content Management - Whispers</Title> </Head>
+		<Head> <Title>{{ $t('content.management.title') }} - Whispers</Title> </Head>
 
 		<div class="sm:flex sm:items-center sm:justify-between">
 			<div>
-				<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Content Management</h1>
+				<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $t('content.management.title') }}</h1>
 
 				<p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
-					Create, edit, and manage your content.
+					{{ $t('content.management.description') }}
 				</p>
 			</div>
 
 			<div class="mt-4 sm:mt-0">
 				<NuxtLink to="/creator/content/new" class="btn-primary">
-					<Icon name="lucide:plus" class="mr-2 h-4 w-4" /> Create New Post
+					<Icon name="lucide:plus" class="mr-2 h-4 w-4" /> {{ $t('content.management.createNew') }}
 				</NuxtLink>
 			</div>
 		</div>
 
 		<!-- Filters -->
 
-		<div
-			class="mt-6 bg-white dark:bg-gray-900 rounded-lg shadow-sm p-4 sm:flex sm:items-center space-y-4 sm:space-y-0 sm:space-x-4"
-		>
+		<div class="mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 			<div class="flex-1">
-				<label for="search" class="sr-only">Search</label>
-				<div class="relative rounded-md shadow-sm">
-					<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-						<Icon name="lucide:search" class="h-5 w-5 text-gray-400" />
+				<label for="search" class="sr-only">{{ $t('content.management.search.placeholder') }}</label>
+				<div class="relative">
+					<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+						<Icon name="lucide:search" class="h-5 w-5 text-gray-400" aria-hidden="true" />
 					</div>
-					<input id="search" v-model="search" type="search" placeholder="Search content..." class="form-input pl-10" />
+					<input
+						id="search"
+						name="search"
+						class="block w-full rounded-md border-0 py-1.5 pl-10 pr-3 text-gray-900 dark:text-gray-100 dark:bg-gray-800 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
+						:placeholder="$t('content.management.search.placeholder')"
+						type="search"
+						v-model="search"
+					/>
 				</div>
 			</div>
 
-			<div class="w-full sm:w-auto">
-				<select v-model="visibilityFilter" class="form-input">
-					<option value="">All Visibility</option>
-
-					<option value="public">Public</option>
-
-					<option value="subscribers">Subscribers Only</option>
-
-					<option value="ppv">Pay-per-view</option>
-				</select>
-			</div>
-
-			<div class="w-full sm:w-auto">
-				<select v-model="sortBy" class="form-input">
-					<option value="newest">Newest First</option>
-
-					<option value="oldest">Oldest First</option>
-
-					<option value="popular">Most Popular</option>
+			<div class="flex items-center gap-4">
+				<select
+					v-model="visibilityFilter"
+					class="block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 dark:text-gray-100 dark:bg-gray-800 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:ring-2 focus:ring-primary-600 sm:text-sm sm:leading-6"
+				>
+					<option value="all">{{ $t('content.management.filters.all') }}</option>
+					<option value="public">{{ $t('content.management.filters.public') }}</option>
+					<option value="private">{{ $t('content.management.filters.private') }}</option>
+					<option value="premium">{{ $t('content.management.filters.premium') }}</option>
 				</select>
 			</div>
 		</div>
 
 		<!-- Content table/list -->
 
-		<div class="mt-6 bg-white dark:bg-gray-900 shadow-sm rounded-lg overflow-hidden">
-			<div
-				class="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 uppercase tracking-wider"
-			>
-				Content List
-			</div>
-
-			<div v-if="loading" class="p-8 text-center">
-				<Icon name="lucide:loader" class="h-8 w-8 mx-auto animate-spin text-primary-500" />
-				<p class="mt-2 text-gray-500 dark:text-gray-200 dark:text-gray-400">Loading content...</p>
-			</div>
-
-			<ul v-else-if="filteredPosts.length !== 0" class="divide-y divide-gray-200">
-				<li v-for="post in filteredPosts" :key="post.id" class="hover:bg-gray-50 hover:dark:bg-gray-700">
-					<div class="px-4 py-4 sm:px-6 flex items-center">
-						<div class="w-16 h-16 flex-shrink-0 rounded overflow-hidden bg-gray-100 mr-4">
-							<img
-								v-if="post.mediaUrls && post.mediaUrls.length > 0"
-								:src="post.mediaUrls[0]"
-								:alt="post.title"
-								class="w-full h-full object-cover"
-							/>
-
-							<div v-else class="w-full h-full flex items-center justify-center text-gray-400">
-								<Icon name="lucide:file" class="h-6 w-6" />
-							</div>
-						</div>
-
-						<div class="min-w-0 flex-1">
-							<div class="flex items-center">
-								<h3 class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ post.title }}</h3>
-								<span v-if="post.visibility === 'subscribers'" class="ml-2 badge badge-primary"> Subscribers </span>
-								<span v-else-if="post.visibility === 'ppv'" class="ml-2 badge badge-secondary"> Pay-per-view </span>
-								<span v-else class="ml-2 badge badge-success"> Public </span>
-								<span v-if="post.scheduledFor" class="ml-2 badge badge-warning"> Scheduled </span>
-							</div>
-
-							<div class="mt-1">
-								<p class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400 truncate">
-									{{ truncateContent(post.content) }}
-								</p>
-							</div>
-
-							<div class="mt-2 flex items-center text-xs text-gray-500 dark:text-gray-200 dark:text-gray-400 space-x-4">
-								<span class="flex items-center">
-									<Icon name="lucide:calendar" class="h-4 w-4 mr-1" /> {{ formatDate(post.createdAt) }}
-								</span>
-								<span class="flex items-center">
-									<Icon name="lucide:heart" class="h-4 w-4 mr-1" /> {{ post.likes }}
-								</span>
-								<span class="flex items-center">
-									<Icon name="lucide:message-square" class="h-4 w-4 mr-1" /> {{ post.comments }}
-								</span>
-								<span v-if="post.price" class="flex items-center">
-									<Icon name="lucide:dollar-sign" class="h-4 w-4 mr-1" /> {{ post.price }}
-								</span>
-							</div>
-						</div>
-
-						<div class="ml-4 flex-shrink-0 flex space-x-2">
-							<button
-								class="p-2 text-gray-500 hover:text-primary-600 dark:text-gray-200 dark:hover:text-primary-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
-								@click="editPost(post.id)"
-							>
-								<Icon name="lucide:pencil" class="h-5 w-5" /> <span class="sr-only">Edit</span>
-							</button>
-							<button
-								class="p-2 text-gray-500 hover:text-error-600 dark:text-gray-200 dark:hover:text-error-400 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
-								@click="confirmDelete(post.id)"
-							>
-								<Icon name="lucide:trash-2" class="h-5 w-5" /> <span class="sr-only">Delete</span>
-							</button>
-						</div>
+		<div class="mt-8 flow-root">
+			<div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+				<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+					<div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+						<table class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
+							<thead class="bg-gray-50 dark:bg-gray-800">
+								<tr>
+									<th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6">
+										{{ $t('content.management.list.title') }}
+									</th>
+									<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
+										{{ $t('content.management.list.visibility') }}
+									</th>
+									<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
+										{{ $t('content.management.list.views') }}
+									</th>
+									<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
+										{{ $t('content.management.list.date') }}
+									</th>
+									<th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+										<span class="sr-only">{{ $t('content.management.list.actions') }}</span>
+									</th>
+								</tr>
+							</thead>
+							<tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+								<tr v-if="loading">
+									<td colspan="5" class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400 text-center">
+										{{ $t('content.management.list.loading') }}
+									</td>
+								</tr>
+								<tr v-else-if="filteredContent.length === 0">
+									<td colspan="5" class="px-3 py-4 text-sm text-gray-500 dark:text-gray-400 text-center">
+										{{ $t('content.management.list.noContent') }}
+									</td>
+								</tr>
+								<tr v-for="item in filteredContent" :key="item.id" class="hover:bg-gray-50 dark:hover:bg-gray-800">
+									<td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+										<div class="flex items-center">
+											<div class="h-10 w-10 flex-shrink-0">
+												<img class="h-10 w-10 rounded-lg object-cover" :src="item.thumbnail" alt="" />
+											</div>
+											<div class="ml-4">
+												<div class="font-medium text-gray-900 dark:text-gray-100">{{ item.title }}</div>
+												<div class="text-gray-500 dark:text-gray-400">{{ item.description }}</div>
+											</div>
+										</div>
+									</td>
+									<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
+										<span
+											class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium"
+											:class="{
+												'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400': item.visibility === 'public',
+												'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400': item.visibility === 'private',
+												'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400': item.visibility === 'premium'
+											}"
+										>
+											{{ $t(`content.management.filters.${item.visibility}`) }}
+										</span>
+									</td>
+									<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">{{ item.views }}</td>
+									<td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500 dark:text-gray-400">
+										{{ new Date(item.createdAt).toLocaleDateString() }}
+									</td>
+									<td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+										<div class="flex justify-end gap-2">
+											<button
+												@click="editContent(item)"
+												class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300"
+											>
+												{{ $t('content.management.list.edit') }}
+											</button>
+											<button
+												@click="confirmDelete(item)"
+												class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+											>
+												{{ $t('content.management.list.delete') }}
+											</button>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
-				</li>
-			</ul>
-
-			<div v-else class="p-8 text-center">
-				<Icon name="lucide:file-x" class="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 dark:text-gray-200" />
-				<h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No content found</h3>
-
-				<p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
-					{{ search ? 'Try adjusting your search or filters.' : 'Get started by creating your first post.' }}
-				</p>
-
-				<div class="mt-6">
-					<NuxtLink to="/creator/content/new" class="btn-primary">
-						<Icon name="lucide:plus" class="mr-2 h-4 w-4" /> Create New Post
-					</NuxtLink>
 				</div>
 			</div>
 		</div>
 
-		<!-- Delete confirmation modal -->
-
-		<div v-if="showDeleteModal" class="fixed inset-0 z-50 overflow-y-auto">
-			<div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-				<!-- Overlay -->
-
-				<div class="fixed inset-0 transition-opacity">
-					<div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75 dark:opacity-80" />
-				</div>
-
-				<!-- Modal Container -->
-				<span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-				<div
-					class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+		<!-- Delete Confirmation Modal -->
+		<TransitionRoot appear :show="showDeleteModal" as="template">
+			<Dialog as="div" @close="closeDeleteModal" class="relative z-10">
+				<TransitionChild
+					as="template"
+					enter="duration-300 ease-out"
+					enter-from="opacity-0"
+					enter-to="opacity-100"
+					leave="duration-200 ease-in"
+					leave-from="opacity-100"
+					leave-to="opacity-0"
 				>
-					<!-- Modal Content -->
+					<div class="fixed inset-0 bg-black/25 dark:bg-black/40" />
+				</TransitionChild>
 
-					<div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-						<div class="sm:flex sm:items-start">
-							<!-- Warning Icon -->
-
-							<div
-								class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-error-100 dark:bg-error-900 sm:mx-0 sm:h-10 sm:w-10"
+				<div class="fixed inset-0 overflow-y-auto">
+					<div class="flex min-h-full items-center justify-center p-4 text-center">
+						<TransitionChild
+							as="template"
+							enter="duration-300 ease-out"
+							enter-from="opacity-0 scale-95"
+							enter-to="opacity-100 scale-100"
+							leave="duration-200 ease-in"
+							leave-from="opacity-100 scale-100"
+							leave-to="opacity-0 scale-95"
+						>
+							<DialogPanel
+								class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white dark:bg-gray-900 p-6 text-left align-middle shadow-xl transition-all"
 							>
-								<Icon name="lucide:alert-triangle" class="h-6 w-6 text-error-600 dark:text-error-400" />
-							</div>
-
-							<!-- Text Content -->
-
-							<div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-								<h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Delete Content</h3>
-
+								<DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">
+									{{ $t('content.management.delete.title') }}
+								</DialogTitle>
 								<div class="mt-2">
-									<p class="text-sm text-gray-500 dark:text-gray-300">
-										Are you sure you want to delete this content? This action cannot be undone.
+									<p class="text-sm text-gray-500 dark:text-gray-400">
+										{{ $t('content.management.delete.description') }}
 									</p>
 								</div>
-							</div>
-						</div>
-					</div>
 
-					<!-- Modal Footer -->
-
-					<div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-						<!-- Delete Button -->
-						<button
-							class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-error-600 dark:bg-error-700 text-base font-medium text-white hover:bg-error-700 dark:hover:bg-error-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error-500 sm:ml-3 sm:w-auto sm:text-sm"
-							@click="deletePost"
-						>
-							Delete
-						</button>
-
-						<!-- Cancel Button -->
-						<button
-							class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-600 text-base font-medium text-gray-700 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-							@click="showDeleteModal = false"
-						>
-							Cancel
-						</button>
+								<div class="mt-4 flex justify-end space-x-3">
+									<button
+										type="button"
+										class="inline-flex justify-center rounded-md border border-transparent bg-red-100 dark:bg-red-900/30 px-4 py-2 text-sm font-medium text-red-900 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+										@click="deleteContent"
+									>
+										{{ $t('content.management.delete.confirm') }}
+									</button>
+									<button
+										type="button"
+										class="inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+										@click="closeDeleteModal"
+									>
+										{{ $t('content.management.delete.cancel') }}
+									</button>
+								</div>
+							</DialogPanel>
+						</TransitionChild>
 					</div>
 				</div>
-			</div>
-		</div>
+			</Dialog>
+		</TransitionRoot>
 	</div>
 </template>
 
@@ -221,6 +207,9 @@
 import { ref, computed, onMounted } from 'vue';
 import { toast } from 'vue3-toastify';
 import { useContentStore } from '~/store/content';
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
+import { useI18n } from 'vue-i18n';
+import type { Content } from '~/types/content';
 
 definePageMeta({
 	layout: 'creator',
@@ -231,112 +220,75 @@ definePageMeta({
 	},
 });
 
-interface Post {
-	id: string
-	title: string
-	content: string
-	mediaUrls: string[]
-	createdAt: string | Date
-	likes: number
-	comments: number
-	visibility: 'public' | 'subscribers' | 'ppv'
-	price?: number
-	scheduledFor?: string | Date
-}
-
+const { t } = useI18n();
 const contentStore = useContentStore();
 
 // State
 const loading = ref<boolean>(true);
 const search = ref<string>('');
-const visibilityFilter = ref<string>('');
-const sortBy = ref<string>('newest');
+const visibilityFilter = ref<string>('all');
 const showDeleteModal = ref<boolean>(false);
-const postToDelete = ref<string | null>(null);
-
-// Fetch posts on mount
-onMounted(async () => {
-	try {
-		await contentStore.fetchPosts({ creatorId: '123' }); // In a real app, this would be the current user's ID
-		loading.value = false;
-	} catch (error) {
-		toast.error('Failed to load content. Please try again.');
-		loading.value = false;
-	}
-});
+const contentToDelete = ref<Content | null>(null);
 
 // Computed properties
-const filteredPosts = computed<Post[]>(() => {
-	let result = [...contentStore.posts] as Post[];
+const filteredContent = computed<Content[]>(() => {
+	let result = [...contentStore.content];
 
 	// Apply search filter
 	if (search.value) {
 		const searchLower = search.value.toLowerCase();
 		result = result.filter(
-			(post: Post) =>
-				post.title.toLowerCase().includes(searchLower) || post.content.toLowerCase().includes(searchLower),
+			(content) =>
+				content.title.toLowerCase().includes(searchLower) || 
+				content.description.toLowerCase().includes(searchLower)
 		);
 	}
 
 	// Apply visibility filter
-	if (visibilityFilter.value) {
-		result = result.filter((post: Post) => post.visibility === visibilityFilter.value);
-	}
-
-	// Apply sorting
-	switch (sortBy.value) {
-		case 'newest':
-			result.sort((a: Post, b: Post) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-			break;
-		case 'oldest':
-			result.sort((a: Post, b: Post) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-			break;
-		case 'popular':
-			result.sort((a: Post, b: Post) => b.likes - a.likes);
-			break;
+	if (visibilityFilter.value !== 'all') {
+		result = result.filter((content) => content.visibility === visibilityFilter.value);
 	}
 
 	return result;
 });
 
 // Methods
-function truncateContent(content: string, length = 80): string {
-	if (content.length <= length) {
-		return content;
-	}
-	return content.substring(0, length) + '...';
+function editContent(content: Content): void {
+	navigateTo(`/creator/content/edit/${content.id}`);
 }
 
-function formatDate(dateString: string | Date): string {
-	const date = new Date(dateString);
-	return date.toLocaleDateString('en-US', {
-		year: 'numeric',
-		month: 'short',
-		day: 'numeric',
-	});
-}
-
-function editPost(id: string): void {
-	navigateTo(`/creator/content/edit/${id}`);
-}
-
-function confirmDelete(id: string): void {
-	postToDelete.value = id;
+function confirmDelete(content: Content): void {
+	contentToDelete.value = content;
 	showDeleteModal.value = true;
 }
 
-async function deletePost(): Promise<void> {
-	if (!postToDelete.value) {
+function closeDeleteModal(): void {
+	showDeleteModal.value = false;
+	contentToDelete.value = null;
+}
+
+async function deleteContent(): Promise<void> {
+	if (!contentToDelete.value) {
 		return;
 	}
 
 	try {
-		await contentStore.deletePost(postToDelete.value);
-		toast.success('Content deleted successfully');
-		showDeleteModal.value = false;
-		postToDelete.value = null;
+		await contentStore.deleteContent(contentToDelete.value.id);
+		toast.success(t('notifications.contentDeleted'));
+		closeDeleteModal();
 	} catch (error) {
-		toast.error('Failed to delete content. Please try again.');
+		toast.error(t('notifications.contentDeleteFailed'));
 	}
 }
+
+// Fetch content on mount
+onMounted(async () => {
+	try {
+		await contentStore.fetchContent();
+		loading.value = false;
+	} catch (error) {
+		toast.error(t('notifications.contentLoadFailed'));
+		loading.value = false;
+	}
+});
 </script>

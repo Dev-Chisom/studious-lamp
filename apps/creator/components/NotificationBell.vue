@@ -18,20 +18,20 @@
 			class="origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white dark:bg-gray-900 dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50"
 		>
 			<div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
-				<h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">Notifications</h3>
+				<h3 class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ $t('notifications.title') }}</h3>
 				<button
 					v-if="notifications.length > 0"
 					class="text-xs text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300"
 					@click="markAllAsRead"
 				>
-					Mark all as read
+					{{ $t('notifications.markAllAsRead') }}
 				</button>
 			</div>
 
 			<div class="max-h-96 overflow-y-auto">
 				<div v-if="notifications.length === 0" class="py-6 text-center">
 					<Icon name="lucide:bell-off" class="mx-auto h-8 w-8 text-gray-400 dark:text-gray-500 dark:text-gray-200" />
-					<p class="mt-2 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">No notifications yet</p>
+					<p class="mt-2 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">{{ $t('notifications.noNotifications') }}</p>
 				</div>
 
 				<div v-else>
@@ -50,7 +50,7 @@
 					class="text-xs text-primary-600 hover:text-primary-800 dark:text-primary-400 dark:hover:text-primary-300"
 					@click="isOpen = false"
 				>
-					View all notifications
+					{{ $t('notifications.viewAll') }}
 				</NuxtLink>
 			</div>
 		</div>

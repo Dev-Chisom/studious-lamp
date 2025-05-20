@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
 	compatibilityDate: '2024-04-03',
 	devtools: { enabled: false },
-	modules: ['@pinia/nuxt', 'nuxt-icon', '@nuxtjs/tailwindcss', '@nuxtjs/color-mode'],
+	modules: ['@pinia/nuxt', 'nuxt-icon', '@nuxtjs/tailwindcss', '@nuxtjs/color-mode', '@nuxtjs/i18n'],
 	css: ['~/assets/css/main.css'],
 	app: {
 		head: {
@@ -48,4 +48,36 @@ export default defineNuxtConfig({
 		fallback: 'light',
 		storageKey: 'theme',
 	},
-});
+	i18n: {
+		locales: [
+			{
+				code: 'en',
+				file: 'en.json',
+				name: 'English',
+			},
+			{
+				code: 'fr',
+				file: 'fr.json',
+				name: 'Français',
+			},
+			{
+				code: 'es',
+				file: 'es.json',
+				name: 'Español',
+			},
+		],
+		lazy: true,
+		langDir: '../locales/',
+		defaultLocale: 'en',
+		strategy: 'prefix_except_default',
+		detectBrowserLanguage: {
+			useCookie: true,
+			cookieKey: 'i18n_redirected',
+			redirectOn: 'root',
+		},
+		// Fix for pnpm (prevents duplicate paths)
+		experimental: {
+			jsTsFormatResource: false,
+		},
+	},
+})

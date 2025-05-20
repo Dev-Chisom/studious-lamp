@@ -1,286 +1,146 @@
 <template>
 	<div class="container mx-auto max-w-6xl">
 		<div>
-			<h1 class="text-2xl font-bold mb-6 dark:text-white">Messages</h1>
+			<h1 class="text-2xl font-bold mb-6">{{ $t('messages.title') }}</h1>
 
-			<div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
-				<div class="grid grid-cols-1 md:grid-cols-3">
-					<!-- Conversations list -->
-
-					<div class="border-r border-gray-200 dark:border-gray-700">
+			<div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm overflow-hidden">
+				<div class="grid grid-cols-12 h-[calc(100vh-12rem)]">
+					<!-- Conversations List -->
+					<div class="col-span-4 border-r border-gray-200 dark:border-gray-700">
 						<div class="p-4 border-b border-gray-200 dark:border-gray-700">
-							<form-input
-								v-model="searchQuery"
-								placeholder="Search messages..."
-								icon="lucide:search"
-								class="dark:bg-gray-800 dark:text-white"
-							/>
+							<div class="relative">
+								<input
+									type="text"
+									:placeholder="$t('messages.search')"
+									class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800"
+								/>
+								<Icon name="lucide:search" class="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+							</div>
 						</div>
 
-						<div class="divide-y divide-gray-200 dark:divide-gray-700 max-h-[600px] overflow-y-auto">
+						<div class="overflow-y-auto h-[calc(100%-4rem)]">
 							<div
-								v-for="chat in filteredChats"
-								:key="chat.id"
-								class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-								:class="{
-									'bg-primary-50 dark:bg-primary-900/40': selectedChat?.id === chat.id,
-								}"
-								@click="selectChat(chat)"
+								v-for="conversation in conversations"
+								:key="conversation.id"
+								class="p-4 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer"
+								:class="{ 'bg-gray-50 dark:bg-gray-800': selectedConversation?.id === conversation.id }"
+								@click="selectConversation(conversation)"
 							>
 								<div class="flex items-center space-x-3">
-									<div class="avatar h-10 w-10">
-										<img :src="chat.user.avatar" :alt="chat.user.name" class="h-full w-full object-cover" />
+									<div class="avatar h-12 w-12">
+										<img
+											:src="conversation.user.profileImage"
+											:alt="conversation.user.displayName"
+											class="h-full w-full object-cover rounded-full"
+										/>
 									</div>
 
 									<div class="flex-1 min-w-0">
 										<div class="flex items-center justify-between">
-											<p class="text-sm font-medium text-gray-900 dark:text-white truncate">{{ chat.user.name }}</p>
-
-											<p class="text-xs text-gray-500 dark:text-gray-300">
-												{{ formatTime(chat.lastMessage.timestamp) }}
-											</p>
+											<h3 class="text-sm font-medium truncate">{{ conversation.user.displayName }}</h3>
+											<span class="text-xs text-gray-500 dark:text-gray-200">
+												{{ formatTimeAgo(conversation.lastMessage?.timestamp) }}
+											</span>
 										</div>
 
-										<p class="text-sm text-gray-500 dark:text-gray-300 truncate">{{ chat.lastMessage.content }}</p>
+										<p class="text-sm text-gray-500 dark:text-gray-200 truncate">
+											{{ conversation.lastMessage?.content }}
+										</p>
 									</div>
 								</div>
-
-								<div v-if="chat.unreadCount > 0" class="mt-1 flex items-center justify-end">
-									<span class="bg-primary-500 text-white text-xs px-2 py-0.5 rounded-full">
-										{{ chat.unreadCount }}
-									</span>
-								</div>
-							</div>
-
-							<div v-if="filteredChats.length === 0" class="p-8 text-center text-gray-500 dark:text-gray-300">
-								No messages found
 							</div>
 						</div>
 					</div>
 
-					<!-- Chat window -->
-
-					<div class="col-span-2 flex flex-col h-[600px] dark:bg-gray-900">
-						<template v-if="selectedChat">
-							<!-- Chat header -->
-
-							<div class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+					<!-- Chat Area -->
+					<div class="col-span-8 flex flex-col">
+						<div v-if="selectedConversation" class="flex-1 flex flex-col">
+							<!-- Chat Header -->
+							<div class="p-4 border-b border-gray-200 dark:border-gray-700">
 								<div class="flex items-center space-x-3">
 									<div class="avatar h-10 w-10">
 										<img
-											:src="selectedChat.user.avatar"
-											:alt="selectedChat.user.name"
-											class="h-full w-full object-cover"
+											:src="selectedConversation.user.profileImage"
+											:alt="selectedConversation.user.displayName"
+											class="h-full w-full object-cover rounded-full"
 										/>
 									</div>
 
 									<div>
-										<h2 class="text-lg font-medium dark:text-white">{{ selectedChat.user.name }}</h2>
-
-										<p class="text-sm text-gray-500 dark:text-gray-300">
-											{{ selectedChat.user.isOnline ? 'Online' : 'Offline' }}
+										<h2 class="font-medium">{{ selectedConversation.user.displayName }}</h2>
+										<p class="text-sm text-gray-500 dark:text-gray-200">
+											@{{ selectedConversation.user.username }}
 										</p>
 									</div>
 								</div>
-								<button class="text-gray-400 hover:text-gray-600 dark:text-gray-300 dark:hover:text-white">
-									<Icon name="lucide:more-vertical" class="h-5 w-5" />
-								</button>
 							</div>
 
 							<!-- Messages -->
-
-							<div class="flex-1 overflow-y-auto p-4 space-y-4 dark:bg-gray-900">
+							<div class="flex-1 overflow-y-auto p-4 space-y-4">
 								<div
-									v-for="message in selectedChat.messages"
+									v-for="message in selectedConversation.messages"
 									:key="message.id"
 									class="flex"
-									:class="message.isSelf ? 'justify-end' : 'justify-start'"
+									:class="{ 'justify-end': message.isFromMe }"
 								>
 									<div
 										class="max-w-[70%] rounded-lg px-4 py-2"
-										:class="
-											message.isSelf
-												? 'bg-primary-500 text-white dark:bg-primary-600'
-												: 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-										"
+										:class="message.isFromMe ? 'bg-primary-500 text-white' : 'bg-gray-100 dark:bg-gray-800'"
 									>
-										<!-- Media preview: support multiple media per message -->
-
-										<div
-											v-if="message.media && (Array.isArray(message.media) ? message.media.length : true)"
-											class="mb-2 flex gap-2 flex-wrap"
-										>
-											<template v-if="Array.isArray(message.media)">
-												<div v-for="(media, idx) in message.media" :key="idx">
-													<img
-														v-if="media.type === 'image'"
-														:src="media.url"
-														:alt="message.content"
-														class="rounded-lg max-h-48 cursor-pointer dark:border dark:border-gray-700"
-														@click="openMediaPreviewForChat(media, message.id)"
-													/>
-													<video
-														v-else-if="media.type === 'video'"
-														:src="media.url"
-														controls
-														controlsList="nodownload"
-														class="rounded-lg max-h-48 w-full cursor-pointer dark:border dark:border-gray-700"
-														@click="openMediaPreviewForChat(media, message.id)"
-													/>
-												</div>
-											</template>
-											<template v-else>
-												<img
-													v-if="message.media.type === 'image'"
-													:src="message.media.url"
-													:alt="message.content"
-													class="rounded-lg max-h-48 cursor-pointer dark:border dark:border-gray-700"
-													@click="openMediaPreviewForChat(message.media, message.id)"
-												/>
-												<video
-													v-else-if="message.media.type === 'video'"
-													:src="message.media.url"
-													controls
-													controlsList="nodownload"
-													class="rounded-lg max-h-48 w-full cursor-pointer dark:border dark:border-gray-700"
-													@click="openMediaPreviewForChat(message.media, message.id)"
-												/>
-											</template>
-										</div>
-
-										<p class="text-sm dark:text-gray-100">{{ message.content }}</p>
-
-										<div class="flex items-center justify-end mt-1 space-x-1">
-											<p class="text-xs opacity-70 dark:text-gray-300">{{ formatTime(message.timestamp) }}</p>
-											<!-- Read receipt -->
-											<Icon
-												v-if="message.isSelf"
-												:name="message.isRead ? 'lucide:check-check' : 'lucide:check'"
-												class="h-4 w-4"
-												:class="message.isRead ? 'text-accent-500' : 'opacity-70'"
-											/>
-										</div>
+										<p>{{ message.content }}</p>
+										<span class="text-xs opacity-75 mt-1 block">
+											{{ formatTimeAgo(message.timestamp) }}
+										</span>
 									</div>
-								</div>
-
-								<!-- Typing indicator -->
-
-								<div v-if="selectedChat.isTyping" class="flex items-center space-x-2 text-gray-500 dark:text-gray-300">
-									<div class="flex space-x-1">
-										<div class="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full animate-bounce" />
-
-										<div
-											class="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full animate-bounce"
-											style="animation-delay: 0.2s"
-										/>
-
-										<div
-											class="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full animate-bounce"
-											style="animation-delay: 0.4s"
-										/>
-									</div>
-									<span class="text-sm">{{ selectedChat.user.name }} is typing...</span>
 								</div>
 							</div>
 
-							<!-- Message input -->
+							<!-- Message Input -->
+							<div class="p-4 border-t border-gray-200 dark:border-gray-700">
+								<form @submit.prevent="sendMessage" class="flex items-center space-x-2">
+									<button type="button" class="text-gray-500 hover:text-gray-700 dark:text-gray-200">
+										<Icon name="lucide:image" class="h-6 w-6" />
+									</button>
 
-							<div class="p-4 border-t border-gray-200 dark:border-gray-700 dark:bg-gray-900">
-								<form class="space-y-4" @submit.prevent="sendMessage">
-									<!-- Media preview -->
+									<input
+										v-model="newMessage"
+										type="text"
+										:placeholder="$t('messages.typeMessage')"
+										class="flex-1 rounded-lg border border-gray-300 dark:border-gray-700 dark:bg-gray-800 px-4 py-2"
+									/>
 
-									<div v-if="mediaPreview.length > 0" class="flex space-x-2 overflow-x-auto pb-2">
-										<div v-for="(media, index) in mediaPreview" :key="index" class="relative flex-shrink-0">
-											<img
-												v-if="media.type === 'image'"
-												:src="media.preview"
-												class="h-20 w-20 object-cover rounded-lg dark:border dark:border-gray-700"
-											/>
-											<video
-												v-else-if="media.type === 'video'"
-												:src="media.preview"
-												controlsList="nodownload"
-												class="h-20 w-20 object-cover rounded-lg dark:border dark:border-gray-700"
-											/>
-											<button
-												class="absolute -top-2 -right-2 bg-error-100 dark:bg-error-900 rounded-full p-1 text-error-600 dark:text-error-200 hover:bg-error-200 dark:hover:bg-error-800"
-												@click="removeMedia(index)"
-											>
-												<Icon name="lucide:x" class="h-4 w-4" />
-											</button>
-										</div>
-									</div>
-
-									<div class="flex space-x-2">
-										<form-input
-											v-model="newMessage"
-											placeholder="Type a message..."
-											class="flex-1 dark:bg-gray-800 dark:text-white"
-											@input="handleTyping"
-										/>
-
-										<!-- Media upload buttons -->
-
-										<div class="flex space-x-2">
-											<input
-												ref="imageInput"
-												type="file"
-												accept="image/*"
-												multiple
-												class="hidden"
-												@change="handleImageUpload"
-											/>
-											<input ref="videoInput" type="file" accept="video/*" class="hidden" @change="handleVideoUpload" />
-
-											<button
-												type="button"
-												class="p-2 text-gray-500 dark:text-gray-200 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
-												@click="$refs.imageInput.click()"
-											>
-												<Icon name="lucide:image" class="h-5 w-5" />
-											</button>
-											<button
-												type="button"
-												class="p-2 text-gray-500 dark:text-gray-200 hover:text-primary-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
-												@click="$refs.videoInput.click()"
-											>
-												<Icon name="lucide:video" class="h-5 w-5" />
-											</button>
-										</div>
-
-										<button type="submit" class="btn-primary"><Icon name="lucide:send" class="h-5 w-5" /></button>
-									</div>
+									<button type="submit" class="btn-primary">
+										{{ $t('messages.send') }}
+									</button>
 								</form>
 							</div>
-						</template>
+						</div>
 
-						<div v-else class="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-300">
+						<div v-else class="flex-1 flex items-center justify-center">
 							<div class="text-center">
-								<Icon name="lucide:message-square" class="h-12 w-12 mx-auto mb-2" />
-								<p>Select a conversation to start messaging</p>
+								<Icon name="lucide:message-square" class="h-12 w-12 mx-auto text-gray-400" />
+								<h3 class="mt-2 text-lg font-medium text-gray-900 dark:text-gray-100">
+									{{ $t('messages.noMessages') }}
+								</h3>
+								<p class="mt-1 text-gray-500 dark:text-gray-200">
+									{{ $t('messages.selectConversation') }}
+								</p>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<!-- Media preview modal -->
-		<media-preview-modal
-			v-if="mediaModal.isOpen"
-			:is-open="mediaModal.isOpen"
-			:media-items="mediaModal.mediaItems"
-			:current-index="mediaModal.currentIndex"
-			@close="closeMediaPreview"
-			@update:current-index="(val) => (mediaModal.currentIndex = val)"
-		/>
 	</div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import FormInput from '@/components/ui/BaseInput.vue';
 import MediaPreviewModal from '@/components/ui/MediaPreviewModal.vue';
+
+const { t } = useI18n();
 
 definePageMeta({
 	middleware: ['auth'],
@@ -454,9 +314,9 @@ const allChatMedia = computed<MediaItem[]>(() => {
 });
 
 // Methods
-function formatTime(date: Date | string): string {
+const formatTimeAgo = (timestamp: Date | string): string => {
 	const now = new Date();
-	const d = new Date(date);
+	const d = new Date(timestamp);
 	const diff = now.getTime() - d.getTime();
 
 	const minutes = Math.floor(diff / (1000 * 60));
@@ -464,15 +324,15 @@ function formatTime(date: Date | string): string {
 	const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
 	if (minutes < 60) {
-		return `${minutes}m ago`;
+		return t('messages.timeAgo.minutesAgo', { minutes });
 	} else if (hours < 24) {
-		return `${hours}h ago`;
+		return t('messages.timeAgo.hoursAgo', { hours });
 	} else if (days < 7) {
-		return `${days}d ago`;
+		return t('messages.timeAgo.daysAgo', { days });
 	} else {
 		return d.toLocaleDateString();
 	}
-}
+};
 
 function selectChat(chat: Chat): void {
 	selectedChat.value = chat;

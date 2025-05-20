@@ -18,14 +18,14 @@
 						<div class="flex items-center justify-between">
 							<div class="flex items-center space-x-2">
 								<img src="/logo-white.svg" alt="Whispers" class="h-8 w-auto" />
-								<span class="text-xl font-bold text-white dark:text-gray-100">Creator Studio</span>
+								<span class="text-xl font-bold text-white dark:text-gray-100">{{ $t('nav.creatorStudio') }}</span>
 							</div>
 							<button
 								type="button"
 								class="text-white hover:text-gray-200 dark:text-gray-100 dark:hover:text-gray-200"
 								@click="$emit('close')"
 							>
-								<span class="sr-only">Close sidebar</span> <Icon name="lucide:x" class="h-6 w-6" />
+								<span class="sr-only">{{ $t('common.close') }}</span> <Icon name="lucide:x" class="h-6 w-6" />
 							</button>
 						</div>
 					</div>
@@ -52,7 +52,7 @@
 					<div class="px-4 py-6 bg-primary-700 dark:bg-primary-900 flex items-center">
 						<div class="flex items-center space-x-2">
 							<img src="/logo-white.svg" alt="Whispers" class="h-8 w-auto" />
-							<span class="text-xl font-bold text-white dark:text-gray-100">Creator Studio</span>
+							<span class="text-xl font-bold text-white dark:text-gray-100">{{ $t('nav.creatorStudio') }}</span>
 						</div>
 					</div>
 
@@ -67,8 +67,10 @@
 	</div>
 </template>
 
+
 <script setup lang="ts">
 import SidebarNavigationItem from './SidebarNavigationItem.vue';
+import { useI18n } from 'vue-i18n';
 
 interface NavigationItem {
 	name: string
@@ -87,18 +89,19 @@ interface CreatorSidebarEmits {
 
 const props = defineProps<CreatorSidebarProps>();
 const emit = defineEmits<CreatorSidebarEmits>();
+const { t } = useI18n();
 
 const navigationItems: NavigationItem[] = [
-	{ name: 'Home', href: '/', icon: 'lucide:home' },
-	{ name: 'Analytics', href: '/creator/analytics', icon: 'lucide:bar-chart' },
-	{ name: 'Content', href: '/creator/content', icon: 'lucide:image' },
-	{ name: 'Messages', href: '/messages', icon: 'lucide:message-circle' },
-	{ name: 'Subscribers', href: '/creator/subscribers', icon: 'lucide:users' },
-	{ name: 'Earnings', href: '/creator/earnings', icon: 'lucide:dollar-sign' },
-	{ name: 'Wallet', href: '/wallet', icon: 'lucide:wallet' },
-	{ name: 'Subscriptions', href: '/subscriptions', icon: 'lucide:credit-card' },
+	{ name: t('nav.home'), href: '/', icon: 'lucide:home' },
+	{ name: t('nav.analytics'), href: '/creator/analytics', icon: 'lucide:bar-chart' },
+	{ name: t('nav.content'), href: '/creator/content', icon: 'lucide:image' },
+	{ name: t('nav.messages'), href: '/messages', icon: 'lucide:message-circle' },
+	{ name: t('nav.subscribers'), href: '/creator/subscribers', icon: 'lucide:users' },
+	{ name: t('nav.earnings'), href: '/creator/earnings', icon: 'lucide:dollar-sign' },
+	{ name: t('nav.wallet'), href: '/wallet', icon: 'lucide:wallet' },
+	{ name: t('nav.subscriptions'), href: '/subscriptions', icon: 'lucide:credit-card' },
 	{
-		name: 'Become A Creator',
+		name: t('nav.becomeCreator'),
 		href: '/apply',
 		icon: 'lucide:user-plus',
 		divider: true,
