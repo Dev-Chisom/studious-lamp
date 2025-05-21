@@ -1,8 +1,7 @@
 import { createApiClient } from './client';
-import type { Content } from '@whispers/types';
 
 export interface ContentApiResponse {
-  data: Content[];
+  data: [];
 }
 
 export interface ContentApi {
