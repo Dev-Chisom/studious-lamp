@@ -231,6 +231,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useUserStore } from '../store/user';
 import PostCard from '~/components/PostCard.vue';
+import { useI18n } from 'vue-i18n';
 
 interface SocialLink {
 	platform: string
@@ -281,6 +282,7 @@ interface UserPost {
 const route = useRoute();
 const username = computed<string>(() => route.params.username as string);
 const userStore = useUserStore();
+const { t } = useI18n();
 
 definePageMeta({
 	layout: 'creator',

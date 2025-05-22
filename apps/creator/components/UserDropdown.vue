@@ -57,7 +57,7 @@
 			<div class="hover:bg-gray-50 dark:hover:bg-gray-800">
 				<button class="text-sm px-4 py-2 border-0 flex items-center space-x-2 w-full" @click="toggleDarkMode">
 					<Icon :name="colorMode.value === 'dark' ? 'lucide:sun' : 'lucide:moon'" class="h-4 w-4" />
-					<span>{{ colorMode.value === 'dark' ? 'Light Mode' : 'Dark Mode' }}</span>
+					<span>{{ modeText }}</span>
 				</button>
 			</div>
 
@@ -92,23 +92,26 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useUserStore } from '../store/user';
 import { useAuthStore } from '../store/auth';
 import { useColorMode } from '#imports';
+import { useI18n } from 'vue-i18n';
 
-interface User {
-	displayName?: string
-	email?: string
-	profileImage?: string
-	isCreator?: boolean
-}
+
+const { t } = useI18n()
+
+// interface User {
+// 	displayName?: string
+// 	email?: string
+// 	profileImage?: string
+// 	isCreator?: boolean
+// }
 
 interface NavLink {
 	name: string
 	href: string
 }
 
-// interface userStore {
-// 	user: User | null
-// 	logout: () => void
-// }
+const modeText = computed(() => 
+  colorMode.value === 'dark' ? t('theme.light') : t('theme.dark')
+)
 
 const userStore = useUserStore();
 const authStore = useAuthStore()
@@ -136,17 +139,17 @@ const profileHref = computed((): string => {
 	return '/@user';
 });
 
-const userLinks: NavLink[] = [
-	{ name: 'Your Profile', href: profileHref.value },
-	{ name: 'Subscriptions', href: '/subscriptions' },
-	{ name: 'Settings', href: '/settings' },
-];
+const userLinks: NavLink[]  = computed(() => [
+  { name: t('nav.user.profile'), href: profileHref.value },
+  { name: t('nav.user.subscriptions'), href: '/subscriptions' },
+  { name: t('nav.user.settings'), href: '/settings' }
+])
 
-const creatorLinks: NavLink[] = [
-	{ name: 'Creator Dashboard', href: '/creator/analytics' },
-	{ name: 'Content Manager', href: '/creator/content' },
-	{ name: 'Earnings', href: '/creator/earnings' },
-];
+const creatorLinks: NavLink[]  = computed(() => [
+  { name: t('nav.creator.dashboard'), href: '/creator/analytics' },
+  { name: t('nav.creator.content'), href: '/creator/content' },
+  { name: t('nav.creator.earnings'), href: '/creator/earnings' }
+])
 
 const logout = (): void => {
 	authStore.logout();

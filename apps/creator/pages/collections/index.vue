@@ -1,8 +1,8 @@
 <template>
 	<div class="max-w-6xl mx-auto">
 		<div class="flex justify-between items-center mb-8">
-			<h1 class="text-2xl font-bold text-gray-900">My Collections</h1>
-			<BaseButton variant="primary" @click="showNewCollectionModal = true">New Collection</BaseButton>
+			<h1 class="text-2xl font-bold text-gray-900">{{ t('myCollections') }}</h1>
+			<BaseButton variant="primary" @click="showNewCollectionModal = true">{{ t('newCollection') }}</BaseButton>
 		</div>
 
 		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -18,7 +18,7 @@
 						</div>
 					</div>
 
-					<BaseButton variant="outline" class="w-full" @click="viewCollection(collection)">View Collection</BaseButton>
+					<BaseButton variant="outline" class="w-full" @click="viewCollection(collection)">{{ t('viewCollection') }}</BaseButton>
 				</div>
 			</Card>
 		</div>
@@ -26,11 +26,11 @@
 		<!-- New Collection Modal -->
 		<Modal v-if="showNewCollectionModal" @close="showNewCollectionModal = false">
 			<div class="p-6">
-				<h2 class="text-xl font-semibold mb-4">Create New Collection</h2>
+				<h2 class="text-xl font-semibold mb-4">{{ t('createNewCollection') }}</h2>
 
 				<div class="space-y-4">
 					<div>
-						<label class="block text-sm font-medium text-gray-700 mb-1">Collection Name</label>
+						<label class="block text-sm font-medium text-gray-700 mb-1">{{ t('collectionName') }}</label>
 						<input
 							v-model="newCollectionName"
 							type="text"
@@ -40,7 +40,7 @@
 					</div>
 
 					<BaseButton :loading="isCreating" variant="primary" class="w-full" @click="createNewCollection">
-						Create Collection
+						{{ t('createCollection') }}
 					</BaseButton>
 				</div>
 			</div>
@@ -50,6 +50,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { toast } from 'vue3-toastify';
 import { useUserStore } from '~/store/user';
 import BaseButton from '~/components/ui/BaseButton.vue';
@@ -72,6 +73,8 @@ const collections = ref<Collection[]>(userStore.getCollections);
 const showNewCollectionModal = ref(false);
 const newCollectionName = ref('');
 const isCreating = ref(false);
+
+const { t } = useI18n();
 
 const createNewCollection = async (): Promise<void> => {
 	if (!newCollectionName.value.trim()) {

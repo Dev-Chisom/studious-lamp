@@ -6,8 +6,8 @@
 			<div>
 				<form-input
 					v-model="form.title"
-					label="Post Title"
-					placeholder="Enter post title..."
+					:label="t('postTitle')"
+					:placeholder="t('enterPostTitle')"
 					:error="errors.title"
 					required
 				/>
@@ -16,11 +16,11 @@
 			<!-- Content -->
 
 			<div>
-				<label class="form-label"> Post Content <span class="text-error-500 ml-1">*</span> </label>
+				<label class="form-label"> {{ t('postContent') }} <span class="text-error-500 ml-1">*</span> </label>
 				<textarea
 					v-model="form.content"
 					rows="5"
-					placeholder="Write your post content here..."
+					:placeholder="t('writePostContent')"
 					class="form-input"
 					:class="errors.content ? 'border-error-300 focus:border-error-500 focus:ring-error-500' : ''"
 					required
@@ -34,14 +34,14 @@
 			<div>
 				<form-file-upload
 					v-model="mediaFiles"
-					label="Media Files"
+					:label="t('mediaFiles')"
 					accept="image/*,video/*"
 					multiple
 					:error="errors.mediaFiles"
 				/>
 
 				<p class="mt-1 text-xs text-gray-500 dark:text-gray-200">
-					Upload images or videos to share with your subscribers. Max 10 files.
+					{{ t('uploadMediaHint') }}
 				</p>
 			</div>
 
@@ -51,7 +51,7 @@
 				<!-- Visibility -->
 
 				<div>
-					<label class="form-label"> Visibility </label>
+					<label class="form-label"> {{ t('visibility') }} </label>
 					<div class="mt-2 space-y-3">
 						<div class="flex items-start">
 							<div class="flex items-center h-5">
@@ -65,8 +65,8 @@
 							</div>
 
 							<div class="ml-3 text-sm">
-								<label for="visibility-public" class="font-medium text-gray-700 dark:text-gray-200">Public</label>
-								<p class="text-gray-500 dark:text-gray-200">Visible to everyone, including non-subscribers</p>
+								<label for="visibility-public" class="font-medium text-gray-700 dark:text-gray-200">{{ t('public') }}</label>
+								<p class="text-gray-500 dark:text-gray-200">{{ t('publicHint') }}</p>
 							</div>
 						</div>
 
@@ -82,11 +82,8 @@
 							</div>
 
 							<div class="ml-3 text-sm">
-								<label for="visibility-subscribers" class="font-medium text-gray-700 dark:text-gray-200"
-								>Subscribers Only</label
-								>
-
-								<p class="text-gray-500 dark:text-gray-200">Only visible to your paid subscribers</p>
+								<label for="visibility-subscribers" class="font-medium text-gray-700 dark:text-gray-200">{{ t('subscribersOnly') }}</label>
+								<p class="text-gray-500 dark:text-gray-200">{{ t('subscribersOnlyHint') }}</p>
 							</div>
 						</div>
 
@@ -102,8 +99,8 @@
 							</div>
 
 							<div class="ml-3 text-sm">
-								<label for="visibility-ppv" class="font-medium text-gray-700 dark:text-gray-200">Pay-per-view</label>
-								<p class="text-gray-500 dark:text-gray-200">Users must pay a one-time fee to access</p>
+								<label for="visibility-ppv" class="font-medium text-gray-700 dark:text-gray-200">{{ t('payPerView') }}</label>
+								<p class="text-gray-500 dark:text-gray-200">{{ t('payPerViewHint') }}</p>
 							</div>
 						</div>
 					</div>
@@ -116,11 +113,11 @@
 				<div v-if="form.visibility === 'ppv'">
 					<form-input
 						v-model="form.price"
-						label="Price ($)"
+						:label="t('price')"
 						type="number"
 						min="1"
 						step="0.01"
-						placeholder="4.99"
+						:placeholder="t('pricePlaceholder')"
 						:error="errors.price"
 						required
 					/>
@@ -140,15 +137,15 @@
 						</div>
 
 						<div class="ml-3 text-sm">
-							<label for="schedule" class="font-medium text-gray-700 dark:text-gray-200">Schedule for later</label>
-							<p class="text-gray-500 dark:text-gray-200">Set a future date and time to publish this post</p>
+							<label for="schedule" class="font-medium text-gray-700 dark:text-gray-200">{{ t('scheduleForLater') }}</label>
+							<p class="text-gray-500 dark:text-gray-200">{{ t('scheduleHint') }}</p>
 						</div>
 					</div>
 
 					<div v-if="isScheduled" class="mt-3">
 						<form-input
 							v-model="scheduledDate"
-							label="Publish Date"
+							:label="t('publishDate')"
 							type="datetime-local"
 							:min="minScheduleDate"
 							:error="errors.scheduledDate"
@@ -160,12 +157,12 @@
 		</div>
 
 		<div class="bg-gray-50 dark:bg-gray-800 py-3 flex justify-between">
-			<button type="button" class="btn-outline" @click="$emit('cancel')">Cancel</button>
+			<button type="button" class="btn-outline" @click="$emit('cancel')">{{ t('cancel') }}</button>
 			<div class="flex space-x-2">
-				<button type="button" class="btn-outline" @click="onDraft">Save as Draft</button>
+				<button type="button" class="btn-outline" @click="onDraft">{{ t('saveAsDraft') }}</button>
 				<button type="submit" class="btn-primary" :disabled="loading">
 					<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
-					{{ isScheduled ? 'Schedule Post' : 'Publish Now' }}
+					{{ isScheduled ? t('schedulePost') : t('publishNow') }}
 				</button>
 			</div>
 		</div>
@@ -174,6 +171,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import FormInput from '@/components/ui/BaseInput.vue';
 import FormFileUpload from '@/components/ui/FormFileUpload.vue';
 
@@ -231,6 +229,8 @@ const props = withDefaults(defineProps<PostFormProps>(), {
 });
 
 const emit = defineEmits<PostFormEmits>();
+
+const { t } = useI18n();
 
 const form = reactive<FormData>({
 	title: '',

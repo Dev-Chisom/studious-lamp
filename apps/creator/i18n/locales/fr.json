@@ -1,409 +1,606 @@
 {
-  "common": {
-    "appName": "Whispers",
-    "copyright": "© {year} Whispers. Tous droits réservés.",
-    "openSidebar": "Ouvrir le menu",
-    "close": "Fermer",
-    "submit": "Soumettre",
-    "cancel": "Annuler",
-    "save": "Enregistrer",
-    "delete": "Supprimer",
-    "edit": "Modifier",
-    "loading": "Chargement...",
-    "learnMore": "En savoir plus",
-    "getStarted": "Commencer",
-    "signUp": "S'inscrire",
-    "signIn": "Se connecter",
-    "signOut": "Se déconnecter",
-    "profile": "Profil",
-    "settings": "Paramètres",
-    "post": "Publier",
-    "reply": "Répondre",
-    "like": "J'aime"
-  },
-  "nav": {
-    "home": "Accueil",
-    "explore": "Explorer",
-    "feed": "Fil d'actualité",
-    "howItWorks": "Comment ça marche",
-    "privacy": "Politique de confidentialité",
-    "terms": "Conditions d'utilisation",
-    "creatorStudio": "Studio Créateur",
-    "analytics": "Analytique",
-    "content": "Contenu",
-    "messages": "Messages",
-    "subscribers": "Abonnés",
-    "earnings": "Revenus",
-    "wallet": "Portefeuille",
-    "subscriptions": "Abonnements",
-    "becomeCreator": "Devenir Créateur"
-  },
-  "home": {
-    "hero": {
-      "title": "Connectez-vous avec vos Créateurs Préférés",
-      "subtitle": "Rejoignez Whispers pour découvrir du contenu exclusif des créateurs que vous aimez. Abonnez-vous pour accéder au contenu premium et soutenir vos créateurs préférés.",
-      "cta": "Commencer"
-    },
-    "featuredCreators": {
-      "title": "Créateurs en Vedette",
-      "subtitle": "Découvrez des créateurs incroyables de différentes catégories"
-    },
-    "howItWorks": {
-      "title": "Comment Fonctionne Whispers",
-      "subtitle": "Commencez votre aventure avec Whispers en trois étapes simples",
-      "steps": {
-        "createAccount": {
-          "title": "Créez un Compte",
-          "description": "Inscrivez-vous gratuitement et créez votre compte personnel pour commencer."
-        },
-        "discoverCreators": {
-          "title": "Découvrez des Créateurs",
-          "description": "Parcourez et suivez vos créateurs préférés de différentes catégories."
-        },
-        "subscribe": {
-          "title": "Abonnez-vous et Profitez",
-          "description": "Abonnez-vous pour débloquer du contenu exclusif et soutenir vos créateurs préférés."
-        }
-      }
-    },
-    "cta": {
-      "title": "Prêt à commencer à créer ?",
-      "subtitle": "Rejoignez notre communauté de créateurs et commencez à partager votre contenu avec le monde.",
-      "primary": "Postuler en tant que Créateur",
-      "secondary": "En Savoir Plus"
-    },
-    "sendTipTo": "Envoyer un pourboire à {name}",
-    "amount": "Montant (₦)",
-    "sendTip": "Envoyer un pourboire"
-  },
-  "legal": {
-    "privacy": {
-      "title": "Politique de Confidentialité",
-      "lastUpdated": "Dernière mise à jour : 1er avril 2025"
-    },
-    "terms": {
-      "title": "Conditions d'Utilisation",
-      "lastUpdated": "Dernière mise à jour : 1er avril 2025"
-    }
-  },
-  "apply": {
-    "title": "Postuler en tant que Créateur",
-    "basicInfo": {
-      "title": "Informations de Base",
-      "displayName": "Nom d'Affichage",
-      "displayNamePlaceholder": "Comment vous apparaîtrez à vos abonnés",
-      "username": "Nom d'Utilisateur",
-      "usernamePlaceholder": "Votre nom d'utilisateur unique (ex: jeandupont)",
-      "bio": "Biographie",
-      "bioPlaceholder": "Parlez de vous à vos futurs abonnés",
-      "categories": "Catégories",
-      "categoriesPlaceholder": "Sélectionnez au moins une catégorie"
-    },
-    "social": {
-      "title": "Réseaux Sociaux",
-      "facebook": "Nom d'Utilisateur Facebook",
-      "instagram": "Nom d'Utilisateur Instagram",
-      "twitter": "Nom d'Utilisateur Twitter",
-      "tiktok": "Nom d'Utilisateur TikTok"
-    },
-    "pricing": {
-      "title": "Tarification",
-      "monthlySubscription": "Abonnement Mensuel",
-      "monthlyPrice": "Prix Mensuel (€)",
-      "applyDiscount": "Appliquer une Réduction",
-      "quarterlyPrice": "Prix Trimestriel Total",
-      "calculating": "Calcul en cours..."
-    },
-    "legal": {
-      "acceptTerms": "J'accepte les conditions générales",
-      "confirmAge": "Je confirme avoir plus de 18 ans"
-    }
-  },
-  "validation": {
-    "required": "{field} est requis",
-    "minCategories": "Sélectionnez au moins une catégorie",
-    "atLeastOneSocial": "Veuillez fournir au moins un nom d'utilisateur de réseau social",
-    "mustBeNumber": "Doit être un nombre",
-    "minPrice": "Le prix minimum est de 4,99 €",
-    "mustBeValidNumber": "Doit être un nombre valide",
-    "mustAcceptTerms": "Vous devez accepter les conditions",
-    "mustConfirmAge": "Vous devez confirmer votre âge",
-    "maxLength": "{field} doit contenir moins de {max} caractères",
-    "maxFiles": "Maximum {max} fichiers autorisés",
-    "priceRange": "Le prix doit être compris entre 1€ et 100€",
-    "fixErrors": "Veuillez corriger les erreurs dans le formulaire"
-  },
-  "notifications": {
-    "title": "Notifications",
-    "markAllAsRead": "Tout marquer comme lu",
-    "noNotifications": "Pas encore de notifications",
-    "viewAll": "Voir toutes les notifications",
-    "view": "Voir",
-    "dismiss": "Fermer",
-    "applicationSubmitted": "Candidature de créateur soumise avec succès !",
-    "applicationFailed": "Échec de la soumission de la candidature",
-    "preferencesFailed": "Échec de la récupération des préférences du créateur",
-    "contentDeleted": "Contenu supprimé avec succès",
-    "contentDeleteFailed": "Échec de la suppression du contenu. Veuillez réessayer.",
-    "contentLoadFailed": "Échec du chargement du contenu. Veuillez réessayer.",
-    "contentUpdated": "Publication mise à jour avec succès",
-    "contentUpdateFailed": "Échec de la mise à jour de la publication. Veuillez réessayer.",
-    "draftSaved": "Brouillon enregistré avec succès",
-    "contentCreated": "Publication créée avec succès",
-    "contentCreateFailed": "Échec de la création de la publication. Veuillez réessayer."
-  },
-  "time": {
-    "minutesAgo": "il y a {count} min",
-    "hoursAgo": "il y a {count} h",
-    "daysAgo": "il y a {count} j"
-  },
-  "auth": {
-    "signInTitle": "Connectez-vous à votre compte",
-    "authenticationFailed": "L'authentification a échoué. Veuillez réessayer.",
-    "continueWithGoogle": "Continuer avec Google",
-    "continueWithTwitter": "Continuer avec Twitter"
-  },
-  "content": {
-    "premium": {
-      "title": "Contenu Premium",
-      "description": "Abonnez-vous pour débloquer ce contenu",
-      "subscribeNow": "Abonnez-vous maintenant"
-    },
-    "management": {
-      "title": "Gestion du Contenu",
-      "description": "Créez, modifiez et gérez votre contenu.",
-      "createNew": "Créer un Nouveau Post",
-      "search": {
-        "placeholder": "Rechercher du contenu..."
-      },
-      "filters": {
-        "all": "Tout le Contenu",
-        "public": "Public",
-        "private": "Privé",
-        "premium": "Premium"
-      },
-      "list": {
-        "title": "Titre",
-        "visibility": "Visibilité",
-        "views": "Vues",
-        "date": "Date",
-        "actions": "Actions",
-        "loading": "Chargement du contenu...",
-        "noContent": "Aucun contenu trouvé",
-        "edit": "Modifier",
-        "delete": "Supprimer"
-      },
-      "delete": {
-        "title": "Supprimer le Contenu",
-        "description": "Êtes-vous sûr de vouloir supprimer ce contenu ? Cette action ne peut pas être annulée.",
-        "confirm": "Supprimer",
-        "cancel": "Annuler"
-      }
-    },
-    "edit": {
-      "title": "Modifier la Publication",
-      "description": "Mettez à jour votre contenu et enregistrez les modifications.",
-      "loading": "Chargement de la publication..."
-    },
-    "new": {
-      "title": "Créer une nouvelle publication",
-      "description": "Partagez du nouveau contenu avec vos abonnés."
-    },
-    "form": {
-      "title": "Titre",
-      "content": "Contenu",
-      "price": "Prix"
-    }
-  },
-  "upload": {
-    "title": "Télécharger des fichiers",
-    "uploadMore": "Télécharger plus de fichiers",
-    "dragAndDrop": "ou glisser-déposer",
-    "imageTypes": "PNG, JPG, GIF jusqu'à {size}",
-    "videoTypes": "Fichiers vidéo jusqu'à {size}",
-    "fileTypes": "Fichiers jusqu'à {size}"
-  },
-  "media": {
-    "comments": {
-      "title": "Commentaires",
-      "addComment": "Ajouter un commentaire...",
-      "post": "Publier",
-      "timeAgo": {
-        "seconds": "il y a {count} s",
-        "minutes": "il y a {count} min",
-        "hours": "il y a {count} h",
-        "days": "il y a {count} j"
-      }
-    }
-  },
-  "userDropdown": {
-    "logout": "Se déconnecter"
-  },
-  "earnings": {
-    "title": "Revenus",
-    "description": "Suivez vos revenus et gérez vos paiements.",
-    "stats": {
-      "totalEarnings": "Revenus Totaux",
-      "subscriptionRevenue": "Revenus d'Abonnement",
-      "tipsReceived": "Pourboires Reçus",
-      "ppvRevenue": "Revenus PPV",
-      "fromLastMonth": "par rapport au mois dernier"
-    },
-    "overview": {
-      "title": "Aperçu des Revenus",
-      "periods": {
-        "7d": "7 derniers jours",
-        "30d": "30 derniers jours",
-        "90d": "90 derniers jours",
-        "1y": "Dernière année"
-      },
-      "chartPlaceholder": "Espace réservé au graphique - Dans une vraie application, implémentez le graphique avec une bibliothèque comme Chart.js"
-    },
-    "revenue": {
-      "title": "Répartition des Revenus",
-      "byType": "Par Type de Revenu",
-      "bySubscription": "Par Type d'Abonnement",
-      "types": {
-        "subscriptions": "Abonnements",
-        "tips": "Pourboires",
-        "ppv": "Pay-per-view"
-      },
-      "subscriptionTypes": {
-        "monthly": "Mensuel",
-        "yearly": "Annuel"
-      }
-    },
-    "transactions": {
-      "title": "Transactions Récentes",
-      "downloadCsv": "Télécharger CSV",
-      "headers": {
-        "date": "Date",
-        "type": "Type",
-        "customer": "Client",
-        "amount": "Montant",
-        "status": "Statut"
-      },
-      "types": {
-        "subscription": "Abonnement",
-        "tip": "Pourboire",
-        "ppv": "PPV"
-      },
-      "status": {
-        "completed": "Terminé",
-        "pending": "En attente",
-        "failed": "Échoué"
-      },
-      "afterFees": "Après frais : ${amount}",
-      "pagination": {
-        "previous": "Précédent",
-        "next": "Suivant",
-        "showing": "Affichage de",
-        "to": "à",
-        "of": "sur",
-        "results": "résultats"
-      }
-    }
-  },
-  "wallet": {
-    "title": "Portefeuille",
-    "balance": "Solde du portefeuille",
-    "fund": "Alimenter le portefeuille",
-    "transactionHistory": "Historique des transactions",
-    "recentTransactions": "Transactions récentes",
-    "fundYourWallet": "Alimentez votre portefeuille",
-    "amount": "Montant (₦)",
-    "payWithPaystack": "Payer avec Paystack",
-    "payWithBani": "Payer avec Bani",
-    "walletFunding": "Alimentation du portefeuille",
-    "subscriptionPayment": "Paiement d'abonnement",
-    "creatorTip": "Pourboire au créateur",
-    "id": "ID",
-    "walletFunded": "Portefeuille alimenté avec succès !"
-  },
-  "profile": {
-    "user": "Utilisateur",
-    "unknownUser": "Utilisateur inconnu",
-    "editProfile": "Modifier le profil",
-    "about": "À propos",
-    "noBio": "Pas encore de bio.",
-    "posts": "Publications",
-    "followers": "Abonnés",
-    "social": "Réseaux sociaux",
-    "joined": "Inscrit le",
-    "unknownDate": "Date inconnue",
-    "shareWithFollowers": "Partagez quelque chose avec vos abonnés...",
-    "post": "Publier",
-    "noPosts": "Aucune publication pour le moment.",
-    "follow": "Suivre",
-    "unfollow": "Ne plus suivre"
-  },
-  "subscriptions": {
-    "title": "Vos Abonnements",
-    "activeSubscriptions": "Abonnements Actifs",
-    "expiredSubscriptions": "Abonnements Expirés",
-    "loading": "Chargement des abonnements...",
-    "noActiveSubscriptions": {
-      "title": "Aucun abonnement actif",
-      "description": "Explorez les créateurs et abonnez-vous pour débloquer du contenu exclusif.",
-      "cta": "Explorer les Créateurs"
-    },
-    "plan": "Forfait",
-    "price": "Prix",
-    "nextBillingDate": "Prochaine facturation",
-    "autoRenew": "Renouvellement automatique",
-    "enabled": "Activé",
-    "disabled": "Désactivé",
-    "viewProfile": "Voir le Profil",
-    "cancel": "Annuler",
-    "expiredOn": "Abonnement expiré le",
-    "renewSubscription": "Renouveler l'Abonnement"
-  },
-  "settings": {
-    "title": "Paramètres",
-    "profile": {
-      "title": "Paramètres du Profil",
-      "displayName": "Nom d'Affichage",
-      "username": "Nom d'Utilisateur",
-      "bio": "Biographie",
-      "profilePicture": "Photo de Profil",
-      "updatePicture": "Mettre à jour la Photo de Profil",
-      "pictureUpdated": "Photo de profil mise à jour",
-      "updateProfile": "Mettre à jour le Profil",
-      "profileUpdated": "Profil mis à jour avec succès",
-      "updateFailed": "Échec de la mise à jour du profil"
-    },
-    "notifications": {
-      "title": "Paramètres de Notification",
-      "newSubscriber": "Nouveaux Abonnés",
-      "newMessage": "Messages Directs",
-      "newComment": "Commentaires sur les Publications",
-      "newTip": "Pourboires et Dons",
-      "marketing": "Mises à jour Marketing",
-      "newsletter": "Newsletter",
-      "descriptions": {
-        "newSubscriber": "Soyez notifié quand quelqu'un s'abonne à votre contenu",
-        "newMessage": "Recevez des notifications pour les nouveaux messages directs",
-        "newComment": "Soyez notifié quand quelqu'un commente vos publications",
-        "newTip": "Recevez des notifications pour les pourboires et dons",
-        "marketing": "Recevez des mises à jour sur les nouvelles fonctionnalités et promotions",
-        "newsletter": "Abonnez-vous à notre newsletter hebdomadaire"
-      }
-    }
-  },
-  "messages": {
-    "title": "Messages",
-    "search": "Rechercher des messages...",
-    "noMessages": "Pas encore de messages",
-    "typeMessage": "Tapez un message...",
-    "send": "Envoyer",
-    "media": {
-      "title": "Médias",
-      "noMedia": "Pas de médias dans cette conversation"
-    },
-    "timeAgo": {
-      "minutes": "il y a {count} min",
-      "hours": "il y a {count} h",
-      "days": "il y a {count} j"
-    }
-  }
-} 
+	"common": {
+		"appName": "Whispers",
+		"copyright": "© {year} Whispers. Tous droits réservés.",
+		"openSidebar": "Ouvrir le menu",
+		"close": "Fermer",
+		"submit": "Soumettre",
+		"cancel": "Annuler",
+		"save": "Enregistrer",
+		"delete": "Supprimer",
+		"edit": "Modifier",
+		"loading": "Chargement...",
+		"learnMore": "En savoir plus",
+		"getStarted": "Commencer",
+		"signUp": "S'inscrire",
+		"signIn": "Se connecter",
+		"signOut": "Se déconnecter",
+		"profile": "Profil",
+		"settings": "Paramètres",
+		"post": "Publier",
+		"reply": "Répondre",
+		"like": "J'aime"
+	},
+	"nav": {
+		"home": "Accueil",
+		"explore": "Explorer",
+		"feed": "Fil d'actualité",
+		"howItWorks": "Comment ça marche",
+		"privacy": "Politique de confidentialité",
+		"terms": "Conditions d'utilisation",
+		"creatorStudio": "Studio Créateur",
+		"analytics": "Analytique",
+		"content": "Contenu",
+		"messages": "Messages",
+		"subscribers": "Abonnés",
+		"earnings": "Revenus",
+		"wallet": "Portefeuille",
+		"subscriptions": "Abonnements",
+		"becomeCreator": "Devenir Créateur",
+		"user": {
+			"profile": "Votre Profil",
+			"subscriptions": "Abonnements",
+			"settings": "Paramètres"
+		},
+		"creator": {
+			"dashboard": "Tableau de Bord Créateur",
+			"content": "Gestion de Contenu",
+			"earnings": "Revenus"
+		}
+	},
+	"theme": {
+		"light": "Mode Clair",
+		"dark": "Mode Sombre"
+	},
+	"home": {
+		"hero": {
+			"title": "Connectez-vous avec vos Créateurs Préférés",
+			"subtitle": "Rejoignez Whispers pour découvrir du contenu exclusif des créateurs que vous aimez. Abonnez-vous pour accéder au contenu premium et soutenir vos créateurs préférés.",
+			"cta": "Commencer"
+		},
+		"featuredCreators": {
+			"title": "Créateurs en Vedette",
+			"subtitle": "Découvrez des créateurs incroyables de différentes catégories"
+		},
+		"howItWorks": {
+			"title": "Comment Fonctionne Whispers",
+			"subtitle": "Commencez votre aventure avec Whispers en trois étapes simples",
+			"steps": {
+				"createAccount": {
+					"title": "Créez un Compte",
+					"description": "Inscrivez-vous gratuitement et créez votre compte personnel pour commencer."
+				},
+				"discoverCreators": {
+					"title": "Découvrez des Créateurs",
+					"description": "Parcourez et suivez vos créateurs préférés de différentes catégories."
+				},
+				"subscribe": {
+					"title": "Abonnez-vous et Profitez",
+					"description": "Abonnez-vous pour débloquer du contenu exclusif et soutenir vos créateurs préférés."
+				}
+			}
+		},
+		"cta": {
+			"title": "Prêt à commencer à créer ?",
+			"subtitle": "Rejoignez notre communauté de créateurs et commencez à partager votre contenu avec le monde.",
+			"primary": "Postuler en tant que Créateur",
+			"secondary": "En Savoir Plus"
+		},
+		"sendTipTo": "Envoyer un pourboire à {name}",
+		"amount": "Montant (₦)",
+		"sendTip": "Envoyer un pourboire"
+	},
+	"legal": {
+		"privacy": {
+			"title": "Politique de Confidentialité",
+			"lastUpdated": "Dernière mise à jour : 1er avril 2025"
+		},
+		"terms": {
+			"title": "Conditions d'Utilisation",
+			"lastUpdated": "Dernière mise à jour : 1er avril 2025"
+		}
+	},
+	"apply": {
+		"title": "Postuler en tant que Créateur",
+		"basicInfo": {
+			"title": "Informations de Base",
+			"displayName": "Nom d'Affichage",
+			"displayNamePlaceholder": "Comment vous apparaîtrez à vos abonnés",
+			"username": "Nom d'Utilisateur",
+			"usernamePlaceholder": "Votre nom d'utilisateur unique (ex: jeandupont)",
+			"bio": "Biographie",
+			"bioPlaceholder": "Parlez de vous à vos futurs abonnés",
+			"categories": "Catégories",
+			"categoriesPlaceholder": "Sélectionnez au moins une catégorie",
+			"required": "Champ requis"
+		},
+		"social": {
+			"title": "Réseaux Sociaux",
+			"facebook": "Nom d'Utilisateur Facebook",
+			"instagram": "Nom d'Utilisateur Instagram",
+			"twitter": "Nom d'Utilisateur Twitter",
+			"tiktok": "Nom d'Utilisateur TikTok",
+			"usernamePlaceholder": "Votre nom d'utilisateur"
+		},
+		"pricing": {
+			"title": "Tarification",
+			"monthlySubscription": "Abonnement Mensuel",
+			"monthlyPrice": "Prix Mensuel (€)",
+			"subscriptionPlans": "Forfaits d'Abonnement",
+			"quarterlyPlan": "Forfait Trimestriel",
+			"quarterlyDescription": "Payez pour 3 mois et économisez",
+			"discount": "Réduction",
+			"totalQuarterlyPrice": "Prix Trimestriel Total",
+			"calculating": "Calcul en cours..."
+		},
+		"legal": {
+			"acceptTerms": "J'accepte les conditions générales",
+			"confirmAge": "Je confirme avoir plus de 18 ans"
+		},
+		"button": "Soumettre la Candidature",
+		"processing": "Traitement en cours..."
+	},
+	"validation": {
+		"required": "{field} est requis",
+		"minCategories": "Sélectionnez au moins une catégorie",
+		"atLeastOneSocial": "Veuillez fournir au moins un nom d'utilisateur de réseau social",
+		"mustBeNumber": "Doit être un nombre",
+		"minPrice": "Le prix minimum est de 4,99 €",
+		"mustBeValidNumber": "Doit être un nombre valide",
+		"mustAcceptTerms": "Vous devez accepter les conditions",
+		"mustConfirmAge": "Vous devez confirmer votre âge",
+		"maxLength": "{field} doit contenir moins de {max} caractères",
+		"maxFiles": "Maximum {max} fichiers autorisés",
+		"priceRange": "Le prix doit être compris entre 1€ et 100€",
+		"fixErrors": "Veuillez corriger les erreurs dans le formulaire"
+	},
+	"notifications": {
+		"title": "Notifications",
+		"markAllAsRead": "Tout marquer comme lu",
+		"noNotifications": "Pas encore de notifications",
+		"viewAll": "Voir toutes les notifications",
+		"view": "Voir",
+		"dismiss": "Fermer",
+		"applicationSubmitted": "Candidature de créateur soumise avec succès !",
+		"applicationFailed": "Échec de la soumission de la candidature",
+		"preferencesFailed": "Échec de la récupération des préférences du créateur",
+		"contentDeleted": "Contenu supprimé avec succès",
+		"contentDeleteFailed": "Échec de la suppression du contenu. Veuillez réessayer.",
+		"contentLoadFailed": "Échec du chargement du contenu. Veuillez réessayer.",
+		"contentUpdated": "Publication mise à jour avec succès",
+		"contentUpdateFailed": "Échec de la mise à jour de la publication. Veuillez réessayer.",
+		"draftSaved": "Brouillon enregistré avec succès",
+		"contentCreated": "Publication créée avec succès",
+		"contentCreateFailed": "Échec de la création de la publication. Veuillez réessayer."
+	},
+	"time": {
+		"minutesAgo": "il y a {count} min",
+		"hoursAgo": "il y a {count} h",
+		"daysAgo": "il y a {count} j"
+	},
+	"auth": {
+		"signInTitle": "Connectez-vous à votre compte",
+		"authenticationFailed": "L'authentification a échoué. Veuillez réessayer.",
+		"continueWithGoogle": "Continuer avec Google",
+		"continueWithTwitter": "Continuer avec Twitter"
+	},
+	"content": {
+		"premium": {
+			"title": "Contenu Premium",
+			"description": "Abonnez-vous pour débloquer ce contenu",
+			"subscribeNow": "Abonnez-vous maintenant"
+		},
+		"management": {
+			"title": "Gestion du Contenu",
+			"description": "Créez, modifiez et gérez votre contenu.",
+			"createNew": "Créer un Nouveau Post",
+			"search": {
+				"placeholder": "Rechercher du contenu..."
+			},
+			"filters": {
+				"all": "Tout le Contenu",
+				"public": "Public",
+				"private": "Privé",
+				"premium": "Premium"
+			},
+			"list": {
+				"title": "Titre",
+				"visibility": "Visibilité",
+				"views": "Vues",
+				"date": "Date",
+				"actions": "Actions",
+				"loading": "Chargement du contenu...",
+				"noContent": "Aucun contenu trouvé",
+				"edit": "Modifier",
+				"delete": "Supprimer"
+			},
+			"delete": {
+				"title": "Supprimer le Contenu",
+				"description": "Êtes-vous sûr de vouloir supprimer ce contenu ? Cette action ne peut pas être annulée.",
+				"confirm": "Supprimer",
+				"cancel": "Annuler"
+			}
+		},
+		"edit": {
+			"title": "Modifier la Publication",
+			"description": "Mettez à jour votre contenu et enregistrez les modifications.",
+			"loading": "Chargement de la publication..."
+		},
+		"new": {
+			"title": "Créer une nouvelle publication",
+			"description": "Partagez du nouveau contenu avec vos abonnés."
+		},
+		"form": {
+			"title": "Titre",
+			"content": "Contenu",
+			"price": "Prix"
+		}
+	},
+	"upload": {
+		"title": "Télécharger des fichiers",
+		"uploadMore": "Télécharger plus de fichiers",
+		"dragAndDrop": "ou glisser-déposer",
+		"imageTypes": "PNG, JPG, GIF jusqu'à {size}",
+		"videoTypes": "Fichiers vidéo jusqu'à {size}",
+		"fileTypes": "Fichiers jusqu'à {size}"
+	},
+	"media": {
+		"comments": {
+			"title": "Commentaires",
+			"addComment": "Ajouter un commentaire...",
+			"post": "Publier",
+			"timeAgo": {
+				"seconds": "il y a {count} s",
+				"minutes": "il y a {count} min",
+				"hours": "il y a {count} h",
+				"days": "il y a {count} j"
+			}
+		}
+	},
+	"userDropdown": {
+		"logout": "Se déconnecter"
+	},
+	"earnings": {
+		"title": "Revenus",
+		"description": "Suivez vos revenus et gérez vos paiements.",
+		"stats": {
+			"totalEarnings": "Revenus Totaux",
+			"subscriptionRevenue": "Revenus d'Abonnement",
+			"tipsReceived": "Pourboires Reçus",
+			"ppvRevenue": "Revenus PPV",
+			"fromLastMonth": "par rapport au mois dernier"
+		},
+		"overview": {
+			"title": "Aperçu des Revenus",
+			"periods": {
+				"7d": "7 derniers jours",
+				"30d": "30 derniers jours",
+				"90d": "90 derniers jours",
+				"1y": "Dernière année"
+			},
+			"chartPlaceholder": "Espace réservé au graphique - Dans une vraie application, implémentez le graphique avec une bibliothèque comme Chart.js"
+		},
+		"revenue": {
+			"title": "Répartition des Revenus",
+			"byType": "Par Type de Revenu",
+			"bySubscription": "Par Type d'Abonnement",
+			"types": {
+				"subscriptions": "Abonnements",
+				"tips": "Pourboires",
+				"ppv": "Pay-per-view"
+			},
+			"subscriptionTypes": {
+				"monthly": "Mensuel",
+				"yearly": "Annuel"
+			}
+		},
+		"transactions": {
+			"title": "Transactions Récentes",
+			"downloadCsv": "Télécharger CSV",
+			"headers": {
+				"date": "Date",
+				"type": "Type",
+				"customer": "Client",
+				"amount": "Montant",
+				"status": "Statut"
+			},
+			"types": {
+				"subscription": "Abonnement",
+				"tip": "Pourboire",
+				"ppv": "PPV"
+			},
+			"status": {
+				"completed": "Terminé",
+				"pending": "En attente",
+				"failed": "Échoué"
+			},
+			"afterFees": "Après frais : ${amount}",
+			"pagination": {
+				"previous": "Précédent",
+				"next": "Suivant",
+				"showing": "Affichage de",
+				"to": "à",
+				"of": "sur",
+				"results": "résultats"
+			}
+		}
+	},
+	"wallet": {
+		"title": "Portefeuille",
+		"balance": "Solde du portefeuille",
+		"fund": "Alimenter le portefeuille",
+		"transactionHistory": "Historique des transactions",
+		"recentTransactions": "Transactions récentes",
+		"fundYourWallet": "Alimentez votre portefeuille",
+		"amount": "Montant (₦)",
+		"payWithPaystack": "Payer avec Paystack",
+		"payWithBani": "Payer avec Bani",
+		"walletFunding": "Alimentation du portefeuille",
+		"subscriptionPayment": "Paiement d'abonnement",
+		"creatorTip": "Pourboire au créateur",
+		"id": "ID",
+		"walletFunded": "Portefeuille alimenté avec succès !"
+	},
+	"profile": {
+		"user": "Utilisateur",
+		"unknownUser": "Utilisateur inconnu",
+		"editProfile": "Modifier le profil",
+		"about": "À propos",
+		"noBio": "Pas encore de bio.",
+		"posts": "Publications",
+		"followers": "Abonnés",
+		"social": "Réseaux sociaux",
+		"joined": "Inscrit le",
+		"unknownDate": "Date inconnue",
+		"shareWithFollowers": "Partagez quelque chose avec vos abonnés...",
+		"post": "Publier",
+		"noPosts": "Aucune publication pour le moment.",
+		"follow": "Suivre",
+		"unfollow": "Ne plus suivre"
+	},
+	"subscriptions": {
+		"title": "Vos Abonnements",
+		"activeSubscriptions": "Abonnements Actifs",
+		"expiredSubscriptions": "Abonnements Expirés",
+		"loading": "Chargement des abonnements...",
+		"noActiveSubscriptions": {
+			"title": "Aucun abonnement actif",
+			"description": "Explorez les créateurs et abonnez-vous pour débloquer du contenu exclusif.",
+			"cta": "Explorer les Créateurs"
+		},
+		"plan": "Forfait",
+		"price": "Prix",
+		"nextBillingDate": "Prochaine facturation",
+		"autoRenew": "Renouvellement automatique",
+		"enabled": "Activé",
+		"disabled": "Désactivé",
+		"viewProfile": "Voir le Profil",
+		"cancel": "Annuler",
+		"expiredOn": "Abonnement expiré le",
+		"renewSubscription": "Renouveler l'Abonnement"
+	},
+	"settings": {
+		"title": "Paramètres",
+		"profile": {
+			"title": "Paramètres du Profil",
+			"displayName": "Nom d'Affichage",
+			"username": "Nom d'Utilisateur",
+			"bio": "Biographie",
+			"profilePicture": "Photo de Profil",
+			"updatePicture": "Mettre à jour la Photo de Profil",
+			"pictureUpdated": "Photo de profil mise à jour",
+			"updateProfile": "Mettre à jour le Profil",
+			"profileUpdated": "Profil mis à jour avec succès",
+			"updateFailed": "Échec de la mise à jour du profil"
+		},
+		"notifications": {
+			"title": "Paramètres de Notification",
+			"newSubscriber": "Nouveaux Abonnés",
+			"newMessage": "Messages Directs",
+			"newComment": "Commentaires sur les Publications",
+			"newTip": "Pourboires et Dons",
+			"marketing": "Mises à jour Marketing",
+			"newsletter": "Newsletter",
+			"descriptions": {
+				"newSubscriber": "Soyez notifié quand quelqu'un s'abonne à votre contenu",
+				"newMessage": "Recevez des notifications pour les nouveaux messages directs",
+				"newComment": "Soyez notifié quand quelqu'un commente vos publications",
+				"newTip": "Recevez des notifications pour les pourboires et dons",
+				"marketing": "Recevez des mises à jour sur les nouvelles fonctionnalités et promotions",
+				"newsletter": "Abonnez-vous à notre newsletter hebdomadaire"
+			}
+		}
+	},
+	"messages": {
+		"title": "Messages",
+		"search": "Rechercher des messages...",
+		"noMessages": "Pas encore de messages",
+		"typeMessage": "Tapez un message...",
+		"send": "Envoyer",
+		"media": {
+			"title": "Médias",
+			"noMedia": "Pas de médias dans cette conversation"
+		},
+		"timeAgo": {
+			"minutes": "il y a {count} min",
+			"hours": "il y a {count} h",
+			"days": "il y a {count} j"
+		}
+	},
+	"unknownLocation": "Localisation inconnue",
+	"subscribe": "S'abonner",
+	"likes": "j'aimes",
+	"viewAllComments": "Voir tous les {count} commentaires",
+	"addAComment": "Ajouter un commentaire...",
+	"post": "Publier",
+	"secondsAgo": "il y a {count} secondes",
+	"minutesAgo": "il y a {count} minutes",
+	"hoursAgo": "il y a {count} heures",
+	"daysAgo": "il y a {count} jours",
+	"postTitle": "Titre de la publication",
+	"enterPostTitle": "Entrez le titre de la publication...",
+	"postContent": "Contenu de la publication",
+	"writePostContent": "Écrivez le contenu de votre publication ici...",
+	"mediaFiles": "Fichiers multimédias",
+	"uploadMediaHint": "Téléchargez des images ou vidéos à partager avec vos abonnés. Maximum 10 fichiers.",
+	"visibility": "Visibilité",
+	"public": "Public",
+	"publicHint": "Visible par tous, y compris les non-abonnés",
+	"subscribersOnly": "Abonnés uniquement",
+	"subscribersOnlyHint": "Visible uniquement par vos abonnés payants",
+	"payPerView": "Paiement à la vue",
+	"payPerViewHint": "Les utilisateurs doivent payer un droit d'accès unique",
+	"price": "Prix ($)",
+	"pricePlaceholder": "4.99",
+	"scheduleForLater": "Planifier pour plus tard",
+	"scheduleHint": "Définissez une date et heure futures pour publier cette publication",
+	"publishDate": "Date de publication",
+	"saveAsDraft": "Enregistrer comme brouillon",
+	"schedulePost": "Planifier la publication",
+	"publishNow": "Publier maintenant",
+	"myCollections": "Mes collections",
+	"newCollection": "Nouvelle collection",
+	"viewCollection": "Voir la collection",
+	"createNewCollection": "Créer une nouvelle collection",
+	"collectionName": "Nom de la collection",
+	"posts": "Publications",
+	"manageAndCreatePosts": "Gérez et créez de nouvelles publications pour vos abonnés.",
+	"createNewPost": "Créer une nouvelle publication",
+	"searchPosts": "Rechercher des publications...",
+	"allVisibility": "Toute visibilité",
+	"newestFirst": "Plus récent en premier",
+	"oldestFirst": "Plus ancien en premier",
+	"mostPopular": "Plus populaire",
+	"highestEarnings": "Revenus les plus élevés",
+	"loadingPosts": "Chargement des publications...",
+	"noPostsFound": "Aucune publication trouvée",
+	"tryAdjustingSearch": "Essayez d'ajuster votre recherche ou vos filtres.",
+	"getStartedCreatePost": "Commencez par créer votre première publication.",
+	"stats": "Statistiques",
+	"date": "Date",
+	"actions": "Actions",
+	"views": "vues",
+	"comments": "commentaires",
+	"purchases": "achats",
+	"previous": "Précédent",
+	"next": "Suivant",
+	"showingResults": "Affichage de {start} à {end} sur {total} résultats",
+	// "subscribers": "Abonnés",
+	"manageSubscribers": "Gérez vos abonnés et consultez les statistiques d'abonnement.",
+	"fromLastMonth": "du mois dernier",
+	"searchSubscribers": "Rechercher des abonnés...",
+	"allPlans": "Tous les forfaits",
+	"monthly": "Mensuel",
+	"yearly": "Annuel",
+	"allStatus": "Tous les statuts",
+	"active": "Actif",
+	"expired": "Expiré",
+	"cancelled": "Annulé",
+	"subscriber": "Abonné",
+	"plan": "Forfait",
+	"status": "Statut",
+	"revenue": "Revenu",
+	"joined": "A rejoint",
+	"lifetimeValue": "Valeur à vie",
+	"message": "Message",
+	"block": "Bloquer",
+	"showingSubscribers": "Affichage de {start} à {end} sur {total} résultats",
+	"dashboard": "Tableau de bord",
+	"overviewStats": "Aperçu de vos statistiques et activités récentes.",
+	"recentSubscriptions": "Abonnements récents",
+	"noRecentSubscriptions": "Aucun abonnement récent",
+	"viewAllSubscribers": "Voir tous les abonnés",
+	"contentPerformance": "Performance du contenu",
+	"noContentYet": "Pas encore de contenu",
+	"viewAllContent": "Voir tout le contenu",
+	"upcomingPayout": "Paiement à venir",
+	"viewEarningsDetails": "Voir les détails des revenus",
+	"nextPayoutOn": "Prochain paiement le {date}",
+	"requestEarlyPayout": "Demander un paiement anticipé",
+	"payoutBreakdown": "Répartition des paiements",
+	"subscriptionRevenue": "Revenus d'abonnement",
+	"tips": "Pourboires",
+	"platformFee": "Frais de plateforme",
+	"walletBalance": "Solde du portefeuille",
+	"fundWallet": "Approvisionner le portefeuille",
+	"transactionHistory": "Historique des transactions",
+	"recentTransactions": "Transactions récentes",
+	"fundYourWallet": "Approvisionnez votre portefeuille",
+	"amountNGN": "Montant (₦)",
+	"payWithPaystack": "Payer avec Paystack",
+	"payWithBani": "Payer avec Bani",
+	"walletFunding": "Approvisionnement du portefeuille",
+	"subscriptionPayment": "Paiement d'abonnement",
+	"creatorTip": "Pourboire au créateur",
+	"walletFundingPaystack": "Approvisionnement via Paystack",
+	"walletFundingBani": "Approvisionnement via Bani",
+	"walletFundedSuccess": "Portefeuille approvisionné avec succès !",
+	"transactionId": "ID : {id}",
+	"about": "À propos",
+	"noBioYet": "Pas encore de biographie.",
+	"followers": "Abonnés",
+	"social": "Réseaux sociaux",
+	"unknownUser": "Utilisateur inconnu",
+	"unknown": "inconnu",
+	"editProfile": "Modifier le profil",
+	"follow": "Suivre",
+	"unfollow": "Ne plus suivre",
+	"shareWithFollowers": "Partagez quelque chose avec vos abonnés...",
+	"noPostsYet": "Pas encore de publications.",
+	"suggestions": "SUGGESTIONS",
+	"sendTipTo": "Envoyer un pourboire à {name}",
+	"sendTip": "Envoyer un pourboire",
+	"analytics": {
+		"title": "Analytique",
+		"overview": "Aperçu de vos statistiques de créateur et de votre activité récente.",
+		"recentActivity": "Activité Récente",
+		"followers": "Abonnés",
+		"earnings": "Revenus",
+		"views": "Vues",
+		"subscribers": "Abonnés",
+		"posts": "Publications",
+		"engagement": "Engagement",
+		"growth": "Croissance",
+		"noData": "Aucune donnée analytique disponible.",
+		"from_last_month": "du mois dernier",
+		"no_recent_subscriptions": "Aucun abonnement récent",
+		"view_all_subscribers": "Voir tous les abonnés",
+		"no_content_yet": "Pas encore de contenu",
+		"view_all_content": "Voir tout le contenu",
+		"view_earnings_details": "Voir les détails des revenus",
+		"next_payout_on": "Prochain paiement le",
+		"request_early_payout": "Demander un paiement anticipé",
+		"payout_breakdown": "Détail du paiement",
+		"subscription_revenue": "Revenus d'abonnement",
+		"tips": "Pourboires",
+		"pay_per_view": "Paiement à la vue",
+		"platform_fee": "Frais de plateforme"
+	},
+	"subscribers": {
+		"title": "Abonnés",
+		"manage": "Gérez vos abonnés et consultez les analyses d'abonnement.",
+		"searchPlaceholder": "Rechercher des abonnés...",
+		"name": "Nom",
+		"email": "Email",
+		"joined": "Inscrit le",
+		"status": "Statut",
+		"active": "Actif",
+		"cancelled": "Annulé",
+		"noSubscribers": "Pas encore d'abonnés.",
+		"blockConfirmation": "Êtes-vous sûr de vouloir bloquer cet abonné ? Il ne pourra plus voir votre contenu ni vous envoyer de messages.",
+		"block": "Bloquer",
+		"cancel": "Annuler"
+	},
+	"categories": {
+		"art": "Art",
+		"music": "Musique",
+		"photography": "Photographie",
+		"writing": "Écriture",
+		"technology": "Technologie",
+		"education": "Éducation",
+		"entertainment": "Divertissement",
+		"lifestyle": "Mode de Vie",
+		"sports": "Sports",
+		"gaming": "Jeux"
+	}
+}

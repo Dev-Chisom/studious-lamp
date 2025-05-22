@@ -2,25 +2,25 @@
 	<div class="max-w-6xl mx-auto">
 		<Head> <Title>Subscribers - Creator Dashboard</Title> </Head>
 		<div class="mb-6">
-			<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Wallet</h1>
+			<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ t('wallet') }}</h1>
 		</div>
 
 		<div class="bg-white dark:bg-gray-900 rounded-xl shadow-soft p-6 mb-8">
 			<div class="flex justify-between items-center mb-6">
-				<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Wallet Balance</h1>
+				<h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('walletBalance') }}</h1>
 				<span class="text-3xl font-bold text-primary-600 dark:text-primary-400">₦{{ formatAmount(balance) }}</span>
 			</div>
 
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-				<BaseButton class="w-full" variant="primary" @click="showFundingModal = true">Fund Wallet</BaseButton>
-				<BaseButton class="w-full" variant="secondary" @click="showTransactionHistory = true">Transaction History</BaseButton>
+				<BaseButton class="w-full" variant="primary" @click="showFundingModal = true">{{ t('fundWallet') }}</BaseButton>
+				<BaseButton class="w-full" variant="secondary" @click="showTransactionHistory = true">{{ t('transactionHistory') }}</BaseButton>
 			</div>
 		</div>
 
 		<!-- Recent Transactions -->
 
 		<div class="bg-white dark:bg-gray-900 rounded-xl shadow-soft p-6">
-			<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Recent Transactions</h2>
+			<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">{{ t('recentTransactions') }}</h2>
 
 			<div class="space-y-4">
 				<div
@@ -49,11 +49,11 @@
 		<!-- Fund Wallet Modal -->
 		<modal v-if="showFundingModal" @close="showFundingModal = false">
 			<div class="p-6">
-				<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Fund Your Wallet</h2>
+				<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">{{ t('fundYourWallet') }}</h2>
 
 				<div class="space-y-4">
 					<div>
-						<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Amount (₦)</label>
+						<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{{ t('amount') }} (₦)</label>
 						<input
 							v-model="fundingAmount"
 							type="number"
@@ -64,10 +64,10 @@
 
 					<div class="grid grid-cols-2 gap-4">
 						<BaseButton :loading="paystackLoading" variant="primary" class="w-full" @click="initializePaystack">
-							Pay with Paystack
+							{{ t('payWithPaystack') }}
 						</BaseButton>
 						<BaseButton :loading="baniLoading" variant="secondary" class="w-full" @click="initializeBani">
-							Pay with Bani
+							{{ t('payWithBani') }}
 						</BaseButton>
 					</div>
 				</div>
@@ -77,7 +77,7 @@
 		<!-- Transaction History Modal -->
 		<modal v-if="showTransactionHistory" @close="showTransactionHistory = false">
 			<div class="p-6">
-				<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Transaction History</h2>
+				<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">{{ t('transactionHistory') }}</h2>
 
 				<div class="space-y-4 max-h-96 overflow-y-auto">
 					<div
@@ -115,6 +115,7 @@ import { useBani } from '~/composables/useBani';
 import { useNotification } from '~/composables/useNotifications';
 import Modal from '~/components/ui/Modal.vue';
 import BaseButton from '~/components/ui/BaseButton.vue';
+import { useI18n } from 'vue-i18n';
 
 definePageMeta({
 	layout: 'creator',
@@ -162,6 +163,8 @@ const transactions = ref([
 		date: new Date('2024-03-30'),
 	},
 ]);
+
+const { t } = useI18n();
 
 const formatAmount = (amount: number) => {
 	return amount.toLocaleString('en-NG');

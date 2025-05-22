@@ -22,7 +22,7 @@
 							</h3>
 						</NuxtLink>
 
-						<p class="text-xs text-gray-500 dark:text-gray-400">{{ post.location || 'Unknown location' }}</p>
+						<p class="text-xs text-gray-500 dark:text-gray-400">{{ post.location || t('unknownLocation') }}</p>
 					</div>
 				</div>
 
@@ -40,7 +40,7 @@
 							class="max-w-md rounded-full btn-primary text-white font-semibold py-4 px-6 text-lg transition-all"
 							@click="$emit('subscribe')"
 						>
-							SUBSCRIBE
+							{{ t('subscribe') }}
 						</button>
 					</div>
 
@@ -113,7 +113,7 @@
 
 				<!-- Likes count -->
 
-				<p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">{{ formatNumber(post.likes) }} likes</p>
+				<p class="text-sm font-semibold text-gray-900 dark:text-white mb-1">{{ formatNumber(post.likes) }} {{ t('likes') }}</p>
 
 				<!-- Caption with username -->
 
@@ -127,7 +127,7 @@
 					class="text-sm text-gray-500 dark:text-gray-400 mb-1"
 					@click="openModal(0, true)"
 				>
-					View all {{ post.comments.length + localComments.length }} comments
+					{{ t('viewAllComments', { count: post.comments.length + localComments.length }) }}
 				</button>
 
 				<!-- Display local comments -->
@@ -154,7 +154,7 @@
 				<input
 					v-model="quickComment"
 					type="text"
-					placeholder="Add a comment..."
+					:placeholder="t('addAComment')"
 					class="flex-1 bg-transparent border-none text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:ring-0"
 					@keyup.enter="addComment"
 				/>
@@ -163,7 +163,7 @@
 					:disabled="!quickComment.trim()"
 					@click="addComment"
 				>
-					Post
+					{{ t('post') }}
 				</button>
 			</div>
 		</div>
@@ -186,6 +186,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import MediaPreviewModal from './ui/MediaPreviewModal.vue';
 
 interface User {
@@ -252,6 +253,8 @@ const currentMediaIndex = ref(0);
 const showComments = ref(false);
 const localComments = ref<string[]>([]);
 
+const { t } = useI18n();
+
 const formatNumber = (num: number): string => {
 	return new Intl.NumberFormat('en-US').format(num);
 };
@@ -306,15 +309,15 @@ const formatTimeAgo = (date: Date): string => {
 	const diffInSeconds = Math.floor((now.getTime() - new Date(date).getTime()) / 1000);
 
 	if (diffInSeconds < 60) {
-		return `${diffInSeconds}s ago`;
+		return t('secondsAgo', { count: diffInSeconds });
 	}
 	if (diffInSeconds < 3600) {
-		return `${Math.floor(diffInSeconds / 60)}m ago`;
+		return t('minutesAgo', { count: Math.floor(diffInSeconds / 60) });
 	}
 	if (diffInSeconds < 86400) {
-		return `${Math.floor(diffInSeconds / 3600)}h ago`;
+		return t('hoursAgo', { count: Math.floor(diffInSeconds / 3600) });
 	}
-	return `${Math.floor(diffInSeconds / 86400)}d ago`;
+	return t('daysAgo', { count: Math.floor(diffInSeconds / 86400) });
 };
 
 const toggleLike = (): void => {

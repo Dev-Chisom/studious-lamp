@@ -6,7 +6,7 @@
 			<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h1>
 
 			<p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
-				Overview of your creator stats and recent activity.
+				{{ t('analytics.overview') }}
 			</p>
 		</div>
 
@@ -23,7 +23,7 @@
 						<div class="ml-5 w-0 flex-1">
 							<dl>
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 truncate">
-									{{ stat.name }}
+									{{ t(stat.name) }}
 								</dt>
 
 								<dd>
@@ -48,7 +48,7 @@
 								{{ Math.abs(stat.trend) }}%
 							</div>
 
-							<div class="ml-1 text-gray-500 dark:text-gray-200 dark:text-gray-400">from last month</div>
+							<div class="ml-1 text-gray-500 dark:text-gray-200 dark:text-gray-400">{{ t('analytics.from_last_month') }}</div>
 						</div>
 					</div>
 				</div>
@@ -90,13 +90,13 @@
 						v-if="recentSubscriptions.length === 0"
 						class="px-4 py-6 text-center text-gray-500 dark:text-gray-200 dark:text-gray-400"
 					>
-						No recent subscriptions
+						{{ t('analytics.no_recent_subscriptions') }}
 					</li>
 				</ul>
 
 				<div class="border-t border-gray-200 px-4 py-4 sm:px-6">
 					<NuxtLink to="/creator/subscribers" class="text-sm font-medium text-primary-600 hover:text-primary-500">
-						View all subscribers <span aria-hidden="true"> &rarr;</span>
+						{{ t('analytics.view_all_subscribers') }} <span aria-hidden="true"> &rarr;</span>
 					</NuxtLink>
 				</div>
 			</div>
@@ -145,13 +145,13 @@
 						v-if="recentPosts.length === 0"
 						class="px-4 py-6 text-center text-gray-500 dark:text-gray-200 dark:text-gray-400"
 					>
-						No content yet
+						{{ t('analytics.no_content_yet') }}
 					</li>
 				</ul>
 
 				<div class="border-t border-gray-200 px-4 py-4 sm:px-6">
 					<NuxtLink to="/creator/content" class="text-sm font-medium text-primary-600 hover:text-primary-500">
-						View all content <span aria-hidden="true"> &rarr;</span>
+						{{ t('analytics.view_all_content') }} <span aria-hidden="true"> &rarr;</span>
 					</NuxtLink>
 				</div>
 			</div>
@@ -164,7 +164,7 @@
 				<div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center">
 					<h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">Upcoming Payout</h3>
 					<NuxtLink to="/creator/earnings" class="text-sm text-primary-600 hover:text-primary-500 font-medium">
-						View earnings details
+						{{ t('analytics.view_earnings_details') }}
 					</NuxtLink>
 				</div>
 
@@ -174,19 +174,19 @@
 							<p class="text-2xl font-semibold text-gray-900 dark:text-gray-100">${{ nextPayout.amount.toFixed(2) }}</p>
 
 							<p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
-								Next payout on {{ formatDate(nextPayout.date) }}
+								{{ t('analytics.next_payout_on') }} {{ formatDate(nextPayout.date) }}
 							</p>
 						</div>
-						<button class="mt-4 md:mt-0 btn-primary">Request Early Payout</button>
+						<button class="mt-4 md:mt-0 btn-primary">{{ t('analytics.request_early_payout') }}</button>
 					</div>
 
 					<div class="mt-6">
-						<h4 class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">Payout Breakdown</h4>
+						<h4 class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{ t('analytics.payout_breakdown') }}</h4>
 
 						<dl class="mt-2 grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
 							<div class="sm:col-span-1">
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">
-									Subscription Revenue
+									{{ t('analytics.subscription_revenue') }}
 								</dt>
 
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
@@ -195,19 +195,19 @@
 							</div>
 
 							<div class="sm:col-span-1">
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">Tips</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{ t('analytics.tips') }}</dt>
 
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${{ nextPayout.tips.toFixed(2) }}</dd>
 							</div>
 
 							<div class="sm:col-span-1">
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">Pay-per-view</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{ t('analytics.pay_per_view') }}</dt>
 
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${{ nextPayout.ppv.toFixed(2) }}</dd>
 							</div>
 
 							<div class="sm:col-span-1">
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">Platform Fee</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{ t('analytics.platform_fee') }}</dt>
 
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">-${{ nextPayout.platformFee.toFixed(2) }}</dd>
 							</div>
@@ -221,6 +221,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 definePageMeta({
 	layout: 'creator',
@@ -266,6 +267,8 @@ interface Payout {
 	ppv: number
 	platformFee: number
 }
+
+const { t } = useI18n();
 
 const stats = ref<StatCard[]>([
 	{

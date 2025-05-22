@@ -6,7 +6,7 @@
       <!-- Background overlay -->
 
       <div class="fixed inset-0 bg-gray-600 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-80"
-        @click="$emit('close')" />
+        @click="emit('close')" />
 
       <!-- Sidebar panel -->
 
@@ -19,7 +19,7 @@
                 <span class="text-xl font-bold text-white dark:text-gray-100">{{ $t('nav.creatorStudio') }}</span>
               </div>
               <button type="button" class="text-white hover:text-gray-200 dark:text-gray-100 dark:hover:text-gray-200"
-                @click="$emit('close')">
+                @click="emit('close')">
                 <span class="sr-only">{{ $t('common.close') }}</span>
                 <Icon name="lucide:x" class="h-6 w-6" />
               </button>
@@ -28,7 +28,7 @@
 
           <div class="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
             <sidebar-navigation-item v-for="item in navigationItems" :key="item.name" :item="item"
-              @click="$emit('close')" />
+              @click="emit('close')" />
           </div>
         </div>
       </div>
@@ -79,7 +79,7 @@ interface CreatorSidebarEmits {
   (e: 'close'): void
 }
 
-const props = defineProps<CreatorSidebarProps>();
+defineProps<CreatorSidebarProps>();
 const emit = defineEmits<CreatorSidebarEmits>();
 const { t } = useI18n();
 

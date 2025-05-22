@@ -4,14 +4,14 @@
 
 		<div class="sm:flex sm:items-center sm:justify-between mb-6">
 			<div>
-				<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Posts</h1>
+				<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ t('posts') }}</h1>
 
-				<p class="mt-1 text-sm text-gray-500 dark:text-gray-300">Manage and create new posts for your subscribers.</p>
+				<p class="mt-1 text-sm text-gray-500 dark:text-gray-300">{{ t('manageAndCreatePosts') }}</p>
 			</div>
 
 			<div class="mt-4 sm:mt-0">
 				<NuxtLink to="/creator/content/new" class="btn-primary">
-					<Icon name="lucide:plus" class="mr-2 h-4 w-4" /> Create New Post
+					<Icon name="lucide:plus" class="mr-2 h-4 w-4" /> {{ t('createNewPost') }}
 				</NuxtLink>
 			</div>
 		</div>
@@ -60,12 +60,12 @@
 		<div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
 			<div v-if="loading" class="p-8 text-center">
 				<Icon name="lucide:loader" class="h-8 w-8 mx-auto animate-spin text-primary-500" />
-				<p class="mt-2 text-gray-500 dark:text-gray-300">Loading posts...</p>
+				<p class="mt-2 text-gray-500 dark:text-gray-300">{{ t('loadingPosts') }}</p>
 			</div>
 
 			<div v-else-if="filteredPosts.length === 0" class="p-8 text-center">
 				<Icon name="lucide:file-x" class="h-12 w-12 mx-auto text-gray-400" />
-				<h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No posts found</h3>
+				<h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">{{ t('noPostsFound') }}</h3>
 
 				<p class="mt-1 text-sm text-gray-500 dark:text-gray-300">
 					{{ filters.search ? 'Try adjusting your search or filters.' : 'Get started by creating your first post.' }}
@@ -73,7 +73,7 @@
 
 				<div class="mt-6">
 					<NuxtLink to="/creator/content/new" class="btn-primary">
-						<Icon name="lucide:plus" class="mr-2 h-4 w-4" /> Create New Post
+						<Icon name="lucide:plus" class="mr-2 h-4 w-4" /> {{ t('createNewPost') }}
 					</NuxtLink>
 				</div>
 			</div>
@@ -240,9 +240,9 @@
 						<div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
 							<div>
 								<p class="text-sm text-gray-700 dark:text-gray-300">
-									Showing <span class="font-medium">{{ startIndex + 1 }}</span> to
-									<span class="font-medium">{{ endIndex }}</span> of
-									<span class="font-medium">{{ totalPosts }}</span> results
+									{{ t('showing') }} <span class="font-medium">{{ startIndex + 1 }}</span> {{ t('to') }}
+									<span class="font-medium">{{ endIndex }}</span> {{ t('of') }}
+									<span class="font-medium">{{ totalPosts }}</span> {{ t('results') }}
 								</p>
 							</div>
 
@@ -303,11 +303,11 @@
 							</div>
 
 							<div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-								<h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">Delete Post</h3>
+								<h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">{{ t('deletePost') }}</h3>
 
 								<div class="mt-2">
 									<p class="text-sm text-gray-500 dark:text-gray-300">
-										Are you sure you want to delete this post? This action cannot be undone.
+										{{ t('areYouSureYouWantToDeleteThisPost') }}
 									</p>
 								</div>
 							</div>
@@ -320,14 +320,14 @@
 							class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-error-600 text-base font-medium text-white hover:bg-error-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-error-500 sm:ml-3 sm:w-auto sm:text-sm"
 							@click="deletePost"
 						>
-							Delete
+							{{ t('delete') }}
 						</button>
 						<button
 							type="button"
 							class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-700 shadow-sm px-4 py-2 bg-white dark:bg-gray-900 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
 							@click="showDeleteModal = false"
 						>
-							Cancel
+							{{ t('cancel') }}
 						</button>
 					</div>
 				</div>
@@ -340,6 +340,7 @@
 import { ref, computed } from 'vue';
 import { toast } from 'vue3-toastify';
 import { useContentStore } from '../../../store/content';
+import { useI18n } from 'vue-i18n';
 
 definePageMeta({
 	layout: 'creator',
@@ -381,6 +382,8 @@ const filters = ref<Filters>({
 	visibility: '',
 	sortBy: 'newest',
 });
+
+const { t } = useI18n();
 
 // Mock data for posts
 const posts = ref<Post[]>([
