@@ -6,8 +6,9 @@
       <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">{{ t('apply.basicInfo.title') }}</h2>
       <div class="space-y-6">
         <Field name="displayName" v-slot="{ field, meta }">
-          <FormInput v-model="field.value" :label="t('apply.basicInfo.displayName')" :placeholder="t('apply.basicInfo.displayNamePlaceholder')"
-            v-bind="field" :error="meta.touched && errors.displayName" required />
+          <FormInput v-model="field.value" :label="t('apply.basicInfo.displayName')"
+            :placeholder="t('apply.basicInfo.displayNamePlaceholder')" v-bind="field"
+            :error="meta.touched && errors.displayName" required />
         </Field>
 
         <Field name="username" v-slot="{ field, meta }">
@@ -57,23 +58,27 @@
       <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">{{ t('apply.social.title') }}</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field name="social.facebook" v-slot="{ field, meta }" @blur="onSocialFieldBlur">
-          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.facebook')" :placeholder="t('apply.social.usernamePlaceholder')"
-            icon="lucide:facebook" :error="meta.touched && errors.social?.facebook" />
+          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.facebook')"
+            :placeholder="t('apply.social.usernamePlaceholder')" icon="lucide:facebook"
+            :error="meta.touched && errors.social?.facebook" />
         </Field>
 
         <Field name="social.instagram" v-slot="{ field, meta }" @blur="onSocialFieldBlur">
-          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.instagram')" :placeholder="t('apply.social.usernamePlaceholder')"
-            icon="lucide:instagram" :error="meta.touched && errors.social?.instagram" />
+          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.instagram')"
+            :placeholder="t('apply.social.usernamePlaceholder')" icon="lucide:instagram"
+            :error="meta.touched && errors.social?.instagram" />
         </Field>
 
         <Field name="social.twitter" v-slot="{ field, meta }" @blur="onSocialFieldBlur">
-          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.twitter')" :placeholder="t('apply.social.usernamePlaceholder')"
-            icon="lucide:twitter" :error="meta.touched && errors.social?.twitter" />
+          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.twitter')"
+            :placeholder="t('apply.social.usernamePlaceholder')" icon="lucide:twitter"
+            :error="meta.touched && errors.social?.twitter" />
         </Field>
 
         <Field name="social.tiktok" v-slot="{ field, meta }" @blur="onSocialFieldBlur">
-          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.tiktok')" :placeholder="t('apply.social.usernamePlaceholder')"
-            icon="lucide:music" :error="meta.touched && errors.social?.tiktok" />
+          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.tiktok')"
+            :placeholder="t('apply.social.usernamePlaceholder')" icon="lucide:music"
+            :error="meta.touched && errors.social?.tiktok" />
         </Field>
       </div>
       <ErrorMessage name="social" class="text-sm form-error text-error-600 dark:text-error-400 mt-1" />
@@ -84,15 +89,17 @@
       <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">{{ t('apply.pricing.title') }}</h2>
       <div class="space-y-6">
         <div class="mb-8">
-          <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">{{ t('apply.pricing.monthlySubscription') }}</h3>
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">{{
+            t('apply.pricing.monthlySubscription') }}</h3>
           <Field name="monthlyPrice" v-slot="{ field, meta }">
-            <FormInput v-model="field.value" v-bind="field" type="number" :label="t('apply.pricing.monthlyPrice')" placeholder=""
-              min="4.99" step="0.01" :error="meta.touched && errors.monthlyPrice" required
+            <FormInput v-model="field.value" v-bind="field" type="number" :label="t('apply.pricing.monthlyPrice')"
+              placeholder="" min="4.99" step="0.01" :error="meta.touched && errors.monthlyPrice" required
               @input="calculatePeriodPrices(values.monthlyPrice, values.discounts)" />
           </Field>
         </div>
 
-        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ t('apply.pricing.subscriptionPlans') }}</h3>
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ t('apply.pricing.subscriptionPlans') }}
+        </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Quarterly -->
           <div class="p-4 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm">
@@ -129,7 +136,8 @@
                 class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
             </div>
             <div class="ml-3 text-sm">
-              <label for="accept-terms" class="font-medium text-gray-700 dark:text-gray-300">{{ t('apply.legal.acceptTerms') }}</label>
+              <label for="accept-terms" class="font-medium text-gray-700 dark:text-gray-300">{{
+                t('apply.legal.acceptTerms') }}</label>
               <div v-if="(meta.touched || meta.dirty) && errorMessage"
                 class="text-sm form-error text-error-600 dark:text-error-400 mt-1">{{
                   errorMessage }}</div>
@@ -146,7 +154,8 @@
               class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
           </div>
           <div class="ml-3 text-sm">
-            <label for="confirm-age" class="font-medium text-gray-700 dark:text-gray-300">{{ t('apply.legal.confirmAge') }}</label>
+            <label for="confirm-age" class="font-medium text-gray-700 dark:text-gray-300">{{ t('apply.legal.confirmAge')
+              }}</label>
             <div v-if="(meta.touched || meta.dirty) && errorMessage"
               class="text-sm form-error text-error-600 dark:text-error-400 mt-1">
               {{ errorMessage }}
@@ -172,7 +181,7 @@
 
 <script setup lang="ts">
 import type { Ref } from 'vue';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import type { Composer } from 'vue-i18n';
 import { useI18n } from 'vue-i18n';
 import { Form, Field, ErrorMessage } from 'vee-validate';
@@ -246,8 +255,7 @@ const initialValues: Partial<ApplyFormValues> = {
   acceptTerms: false,
   confirmAge: false
 };
-
-const availableCategories = [
+const availableCategories = computed(() => [
   t('categories.art'),
   t('categories.music'),
   t('categories.photography'),
@@ -258,7 +266,7 @@ const availableCategories = [
   t('categories.lifestyle'),
   t('categories.sports'),
   t('categories.gaming')
-];
+]);
 
 function toggleCategory(category: string, currentCategories: string[], handleChange: (value: string[]) => void) {
   const newCategories = currentCategories.includes(category)
@@ -277,7 +285,7 @@ function roundToTwo(num: number) {
 
 function calculatePeriodPrices(monthlyPrice: number, discounts: { quarterly?: string; biAnnual?: string; yearly?: string }) {
   if (!monthlyPrice) return;
-  
+
   quarterlyPrice.value = roundToTwo(monthlyPrice * 3 * (1 - (parseInt(discounts.quarterly || '0') / 100)));
   biAnnualPrice.value = roundToTwo(monthlyPrice * 6 * (1 - (parseInt(discounts.biAnnual || '0') / 100)));
   yearlyPrice.value = roundToTwo(monthlyPrice * 12 * (1 - (parseInt(discounts.yearly || '0') / 100)));
