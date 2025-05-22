@@ -425,7 +425,8 @@
 			"minutes": "il y a {count} min",
 			"hours": "il y a {count} h",
 			"days": "il y a {count} j"
-		}
+		},
+    "selectConversation": "Sélectionnez une conversation pour commencer à discuter"
 	},
 	"unknownLocation": "Localisation inconnue",
 	"subscribe": "S'abonner",

@@ -425,7 +425,8 @@
 			"minutes": "hace {count} min",
 			"hours": "hace {count} h",
 			"days": "hace {count} días"
-		}
+		},
+		"selectConversation": "Selecciona una conversación para empezar a chatear"
 	},
 	"unknownLocation": "Ubicación desconocida",
 	"subscribe": "Suscribirse",

@@ -425,7 +425,8 @@
 			"minutes": "{count}m ago",
 			"hours": "{count}h ago",
 			"days": "{count}d ago"
-		}
+		},
+		"selectConversation": "Select a conversation to start messaging"
 	},
 	"unknownLocation": "Unknown location",
 	"subscribe": "Subscribe",
