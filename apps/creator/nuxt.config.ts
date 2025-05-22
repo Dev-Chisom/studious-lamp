@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
 export default defineNuxtConfig({
 	compatibilityDate: '2024-04-03',
 	devtools: { enabled: false },
@@ -49,35 +50,18 @@ export default defineNuxtConfig({
 		storageKey: 'theme',
 	},
 	i18n: {
+		langDir: 'locales',
 		locales: [
-			{
-				code: 'en',
-				file: 'en.json',
-				name: 'English',
-			},
-			{
-				code: 'fr',
-				file: 'fr.json',
-				name: 'Français',
-			},
-			{
-				code: 'es',
-				file: 'es.json',
-				name: 'Español',
-			},
+			{ code: 'en', name: 'English', file: 'en.json' },
+			{ code: 'fr', name: 'Français', file: 'fr.json' },
+			{ code: 'es', name: 'Español', file: 'es.json' }
 		],
-		lazy: true,
-		langDir: '../locales/',
 		defaultLocale: 'en',
-		strategy: 'prefix_except_default',
+		strategy: 'no_prefix',
 		detectBrowserLanguage: {
 			useCookie: true,
 			cookieKey: 'i18n_redirected',
-			redirectOn: 'root',
-		},
-		// Fix for pnpm (prevents duplicate paths)
-		experimental: {
-			jsTsFormatResource: false,
-		},
-	},
+			redirectOn: 'root'
+		}
+	}
 })
