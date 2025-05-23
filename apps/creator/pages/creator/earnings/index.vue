@@ -222,7 +222,7 @@
 
           <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
             <div>
-              <p class="text-sm text-gray-700">
+              <p class="text-sm text-gray-700 dark:text-gray-200">
                 {{ $t('earnings.transactions.pagination.showing') }}
                 <span class="font-medium">{{ startIndex + 1 }}</span>
                 {{ $t('earnings.transactions.pagination.to') }}

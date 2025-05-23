@@ -426,7 +426,11 @@
 			"hours": "{count}h ago",
 			"days": "{count}d ago"
 		},
-		"selectConversation": "Select a conversation to start messaging"
+		"selectConversation": "Select a conversation to start messaging",
+		"status": {
+			"online": "Online",
+			"offline": "Offline"
+		}
 	},
 	"unknownLocation": "Unknown location",
 	"subscribe": "Subscribe",
@@ -575,7 +579,10 @@
 		"subscription_revenue": "Subscription Revenue",
 		"tips": "Tips",
 		"pay_per_view": "Pay-per-view",
-		"platform_fee": "Platform Fee"
+		"platform_fee": "Platform Fee",
+		"content-view": "Content Views",
+		"revenue": "Revenue This Month",
+		"total-posts": "Total Posts"
 	},
 	"subscribers": {
 		"title": "Subscribers",

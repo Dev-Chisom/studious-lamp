@@ -66,7 +66,7 @@
                     <h2 class="text-lg font-medium dark:text-white">{{ selectedChat.user.name }}</h2>
 
                     <p class="text-sm text-gray-500 dark:text-gray-300">
-                      {{ selectedChat.user.isOnline ? 'Online' : 'Offline' }}
+                      {{ selectedChat.user.isOnline ? t('messages.status.online') : t('messages.status.offline') }}
                     </p>
                   </div>
                 </div>
@@ -81,8 +81,8 @@
                 <div v-for="message in selectedChat.messages" :key="message.id" class="flex"
                   :class="message.isSelf ? 'justify-end' : 'justify-start'">
                   <div class="max-w-[70%] rounded-lg px-4 py-2" :class="message.isSelf
-                      ? 'bg-primary-500 text-white dark:bg-primary-600'
-                      : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
+                    ? 'bg-primary-500 text-white dark:bg-primary-600'
+                    : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
                     ">
                     <!-- Media preview: support multiple media per message -->
 
@@ -214,6 +214,9 @@
 import { ref, computed, onUnmounted } from 'vue';
 import FormInput from '@/components/ui/BaseInput.vue';
 import MediaPreviewModal from '@/components/ui/MediaPreviewModal.vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 definePageMeta({
   middleware: ['auth'],

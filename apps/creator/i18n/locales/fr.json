@@ -426,7 +426,11 @@
 			"hours": "il y a {count} h",
 			"days": "il y a {count} j"
 		},
-    "selectConversation": "Sélectionnez une conversation pour commencer à discuter"
+		"selectConversation": "Sélectionnez une conversation pour commencer à discuter",
+		"status": {
+			"online": "En ligne",
+			"offline": "Hors ligne"
+		}
 	},
 	"unknownLocation": "Localisation inconnue",
 	"subscribe": "S'abonner",
@@ -575,7 +579,10 @@
 		"subscription_revenue": "Revenus d'abonnement",
 		"tips": "Pourboires",
 		"pay_per_view": "Paiement à la vue",
-		"platform_fee": "Frais de plateforme"
+		"platform_fee": "Frais de Plateforme",
+		"content-view": "Vues de Contenu",
+		"revenue": "Revenu Ce Mois",
+		"total-posts": "Publications Totales"
 	},
 	"subscribers": {
 		"title": "Abonnés",

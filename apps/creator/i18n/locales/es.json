@@ -426,7 +426,11 @@
 			"hours": "hace {count} h",
 			"days": "hace {count} días"
 		},
-		"selectConversation": "Selecciona una conversación para empezar a chatear"
+		"selectConversation": "Selecciona una conversación para empezar a chatear",
+		"status": {
+			"online": "En línea",
+			"offline": "Desconectado"
+		}
 	},
 	"unknownLocation": "Ubicación desconocida",
 	"subscribe": "Suscribirse",
@@ -574,7 +578,10 @@
 		"subscription_revenue": "Ingresos por suscripciones",
 		"tips": "Propinas",
 		"pay_per_view": "Pago por vista",
-		"platform_fee": "Tarifa de la plataforma"
+		"platform_fee": "Tarifa de la plataforma",
+		"content-view": "Visualizaciones de Contenido",
+		"revenue": "Ingresos Este Mes",
+		"total-posts": "Publicaciones Totales"
 	},
 	"subscribers": {
 		"title": "Suscriptores",
