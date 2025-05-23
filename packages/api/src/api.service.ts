@@ -76,7 +76,12 @@ export function createApiService(token?: string, refreshToken?: string, onTokenR
 		return response.data
 	}
 
-	return { get, post, put, del, setToken }
+	async function patch<T>(endpoint: string, data?: any): Promise<T> {
+		const response = await api.patch<T>(endpoint, data)
+		return response.data
+	}
+
+	return { get, post, put, del, patch, setToken }
 }
 
 export const api = createApiService()

@@ -16,5 +16,6 @@ export function createAuthApi(token?: string) {
 		setToken: api.setToken,
 		getProfile: () => api.get('/auth/profile'),
 		refreshToken: (refreshToken: string) => api.post<RefreshTokenResponse>('/auth/refresh-token', { refreshToken }),
+		logout: () => api.patch('/auth/logout'),
 	}
 }

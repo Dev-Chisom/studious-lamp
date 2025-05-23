@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useCookie } from '#app'
+import { createAuthApi } from '@whispers/api'
 
-// ~/store/user.ts
 export const useAuthStore = defineStore('user', {
 	state: () => ({
 		profile: null as null | Record<string, any>,
@@ -10,26 +10,20 @@ export const useAuthStore = defineStore('user', {
 	}),
 
 	actions: {
-		// Add these if missing
 		setProfile(profile: any) {
 			this.profile = profile
 		},
-
-		// setRefreshToken(token: string) {
-		// 	this.refreshToken = token
-		// },
 		setTokens(accessToken: string, refreshToken: string) {
 			this.accessToken = accessToken
 			this.refreshToken = refreshToken
 
-			// Set cookies with proper options
 			const accessTokenCookie = useCookie('accessToken', {
-				maxAge: 60 * 60 * 24 * 7, // 1 week
+				maxAge: 60 * 60 * 24 * 7,
 				sameSite: 'lax',
-				secure: true, // HTTPS only in production
+				secure: true,
 			})
 			const refreshTokenCookie = useCookie('refreshToken', {
-				maxAge: 60 * 60 * 24 * 30, // 1 month
+				maxAge: 60 * 60 * 24 * 30,
 				sameSite: 'lax',
 				secure: true,
 			})
@@ -38,20 +32,25 @@ export const useAuthStore = defineStore('user', {
 			refreshTokenCookie.value = refreshToken
 		},
 
-		// Logout (clear store and cookies)
-		logout() {
+		async logout() {
+			try {
+				const accessTokenCookie = useCookie('accessToken')
+				if (accessTokenCookie.value) {
+					const authApi = createAuthApi(accessTokenCookie.value)
+					await authApi.logout()
+				}
+			} catch (e) {
+				console.log(e)
+			}
 			this.accessToken = null
 			this.refreshToken = null
 			this.profile = null
-
 			const accessTokenCookie = useCookie('accessToken')
 			const refreshTokenCookie = useCookie('refreshToken')
-
 			accessTokenCookie.value = null
 			refreshTokenCookie.value = null
 		},
 
-		// Hydrate store from cookies
 		hydrate() {
 			const accessTokenCookie = useCookie('accessToken')
 			const refreshTokenCookie = useCookie('refreshToken')

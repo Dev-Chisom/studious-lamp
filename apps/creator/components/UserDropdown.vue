@@ -97,13 +97,6 @@ import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n()
 
-// interface User {
-// 	displayName?: string
-// 	email?: string
-// 	profileImage?: string
-// 	isCreator?: boolean
-// }
-
 interface NavLink {
 	name: string
 	href: string

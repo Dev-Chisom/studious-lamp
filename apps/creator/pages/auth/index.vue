@@ -20,7 +20,9 @@ import { onMounted, ref } from 'vue';
 import { useAuthStore } from '../../store/auth';
 import OAuthLogin from '@/components/auth/OAuthLogin.vue';
 import { createAuthApi } from '@whispers/api';
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n()
 const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
@@ -47,7 +49,6 @@ onMounted(async () => {
       authStore.setProfile(profile);
       await router.replace('/');
     } catch (e) {
-      // Try refresh
       try {
         const authApi = createAuthApi();
         const { accessToken: newAccessToken } = await authApi.refreshToken(refreshToken);
