@@ -19,7 +19,8 @@
 		"post": "Post",
 		"reply": "Reply",
 		"like": "Like",
-		"close": "Close"
+		"close": "Close",
+    "select": "Select"
 	},
 	"nav": {
 		"home": "Home",

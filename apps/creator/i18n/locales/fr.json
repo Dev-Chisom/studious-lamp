@@ -19,7 +19,8 @@
 		"settings": "Paramètres",
 		"post": "Publier",
 		"reply": "Répondre",
-		"like": "J'aime"
+		"like": "J'aime",
+    "select": "Sélectionner"
 	},
 	"nav": {
 		"home": "Accueil",

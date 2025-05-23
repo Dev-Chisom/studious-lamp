@@ -55,14 +55,12 @@ export function createApiService(
 						return api(originalRequest)
 					}
 				} catch (refreshError) {
-					// Refresh failed, let the app handle logout
 					if (!isLoggingOut) {
 						isLoggingOut = true;
 						if (onAuthError) onAuthError();
 					}
 				}
 			} else if (error.response?.status === 401 || error.response?.status === 403) {
-				// If refreshToken is not available or another 401/403, trigger logout
 				if (!isLoggingOut) {
 					isLoggingOut = true;
 					if (onAuthError) onAuthError();

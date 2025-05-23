@@ -1,6 +1,6 @@
 <template>
   <Form :validation-schema="applyFormSchema" @submit="onSubmit" :initial-values="initialValues"
-    v-slot="{ errors, meta, values, setFieldValue, setTouched }" class="space-y-8" validate-on-input>
+    v-slot="{ errors, meta, values, setFieldValue, setTouched, resetForm }" class="space-y-8" validate-on-input>
     <!-- Basic Information -->
     <section>
       <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">{{ t('apply.basicInfo.title') }}</h2>
@@ -114,11 +114,11 @@
               </div>
               <!-- {{ options }} -->
               <Field :name="`discounts.${cycle}`" v-slot="{ field }">
-                <select v-bind="field" placeholder="Select"
+                <select v-bind="field"
                   class="border rounded-md px-3 py-1 text-sm bg-white dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                   @change="() => calculatePeriodPrices(values.monthlyPrice, values.discounts)">
+                  <option disabled value="">{{ t('common.select') }}</option>
                   <option v-for="option in options" :key="option._id" :value="option._id">
-                    <!-- {{ t('apply.pricing.discount', { value: option.discount }) }} -->
                     {{ option?.discount }}%
                   </option>
                 </select>
@@ -161,7 +161,7 @@
           </div>
           <div class="ml-3 text-sm">
             <label for="confirm-age" class="font-medium text-gray-700 dark:text-gray-300">{{ t('apply.legal.confirmAge')
-              }}</label>
+            }}</label>
             <div v-if="(meta.touched || meta.dirty) && errorMessage"
               class="text-sm form-error text-error-600 dark:text-error-400 mt-1">
               {{ errorMessage }}
@@ -173,13 +173,20 @@
 
     <div class="pt-6 flex justify-end">
       <button type="submit" :disabled="!meta.valid || isSubmitting"
-        class="w-full sm:w-auto px-6 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors"
+        class="w-full sm:w-auto px-6 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2"
         :class="{
-          'bg-primary-600 text-white hover:bg-primary-700': meta.valid,
+          'bg-primary-600 text-white hover:bg-primary-700': meta.valid && !isSubmitting,
+          'bg-primary-500 text-white cursor-wait': isSubmitting,
           'bg-gray-300 text-gray-500 cursor-not-allowed': !meta.valid
         }">
-        <span v-if="isSubmitting">{{ t('apply.submit.processing') }}</span>
-        <span v-else>{{ t('apply.button') }}</span>
+        <template v-if="isSubmitting">
+          <Icon name="lucide:loader-2" class="h-5 w-5 animate-spin" />
+          <span>{{ t('apply.processing') }}</span>
+        </template>
+        <template v-else>
+          <Icon name="lucide:send" class="h-5 w-5" />
+          <span>{{ t('apply.button') }}</span>
+        </template>
       </button>
     </div>
   </Form>
@@ -193,7 +200,6 @@ import * as yup from 'yup';
 import FormInput from '../ui/BaseInput.vue';
 import { createCreatorApi } from '@whispers/api';
 import { useNotification } from '../../composables/useNotifications';
-import { ref as vueRef } from 'vue';
 
 const { t } = useI18n();
 const notification = useNotification();
@@ -218,7 +224,6 @@ interface FormValues {
   socialTouched: boolean;
 }
 
-// Define schema first
 const applyFormSchema = yup.object({
   displayName: yup.string()
     .required(t('validation.displayNameRequired'))
@@ -373,7 +378,7 @@ function calculatePeriodPrices(monthlyPrice: number, discounts: Record<string, s
   }
 }
 
-async function onSubmit(values: FormValues) {
+async function onSubmit(values: FormValues, { resetForm }: { resetForm: () => void }) {
   try {
     isSubmitting.value = true;
     const allowedPlatforms = ['facebook', 'instagram', 'twitter', 'tiktok', 'youtube'] as const;
@@ -397,7 +402,9 @@ async function onSubmit(values: FormValues) {
         })),
       pricing: {
         amount: values.monthlyPrice,
-        models: Object.values(values.discounts),
+        models: Object.keys(preferencesByCycle.value).map((cycle) => {
+          return values.discounts[cycle] || preferencesByCycle.value[cycle][0]?._id;
+        }),
       },
       legal: {
         termsOfService: values.acceptTerms,
@@ -407,8 +414,29 @@ async function onSubmit(values: FormValues) {
     };
     await creatorApi.createCreator(payload);
     notification.success(t('notifications.applicationSubmitted'));
+
+    resetForm();
+
+    for (const cycle in preferencesByCycle.value) {
+      if (!preferencesByCycle.value[cycle]) continue;
+      const zeroDiscount = preferencesByCycle.value[cycle].find((opt: any) => opt.discount === 0);
+      if (zeroDiscount) {
+        setFieldValue(`discounts.${cycle}`, zeroDiscount._id);
+      } else if (preferencesByCycle.value[cycle][0]) {
+        setFieldValue(`discounts.${cycle}`, preferencesByCycle.value[cycle][0]._id);
+      }
+    }
+
+    calculatePeriodPrices(initialValues.monthlyPrice, initialValues.discounts);
+
+    calculatePeriodPrices(initialValues.monthlyPrice, initialValues.discounts);
   } catch (error: any) {
-    notification.error(error?.message || t('notifications.applicationFailed'));
+    const apiError =
+      error?.response?.data?.error ||
+      error?.response?.data?.message ||
+      error?.message ||
+      t('notifications.applicationFailed');
+    notification.error(apiError);
   } finally {
     isSubmitting.value = false;
   }

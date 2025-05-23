@@ -19,7 +19,8 @@
 		"post": "Publicar",
 		"reply": "Responder",
 		"like": "Me gusta",
-		"close": "Cerrar"
+		"close": "Cerrar",
+    "select": "Seleccionar"
 	},
 	"nav": {
 		"home": "Inicio",
