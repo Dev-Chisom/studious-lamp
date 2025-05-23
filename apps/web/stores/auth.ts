@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth', {
 					this.user = JSON.parse(userData);
 				}
 			} catch (error) {
-				console.error('Failed to initialize auth from localStorage', error);
+				console.log('Failed to initialize auth from localStorage', error);
 			}
 		},
 
@@ -50,16 +50,7 @@ export const useAuthStore = defineStore('auth', {
 			this.error = null;
 
 			try {
-				// Mock API call - replace with actual API call
-				// const response = await fetch('/api/auth/login', {
-				//   method: 'POST',
-				//   headers: { 'Content-Type': 'application/json' },
-				//   body: JSON.stringify({ email, password })
-				// });
-
-				// Simulate API call
 				if (email === 'demo@example.com' && password === 'password') {
-					// Mock successful login
 					const userData: User = {
 						id: '123',
 						email: 'demo@example.com',
@@ -94,15 +85,6 @@ export const useAuthStore = defineStore('auth', {
 			this.error = null;
 
 			try {
-				// Mock API call - replace with actual API call
-				// const response = await fetch('/api/auth/register', {
-				//   method: 'POST',
-				//   headers: { 'Content-Type': 'application/json' },
-				//   body: JSON.stringify(userData)
-				// });
-
-				// Simulate API call
-				// Mock successful registration
 				const newUser: User = {
 					id: `user-${Math.random().toString(36).substring(2, 9)}`,
 					email: userData.email,
@@ -131,14 +113,6 @@ export const useAuthStore = defineStore('auth', {
 			this.error = null;
 
 			try {
-				// Mock API call - replace with actual API call
-				// await fetch('/api/auth/forgot-password', {
-				//   method: 'POST',
-				//   headers: { 'Content-Type': 'application/json' },
-				//   body: JSON.stringify({ email })
-				// });
-
-				// Simulate API call
 				console.log('Password reset email sent to', email);
 				return true;
 			} catch (error) {
@@ -154,12 +128,6 @@ export const useAuthStore = defineStore('auth', {
 			this.error = null;
 
 			try {
-				// Mock API call - replace with actual API call
-				// await fetch('/api/auth/reset-password', {
-				//   method: 'POST',
-				//   headers: { 'Content-Type': 'application/json' },
-				//   body: JSON.stringify({ token, newPassword })
-				// });
 				return true;
 			} catch (error) {
 				this.error = error instanceof Error ? error.message : 'Failed to reset password';

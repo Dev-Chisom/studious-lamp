@@ -1,5 +1,5 @@
-import { api } from './api.service'
-import type { CreatorApplicationPayload } from './types/creator-apply.types'
+import { api } from './api.service';
+import type { CreatorApplicationPayload } from './types/creator-apply.types';
 
 export interface Creator {
 	id: string
@@ -30,5 +30,5 @@ export function createCreatorApi() {
 		updateCreator: (id: string, creatorData: Partial<Creator>) => api.put<Creator>(`/creator/${id}`, creatorData),
 		deleteCreator: (id: string) => api.del<void>(`/creator/${id}`),
 		getCreatorPreferences: () => api.get<ApiResponse>('/preferences/pricing-models'),
-	}
+	};
 }

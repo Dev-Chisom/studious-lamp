@@ -68,19 +68,11 @@ export const useSubscriptionStore = defineStore('subscription', {
 
 	actions: {
 		async fetchCreators({ category, query } = {}) {
+			console.log(category, query);
 			this.loading = true;
 			this.error = null;
 
 			try {
-				// Mock API call - replace with actual API call
-				// const url = new URL('/api/creators', window.location.origin);
-				// if (category) url.searchParams.append('category', category);
-				// if (query) url.searchParams.append('query', query);
-
-				// const response = await fetch(url.toString());
-				// const data = await response.json();
-
-				// Simulate API response with mock data
 				await new Promise((resolve) => setTimeout(resolve, 500));
 
 				const mockCreators: Creator[] = [
@@ -145,11 +137,6 @@ export const useSubscriptionStore = defineStore('subscription', {
 			this.error = null;
 
 			try {
-				// Mock API call - replace with actual API call
-				// const response = await fetch(`/api/users/${userId}/subscriptions`);
-				// const data = await response.json();
-
-				// Simulate API response with mock data
 				await new Promise((resolve) => setTimeout(resolve, 300));
 
 				const mockSubscriptions: Subscription[] = [
@@ -179,20 +166,12 @@ export const useSubscriptionStore = defineStore('subscription', {
 			this.error = null;
 
 			try {
-				// Get creator data to determine price
 				const creator = this.getCreatorById(creatorId);
 				if (!creator) {
 					throw new Error('Creator not found');
 				}
 
 				const price = plan === 'yearly' ? creator.yearlyPrice! : creator.monthlyPrice; // Mock API call - replace with actual API call
-				// const response = await fetch('/api/subscriptions', {
-				//   method: 'POST',
-				//   headers: { 'Content-Type': 'application/json' },
-				//   body: JSON.stringify({ userId, creatorId, plan, price })
-				// });
-				// const data = await response.json();
-				// Simulate API call
 				await new Promise((resolve) => setTimeout(resolve, 800));
 
 				const now = new Date();
@@ -230,14 +209,6 @@ export const useSubscriptionStore = defineStore('subscription', {
 			this.error = null;
 
 			try {
-				// Mock API call - replace with actual API call
-				// await fetch(`/api/subscriptions/${subscriptionId}`, {
-				//   method: 'PATCH',
-				//   headers: { 'Content-Type': 'application/json' },
-				//   body: JSON.stringify({ autoRenew: false })
-				// });
-
-				// Simulate API call
 				await new Promise((resolve) => setTimeout(resolve, 500));
 
 				const index = this.subscriptions.findIndex((sub) => sub.id === subscriptionId);

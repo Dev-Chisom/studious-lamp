@@ -18,7 +18,8 @@
 						</div>
 					</div>
 
-					<BaseButton variant="outline" class="w-full" @click="viewCollection(collection)">{{ t('viewCollection') }}</BaseButton>
+					<BaseButton variant="outline" class="w-full" @click="viewCollection(collection)">{{ t('viewCollection') }}
+					</BaseButton>
 				</div>
 			</Card>
 		</div>
@@ -32,11 +33,9 @@
 					<div>
 						<label class="block text-sm font-medium text-gray-700 mb-1">{{ t('collectionName') }}</label>
 						<input
-							v-model="newCollectionName"
-							type="text"
+							v-model="newCollectionName" type="text"
 							class="w-full rounded-lg border-gray-300 focus:border-primary-500 focus:ring-primary-500"
-							placeholder="My Favorite Posts"
-						/>
+							placeholder="My Favorite Posts" />
 					</div>
 
 					<BaseButton :loading="isCreating" variant="primary" class="w-full" @click="createNewCollection">
@@ -56,15 +55,15 @@ import { useUserStore } from '~/store/user';
 import BaseButton from '~/components/ui/BaseButton.vue';
 
 interface CollectionPost {
-	id: string
-	image: string
-	title: string
+  id: string
+  image: string
+  title: string
 }
 
 interface Collection {
-	id: string
-	name: string
-	posts: CollectionPost[]
+  id: string
+  name: string
+  posts: CollectionPost[]
 }
 
 const userStore = useUserStore();
@@ -77,26 +76,26 @@ const isCreating = ref(false);
 const { t } = useI18n();
 
 const createNewCollection = async (): Promise<void> => {
-	if (!newCollectionName.value.trim()) {
-		return;
-	}
+  if (!newCollectionName.value.trim()) {
+    return;
+  }
 
-	isCreating.value = true;
-	try {
-		await userStore.createCollection(newCollectionName.value);
-		collections.value = userStore.getCollections;
-		showNewCollectionModal.value = false;
-		newCollectionName.value = '';
-		toast.success('Collection created successfully!');
-	} catch (error) {
-		toast.error('Failed to create collection');
-	} finally {
-		isCreating.value = false;
-	}
+  isCreating.value = true;
+  try {
+    await userStore.createCollection(newCollectionName.value);
+    collections.value = userStore.getCollections;
+    showNewCollectionModal.value = false;
+    newCollectionName.value = '';
+    toast.success('Collection created successfully!');
+  } catch {
+    toast.error('Failed to create collection');
+  } finally {
+    isCreating.value = false;
+  }
 };
 
 const viewCollection = (collection: Collection): void => {
-	// Navigate to collection detail view
-	navigateTo(`/collections/${collection.id}`);
+  // Navigate to collection detail view
+  navigateTo(`/collections/${collection.id}`);
 };
 </script>

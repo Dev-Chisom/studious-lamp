@@ -83,9 +83,4 @@ const navItems = [
 	{ name: 'Explore', href: '/explore' },
 	// { name: 'Creators', href: '/creators' },
 ];
-
-function openSearch() {
-	// Implementation for search functionality
-	console.log('Search opened');
-}
 </script>

@@ -1,0 +1,24 @@
+import { ref } from 'vue';
+
+export function useApiRequest<T = any, Args extends any[] = any[]>(apiCall: (...args: Args) => Promise<T>) {
+  const loading = ref(false);
+  const error = ref<string | null>(null);
+  const data = ref<T | null>(null);
+
+  const execute = async (...args: Args): Promise<T | null> => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const result = await apiCall(...args);
+      data.value = result;
+      return result;
+    } catch (err: any) {
+      error.value = err?.response?.data?.error || err?.response?.data?.message || err?.message || 'Unknown error';
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  return { loading, error, data, execute };
+} 

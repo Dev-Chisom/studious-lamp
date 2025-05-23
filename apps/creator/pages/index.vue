@@ -283,7 +283,7 @@ const subscribeToCreator = async (creatorId: string): Promise<void> => {
 	try {
 		await userStore.addSubscription(creatorId);
 		toast.success('Successfully subscribed to creator!');
-	} catch (error) {
+	} catch {
 		toast.error('Failed to subscribe to creator');
 	}
 };
@@ -302,7 +302,7 @@ const sendTip = async (): Promise<void> => {
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 		toast.success(`Successfully sent tip to ${selectedPost.value.creator.name}!`);
 		showingTipModal.value = false;
-	} catch (error) {
+	} catch {
 		toast.error('Failed to send tip');
 	} finally {
 		isSendingTip.value = false;

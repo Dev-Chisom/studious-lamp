@@ -192,17 +192,14 @@ const subscriptionStore = useSubscriptionStore();
 const contentStore = useContentStore();
 const authStore = useAuthStore();
 
-// Fetch creator data
 onMounted(async () => {
 	try {
 		await subscriptionStore.fetchCreators();
 		await contentStore.fetchPosts({ creatorId: creator.value?.id });
 	} catch (error) {
-		console.error('Failed to fetch creator data:', error);
+		console.log('Failed to fetch creator data:', error);
 	}
 });
-
-// Get creator by username from route params
 const creator = computed(() => {
 	return (
 		subscriptionStore.creators.find((c) => c.username === route.params.username) || {
@@ -254,7 +251,7 @@ async function subscribe(plan) {
 	try {
 		await subscriptionStore.subscribe(authStore.user.id, creator.value.id, plan);
 		toast.success(`Successfully subscribed to ${creator.value.displayName}`);
-	} catch (error) {
+	} catch {
 		toast.error('Failed to process subscription');
 	}
 }

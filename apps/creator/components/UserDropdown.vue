@@ -89,13 +89,13 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useUserStore } from '../store/user';
 import { useAuthStore } from '../store/auth';
 import { useColorMode } from '#imports';
-import { useI18n } from 'vue-i18n';
 
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 interface NavLink {
 	name: string
@@ -104,10 +104,10 @@ interface NavLink {
 
 const modeText = computed(() => 
   colorMode.value === 'dark' ? t('theme.light') : t('theme.dark')
-)
+);
 
 const userStore = useUserStore();
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 const isOpen = ref(false);
 const dropdownRef = ref<HTMLElement | null>(null);
 const colorMode = useColorMode();
@@ -136,19 +136,19 @@ const userLinks: NavLink[]  = computed(() => [
   { name: t('nav.user.profile'), href: profileHref.value },
   { name: t('nav.user.subscriptions'), href: '/subscriptions' },
   { name: t('nav.user.settings'), href: '/settings' }
-])
+]);
 
 const creatorLinks: NavLink[]  = computed(() => [
   { name: t('nav.creator.dashboard'), href: '/creator/analytics' },
   { name: t('nav.creator.content'), href: '/creator/content' },
   { name: t('nav.creator.earnings'), href: '/creator/earnings' }
-])
+]);
 
 const logout = (): void => {
 	authStore.logout();
 	isOpen.value = false;
 	navigateTo('/');
-}
+};
 
 // Close dropdown when clicking outside
 const closeDropdown = (e: MouseEvent): void => {

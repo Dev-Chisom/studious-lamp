@@ -521,7 +521,7 @@ function blockSubscriber(): void {
 		showBlockModal.value = false;
 		subscriberToBlock.value = null;
 		toast.success('Subscriber blocked successfully');
-	} catch (error) {
+	} catch {
 		toast.error('Failed to block subscriber');
 	}
 }

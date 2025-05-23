@@ -29,11 +29,11 @@
 					</div>
 					<input
 						id="search"
+						v-model="search"
 						name="search"
 						class="block w-full rounded-md border-0 py-1.5 pl-10 pr-3 text-gray-900 dark:text-gray-100 dark:bg-gray-800 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
 						:placeholder="$t('content.management.search.placeholder')"
 						type="search"
-						v-model="search"
 					/>
 				</div>
 			</div>
@@ -119,14 +119,14 @@
 									<td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
 										<div class="flex justify-end gap-2">
 											<button
-												@click="editContent(item)"
 												class="text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300"
+												@click="editContent(item)"
 											>
 												{{ $t('content.management.list.edit') }}
 											</button>
 											<button
-												@click="confirmDelete(item)"
 												class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+												@click="confirmDelete(item)"
 											>
 												{{ $t('content.management.list.delete') }}
 											</button>
@@ -142,7 +142,7 @@
 
 		<!-- Delete Confirmation Modal -->
 		<TransitionRoot appear :show="showDeleteModal" as="template">
-			<Dialog as="div" @close="closeDeleteModal" class="relative z-10">
+			<Dialog as="div" class="relative z-10" @close="closeDeleteModal">
 				<TransitionChild
 					as="template"
 					enter="duration-300 ease-out"
@@ -206,9 +206,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { toast } from 'vue3-toastify';
-import { useContentStore } from '../../../store/content';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import { useI18n } from 'vue-i18n';
+import { useContentStore } from '../../../store/content';
 import type { Content } from '../../../types/content';
 
 definePageMeta({
@@ -276,7 +276,7 @@ async function deleteContent(): Promise<void> {
 		await contentStore.deleteContent(contentToDelete.value.id);
 		toast.success(t('notifications.contentDeleted'));
 		closeDeleteModal();
-	} catch (error) {
+	} catch {
 		toast.error(t('notifications.contentDeleteFailed'));
 	}
 }
@@ -286,7 +286,7 @@ onMounted(async () => {
 	try {
 		await contentStore.fetchContent();
 		loading.value = false;
-	} catch (error) {
+	} catch {
 		toast.error(t('notifications.contentLoadFailed'));
 		loading.value = false;
 	}

@@ -1,221 +1,225 @@
 <template>
-  <div class="max-w-6xl mx-auto">
+	<div class="max-w-6xl mx-auto">
 
-    <Head>
-      <Title>Creator Analytics - Whispers</Title>
-    </Head>
+		<Head>
+			<Title>Creator Analytics - Whispers</Title>
+		</Head>
 
-    <div>
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ t('analytics.title') }}</h1>
+		<div>
+			<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ t('analytics.title') }}</h1>
 
-      <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
-        {{ t('analytics.overview') }}
-      </p>
-    </div>
+			<p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
+				{{ t('analytics.overview') }}
+			</p>
+		</div>
 
-    <!-- Stats cards -->
+		<!-- Stats cards -->
 
-    <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-      <div v-for="(stat, index) in stats" :key="index" class="card">
-        <div class="px-4 py-5 sm:p-6">
-          <div class="flex items-center">
-            <div :class="`bg-${stat.color}-100 rounded-md p-3`">
-              <Icon :name="stat.icon" :class="`h-6 w-6 text-${stat.color}-600`" />
-            </div>
+		<div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+			<div v-for="(stat, index) in stats" :key="index" class="card">
+				<div class="px-4 py-5 sm:p-6">
+					<div class="flex items-center">
+						<div :class="`bg-${stat.color}-100 rounded-md p-3`">
+							<Icon :name="stat.icon" :class="`h-6 w-6 text-${stat.color}-600`" />
+						</div>
 
-            <div class="ml-5 w-0 flex-1">
-              <dl>
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 truncate">
-                  {{ t(stat.name) }}
-                </dt>
+						<div class="ml-5 w-0 flex-1">
+							<dl>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 truncate">
+									{{ t(stat.name) }}
+								</dt>
 
-                <dd>
-                  <div class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ stat.value }}</div>
-                </dd>
-              </dl>
-            </div>
-          </div>
+								<dd>
+									<div class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ stat.value }}</div>
+								</dd>
+							</dl>
+						</div>
+					</div>
 
-          <div class="mt-4">
-            <div class="flex items-center text-sm">
-              <Icon :name="stat.trend > 0 ? 'lucide:trending-up' : 'lucide:trending-down'"
-                :class="`flex-shrink-0 mr-1.5 h-5 w-5 ${stat.trend > 0 ? 'text-success-500' : 'text-error-500'}`" />
+					<div class="mt-4">
+						<div class="flex items-center text-sm">
+							<Icon
+								:name="stat.trend > 0 ? 'lucide:trending-up' : 'lucide:trending-down'"
+								:class="`flex-shrink-0 mr-1.5 h-5 w-5 ${stat.trend > 0 ? 'text-success-500' : 'text-error-500'}`" />
 
-              <div :class="stat.trend > 0 ? 'text-success-700 dark:text-success-400' : 'text-error-700 dark:text-error-400'
-                ">
-                {{ Math.abs(stat.trend) }}%
-              </div>
+							<div
+								:class="stat.trend > 0 ? 'text-success-700 dark:text-success-400' : 'text-error-700 dark:text-error-400'
+								">
+								{{ Math.abs(stat.trend) }}%
+							</div>
 
-              <div class="ml-1 text-gray-500 dark:text-gray-200 dark:text-gray-400">{{ t('analytics.from_last_month') }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+							<div class="ml-1 text-gray-500 dark:text-gray-200 dark:text-gray-400">{{ t('analytics.from_last_month') }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-    <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-      <!-- Recent subscriptions -->
+		<div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+			<!-- Recent subscriptions -->
 
-      <div class="card">
-        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-          <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">{{ t('recentSubscriptions') }}</h3>
-        </div>
+			<div class="card">
+				<div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+					<h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">{{ t('recentSubscriptions') }}</h3>
+				</div>
 
-        <ul class="divide-y divide-gray-200">
-          <li v-for="subscription in sucbscriptions" :key="subscription.id" class="px-4 py-4 sm:px-6">
-            <div class="flex items-center space-x-4">
-              <div class="avatar h-10 w-10">
-                <img :src="subscription.userAvatar" :alt="subscription.userName" class="h-full w-full object-cover" />
-              </div>
+				<ul class="divide-y divide-gray-200">
+					<li v-for="subscription in sucbscriptions" :key="subscription.id" class="px-4 py-4 sm:px-6">
+						<div class="flex items-center space-x-4">
+							<div class="avatar h-10 w-10">
+								<img :src="subscription.userAvatar" :alt="subscription.userName" class="h-full w-full object-cover" />
+							</div>
 
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-                  {{ subscription.userName }}
-                </p>
+							<div class="flex-1 min-w-0">
+								<p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+									{{ subscription.userName }}
+								</p>
 
-                <p class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
-                  {{ subscription.plan }} plan · ${{ subscription.amount }}
-                </p>
-              </div>
+								<p class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
+									{{ subscription.plan }} plan · ${{ subscription.amount }}
+								</p>
+							</div>
 
-              <div class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
-                {{ formatDate(subscription.date) }}
-              </div>
-            </div>
-          </li>
+							<div class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
+								{{ formatDate(subscription.date) }}
+							</div>
+						</div>
+					</li>
 
-          <li v-if="sucbscriptions.length === 0"
-            class="px-4 py-6 text-center text-gray-500 dark:text-gray-200 dark:text-gray-400">
-            {{ t('analytics.no_recent_subscriptions') }}
-          </li>
-        </ul>
+					<li
+						v-if="sucbscriptions.length === 0"
+						class="px-4 py-6 text-center text-gray-500 dark:text-gray-200 dark:text-gray-400">
+						{{ t('analytics.no_recent_subscriptions') }}
+					</li>
+				</ul>
 
-        <div class="border-t border-gray-200 px-4 py-4 sm:px-6">
-          <NuxtLink to="/creator/subscribers" class="text-sm font-medium text-primary-600 hover:text-primary-500">
-            {{ t('analytics.view_all_subscribers') }} <span aria-hidden="true"> &rarr;</span>
-          </NuxtLink>
-        </div>
-      </div>
+				<div class="border-t border-gray-200 px-4 py-4 sm:px-6">
+					<NuxtLink to="/creator/subscribers" class="text-sm font-medium text-primary-600 hover:text-primary-500">
+						{{ t('analytics.view_all_subscribers') }} <span aria-hidden="true"> &rarr;</span>
+					</NuxtLink>
+				</div>
+			</div>
 
-      <!-- Recent content performance -->
+			<!-- Recent content performance -->
 
-      <div class="card">
-        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
-          <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">{{ t('contentPerformance') }}</h3>
-        </div>
+			<div class="card">
+				<div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+					<h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">{{ t('contentPerformance') }}</h3>
+				</div>
 
-        <ul class="divide-y divide-gray-200">
-          <li v-for="post in recentPosts" :key="post.id" class="px-4 py-4 sm:px-6">
-            <div class="flex items-center space-x-4">
-              <div class="w-12 h-12 flex-shrink-0 rounded overflow-hidden bg-gray-100">
-                <img v-if="post.thumbnail" :src="post.thumbnail" :alt="post.title" class="w-full h-full object-cover" />
+				<ul class="divide-y divide-gray-200">
+					<li v-for="post in recentPosts" :key="post.id" class="px-4 py-4 sm:px-6">
+						<div class="flex items-center space-x-4">
+							<div class="w-12 h-12 flex-shrink-0 rounded overflow-hidden bg-gray-100">
+								<img v-if="post.thumbnail" :src="post.thumbnail" :alt="post.title" class="w-full h-full object-cover" />
 
-                <div v-else class="w-full h-full flex items-center justify-center text-gray-400">
-                  <Icon name="lucide:file" class="h-6 w-6" />
-                </div>
-              </div>
+								<div v-else class="w-full h-full flex items-center justify-center text-gray-400">
+									<Icon name="lucide:file" class="h-6 w-6" />
+								</div>
+							</div>
 
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ post.title }}</p>
+							<div class="flex-1 min-w-0">
+								<p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ post.title }}</p>
 
-                <div class="flex items-center text-xs text-gray-500 dark:text-gray-200 dark:text-gray-400 space-x-2">
-                  <span class="flex items-center">
-                    <Icon name="lucide:heart" class="h-3 w-3 mr-1" /> {{ post.likes }}
-                  </span>
-                  <span class="flex items-center">
-                    <Icon name="lucide:message-square" class="h-3 w-3 mr-1" /> {{ post.comments }}
-                  </span>
-                  <span class="flex items-center">
-                    <Icon name="lucide:eye" class="h-3 w-3 mr-1" /> {{ post.views }}
-                  </span>
-                </div>
-              </div>
+								<div class="flex items-center text-xs text-gray-500 dark:text-gray-200 dark:text-gray-400 space-x-2">
+									<span class="flex items-center">
+										<Icon name="lucide:heart" class="h-3 w-3 mr-1" /> {{ post.likes }}
+									</span>
+									<span class="flex items-center">
+										<Icon name="lucide:message-square" class="h-3 w-3 mr-1" /> {{ post.comments }}
+									</span>
+									<span class="flex items-center">
+										<Icon name="lucide:eye" class="h-3 w-3 mr-1" /> {{ post.views }}
+									</span>
+								</div>
+							</div>
 
-              <div class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
-                {{ formatDate(post.date) }}
-              </div>
-            </div>
-          </li>
+							<div class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
+								{{ formatDate(post.date) }}
+							</div>
+						</div>
+					</li>
 
-          <li v-if="recentPosts.length === 0"
-            class="px-4 py-6 text-center text-gray-500 dark:text-gray-200 dark:text-gray-400">
-            {{ t('analytics.no_content_yet') }}
-          </li>
-        </ul>
+					<li
+						v-if="recentPosts.length === 0"
+						class="px-4 py-6 text-center text-gray-500 dark:text-gray-200 dark:text-gray-400">
+						{{ t('analytics.no_content_yet') }}
+					</li>
+				</ul>
 
-        <div class="border-t border-gray-200 px-4 py-4 sm:px-6">
-          <NuxtLink to="/creator/content" class="text-sm font-medium text-primary-600 hover:text-primary-500">
-            {{ t('analytics.view_all_content') }} <span aria-hidden="true"> &rarr;</span>
-          </NuxtLink>
-        </div>
-      </div>
-    </div>
+				<div class="border-t border-gray-200 px-4 py-4 sm:px-6">
+					<NuxtLink to="/creator/content" class="text-sm font-medium text-primary-600 hover:text-primary-500">
+						{{ t('analytics.view_all_content') }} <span aria-hidden="true"> &rarr;</span>
+					</NuxtLink>
+				</div>
+			</div>
+		</div>
 
-    <!-- Upcoming payouts -->
+		<!-- Upcoming payouts -->
 
-    <div class="mt-8">
-      <div class="card">
-        <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center">
-          <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">{{ t('upcomingPayout') }}</h3>
-          <NuxtLink to="/creator/earnings" class="text-sm text-primary-600 hover:text-primary-500 font-medium">
-            {{ t('analytics.view_earnings_details') }}
-          </NuxtLink>
-        </div>
+		<div class="mt-8">
+			<div class="card">
+				<div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center">
+					<h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-gray-100">{{ t('upcomingPayout') }}</h3>
+					<NuxtLink to="/creator/earnings" class="text-sm text-primary-600 hover:text-primary-500 font-medium">
+						{{ t('analytics.view_earnings_details') }}
+					</NuxtLink>
+				</div>
 
-        <div class="px-4 py-5 sm:p-6">
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div>
-              <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100">${{ nextPayout.amount.toFixed(2) }}</p>
+				<div class="px-4 py-5 sm:p-6">
+					<div class="flex flex-col md:flex-row md:items-center md:justify-between">
+						<div>
+							<p class="text-2xl font-semibold text-gray-900 dark:text-gray-100">${{ nextPayout.amount.toFixed(2) }}</p>
 
-              <p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
-                {{ t('analytics.next_payout_on') }} {{ formatDate(nextPayout.date) }}
-              </p>
-            </div>
-            <button class="mt-4 md:mt-0 btn-primary">{{ t('analytics.request_early_payout') }}</button>
-          </div>
+							<p class="mt-1 text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
+								{{ t('analytics.next_payout_on') }} {{ formatDate(nextPayout.date) }}
+							</p>
+						</div>
+						<button class="mt-4 md:mt-0 btn-primary">{{ t('analytics.request_early_payout') }}</button>
+					</div>
 
-          <div class="mt-6">
-            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{
-              t('analytics.payout_breakdown') }}</h4>
+					<div class="mt-6">
+						<h4 class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{
+							t('analytics.payout_breakdown') }}</h4>
 
-            <dl class="mt-2 grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
-              <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">
-                  {{ t('analytics.subscription_revenue') }}
-                </dt>
+						<dl class="mt-2 grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
+							<div class="sm:col-span-1">
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">
+									{{ t('analytics.subscription_revenue') }}
+								</dt>
 
-                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                  ${{ nextPayout.subscriptionRevenue.toFixed(2) }}
-                </dd>
-              </div>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
+									${{ nextPayout.subscriptionRevenue.toFixed(2) }}
+								</dd>
+							</div>
 
-              <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{
-                  t('analytics.tips') }}</dt>
+							<div class="sm:col-span-1">
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{
+									t('analytics.tips') }}</dt>
 
-                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${{ nextPayout.tips.toFixed(2) }}</dd>
-              </div>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${{ nextPayout.tips.toFixed(2) }}</dd>
+							</div>
 
-              <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{
-                  t('analytics.pay_per_view') }}</dt>
+							<div class="sm:col-span-1">
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{
+									t('analytics.pay_per_view') }}</dt>
 
-                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${{ nextPayout.ppv.toFixed(2) }}</dd>
-              </div>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${{ nextPayout.ppv.toFixed(2) }}</dd>
+							</div>
 
-              <div class="sm:col-span-1">
-                <dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{
-                  t('analytics.platform_fee') }}</dt>
+							<div class="sm:col-span-1">
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{
+									t('analytics.platform_fee') }}</dt>
 
-                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">-${{ nextPayout.platformFee.toFixed(2) }}</dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">-${{ nextPayout.platformFee.toFixed(2) }}</dd>
+							</div>
+						</dl>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script setup lang="ts">

@@ -10,16 +10,16 @@ export interface ContentApi {
 }
 
 export function createContentApi(): ContentApi {
-  const client = createApiClient();
+	const client = createApiClient();
 
-  return {
-    async getContent() {
-      const response = await client.get('/api/content');
-      return response.data;
-    },
+	return {
+		async getContent() {
+			const response = await client.get('/api/content');
+			return response.data;
+		},
 
-    async deleteContent(id: string) {
-      await client.delete(`/api/content/${id}`);
-    }
-  };
+		async deleteContent(id: string) {
+			await client.delete(`/api/content/${id}`);
+		}
+	};
 } 

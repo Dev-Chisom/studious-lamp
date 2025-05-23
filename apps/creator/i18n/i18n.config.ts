@@ -1,6 +1,6 @@
-import en from './locales/en.json'
-import es from './locales/es.json'
-import fr from './locales/fr.json'
+import en from './locales/en.json';
+import es from './locales/es.json';
+import fr from './locales/fr.json';
 
 export default {
 	legacy: false,
@@ -38,4 +38,4 @@ export default {
 		fr,
 		es,
 	},
-}
+};

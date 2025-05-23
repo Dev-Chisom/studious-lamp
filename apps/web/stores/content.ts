@@ -54,15 +54,6 @@ export const useContentStore = defineStore('content', {
 			console.log(creatorId, visibility);
 
 			try {
-				// Mock API call - replace with actual API call
-				// const url = new URL('/api/posts', window.location.origin);
-				// if (creatorId) url.searchParams.append('creatorId', creatorId);
-				// if (visibility) url.searchParams.append('visibility', visibility);
-
-				// const response = await fetch(url.toString());
-				// const data = await response.json();
-
-				// Simulate API response with mock data
 				await new Promise((resolve) => setTimeout(resolve, 500));
 
 				const mockPosts: Post[] = [

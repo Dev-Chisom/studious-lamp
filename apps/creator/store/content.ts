@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import type { Content } from '../types/content';
 import { createContentApi } from '@whispers/api';
+import type { Content } from '../types/content';
 
 export const useContentStore = defineStore('content', {
 	state: (): { content: Content[] } => ({

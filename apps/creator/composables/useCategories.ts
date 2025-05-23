@@ -2,7 +2,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 export const useCategories = () => {
-	const { t } = useI18n()
+	const { t } = useI18n();
 
 	const categoryKeys = [
 		'art',
@@ -15,14 +15,14 @@ export const useCategories = () => {
 		'lifestyle',
 		'sports',
 		'gaming',
-	]
+	];
 
 	const availableCategories = computed(() =>
 		categoryKeys.map((key) => ({
 			key,
 			label: t(`categories.${key}`),
 		})),
-	)
+	);
 
-	return { availableCategories }
-}
+	return { availableCategories };
+};
