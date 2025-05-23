@@ -131,7 +131,10 @@
 			"quarterlyDescription": "Paga por 3 meses y ahorra",
 			"discount": "Descuento",
 			"totalQuarterlyPrice": "Precio Trimestral Total",
-			"calculating": "Calculando..."
+			"calculating": "Calculando...",
+			"yearlyPlan": "Plan Anual",
+			"yearlyDescription": "Paga por 12 meses y ahorra",
+			"totalYearlyPrice": "Precio Anual Total"
 		},
 		"legal": {
 			"acceptTerms": "Acepto los términos y condiciones",

@@ -127,13 +127,13 @@
 			"monthlySubscription": "Monthly Subscription",
 			"monthlyPrice": "Monthly Price ($)",
 			"subscriptionPlans": "Subscription Plans",
-			"quarterlyPlan": "Yearly Plan",
-			"quarterlyDescription": "Pay for 12 months and save",
+			"yearlyPlan": "Yearly Plan",
+			"yearlyDescription": "Pay for 12 months and save",
+      "totalYearlyPrice": "Total Yearly Price",
 			"discount": "Discount",
 			"totalQuarterlyPrice": "Total Quarterly Price",
-      "totalYearlyPrice": "Total Yearly Price",
-      "yearlyPlan": "Quarterly Plan",
-			"yearlyDescription": "Pay for 3 months and save",
+      "quarterlyPlan": "Quarterly Plan",
+			"quarterlyDescription": "Pay for 3 months and save",
 			"calculating": "Calculating..."
 		},
 		"legal": {

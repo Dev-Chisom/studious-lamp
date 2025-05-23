@@ -114,7 +114,7 @@
               </div>
               <!-- {{ options }} -->
               <Field :name="`discounts.${cycle}`" v-slot="{ field }">
-                <select v-bind="field"
+                <select v-bind="field" placeholder="Select"
                   class="border rounded-md px-3 py-1 text-sm bg-white dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                   @change="() => calculatePeriodPrices(values.monthlyPrice, values.discounts)">
                   <option v-for="option in options" :key="option._id" :value="option._id">
@@ -161,7 +161,7 @@
           </div>
           <div class="ml-3 text-sm">
             <label for="confirm-age" class="font-medium text-gray-700 dark:text-gray-300">{{ t('apply.legal.confirmAge')
-            }}</label>
+              }}</label>
             <div v-if="(meta.touched || meta.dirty) && errorMessage"
               class="text-sm form-error text-error-600 dark:text-error-400 mt-1">
               {{ errorMessage }}
@@ -198,7 +198,6 @@ import { ref as vueRef } from 'vue';
 const { t } = useI18n();
 const notification = useNotification();
 
-// Define types
 interface SocialFields {
   facebook: string;
   instagram: string;
@@ -255,7 +254,6 @@ const applyFormSchema = yup.object({
   confirmAge: yup.boolean().oneOf([true], t('apply.basicInfo.required'))
 });
 
-// Form setup
 const isSubmitting = ref(false);
 const { handleSubmit, meta: formMeta, setTouched, setFieldValue } = useForm<FormValues>({
   validationSchema: applyFormSchema,
@@ -278,7 +276,6 @@ const { handleSubmit, meta: formMeta, setTouched, setFieldValue } = useForm<Form
   },
 });
 
-// Categories logic
 const availableCategories = computed(() => [
   t('categories.art'),
   t('categories.music'),
@@ -354,7 +351,6 @@ const initialValues = {
 
 const onSocialBlur = (setFieldValue: (field: keyof FormValues, value: any) => void) => {
   setFieldValue('socialTouched', true);
-  // This will trigger validation for all social fields
   setTouched({
     'social.facebook': true,
     'social.instagram': true,
@@ -372,7 +368,6 @@ function calculatePeriodPrices(monthlyPrice: number, discounts: Record<string, s
       let multiplier = 1;
       if (cycle === 'quarterly') multiplier = 3;
       if (cycle === 'yearly') multiplier = 12;
-      // Add more cycles as needed
       periodPrices.value[cycle] = Math.round(monthlyPrice * multiplier * (1 - option.discount / 100) * 100) / 100;
     }
   }
@@ -381,7 +376,36 @@ function calculatePeriodPrices(monthlyPrice: number, discounts: Record<string, s
 async function onSubmit(values: FormValues) {
   try {
     isSubmitting.value = true;
-    // ... your submit logic ...
+    const allowedPlatforms = ['facebook', 'instagram', 'twitter', 'tiktok', 'youtube'] as const;
+    const socialUrlMap = {
+      facebook: (username: string) => `https://facebook.com/${username}`,
+      instagram: (username: string) => `https://instagram.com/${username}`,
+      twitter: (username: string) => `https://twitter.com/${username}`,
+      tiktok: (username: string) => `https://tiktok.com/@${username}`,
+      youtube: (username: string) => `https://youtube.com/${username}`,
+    };
+    const payload = {
+      displayName: values.displayName,
+      username: values.username,
+      bio: values.bio,
+      categories: values.categories,
+      socialMedia: Object.entries(values.social)
+        .filter(([platform, username]) => allowedPlatforms.includes(platform as any) && username && username.trim())
+        .map(([platform, username]) => ({
+          platform: platform as typeof allowedPlatforms[number],
+          url: socialUrlMap[platform as keyof typeof socialUrlMap](username),
+        })),
+      pricing: {
+        amount: values.monthlyPrice,
+        models: Object.values(values.discounts),
+      },
+      legal: {
+        termsOfService: values.acceptTerms,
+        legallyAnAdult: values.confirmAge,
+        contentGuidelines: values.acceptTerms,
+      },
+    };
+    await creatorApi.createCreator(payload);
     notification.success(t('notifications.applicationSubmitted'));
   } catch (error: any) {
     notification.error(error?.message || t('notifications.applicationFailed'));

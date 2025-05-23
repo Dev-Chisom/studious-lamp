@@ -131,7 +131,10 @@
 			"quarterlyDescription": "Payez pour 3 mois et économisez",
 			"discount": "Réduction",
 			"totalQuarterlyPrice": "Prix Trimestriel Total",
-			"calculating": "Calcul en cours..."
+			"calculating": "Calcul en cours...",
+			"yearlyPlan": "Plan Annuel",
+			"yearlyDescription": "Payez pour 12 mois et économisez",
+			"totalYearlyPrice": "Prix Annuel Total"
 		},
 		"legal": {
 			"acceptTerms": "J'accepte les conditions générales",
