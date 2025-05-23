@@ -58,6 +58,10 @@ export const useAuthStore = defineStore('user', {
 			this.accessToken = accessTokenCookie.value
 			this.refreshToken = refreshTokenCookie.value
 		},
+
+		getAuthApi() {
+			return createAuthApi(this.accessToken || undefined)
+		},
 	},
 
 	getters: {
