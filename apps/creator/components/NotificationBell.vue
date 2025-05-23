@@ -119,7 +119,6 @@ function markAllAsRead(): void {
 	});
 }
 
-// Close dropdown when clicking outside
 const closeDropdown = (e: MouseEvent): void => {
 	if (notificationRef.value && !notificationRef.value.contains(e.target as Node)) {
 		isOpen.value = false;

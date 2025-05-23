@@ -1,18 +1,18 @@
 <template>
   <Form :validation-schema="applyFormSchema" @submit="onSubmit" :initial-values="initialValues"
-    v-slot="{ errors, meta, values }" class="space-y-8" validate-on-input>
+    v-slot="{ errors, meta, values, setFieldValue, setTouched }" class="space-y-8" validate-on-input>
     <!-- Basic Information -->
     <section>
       <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">{{ t('apply.basicInfo.title') }}</h2>
       <div class="space-y-6">
         <Field name="displayName" v-slot="{ field, meta }">
-          <FormInput v-model="field.value" :label="t('apply.basicInfo.displayName')"
+          <FormInput v-model="field.value" :label="t('apply.basicInfo.displayName')" name="displayName"
             :placeholder="t('apply.basicInfo.displayNamePlaceholder')" v-bind="field"
             :error="meta.touched && errors.displayName" required />
         </Field>
 
         <Field name="username" v-slot="{ field, meta }">
-          <FormInput v-model="field.value" v-bind="field" :label="t('apply.basicInfo.username')"
+          <FormInput v-model="field.value" v-bind="field" :label="t('apply.basicInfo.username')" name="username"
             :placeholder="t('apply.basicInfo.usernamePlaceholder')" :error="meta.touched && errors.username" required />
         </Field>
 
@@ -57,31 +57,31 @@
     <section class="pt-8 border-t border-gray-200 dark:border-gray-700">
       <h2 class="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">{{ t('apply.social.title') }}</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Field name="social.facebook" v-slot="{ field, meta }" @blur="onSocialFieldBlur">
-          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.facebook')"
+        <Field name="social.facebook" v-slot="{ field, meta }">
+          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.facebook')" name="social.facebook"
             :placeholder="t('apply.social.usernamePlaceholder')" icon="lucide:facebook"
-            :error="meta.touched && errors.social?.facebook" />
+            @blur="onSocialBlur(setFieldValue)" />
         </Field>
 
-        <Field name="social.instagram" v-slot="{ field, meta }" @blur="onSocialFieldBlur">
-          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.instagram')"
+        <Field name="social.instagram" v-slot="{ field, meta }">
+          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.instagram')" name="social.instagram"
             :placeholder="t('apply.social.usernamePlaceholder')" icon="lucide:instagram"
-            :error="meta.touched && errors.social?.instagram" />
+            @blur="onSocialBlur(setFieldValue)" />
         </Field>
 
-        <Field name="social.twitter" v-slot="{ field, meta }" @blur="onSocialFieldBlur">
-          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.twitter')"
+        <Field name="social.twitter" v-slot="{ field, meta }">
+          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.twitter')" name="social.twitter"
             :placeholder="t('apply.social.usernamePlaceholder')" icon="lucide:twitter"
-            :error="meta.touched && errors.social?.twitter" />
+            @blur="onSocialBlur(setFieldValue)" />
         </Field>
 
-        <Field name="social.tiktok" v-slot="{ field, meta }" @blur="onSocialFieldBlur">
-          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.tiktok')"
+        <Field name="social.tiktok" v-slot="{ field, meta }">
+          <FormInput v-model="field.value" v-bind="field" :label="t('apply.social.tiktok')" name="social.tiktok"
             :placeholder="t('apply.social.usernamePlaceholder')" icon="lucide:music"
-            :error="meta.touched && errors.social?.tiktok" />
+            @blur="onSocialBlur(setFieldValue)" />
         </Field>
       </div>
-      <ErrorMessage name="social" class="text-sm form-error text-error-600 dark:text-error-400 mt-1" />
+      <ErrorMessage name="social" class="text-error-600 dark:text-error-400 mt-1" />
     </section>
 
     <!-- Pricing Section -->
@@ -93,33 +93,39 @@
             t('apply.pricing.monthlySubscription') }}</h3>
           <Field name="monthlyPrice" v-slot="{ field, meta }">
             <FormInput v-model="field.value" v-bind="field" type="number" :label="t('apply.pricing.monthlyPrice')"
-              placeholder="" min="4.99" step="0.01" :error="meta.touched && errors.monthlyPrice" required
-              @input="calculatePeriodPrices(values.monthlyPrice, values.discounts)" />
+              name="monthlyPrice" placeholder="" min="4.99" step="0.01" :error="meta.touched && errors.monthlyPrice"
+              required @input="calculatePeriodPrices(values.monthlyPrice, values.discounts)" />
           </Field>
         </div>
 
         <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ t('apply.pricing.subscriptionPlans') }}
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Quarterly -->
-          <div class="p-4 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm">
+          <div v-for="(options, cycle) in preferencesByCycle" :key="cycle"
+            class="p-4 border rounded-lg dark:border-gray-600 bg-white dark:bg-gray-700 shadow-sm">
             <div class="flex md:items-center justify-between flex-col md:flex-row mb-3">
               <div>
-                <h4 class="font-medium text-gray-800 dark:text-gray-200">{{ t('apply.pricing.quarterlyPlan') }}</h4>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ t('apply.pricing.quarterlyDescription') }}</p>
+                <h4 class="font-medium text-gray-800 dark:text-gray-200">
+                  {{ t('apply.pricing.' + cycle + 'Plan') }}
+                </h4>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  {{ t('apply.pricing.' + cycle + 'Description') }}
+                </p>
               </div>
-              <Field name="discounts.quarterly" v-slot="{ field }">
+              <!-- {{ options }} -->
+              <Field :name="`discounts.${cycle}`" v-slot="{ field }">
                 <select v-bind="field"
                   class="border rounded-md px-3 py-1 text-sm bg-white dark:bg-gray-600 dark:border-gray-500 dark:text-white"
                   @change="() => calculatePeriodPrices(values.monthlyPrice, values.discounts)">
-                  <option value="0">{{ t('apply.pricing.discount', { value: 0 }) }}</option>
-                  <option value="10">{{ t('apply.pricing.discount', { value: 10 }) }}</option>
-                  <option value="15">{{ t('apply.pricing.discount', { value: 15 }) }}</option>
-                  <option value="20">{{ t('apply.pricing.discount', { value: 20 }) }}</option>
+                  <option v-for="option in options" :key="option._id" :value="option._id">
+                    <!-- {{ t('apply.pricing.discount', { value: option.discount }) }} -->
+                    {{ option?.discount }}%
+                  </option>
                 </select>
               </Field>
             </div>
-            <FormInput :model-value="quarterlyPrice" type="number" :label="t('apply.pricing.totalQuarterlyPrice')"
+            <FormInput :model-value="periodPrices[cycle]" type="number"
+              :label="t('apply.pricing.total' + cycle.charAt(0).toUpperCase() + cycle.slice(1) + 'Price')"
               :placeholder="t('apply.pricing.calculating')" readonly />
           </div>
         </div>
@@ -155,7 +161,7 @@
           </div>
           <div class="ml-3 text-sm">
             <label for="confirm-age" class="font-medium text-gray-700 dark:text-gray-300">{{ t('apply.legal.confirmAge')
-              }}</label>
+            }}</label>
             <div v-if="(meta.touched || meta.dirty) && errorMessage"
               class="text-sm form-error text-error-600 dark:text-error-400 mt-1">
               {{ errorMessage }}
@@ -180,81 +186,99 @@
 </template>
 
 <script setup lang="ts">
-import type { Ref } from 'vue';
-import { ref, computed } from 'vue';
-import type { Composer } from 'vue-i18n';
+import { ref, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { Form, Field, ErrorMessage } from 'vee-validate';
+import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
+import * as yup from 'yup';
 import FormInput from '../ui/BaseInput.vue';
 import { createCreatorApi } from '@whispers/api';
 import { useNotification } from '../../composables/useNotifications';
+import { ref as vueRef } from 'vue';
 
-const { t } = useI18n() as Composer;
+const { t } = useI18n();
 const notification = useNotification();
 
-interface ApplyFormValues {
+// Define types
+interface SocialFields {
+  facebook: string;
+  instagram: string;
+  twitter: string;
+  tiktok: string;
+}
+
+interface FormValues {
   displayName: string;
   username: string;
   bio: string;
   categories: string[];
-  social: {
-    facebook?: string;
-    instagram?: string;
-    twitter?: string;
-    tiktok?: string;
-  };
+  social: SocialFields;
   monthlyPrice: number;
-  discounts: {
-    quarterly?: string;
-    biAnnual?: string;
-    yearly?: string;
-  };
+  discounts: Record<string, string>;
   acceptTerms: boolean;
   confirmAge: boolean;
+  socialTouched: boolean;
 }
 
-const isSubmitting: Ref<boolean> = ref(false);
-const quarterlyPrice: Ref<number> = ref(0);
-const biAnnualPrice: Ref<number> = ref(0);
-const yearlyPrice: Ref<number> = ref(0);
+// Define schema first
+const applyFormSchema = yup.object({
+  displayName: yup.string()
+    .required(t('validation.displayNameRequired'))
+    .min(2, t('validation.displayNameMin'))
+    .max(50, t('validation.displayNameMax')),
+  username: yup.string()
+    .required(t('validation.usernameRequired'))
+    .min(3, t('validation.usernameMin'))
+    .max(30, t('validation.usernameMax'))
+    .matches(/^[a-zA-Z0-9_-]+$/, t('validation.usernamePattern')),
+  bio: yup.string()
+    .required(t('validation.bioRequired'))
+    .min(10, t('validation.bioMin'))
+    .max(500, t('validation.bioMax')),
+  categories: yup.array().of(yup.string()).min(1, t('apply.basicInfo.required')).required(),
+  social: yup.object({
+    facebook: yup.string(),
+    instagram: yup.string(),
+    twitter: yup.string(),
+    tiktok: yup.string(),
+  }).test(
+    'at-least-one',
+    t('validation.atLeastOneSocial'),
+    function (value) {
+      if (!this.parent.socialTouched) return true;
+      return Object.values(value || {}).some(val => val?.trim());
+    }
+  ),
+  socialTouched: yup.boolean().default(false),
+  monthlyPrice: yup.number().required().min(4.99),
+  discounts: yup.object(),
+  acceptTerms: yup.boolean().oneOf([true], t('apply.basicInfo.required')),
+  confirmAge: yup.boolean().oneOf([true], t('apply.basicInfo.required'))
+});
 
-const applyFormSchema = {
-  displayName: 'required|min:2|max:50',
-  username: 'required|min:3|max:30|alpha_dash',
-  bio: 'required|min:10|max:500',
-  categories: 'required|min:1',
-  'social.facebook': 'alpha_dash',
-  'social.instagram': 'alpha_dash',
-  'social.twitter': 'alpha_dash',
-  'social.tiktok': 'alpha_dash',
-  monthlyPrice: 'required|min_value:4.99',
-  'discounts.quarterly': 'numeric|min_value:0|max_value:20',
-  'discounts.biAnnual': 'numeric|min_value:0|max_value:25',
-  'discounts.yearly': 'numeric|min_value:0|max_value:50',
-  acceptTerms: 'required|accepted',
-  confirmAge: 'required|accepted'
-};
+// Form setup
+const isSubmitting = ref(false);
+const { handleSubmit, meta: formMeta, setTouched, setFieldValue } = useForm<FormValues>({
+  validationSchema: applyFormSchema,
+  initialValues: {
+    displayName: '',
+    username: '',
+    bio: '',
+    categories: [],
+    social: {
+      facebook: '',
+      instagram: '',
+      twitter: '',
+      tiktok: ''
+    },
+    monthlyPrice: 4.99,
+    discounts: {},
+    acceptTerms: false,
+    confirmAge: false,
+    socialTouched: false
+  },
+});
 
-const initialValues: Partial<ApplyFormValues> = {
-  displayName: '',
-  username: '',
-  bio: '',
-  categories: [],
-  social: {
-    facebook: '',
-    instagram: '',
-    twitter: '',
-    tiktok: ''
-  },
-  monthlyPrice: 4.99,
-  discounts: {
-    quarterly: '0',
-    biAnnual: '0',
-    yearly: '0'
-  },
-  acceptTerms: false,
-  confirmAge: false
-};
+// Categories logic
 const availableCategories = computed(() => [
   t('categories.art'),
   t('categories.music'),
@@ -268,79 +292,101 @@ const availableCategories = computed(() => [
   t('categories.gaming')
 ]);
 
-function toggleCategory(category: string, currentCategories: string[], handleChange: (value: string[]) => void) {
+function toggleCategory(category: string, currentCategories: string[], handleChange: (categories: string[]) => void) {
   const newCategories = currentCategories.includes(category)
-    ? currentCategories.filter(c => c !== category)
+    ? currentCategories.filter((c: string) => c !== category)
     : [...currentCategories, category];
   handleChange(newCategories);
 }
 
-function removeCategory(category: string, currentCategories: string[], handleChange: (value: string[]) => void) {
-  handleChange(currentCategories.filter(c => c !== category));
+function removeCategory(category: string, currentCategories: string[], handleChange: (categories: string[]) => void) {
+  handleChange(currentCategories.filter((c: string) => c !== category));
 }
 
-function roundToTwo(num: number) {
-  return Math.round(num * 100) / 100;
-}
+const creatorApi = createCreatorApi();
 
-function calculatePeriodPrices(monthlyPrice: number, discounts: { quarterly?: string; biAnnual?: string; yearly?: string }) {
-  if (!monthlyPrice) return;
+const pricingPreferences = ref<any[]>([]);
+const preferencesByCycle = computed<Record<string, any[]>>(() => {
+  const grouped: Record<string, any[]> = {};
+  for (const pref of pricingPreferences.value) {
+    if (!grouped[pref.cycle]) grouped[pref.cycle] = [];
+    grouped[pref.cycle].push(pref);
+  }
+  return grouped;
+});
 
-  quarterlyPrice.value = roundToTwo(monthlyPrice * 3 * (1 - (parseInt(discounts.quarterly || '0') / 100)));
-  biAnnualPrice.value = roundToTwo(monthlyPrice * 6 * (1 - (parseInt(discounts.biAnnual || '0') / 100)));
-  yearlyPrice.value = roundToTwo(monthlyPrice * 12 * (1 - (parseInt(discounts.yearly || '0') / 100)));
-}
+const periodPrices = ref<Record<string, number>>({});
 
-async function onSubmit(values: ApplyFormValues) {
+onMounted(async () => {
   try {
-    isSubmitting.value = true;
-
-    // Transform social to array of objects
-    const socialMedia = Object.entries(values.social || {})
-      .filter(([_, value]) => value && typeof value === 'string' && value.length > 0)
-      .map(([platform, username]) => ({
-        platform,
-        url: `https://${platform}.com/${(username as string).replace(/^@/, '')}`
-      }));
-
-    // Build pricing models array
-    const pricingModels = [
-      { discountType: quarterlyPrice.value, models: 'quarterly' },
-      { discountType: biAnnualPrice.value, models: 'biAnnual' },
-      { discountType: yearlyPrice.value, models: 'yearly' }
-    ];
-
-    // Build payload
-    const payload = {
-      displayName: values.displayName,
-      username: values.username,
-      bio: values.bio,
-      categories: values.categories,
-      socialMedia,
-      pricing: {
-        amount: values.monthlyPrice,
-        models: pricingModels
-      },
-      legal: {
-        termsOfService: values.acceptTerms,
-        contentGuidelines: true,
-        legallyAnAdult: values.confirmAge
+    const { data } = await creatorApi.getCreatorPreferences();
+    pricingPreferences.value = data;
+    for (const cycle in preferencesByCycle.value) {
+      if (!preferencesByCycle.value[cycle]) continue;
+      const zeroDiscount = preferencesByCycle.value[cycle].find((opt: any) => opt.discount === 0);
+      if (zeroDiscount) {
+        setFieldValue(`discounts.${cycle}`, zeroDiscount._id);
+      } else if (preferencesByCycle.value[cycle][0]) {
+        setFieldValue(`discounts.${cycle}`, preferencesByCycle.value[cycle][0]._id);
       }
-    };
+    }
+  } catch (e) {
+    notification.error(t('notifications.preferencesFailed'));
+  }
+});
 
-    const api = createCreatorApi();
-    const response = await api.createCreator(payload);
-    notification.success(t('notifications.applicationSubmitted'));
-    console.log('API response:', response);
-  } catch (error: any) {
-    notification.error(error?.message || t('notifications.applicationFailed'));
-    console.error('Submission error:', error);
-  } finally {
-    isSubmitting.value = false;
+const initialValues = {
+  displayName: '',
+  username: '',
+  bio: '',
+  categories: [],
+  social: {
+    facebook: '',
+    instagram: '',
+    twitter: '',
+    tiktok: ''
+  },
+  monthlyPrice: 4.99,
+  discounts: {},
+  acceptTerms: false,
+  confirmAge: false
+};
+
+const onSocialBlur = (setFieldValue: (field: keyof FormValues, value: any) => void) => {
+  setFieldValue('socialTouched', true);
+  // This will trigger validation for all social fields
+  setTouched({
+    'social.facebook': true,
+    'social.instagram': true,
+    'social.twitter': true,
+    'social.tiktok': true
+  });
+};
+
+function calculatePeriodPrices(monthlyPrice: number, discounts: Record<string, string>) {
+  for (const cycle in discounts) {
+    if (!preferencesByCycle.value[cycle]) continue;
+    const selectedId = discounts[cycle];
+    const option = preferencesByCycle.value[cycle]?.find((opt: any) => opt._id === selectedId);
+    if (option) {
+      let multiplier = 1;
+      if (cycle === 'quarterly') multiplier = 3;
+      if (cycle === 'yearly') multiplier = 12;
+      // Add more cycles as needed
+      periodPrices.value[cycle] = Math.round(monthlyPrice * multiplier * (1 - option.discount / 100) * 100) / 100;
+    }
   }
 }
 
-function onSocialFieldBlur() {
-  // Implementation of onSocialFieldBlur function
+async function onSubmit(values: FormValues) {
+  try {
+    isSubmitting.value = true;
+    // ... your submit logic ...
+    notification.success(t('notifications.applicationSubmitted'));
+  } catch (error: any) {
+    notification.error(error?.message || t('notifications.applicationFailed'));
+  } finally {
+    isSubmitting.value = false;
+  }
 }
 </script>

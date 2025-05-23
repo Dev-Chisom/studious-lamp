@@ -12,7 +12,12 @@ export function getApiBaseUrl() {
 	return BASE_URL
 }
 
-export function createApiService(token?: string, refreshToken?: string, onTokenRefresh?: (newToken: string) => void) {
+export function createApiService(
+	token?: string,
+	refreshToken?: string,
+	onTokenRefresh?: (newToken: string) => void,
+	onAuthError?: () => void
+) {
 	const api: AxiosInstance = axios.create({
 		baseURL: BASE_URL,
 		headers: {
@@ -23,6 +28,7 @@ export function createApiService(token?: string, refreshToken?: string, onTokenR
 
 	// Store the current token in closure for updating
 	let currentToken = token
+	let isLoggingOut = false;
 
 	function setToken(newToken: string) {
 		currentToken = newToken
@@ -50,7 +56,16 @@ export function createApiService(token?: string, refreshToken?: string, onTokenR
 					}
 				} catch (refreshError) {
 					// Refresh failed, let the app handle logout
-					console.log(refreshError)
+					if (!isLoggingOut) {
+						isLoggingOut = true;
+						if (onAuthError) onAuthError();
+					}
+				}
+			} else if (error.response?.status === 401 || error.response?.status === 403) {
+				// If refreshToken is not available or another 401/403, trigger logout
+				if (!isLoggingOut) {
+					isLoggingOut = true;
+					if (onAuthError) onAuthError();
 				}
 			}
 			return Promise.reject(error)

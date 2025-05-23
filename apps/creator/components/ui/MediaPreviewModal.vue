@@ -9,11 +9,10 @@
         <Icon name="lucide:x" class="h-6 w-6" />
       </button>
 
-      <!-- Media container -->
+      <!-- Media -->
 
       <div class="relative flex-1 flex items-center justify-center bg-neutral-900 rounded-l-xl overflow-hidden"
         :class="{ 'rounded-r-xl': !showSidebar }">
-        <!-- Swiper container -->
         <Swiper v-if="mediaItems.length > 0" :modules="[Navigation, Keyboard]" :initial-slide="currentIndex"
           :space-between="30" :centered-slides="true" :keyboard="{ enabled: true }" :navigation="true" :loop="false"
           class="w-full h-full" @swiper="onSwiper" @slide-change="onSlideChange">
@@ -63,8 +62,6 @@
           </div>
         </div>
 
-        <!-- Add comment input -->
-
         <div
           class="p-4 border-t border-gray-200 rounded-r-xl dark:border-gray-800 sticky bottom-0 bg-white dark:bg-gray-900">
           <div class="flex items-center">
@@ -80,7 +77,7 @@
         </div>
       </div>
 
-      <!-- Navigation dots -->
+      <!-- Navigation -->
 
       <div v-if="mediaItems.length > 1" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10">
         <button v-for="(_, index) in mediaItems" :key="index" type="button"

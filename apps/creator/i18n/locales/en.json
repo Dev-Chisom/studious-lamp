@@ -127,10 +127,13 @@
 			"monthlySubscription": "Monthly Subscription",
 			"monthlyPrice": "Monthly Price ($)",
 			"subscriptionPlans": "Subscription Plans",
-			"quarterlyPlan": "Quarterly Plan",
-			"quarterlyDescription": "Pay for 3 months and save",
+			"quarterlyPlan": "Yearly Plan",
+			"quarterlyDescription": "Pay for 12 months and save",
 			"discount": "Discount",
 			"totalQuarterlyPrice": "Total Quarterly Price",
+      "totalYearlyPrice": "Total Yearly Price",
+      "yearlyPlan": "Quarterly Plan",
+			"yearlyDescription": "Pay for 3 months and save",
 			"calculating": "Calculating..."
 		},
 		"legal": {
@@ -152,7 +155,18 @@
 		"maxLength": "{field} must be less than {max} characters",
 		"maxFiles": "Maximum {max} files allowed",
 		"priceRange": "Price must be between $1 and $100",
-		"fixErrors": "Please fix the errors in the form"
+		"fixErrors": "Please fix the errors in the form",
+		"displayNameRequired": "Display name is required.",
+		"displayNameMin": "Display name must be at least 2 characters.",
+		"displayNameMax": "Display name must be at most 50 characters.",
+		"usernameRequired": "Username is required.",
+		"usernameMin": "Username must be at least 3 characters.",
+		"usernameMax": "Username must be at most 30 characters.",
+		"usernamePattern": "Username can only contain letters, numbers, underscores, and hyphens.",
+		"bioRequired": "Bio is required.",
+		"bioMin": "Bio must be at least 10 characters.",
+		"bioMax": "Bio must be at most 500 characters.",
+		"socialUsername": "Enter a valid username (letters, numbers, underscores, min 2 characters, may start with)."
 	},
 	"notifications": {
 		"title": "Notifications",

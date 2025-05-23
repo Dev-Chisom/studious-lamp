@@ -1,14 +1,9 @@
 <template>
   <div>
-    <!-- Mobile sidebar -->
-
     <div v-if="isMobileOpen" class="fixed inset-0 lg:hidden" role="dialog" aria-modal="true" style="z-index: 400">
-      <!-- Background overlay -->
 
       <div class="fixed inset-0 bg-gray-600 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-80"
         @click="emit('close')" />
-
-      <!-- Sidebar panel -->
 
       <div class="fixed inset-y-0 left-0 flex max-w-xs w-full bg-white dark:bg-gray-900 dark:bg-gray-800 shadow-lg">
         <div class="flex flex-col w-full">
@@ -33,8 +28,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Desktop sidebar -->
 
     <div
       class="sticky bottom-0 top-0 hidden lg:flex lg:flex-shrink-0 bg-white dark:bg-gray-900 dark:bg-gray-800 h-screen">

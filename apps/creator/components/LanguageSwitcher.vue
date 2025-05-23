@@ -51,7 +51,6 @@ const switchLanguage = (code: string) => {
   isOpen.value = false
 }
 
-// Click outside directive
 const vClickOutside = {
   beforeMount(el: HTMLElement, binding: any) {
     el.clickOutsideEvent = (event: MouseEvent) => {

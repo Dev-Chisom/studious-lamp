@@ -19,8 +19,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-// import { useRouter } from 'vue-router';
-// import { toast } from 'vue3-toastify';
 import { getOAuthUrl } from '@whispers/api';
 
 const loading = ref<boolean>(false);

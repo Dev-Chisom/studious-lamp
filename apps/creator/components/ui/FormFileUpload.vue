@@ -19,7 +19,7 @@
 			<div class="space-y-1 text-center">
 				<div v-if="previewUrls.length > 0" class="flex justify-center flex-wrap">
 					<div v-for="(preview, index) in previewUrls" :key="index" class="relative w-20 h-20 m-1">
-						<!-- Image Preview -->
+						<!-- Image -->
 						<img
 							v-if="preview.type === 'image'"
 							:src="preview.url"
@@ -27,7 +27,7 @@
 							class="object-cover w-full h-full rounded-md cursor-pointer"
 							@click.stop="openPreview(index)"
 						/>
-						<!-- Video Preview -->
+						<!-- Video -->
 
 						<div
 							v-else-if="preview.type === 'video'"
@@ -39,7 +39,7 @@
 								<Icon name="lucide:play" class="h-8 w-8 text-white bg-black/50 rounded-full p-1" />
 							</div>
 						</div>
-						<!-- Other File Preview -->
+						<!-- Other File -->
 
 						<div v-else class="flex items-center justify-center w-full h-full bg-gray-100 dark:bg-gray-800 rounded-md">
 							<Icon name="lucide:file" class="h-8 w-8 text-gray-400 dark:text-gray-500" />
@@ -75,7 +75,7 @@
 
 		<p v-if="error" class="form-error text-error-600 dark:text-error-400">{{ error }}</p>
 
-		<!-- Media Preview Modal -->
+		<!-- Media -->
 		<Teleport to="body">
 			<media-preview-modal
 				:is-open="previewModal.isOpen"
@@ -115,7 +115,7 @@ const props = defineProps({
 	},
 	maxSize: {
 		type: Number,
-		default: 5 * 1024 * 1024, // 5MB
+		default: 5 * 1024 * 1024,
 	},
 	id: {
 		type: String,
@@ -142,7 +142,6 @@ const isDragging = ref(false);
 const files = ref([]);
 const previewUrls = ref([]);
 
-// Preview modal state
 const previewModal = ref({
 	isOpen: false,
 	items: [],
@@ -180,7 +179,7 @@ function isVideo(file) {
 function onFileChange(event) {
 	const newFiles = Array.from(event.target.files);
 	processFiles(newFiles);
-	event.target.value = ''; // Reset file input
+	event.target.value = '';
 }
 
 function onDrop(event) {
@@ -191,13 +190,11 @@ function onDrop(event) {
 
 function processFiles(newFiles) {
 	const validFiles = newFiles.filter((file) => {
-		// Check file size
 		if (file.size > props.maxSize) {
 			emit('error', `File "${file.name}" exceeds the maximum size of ${formatSize(props.maxSize)}`);
 			return false;
 		}
 
-		// Check file type if accept is specified
 		if (props.accept && props.accept !== '*') {
 			const fileType = file.type;
 			const acceptTypes = props.accept.split(',').map((type) => type.trim());

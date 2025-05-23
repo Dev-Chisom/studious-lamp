@@ -1,9 +1,6 @@
 <template>
 	<div class="relative w-full h-full">
-		<!-- Slot content (image/video) -->
 		<slot />
-
-		<!-- Blur overlay with centered content -->
 
 		<div
 			class="absolute inset-0 backdrop-blur-md bg-white/70 dark:bg-gray-900/70 flex flex-col items-center justify-center text-center p-6"

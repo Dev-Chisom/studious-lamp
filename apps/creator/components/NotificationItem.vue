@@ -97,7 +97,5 @@ function handleClick(): void {
 	if (!props.notification.isRead) {
 		emit('read');
 	}
-	// Handle click based on notification type
-	// e.g., navigateTo(props.notification.link)
 }
 </script>
