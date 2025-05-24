@@ -1,4 +1,4 @@
-import { createApiService, getApiBaseUrl } from './api.service';
+import { createApiService, getApiBaseUrl } from './api.service'
 
 interface RefreshTokenResponse {
 	accessToken: string
@@ -6,16 +6,16 @@ interface RefreshTokenResponse {
 }
 
 export function getOAuthUrl(provider: 'google' | 'x') {
-	return `${getApiBaseUrl()}/auth/${provider}`;
+	return `${getApiBaseUrl()}/auth/${provider}`
 }
 
 export function createAuthApi(token?: string) {
-	const api = createApiService(token);
+	const api = createApiService(token)
 
 	return {
 		setToken: api.setToken,
 		getProfile: () => api.get('/auth/profile'),
 		refreshToken: (refreshToken: string) => api.post<RefreshTokenResponse>('/auth/refresh-token', { refreshToken }),
 		logout: () => api.patch('/auth/logout'),
-	};
+	}
 }

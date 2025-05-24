@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import { defineStore } from 'pinia'
 
 export const useCreatorsStore = defineStore('creators', {
 	state: () => ({
@@ -28,10 +28,10 @@ export const useCreatorsStore = defineStore('creators', {
 				...application,
 				id: Date.now(),
 				isVerified: false,
-			});
+			})
 		},
 		getByUsername(username) {
-			return this.creators.find((c) => c.username === username);
+			return this.creators.find((c) => c.username === username)
 		},
 	},
-});
+})

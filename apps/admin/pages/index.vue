@@ -215,7 +215,7 @@ const stats = [
 		icon: 'lucide:video',
 		color: 'secondary',
 	},
-];
+]
 
 const topCreators = [
 	{
@@ -239,7 +239,7 @@ const topCreators = [
 		subscribers: 9876,
 		earnings: '8,765',
 	},
-];
+]
 
 const recentReports = [
 	{
@@ -263,7 +263,7 @@ const recentReports = [
 		description: 'Content reported for copyright infringement',
 		time: new Date(Date.now() - 4 * 60 * 60 * 1000),
 	},
-];
+]
 
 const pendingActions = [
 	{
@@ -293,34 +293,34 @@ const pendingActions = [
 		icon: 'lucide:file-question',
 		color: 'warning',
 	},
-];
+]
 
 function formatTime(date) {
-	const now = new Date();
-	const diff = now - new Date(date);
+	const now = new Date()
+	const diff = now - new Date(date)
 
-	const minutes = Math.floor(diff / (1000 * 60));
-	const hours = Math.floor(diff / (1000 * 60 * 60));
-	const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+	const minutes = Math.floor(diff / (1000 * 60))
+	const hours = Math.floor(diff / (1000 * 60 * 60))
+	const days = Math.floor(diff / (1000 * 60 * 60 * 24))
 
 	if (minutes < 60) {
-		return `${minutes}m ago`;
+		return `${minutes}m ago`
 	} else if (hours < 24) {
-		return `${hours}h ago`;
+		return `${hours}h ago`
 	} else if (days < 7) {
-		return `${days}d ago`;
+		return `${days}d ago`
 	} else {
-		return new Date(date).toLocaleDateString();
+		return new Date(date).toLocaleDateString()
 	}
 }
 
 function approveAction(action) {
 	// Implement approval logic
-	console.log('Approving action:', action);
+	console.log('Approving action:', action)
 }
 
 function rejectAction(action) {
 	// Implement rejection logic
-	console.log('Rejecting action:', action);
+	console.log('Rejecting action:', action)
 }
 </script>

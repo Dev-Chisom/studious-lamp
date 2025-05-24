@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 interface BaniConfig {
 	amount: number
@@ -11,12 +11,12 @@ interface BaniConfig {
 }
 
 export function useBani() {
-	const isLoading = ref(false);
-	const error = ref<string | null>(null);
+	const isLoading = ref(false)
+	const error = ref<string | null>(null)
 
 	const initializePayment = (config: BaniConfig) => {
 		try {
-			isLoading.value = true;
+			isLoading.value = true
 			const bani = new window.Bani({
 				amount: config.amount,
 				email: config.email,
@@ -24,24 +24,24 @@ export function useBani() {
 				lastName: config.lastName,
 				phoneNumber: config.phoneNumber,
 				onSuccess: (response: any) => {
-					isLoading.value = false;
-					config.onSuccess(response);
+					isLoading.value = false
+					config.onSuccess(response)
 				},
 				onClose: () => {
-					isLoading.value = false;
-					config.onClose();
+					isLoading.value = false
+					config.onClose()
 				},
-			});
-			bani.initialize();
+			})
+			bani.initialize()
 		} catch (e: any) {
-			error.value = e.message;
-			isLoading.value = false;
+			error.value = e.message
+			isLoading.value = false
 		}
-	};
+	}
 
 	return {
 		initializePayment,
 		isLoading,
 		error,
-	};
+	}
 }

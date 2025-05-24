@@ -277,11 +277,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
 definePageMeta({
 	layout: 'default',
-});
+})
 
 const faqs = ref([
 	{
@@ -320,5 +320,5 @@ const faqs = ref([
 			"Yes, you can cancel your subscription at any time. You'll continue to have access until the end of your current billing period.",
 		isOpen: false,
 	},
-]);
+])
 </script>

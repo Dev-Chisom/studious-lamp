@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
+import { useI18n } from 'vue-i18n'
 
 type NotificationType = 'subscription' | 'tip' | 'message' | 'post_like' | 'post_comment' | 'other'
 
@@ -53,49 +53,49 @@ interface NotificationItemEmits {
 	(e: 'read'): void
 }
 
-const props = defineProps<NotificationItemProps>();
-const emit = defineEmits<NotificationItemEmits>();
-const { t } = useI18n();
+const props = defineProps<NotificationItemProps>()
+const emit = defineEmits<NotificationItemEmits>()
+const { t } = useI18n()
 
 function getIcon(type: NotificationType): string {
 	switch (type) {
 		case 'subscription':
-			return 'lucide:user-plus';
+			return 'lucide:user-plus'
 		case 'tip':
-			return 'lucide:dollar-sign';
+			return 'lucide:dollar-sign'
 		case 'message':
-			return 'lucide:message-circle';
+			return 'lucide:message-circle'
 		case 'post_like':
-			return 'lucide:heart';
+			return 'lucide:heart'
 		case 'post_comment':
-			return 'lucide:message-square';
+			return 'lucide:message-square'
 		default:
-			return 'lucide:bell';
+			return 'lucide:bell'
 	}
 }
 
 function formatTime(date: Date | string): string {
-	const now = new Date();
-	const diff = now.getTime() - new Date(date).getTime();
+	const now = new Date()
+	const diff = now.getTime() - new Date(date).getTime()
 
-	const minutes = Math.floor(diff / (1000 * 60));
-	const hours = Math.floor(diff / (1000 * 60 * 60));
-	const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+	const minutes = Math.floor(diff / (1000 * 60))
+	const hours = Math.floor(diff / (1000 * 60 * 60))
+	const days = Math.floor(diff / (1000 * 60 * 60 * 24))
 
 	if (minutes < 60) {
-		return t('time.minutesAgo', { count: minutes });
+		return t('time.minutesAgo', { count: minutes })
 	} else if (hours < 24) {
-		return t('time.hoursAgo', { count: hours });
+		return t('time.hoursAgo', { count: hours })
 	} else if (days < 7) {
-		return t('time.daysAgo', { count: days });
+		return t('time.daysAgo', { count: days })
 	} else {
-		return new Date(date).toLocaleDateString();
+		return new Date(date).toLocaleDateString()
 	}
 }
 
 function handleClick(): void {
 	if (!props.notification.isRead) {
-		emit('read');
+		emit('read')
 	}
 }
 </script>

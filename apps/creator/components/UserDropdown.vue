@@ -88,85 +88,82 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useUserStore } from '../store/user';
-import { useAuthStore } from '../store/auth';
-import { useColorMode } from '#imports';
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useUserStore } from '../store/user'
+import { useAuthStore } from '../store/auth'
+import { useColorMode } from '#imports'
 
-
-const { t } = useI18n();
+const { t } = useI18n()
 
 interface NavLink {
 	name: string
 	href: string
 }
 
-const modeText = computed(() => 
-  colorMode.value === 'dark' ? t('theme.light') : t('theme.dark')
-);
+const modeText = computed(() => (colorMode.value === 'dark' ? t('theme.light') : t('theme.dark')))
 
-const userStore = useUserStore();
-const authStore = useAuthStore();
-const isOpen = ref(false);
-const dropdownRef = ref<HTMLElement | null>(null);
-const colorMode = useColorMode();
+const userStore = useUserStore()
+const authStore = useAuthStore()
+const isOpen = ref(false)
+const dropdownRef = ref<HTMLElement | null>(null)
+const colorMode = useColorMode()
 
 const userInitials = computed((): string => {
-	const name = userStore.user?.displayName || '';
+	const name = userStore.user?.displayName || ''
 	if (!name) {
-		return '?';
+		return '?'
 	}
 
-	const parts = name.split(' ');
+	const parts = name.split(' ')
 	if (parts.length > 1) {
-		return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+		return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
 	}
-	return name.substring(0, 2).toUpperCase();
-});
+	return name.substring(0, 2).toUpperCase()
+})
 
 const profileHref = computed((): string => {
 	if (userStore.user && userStore.user.displayName) {
-		return `/@${encodeURIComponent(userStore.user.displayName)}`;
+		return `/@${encodeURIComponent(userStore.user.displayName)}`
 	}
-	return '/@user';
-});
+	return '/@user'
+})
 
-const userLinks: NavLink[]  = computed(() => [
-  { name: t('nav.user.profile'), href: profileHref.value },
-  { name: t('nav.user.subscriptions'), href: '/subscriptions' },
-  { name: t('nav.user.settings'), href: '/settings' }
-]);
+const userLinks: NavLink[] = computed(() => [
+	{ name: t('nav.user.profile'), href: profileHref.value },
+	{ name: t('nav.user.subscriptions'), href: '/subscriptions' },
+	{ name: t('nav.user.settings'), href: '/settings' },
+])
 
-const creatorLinks: NavLink[]  = computed(() => [
-  { name: t('nav.creator.dashboard'), href: '/creator/analytics' },
-  { name: t('nav.creator.content'), href: '/creator/content' },
-  { name: t('nav.creator.earnings'), href: '/creator/earnings' }
-]);
+const creatorLinks: NavLink[] = computed(() => [
+	{ name: t('nav.creator.dashboard'), href: '/creator/analytics' },
+	{ name: t('nav.creator.content'), href: '/creator/content' },
+	{ name: t('nav.creator.earnings'), href: '/creator/earnings' },
+])
 
 const logout = (): void => {
-	authStore.logout();
-	isOpen.value = false;
-	navigateTo('/');
-};
+	authStore.logout()
+	isOpen.value = false
+	navigateTo('/')
+}
 
 // Close dropdown when clicking outside
 const closeDropdown = (e: MouseEvent): void => {
 	if (dropdownRef.value && !dropdownRef.value.contains(e.target as Node)) {
-		isOpen.value = false;
+		isOpen.value = false
 	}
-};
+}
 
 function toggleDarkMode(): void {
-	colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
-	isOpen.value = false;
+	colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+	isOpen.value = false
 }
 
 onMounted(() => {
-	document.addEventListener('click', closeDropdown);
-});
+	document.addEventListener('click', closeDropdown)
+})
 
 onUnmounted(() => {
-	document.removeEventListener('click', closeDropdown);
-});
+	document.removeEventListener('click', closeDropdown)
+})
 </script>

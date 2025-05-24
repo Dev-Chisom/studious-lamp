@@ -22,4 +22,4 @@ export interface CreatorApplicationPayload {
 	socialMedia: SocialMediaLink[]
 	pricing: CreatorPricing
 	legal: CreatorLegal
-} 
+}

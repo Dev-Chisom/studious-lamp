@@ -65,7 +65,9 @@
 							</div>
 
 							<div class="ml-3 text-sm">
-								<label for="visibility-public" class="font-medium text-gray-700 dark:text-gray-200">{{ t('public') }}</label>
+								<label for="visibility-public" class="font-medium text-gray-700 dark:text-gray-200">{{
+									t('public')
+								}}</label>
 								<p class="text-gray-500 dark:text-gray-200">{{ t('publicHint') }}</p>
 							</div>
 						</div>
@@ -82,7 +84,9 @@
 							</div>
 
 							<div class="ml-3 text-sm">
-								<label for="visibility-subscribers" class="font-medium text-gray-700 dark:text-gray-200">{{ t('subscribersOnly') }}</label>
+								<label for="visibility-subscribers" class="font-medium text-gray-700 dark:text-gray-200">{{
+									t('subscribersOnly')
+								}}</label>
 								<p class="text-gray-500 dark:text-gray-200">{{ t('subscribersOnlyHint') }}</p>
 							</div>
 						</div>
@@ -99,7 +103,9 @@
 							</div>
 
 							<div class="ml-3 text-sm">
-								<label for="visibility-ppv" class="font-medium text-gray-700 dark:text-gray-200">{{ t('payPerView') }}</label>
+								<label for="visibility-ppv" class="font-medium text-gray-700 dark:text-gray-200">{{
+									t('payPerView')
+								}}</label>
 								<p class="text-gray-500 dark:text-gray-200">{{ t('payPerViewHint') }}</p>
 							</div>
 						</div>
@@ -137,7 +143,9 @@
 						</div>
 
 						<div class="ml-3 text-sm">
-							<label for="schedule" class="font-medium text-gray-700 dark:text-gray-200">{{ t('scheduleForLater') }}</label>
+							<label for="schedule" class="font-medium text-gray-700 dark:text-gray-200">{{
+								t('scheduleForLater')
+							}}</label>
 							<p class="text-gray-500 dark:text-gray-200">{{ t('scheduleHint') }}</p>
 						</div>
 					</div>
@@ -170,10 +178,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from 'vue';
-import { useI18n } from 'vue-i18n';
-import FormInput from '@/components/ui/BaseInput.vue';
-import FormFileUpload from '@/components/ui/FormFileUpload.vue';
+import { ref, reactive, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import FormInput from '@/components/ui/BaseInput.vue'
+import FormFileUpload from '@/components/ui/FormFileUpload.vue'
 
 type Visibility = 'public' | 'subscribers' | 'ppv'
 
@@ -226,11 +234,11 @@ const props = withDefaults(defineProps<PostFormProps>(), {
 	errors: () => ({}),
 	loading: false,
 	minScheduleDate: '',
-});
+})
 
-const emit = defineEmits<PostFormEmits>();
+const emit = defineEmits<PostFormEmits>()
 
-const { t } = useI18n();
+const { t } = useI18n()
 
 const form = reactive<FormData>({
 	title: '',
@@ -238,23 +246,23 @@ const form = reactive<FormData>({
 	visibility: 'public',
 	price: 4.99,
 	mediaUrls: [],
-});
-const mediaFiles = ref<File[]>([]);
-const isScheduled = ref(false);
-const scheduledDate = ref('');
+})
+const mediaFiles = ref<File[]>([])
+const isScheduled = ref(false)
+const scheduledDate = ref('')
 
 watch(
 	() => props.initialValues,
 	(val) => {
 		if (val) {
-			Object.assign(form, val);
+			Object.assign(form, val)
 			if (val.mediaUrls) {
-				mediaFiles.value = val.mediaUrls.map((url) => new File([], url));
+				mediaFiles.value = val.mediaUrls.map((url) => new File([], url))
 			}
 		}
 	},
 	{ immediate: true },
-);
+)
 
 function onSubmit(): void {
 	emit('submit', {
@@ -262,7 +270,7 @@ function onSubmit(): void {
 		mediaFiles: mediaFiles.value,
 		isScheduled: isScheduled.value,
 		scheduledDate: scheduledDate.value,
-	});
+	})
 }
 
 function onDraft(): void {
@@ -271,6 +279,6 @@ function onDraft(): void {
 		mediaFiles: mediaFiles.value,
 		isScheduled: isScheduled.value,
 		scheduledDate: scheduledDate.value,
-	});
+	})
 }
 </script>

@@ -1,6 +1,6 @@
-import type { Config } from 'tailwindcss';
-import forms from '@tailwindcss/forms';
-import typography from '@tailwindcss/typography';
+import type { Config } from 'tailwindcss'
+import forms from '@tailwindcss/forms'
+import typography from '@tailwindcss/typography'
 
 module.exports = {
 	darkMode: 'class',
@@ -129,5 +129,5 @@ module.exports = {
 			},
 		},
 	},
-	 plugins: [forms, typography],
-} satisfies Config;
+	plugins: [forms, typography],
+} satisfies Config

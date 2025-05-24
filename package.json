@@ -11,12 +11,13 @@
 		"format": "prettier --write .",
 		"clean": "pnpm -r clean",
 		"prepare": "husky install",
-    "postinstall": "pnpm --filter @whispers/api run build"
+		"postinstall": "pnpm --filter @whispers/api run build"
 	},
 	"lint-staged": {
-		"*.ts": "prettier --write",
-		"*.js": "prettier --write",
-		"*.vue": "prettier --write"
+		"*.{js,ts,vue}": [
+			"eslint --fix",
+			"prettier --write"
+		]
 	},
 	"devDependencies": {
 		"@nuxtjs/eslint-config-typescript": "^12.1.0",

@@ -1,6 +1,5 @@
 <template>
 	<div class="min-h-screen max-w-6xl mx-autox">
-
 		<Head>
 			<Title>Become a Creator - Creator Dashboard</Title>
 		</Head>
@@ -20,15 +19,15 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
-import ApplyForm from '../../components/apply/ApplyForm.vue';
-const { t } = useI18n();
+import { useI18n } from 'vue-i18n'
+import ApplyForm from '../../components/apply/ApplyForm.vue'
+const { t } = useI18n()
 
 definePageMeta({
-  layout: 'creator',
-  middleware: ['auth'],
-  meta: {
-    requiresAuth: true,
-  },
-});
+	layout: 'creator',
+	middleware: ['auth'],
+	meta: {
+		requiresAuth: true,
+	},
+})
 </script>

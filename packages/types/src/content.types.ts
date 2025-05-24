@@ -9,4 +9,4 @@ export interface Content {
 	isPublic: boolean
 	createdAt: string
 	updatedAt: string
-} 
+}

@@ -1,6 +1,5 @@
 <template>
 	<div class="max-w-6xl mx-auto">
-
 		<Head>
 			<Title>Creator Analytics - Whispers</Title>
 		</Head>
@@ -40,15 +39,19 @@
 						<div class="flex items-center text-sm">
 							<Icon
 								:name="stat.trend > 0 ? 'lucide:trending-up' : 'lucide:trending-down'"
-								:class="`flex-shrink-0 mr-1.5 h-5 w-5 ${stat.trend > 0 ? 'text-success-500' : 'text-error-500'}`" />
+								:class="`flex-shrink-0 mr-1.5 h-5 w-5 ${stat.trend > 0 ? 'text-success-500' : 'text-error-500'}`"
+							/>
 
 							<div
-								:class="stat.trend > 0 ? 'text-success-700 dark:text-success-400' : 'text-error-700 dark:text-error-400'
-								">
+								:class="
+									stat.trend > 0 ? 'text-success-700 dark:text-success-400' : 'text-error-700 dark:text-error-400'
+								"
+							>
 								{{ Math.abs(stat.trend) }}%
 							</div>
 
-							<div class="ml-1 text-gray-500 dark:text-gray-200 dark:text-gray-400">{{ t('analytics.from_last_month') }}
+							<div class="ml-1 text-gray-500 dark:text-gray-200 dark:text-gray-400">
+								{{ t('analytics.from_last_month') }}
 							</div>
 						</div>
 					</div>
@@ -89,7 +92,8 @@
 
 					<li
 						v-if="sucbscriptions.length === 0"
-						class="px-4 py-6 text-center text-gray-500 dark:text-gray-200 dark:text-gray-400">
+						class="px-4 py-6 text-center text-gray-500 dark:text-gray-200 dark:text-gray-400"
+					>
 						{{ t('analytics.no_recent_subscriptions') }}
 					</li>
 				</ul>
@@ -143,7 +147,8 @@
 
 					<li
 						v-if="recentPosts.length === 0"
-						class="px-4 py-6 text-center text-gray-500 dark:text-gray-200 dark:text-gray-400">
+						class="px-4 py-6 text-center text-gray-500 dark:text-gray-200 dark:text-gray-400"
+					>
 						{{ t('analytics.no_content_yet') }}
 					</li>
 				</ul>
@@ -180,8 +185,9 @@
 					</div>
 
 					<div class="mt-6">
-						<h4 class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{
-							t('analytics.payout_breakdown') }}</h4>
+						<h4 class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">
+							{{ t('analytics.payout_breakdown') }}
+						</h4>
 
 						<dl class="mt-2 grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
 							<div class="sm:col-span-1">
@@ -195,22 +201,25 @@
 							</div>
 
 							<div class="sm:col-span-1">
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{
-									t('analytics.tips') }}</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">
+									{{ t('analytics.tips') }}
+								</dt>
 
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${{ nextPayout.tips.toFixed(2) }}</dd>
 							</div>
 
 							<div class="sm:col-span-1">
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{
-									t('analytics.pay_per_view') }}</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">
+									{{ t('analytics.pay_per_view') }}
+								</dt>
 
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">${{ nextPayout.ppv.toFixed(2) }}</dd>
 							</div>
 
 							<div class="sm:col-span-1">
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">{{
-									t('analytics.platform_fee') }}</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400">
+									{{ t('analytics.platform_fee') }}
+								</dt>
 
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">-${{ nextPayout.platformFee.toFixed(2) }}</dd>
 							</div>
@@ -223,141 +232,141 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 definePageMeta({
-  layout: 'creator',
-  middleware: ['auth'],
-  meta: {
-    requiresAuth: true,
-    requiresCreator: true,
-  },
-});
+	layout: 'creator',
+	middleware: ['auth'],
+	meta: {
+		requiresAuth: true,
+		requiresCreator: true,
+	},
+})
 
 interface StatCard {
-  name: string
-  value: string
-  icon: string
-  color: string
-  trend: number
+	name: string
+	value: string
+	icon: string
+	color: string
+	trend: number
 }
 
 interface Subscription {
-  id: string
-  userName: string
-  userAvatar: string
-  plan: string
-  amount: string
-  date: Date
+	id: string
+	userName: string
+	userAvatar: string
+	plan: string
+	amount: string
+	date: Date
 }
 
 interface ContentPost {
-  id: string
-  title: string
-  thumbnail: string
-  likes: number
-  comments: number
-  views: number
-  date: Date
+	id: string
+	title: string
+	thumbnail: string
+	likes: number
+	comments: number
+	views: number
+	date: Date
 }
 
 interface Payout {
-  amount: number
-  date: Date
-  subscriptionRevenue: number
-  tips: number
-  ppv: number
-  platformFee: number
+	amount: number
+	date: Date
+	subscriptionRevenue: number
+	tips: number
+	ppv: number
+	platformFee: number
 }
 
-const { t } = useI18n();
+const { t } = useI18n()
 
 const stats = ref<StatCard[]>([
-  {
-    name: 'analytics.subscribers',
+	{
+		name: 'analytics.subscribers',
 		value: '278',
-    icon: 'lucide:users',
-    color: 'primary',
-    trend: 12,
-  },
-  {
-    name: 'analytics.revenue',
+		icon: 'lucide:users',
+		color: 'primary',
+		trend: 12,
+	},
+	{
+		name: 'analytics.revenue',
 		value: '$1,458.90',
-    icon: 'lucide:dollar-sign',
-    color: 'success',
-    trend: 8,
-  },
-  {
-    name: 'analytics.content-view',
+		icon: 'lucide:dollar-sign',
+		color: 'success',
+		trend: 8,
+	},
+	{
+		name: 'analytics.content-view',
 		value: '4,239',
-    icon: 'lucide:eye',
-    color: 'secondary',
-    trend: 24,
-  },
-  {
-    name: 'analytics.total-posts',
+		icon: 'lucide:eye',
+		color: 'secondary',
+		trend: 24,
+	},
+	{
+		name: 'analytics.total-posts',
 		value: '32',
-    icon: 'lucide:file-text',
-    color: 'accent',
-    trend: -3,
-  },
-]);
+		icon: 'lucide:file-text',
+		color: 'accent',
+		trend: -3,
+	},
+])
 
 const sucbscriptions = ref<Subscription[]>([
-  {
-    id: '1',
-    userName: 'Alex Johnson',
-    userAvatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=200',
-    plan: 'Monthly',
-    amount: '9.99',
-    date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: '2',
-    userName: 'Sarah Williams',
-    userAvatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=200',
-    plan: 'Yearly',
-    amount: '99.99',
-    date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
-  },
-]);
+	{
+		id: '1',
+		userName: 'Alex Johnson',
+		userAvatar: 'https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=200',
+		plan: 'Monthly',
+		amount: '9.99',
+		date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+	},
+	{
+		id: '2',
+		userName: 'Sarah Williams',
+		userAvatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=200',
+		plan: 'Yearly',
+		amount: '99.99',
+		date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+	},
+])
 
 const recentPosts = ref<ContentPost[]>([
-  {
-    id: '1',
-    title: 'Getting Started with Content Creation',
-    thumbnail: 'https://images.pexels.com/photos/3000001/pexels-photo-3000001.jpeg?auto=compress&cs=tinysrgb&w=800',
-    likes: 245,
-    comments: 32,
-    views: 1234,
-    date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-  },
-  {
-    id: '2',
-    title: 'Tips for Better Engagement',
-    thumbnail: 'https://images.pexels.com/photos/3000002/pexels-photo-3000002.jpeg?auto=compress&cs=tinysrgb&w=800',
-    likes: 189,
-    comments: 24,
-    views: 987,
-    date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-  },
-]);
+	{
+		id: '1',
+		title: 'Getting Started with Content Creation',
+		thumbnail: 'https://images.pexels.com/photos/3000001/pexels-photo-3000001.jpeg?auto=compress&cs=tinysrgb&w=800',
+		likes: 245,
+		comments: 32,
+		views: 1234,
+		date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+	},
+	{
+		id: '2',
+		title: 'Tips for Better Engagement',
+		thumbnail: 'https://images.pexels.com/photos/3000002/pexels-photo-3000002.jpeg?auto=compress&cs=tinysrgb&w=800',
+		likes: 189,
+		comments: 24,
+		views: 987,
+		date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+	},
+])
 
 const nextPayout = ref<Payout>({
-  amount: 1245.67,
-  date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-  subscriptionRevenue: 987.45,
-  tips: 156.78,
-  ppv: 101.44,
-  platformFee: 200.0,
-});
+	amount: 1245.67,
+	date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+	subscriptionRevenue: 987.45,
+	tips: 156.78,
+	ppv: 101.44,
+	platformFee: 200.0,
+})
 
 function formatDate(date: Date): string {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
+	return new Date(date).toLocaleDateString('en-US', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric',
+	})
 }
 </script>

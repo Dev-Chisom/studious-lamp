@@ -6,4 +6,4 @@ export interface Subscription {
 	startDate: string
 	endDate?: string
 	price: number
-} 
+}

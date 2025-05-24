@@ -54,9 +54,9 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 
-const isOpen = ref(false);
+const isOpen = ref(false)
 const notifications = ref([
 	{
 		id: 1,
@@ -82,37 +82,37 @@ const notifications = ref([
 		createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
 		image: '',
 	},
-]);
+])
 
 const unreadCount = computed(() => {
-	return notifications.value.filter((notification) => !notification.isRead).length;
-});
+	return notifications.value.filter((notification) => !notification.isRead).length
+})
 
 function markAsRead(id) {
-	const notification = notifications.value.find((n) => n.id === id);
+	const notification = notifications.value.find((n) => n.id === id)
 	if (notification) {
-		notification.isRead = true;
+		notification.isRead = true
 	}
 }
 
 function markAllAsRead() {
 	notifications.value.forEach((notification) => {
-		notification.isRead = true;
-	});
+		notification.isRead = true
+	})
 }
 
 // Close dropdown when clicking outside
 const closeDropdown = () => {
 	if (isOpen.value) {
-		isOpen.value = false;
+		isOpen.value = false
 	}
-};
+}
 
 onMounted(() => {
-	document.addEventListener('click', closeDropdown);
-});
+	document.addEventListener('click', closeDropdown)
+})
 
 onUnmounted(() => {
-	document.removeEventListener('click', closeDropdown);
-});
+	document.removeEventListener('click', closeDropdown)
+})
 </script>

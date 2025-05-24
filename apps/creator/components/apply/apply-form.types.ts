@@ -29,32 +29,32 @@
 //   quarterlyPrice: number;
 //   biAnnualPrice: number;
 //   yearlyPrice: number;
-// } 
+// }
 
 export interface SocialMediaItem {
-  platform: string;
-  url: string;
+	platform: string
+	url: string
 }
 
 export interface Pricing {
-  amount: number;
-  tiers: {
-    [key: string]: number; // quarterly, biAnnual, yearly discounts
-  };
+	amount: number
+	tiers: {
+		[key: string]: number // quarterly, biAnnual, yearly discounts
+	}
 }
 
 export interface Legal {
-  termsOfService: boolean;
-  contentGuidelines: boolean;
-  isAdult: boolean;
+	termsOfService: boolean
+	contentGuidelines: boolean
+	isAdult: boolean
 }
 
 export interface FormValues {
-  displayName: string;
-  username: string;
-  bio: string;
-  categories: string[];
-  socialMedia: SocialMediaItem[];
-  pricing: Pricing;
-  legal: Legal;
+	displayName: string
+	username: string
+	bio: string
+	categories: string[]
+	socialMedia: SocialMediaItem[]
+	pricing: Pricing
+	legal: Legal
 }

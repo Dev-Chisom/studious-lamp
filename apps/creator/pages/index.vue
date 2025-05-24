@@ -97,16 +97,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { toast } from 'vue3-toastify';
-import { Swiper, SwiperSlide } from 'swiper/vue';
-import { Pagination, Keyboard } from 'swiper/modules';
-import { useUserStore } from '~/store/user';
-import Modal from '~/components/ui/Modal.vue';
-import BaseButton from '~/components/ui/BaseButton.vue';
-import PostCard from '@/components/PostCard.vue';
-import 'swiper/css';
-import 'swiper/css/pagination';
+import { ref, computed, onMounted } from 'vue'
+import { toast } from 'vue3-toastify'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Pagination, Keyboard } from 'swiper/modules'
+import { useUserStore } from '~/store/user'
+import Modal from '~/components/ui/Modal.vue'
+import BaseButton from '~/components/ui/BaseButton.vue'
+import PostCard from '@/components/PostCard.vue'
+import 'swiper/css'
+import 'swiper/css/pagination'
 
 definePageMeta({
 	layout: 'creator',
@@ -114,7 +114,7 @@ definePageMeta({
 	meta: {
 		requiresAuth: true,
 	},
-});
+})
 
 interface Creator {
 	id: string
@@ -140,7 +140,7 @@ interface SuggestionUser {
 	avatar: string
 }
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 
 const posts = ref<Post[]>([
 	{
@@ -171,14 +171,14 @@ const posts = ref<Post[]>([
 		isPremium: true,
 		comments: [],
 	},
-]);
+])
 
-const showingTipModal = ref(false);
-const selectedPost = ref<Post | null>(null);
-const tipAmount = ref<number>(1000);
-const isSendingTip = ref(false);
+const showingTipModal = ref(false)
+const selectedPost = ref<Post | null>(null)
+const tipAmount = ref<number>(1000)
+const isSendingTip = ref(false)
 
-const suggestionSearch = ref('');
+const suggestionSearch = ref('')
 const suggestions = ref<SuggestionUser[]>([
 	{
 		id: '1',
@@ -252,66 +252,66 @@ const suggestions = ref<SuggestionUser[]>([
 		username: 'sophiet',
 		avatar: 'https://randomuser.me/api/portraits/women/55.jpg',
 	},
-]);
+])
 
 const filteredSuggestions = computed<SuggestionUser[]>(() => {
 	if (!suggestionSearch.value) {
-		return suggestions.value;
+		return suggestions.value
 	}
 	return suggestions.value.filter(
 		(user) =>
 			user.name.toLowerCase().includes(suggestionSearch.value.toLowerCase()) ||
 			user.username.toLowerCase().includes(suggestionSearch.value.toLowerCase()),
-	);
-});
+	)
+})
 
-const usersPerSlide = 3;
+const usersPerSlide = 3
 function chunkArray<T>(array: T[], size: number): T[][] {
-	const result: T[][] = [];
+	const result: T[][] = []
 	for (let i = 0; i < array.length; i += size) {
-		result.push(array.slice(i, i + size));
+		result.push(array.slice(i, i + size))
 	}
-	return result;
+	return result
 }
-const chunkedSuggestions = computed<SuggestionUser[][]>(() => chunkArray(filteredSuggestions.value, usersPerSlide));
+const chunkedSuggestions = computed<SuggestionUser[][]>(() => chunkArray(filteredSuggestions.value, usersPerSlide))
 
 const isSubscribedToCreator = (creatorId: string): boolean => {
-	return userStore?.getSubscriptions?.includes(creatorId) || false;
-};
+	return userStore?.getSubscriptions?.includes(creatorId) || false
+}
 
 const subscribeToCreator = async (creatorId: string): Promise<void> => {
 	try {
-		await userStore.addSubscription(creatorId);
-		toast.success('Successfully subscribed to creator!');
+		await userStore.addSubscription(creatorId)
+		toast.success('Successfully subscribed to creator!')
 	} catch {
-		toast.error('Failed to subscribe to creator');
+		toast.error('Failed to subscribe to creator')
 	}
-};
+}
 
 const showTipModal = (post: Post): void => {
-	selectedPost.value = post;
-	showingTipModal.value = true;
-};
+	selectedPost.value = post
+	showingTipModal.value = true
+}
 
 const sendTip = async (): Promise<void> => {
 	if (!selectedPost.value || tipAmount.value < 100) {
-		return;
+		return
 	}
-	isSendingTip.value = true;
+	isSendingTip.value = true
 	try {
-		await new Promise((resolve) => setTimeout(resolve, 1000));
-		toast.success(`Successfully sent tip to ${selectedPost.value.creator.name}!`);
-		showingTipModal.value = false;
+		await new Promise((resolve) => setTimeout(resolve, 1000))
+		toast.success(`Successfully sent tip to ${selectedPost.value.creator.name}!`)
+		showingTipModal.value = false
 	} catch {
-		toast.error('Failed to send tip');
+		toast.error('Failed to send tip')
 	} finally {
-		isSendingTip.value = false;
+		isSendingTip.value = false
 	}
-};
+}
 
 onMounted(async () => {
 	// Fetch posts from API
-});
+})
 </script>
 
 <style scoped>

@@ -63,7 +63,7 @@
 		"@typescript-eslint/no-require-imports": [
 			"error",
 			{
-				"allow": ["tailwind.config.js","tailwind.config.ts", "vite.config.ts", "nuxt.config.ts"]
+				"allow": ["tailwind.config.js", "tailwind.config.ts", "vite.config.ts", "nuxt.config.ts"]
 			}
 		],
 		"vue/multi-word-component-names": "off",

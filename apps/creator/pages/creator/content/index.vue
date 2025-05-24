@@ -1,6 +1,8 @@
 <template>
 	<div class="max-w-6xl mx-auto">
-		<Head> <Title>{{ $t('content.management.title') }} - Whispers</Title> </Head>
+		<Head>
+			<Title>{{ $t('content.management.title') }} - Whispers</Title>
+		</Head>
 
 		<div class="sm:flex sm:items-center sm:justify-between">
 			<div>
@@ -60,7 +62,10 @@
 						<table class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
 							<thead class="bg-gray-50 dark:bg-gray-800">
 								<tr>
-									<th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6">
+									<th
+										scope="col"
+										class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6"
+									>
 										{{ $t('content.management.list.title') }}
 									</th>
 									<th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">
@@ -104,9 +109,12 @@
 										<span
 											class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium"
 											:class="{
-												'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400': item.visibility === 'public',
-												'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400': item.visibility === 'private',
-												'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400': item.visibility === 'premium'
+												'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400':
+													item.visibility === 'public',
+												'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400':
+													item.visibility === 'private',
+												'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400':
+													item.visibility === 'premium',
 											}"
 										>
 											{{ $t(`content.management.filters.${item.visibility}`) }}
@@ -204,12 +212,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { toast } from 'vue3-toastify';
-import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
-import { useI18n } from 'vue-i18n';
-import { useContentStore } from '../../../store/content';
-import type { Content } from '../../../types/content';
+import { ref, computed, onMounted } from 'vue'
+import { toast } from 'vue3-toastify'
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import { useI18n } from 'vue-i18n'
+import { useContentStore } from '../../../store/content'
+import type { Content } from '../../../types/content'
 
 definePageMeta({
 	layout: 'creator',
@@ -218,77 +226,76 @@ definePageMeta({
 		requiresAuth: true,
 		requiresCreator: true,
 	},
-});
+})
 
-const { t } = useI18n();
-const contentStore = useContentStore();
+const { t } = useI18n()
+const contentStore = useContentStore()
 
 // State
-const loading = ref<boolean>(true);
-const search = ref<string>('');
-const visibilityFilter = ref<string>('all');
-const showDeleteModal = ref<boolean>(false);
-const contentToDelete = ref<Content | null>(null);
+const loading = ref<boolean>(true)
+const search = ref<string>('')
+const visibilityFilter = ref<string>('all')
+const showDeleteModal = ref<boolean>(false)
+const contentToDelete = ref<Content | null>(null)
 
 // Computed properties
 const filteredContent = computed<Content[]>(() => {
-	let result = [...contentStore.content];
+	let result = [...contentStore.content]
 
 	// Apply search filter
 	if (search.value) {
-		const searchLower = search.value.toLowerCase();
+		const searchLower = search.value.toLowerCase()
 		result = result.filter(
 			(content) =>
-				content.title.toLowerCase().includes(searchLower) || 
-				content.description.toLowerCase().includes(searchLower)
-		);
+				content.title.toLowerCase().includes(searchLower) || content.description.toLowerCase().includes(searchLower),
+		)
 	}
 
 	// Apply visibility filter
 	if (visibilityFilter.value !== 'all') {
-		result = result.filter((content) => content.visibility === visibilityFilter.value);
+		result = result.filter((content) => content.visibility === visibilityFilter.value)
 	}
 
-	return result;
-});
+	return result
+})
 
 // Methods
 function editContent(content: Content): void {
-	navigateTo(`/creator/content/edit/${content.id}`);
+	navigateTo(`/creator/content/edit/${content.id}`)
 }
 
 function confirmDelete(content: Content): void {
-	contentToDelete.value = content;
-	showDeleteModal.value = true;
+	contentToDelete.value = content
+	showDeleteModal.value = true
 }
 
 function closeDeleteModal(): void {
-	showDeleteModal.value = false;
-	contentToDelete.value = null;
+	showDeleteModal.value = false
+	contentToDelete.value = null
 }
 
 async function deleteContent(): Promise<void> {
 	if (!contentToDelete.value) {
-		return;
+		return
 	}
 
 	try {
-		await contentStore.deleteContent(contentToDelete.value.id);
-		toast.success(t('notifications.contentDeleted'));
-		closeDeleteModal();
+		await contentStore.deleteContent(contentToDelete.value.id)
+		toast.success(t('notifications.contentDeleted'))
+		closeDeleteModal()
 	} catch {
-		toast.error(t('notifications.contentDeleteFailed'));
+		toast.error(t('notifications.contentDeleteFailed'))
 	}
 }
 
 // Fetch content on mount
 onMounted(async () => {
 	try {
-		await contentStore.fetchContent();
-		loading.value = false;
+		await contentStore.fetchContent()
+		loading.value = false
 	} catch {
-		toast.error(t('notifications.contentLoadFailed'));
-		loading.value = false;
+		toast.error(t('notifications.contentLoadFailed'))
+		loading.value = false
 	}
-});
+})
 </script>

@@ -313,11 +313,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { toast } from 'vue3-toastify';
-import { useI18n } from 'vue-i18n';
+import { ref, computed } from 'vue'
+import { toast } from 'vue3-toastify'
+import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n();
+const { t } = useI18n()
 
 definePageMeta({
 	layout: 'creator',
@@ -326,7 +326,7 @@ definePageMeta({
 		requiresAuth: true,
 		requiresCreator: true,
 	},
-});
+})
 
 interface StatCard {
 	name: string
@@ -383,19 +383,19 @@ const stats = ref<StatCard[]>([
 		color: 'error',
 		trend: -1,
 	},
-]);
+])
 
 // Filters and pagination
 const filters = ref<Filters>({
 	search: '',
 	plan: '',
 	status: '',
-});
+})
 
-const currentPage = ref<number>(1);
-const itemsPerPage = 10;
-const showBlockModal = ref<boolean>(false);
-const subscriberToBlock = ref<Subscriber | null>(null);
+const currentPage = ref<number>(1)
+const itemsPerPage = 10
+const showBlockModal = ref<boolean>(false)
+const subscriberToBlock = ref<Subscriber | null>(null)
 
 // Mock subscribers data
 const subscribers = ref<Subscriber[]>([
@@ -429,63 +429,63 @@ const subscribers = ref<Subscriber[]>([
 		totalRevenue: 9.99,
 		joinedAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
 	},
-]);
+])
 
 // Computed properties
 const filteredSubscribers = computed<Subscriber[]>(() => {
-	let result = [...subscribers.value];
+	let result = [...subscribers.value]
 
 	// Apply search filter
 	if (filters.value.search) {
-		const searchLower = filters.value.search.toLowerCase();
+		const searchLower = filters.value.search.toLowerCase()
 		result = result.filter(
 			(subscriber) =>
 				subscriber.name.toLowerCase().includes(searchLower) || subscriber.email.toLowerCase().includes(searchLower),
-		);
+		)
 	}
 
 	// Apply plan filter
 	if (filters.value.plan) {
-		result = result.filter((subscriber) => subscriber.plan === filters.value.plan);
+		result = result.filter((subscriber) => subscriber.plan === filters.value.plan)
 	}
 
 	// Apply status filter
 	if (filters.value.status) {
-		result = result.filter((subscriber) => subscriber.status === filters.value.status);
+		result = result.filter((subscriber) => subscriber.status === filters.value.status)
 	}
 
-	return result;
-});
+	return result
+})
 
-const totalSubscribers = computed<number>(() => filteredSubscribers.value.length);
-const totalPages = computed<number>(() => Math.ceil(totalSubscribers.value / itemsPerPage));
+const totalSubscribers = computed<number>(() => filteredSubscribers.value.length)
+const totalPages = computed<number>(() => Math.ceil(totalSubscribers.value / itemsPerPage))
 
-const startIndex = computed<number>(() => (currentPage.value - 1) * itemsPerPage);
-const endIndex = computed<number>(() => Math.min(startIndex.value + itemsPerPage, totalSubscribers.value));
+const startIndex = computed<number>(() => (currentPage.value - 1) * itemsPerPage)
+const endIndex = computed<number>(() => Math.min(startIndex.value + itemsPerPage, totalSubscribers.value))
 
 const displayedPages = computed<number[]>(() => {
-	const pages: number[] = [];
-	const maxPages = 5;
+	const pages: number[] = []
+	const maxPages = 5
 
 	if (totalPages.value <= maxPages) {
 		for (let i = 1; i <= totalPages.value; i++) {
-			pages.push(i);
+			pages.push(i)
 		}
 	} else {
-		let start = Math.max(1, currentPage.value - 2);
-		const end = Math.min(totalPages.value, start + maxPages - 1);
+		let start = Math.max(1, currentPage.value - 2)
+		const end = Math.min(totalPages.value, start + maxPages - 1)
 
 		if (end - start < maxPages - 1) {
-			start = Math.max(1, end - maxPages + 1);
+			start = Math.max(1, end - maxPages + 1)
 		}
 
 		for (let i = start; i <= end; i++) {
-			pages.push(i);
+			pages.push(i)
 		}
 	}
 
-	return pages;
-});
+	return pages
+})
 
 // Methods
 function formatDate(date: Date): string {
@@ -493,36 +493,36 @@ function formatDate(date: Date): string {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',
-	});
+	})
 }
 
 function messageSubscriber(subscriber: Subscriber): void {
 	// Implement messaging functionality
-	toast.info(`Messaging ${subscriber.name} - To be implemented`);
+	toast.info(`Messaging ${subscriber.name} - To be implemented`)
 }
 
 function confirmBlock(subscriber: Subscriber): void {
-	subscriberToBlock.value = subscriber;
-	showBlockModal.value = true;
+	subscriberToBlock.value = subscriber
+	showBlockModal.value = true
 }
 
 function blockSubscriber(): void {
 	if (!subscriberToBlock.value) {
-		return;
+		return
 	}
 
 	try {
 		// In a real app, make API call to block subscriber
-		const index = subscribers.value.findIndex((s) => s.id === subscriberToBlock.value?.id);
+		const index = subscribers.value.findIndex((s) => s.id === subscriberToBlock.value?.id)
 		if (index !== -1) {
-			subscribers.value[index].status = 'cancelled';
+			subscribers.value[index].status = 'cancelled'
 		}
 
-		showBlockModal.value = false;
-		subscriberToBlock.value = null;
-		toast.success('Subscriber blocked successfully');
+		showBlockModal.value = false
+		subscriberToBlock.value = null
+		toast.success('Subscriber blocked successfully')
 	} catch {
-		toast.error('Failed to block subscriber');
+		toast.error('Failed to block subscriber')
 	}
 }
 </script>

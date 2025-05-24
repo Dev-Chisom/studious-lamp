@@ -7,7 +7,8 @@
 				<button
 					type="button"
 					class="lg:hidden -ml-0.5 -mt-0.5 inline-flex h-10 w-10 items-center justify-center rounded-md text-gray-500 dark:text-gray-200 hover:text-gray-900"
-					@click="isMobileOpen = true">
+					@click="isMobileOpen = true"
+				>
 					<span class="sr-only">{{ $t('common.openSidebar') }}</span>
 					<Icon name="lucide:menu" class="h-6 w-6" />
 				</button>
@@ -38,7 +39,8 @@
 				<!-- Desktop Sidebar (fixed) -->
 				<div
 					class="hidden lg:block lg:w-64 bg-gray-200 dark:bg-gray-700 fixed"
-					style="top: 64px; height: calc(100vh - 64px)">
+					style="top: 64px; height: calc(100vh - 64px)"
+				>
 					<creator-sidebar :is-mobile-open="isMobileOpen" @close="isMobileOpen = false" />
 				</div>
 
@@ -63,14 +65,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useAuthStore } from '../store/auth';
-import CreatorSidebar from '~/components/CreatorSidebar.vue';
-import NotificationBell from '~/components/NotificationBell.vue';
-import UserDropdown from '~/components/UserDropdown.vue';
-import LanguageSwitcher from '~/components/LanguageSwitcher.vue';
+import { ref } from 'vue'
+import { useAuthStore } from '../store/auth'
+import CreatorSidebar from '~/components/CreatorSidebar.vue'
+import NotificationBell from '~/components/NotificationBell.vue'
+import UserDropdown from '~/components/UserDropdown.vue'
+import LanguageSwitcher from '~/components/LanguageSwitcher.vue'
 
-const isMobileOpen = ref(false);
-const authStore = useAuthStore();
-authStore.hydrate();
+const isMobileOpen = ref(false)
+const authStore = useAuthStore()
+authStore.hydrate()
 </script>

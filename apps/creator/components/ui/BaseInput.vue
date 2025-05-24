@@ -10,20 +10,28 @@
 			</div>
 
 			<input
-				:id="stableId" ref="input" v-bind="$attrs" :value="modelValue" :type="inputType" :placeholder="placeholder"
+				:id="stableId"
+				ref="input"
+				v-bind="$attrs"
+				:value="modelValue"
+				:type="inputType"
+				:placeholder="placeholder"
 				:class="[
 					'form-input',
 					icon ? 'pl-10' : '',
 					error ? 'border-error-300 focus:border-error-500 focus:ring-error-500' : '',
 					'bg-white dark:bg-gray-900 text-gray-900 border-gray-300 placeholder-gray-400',
 					'dark:bg-gray-900 dark:text-gray-100 dark:border-gray-700 dark:placeholder-gray-500',
-				]" @input="$emit('update:modelValue', $event.target.value)" />
+				]"
+				@input="$emit('update:modelValue', $event.target.value)"
+			/>
 
 			<div v-if="type === 'password' && showPasswordToggle" class="absolute inset-y-0 right-0 pr-3 flex items-center">
 				<button
 					type="button"
 					class="text-gray-400 hover:text-gray-500 dark:text-gray-200 dark:text-gray-500 dark:text-gray-200 dark:hover:text-gray-400 focus:outline-none"
-					@click="togglePasswordVisibility">
+					@click="togglePasswordVisibility"
+				>
 					<Icon :name="passwordVisible ? 'lucide:eye-off' : 'lucide:eye'" class="h-5 w-5" />
 				</button>
 			</div>
@@ -36,61 +44,61 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue'
 
 type InputType = 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search'
 
 interface FormInputProps {
-  modelValue?: string | number
-  label?: string
-  placeholder?: string
-  type?: InputType
-  error?: string | boolean
-  hint?: string
-  icon?: string
-  required?: boolean
-  showPasswordToggle?: boolean
-  autofocus?: boolean
+	modelValue?: string | number
+	label?: string
+	placeholder?: string
+	type?: InputType
+	error?: string | boolean
+	hint?: string
+	icon?: string
+	required?: boolean
+	showPasswordToggle?: boolean
+	autofocus?: boolean
 }
 
 interface FormInputEmits {
-  (e: 'update:modelValue', value: string): void
+	(e: 'update:modelValue', value: string): void
 }
 
 const props = withDefaults(defineProps<FormInputProps>(), {
-  modelValue: '',
-  label: '',
-  placeholder: '',
-  type: 'text',
-  error: '',
-  hint: '',
-  icon: '',
-  required: false,
-  showPasswordToggle: true,
-  autofocus: false,
-});
+	modelValue: '',
+	label: '',
+	placeholder: '',
+	type: 'text',
+	error: '',
+	hint: '',
+	icon: '',
+	required: false,
+	showPasswordToggle: true,
+	autofocus: false,
+})
 
-defineEmits<FormInputEmits>();
+defineEmits<FormInputEmits>()
 
-const stableId = computed(() => props.name ? `input-${props.name}` : undefined);
+const stableId = computed(() => (props.name ? `input-${props.name}` : undefined))
 
-const input = ref<HTMLInputElement | null>(null);
-const passwordVisible = ref(false);
+const input = ref<HTMLInputElement | null>(null)
+const passwordVisible = ref(false)
 
 const inputType = computed<InputType>(() => {
-  if (props.type === 'password' && passwordVisible.value) {
-    return 'text';
-  }
-  return props.type;
-});
+	if (props.type === 'password' && passwordVisible.value) {
+		return 'text'
+	}
+	return props.type
+})
 
 function togglePasswordVisibility(): void {
-  passwordVisible.value = !passwordVisible.value;
+	passwordVisible.value = !passwordVisible.value
 }
 
 onMounted(() => {
-  if (props.autofocus && input.value) {
-    input.value.focus();
-  }
-});
+	if (props.autofocus && input.value) {
+		input.value.focus()
+	}
+})
 </script>

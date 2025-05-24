@@ -33,12 +33,12 @@
 <script setup>
 defineProps({
 	error: Object,
-});
+})
 
 function handleError() {
 	if (error.value?.statusCode === 404) {
-		return navigateTo('/');
+		return navigateTo('/')
 	}
-	clearError({ redirect: '/' });
+	clearError({ redirect: '/' })
 }
 </script>

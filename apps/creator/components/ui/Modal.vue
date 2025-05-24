@@ -27,5 +27,5 @@ interface ModalEmits {
 	(e: 'close'): void
 }
 
-const emit = defineEmits<ModalEmits>();
+const emit = defineEmits<ModalEmits>()
 </script>

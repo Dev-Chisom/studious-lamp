@@ -227,11 +227,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import { useUserStore } from '../store/user';
-import PostCard from '~/components/PostCard.vue';
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+import { useUserStore } from '../store/user'
+import PostCard from '~/components/PostCard.vue'
 
 interface SocialLink {
 	platform: string
@@ -279,13 +279,13 @@ interface UserPost {
 	comments: PostComment[]
 }
 
-const route = useRoute();
-const username = computed<string>(() => route.params.username as string);
-const userStore = useUserStore();
+const route = useRoute()
+const username = computed<string>(() => route.params.username as string)
+const userStore = useUserStore()
 
 definePageMeta({
 	layout: 'creator',
-});
+})
 
 const user = ref<UserProfile>({
 	displayName: 'John Doe',
@@ -312,7 +312,7 @@ const user = ref<UserProfile>({
 		},
 	],
 	joinedAt: new Date('2023-01-01'),
-});
+})
 
 const posts = ref<UserPost[]>([
 	{
@@ -345,59 +345,59 @@ const posts = ref<UserPost[]>([
 		isPremium: true,
 		comments: [],
 	},
-]);
+])
 
-const newPost = ref<string>('');
-const isFollowing = ref<boolean>(false);
-const isSubscribed = ref<boolean>(false);
+const newPost = ref<string>('')
+const isFollowing = ref<boolean>(false)
+const isSubscribed = ref<boolean>(false)
 
 const isCurrentUser = computed<boolean>(() => {
-	return userStore?.profile?.username === username.value;
-});
+	return userStore?.profile?.username === username.value
+})
 
 const userInitials = computed<string>(() => {
-	const name = user.value?.displayName || 'User';
+	const name = user.value?.displayName || 'User'
 	if (!name) {
-		return '?';
+		return '?'
 	}
-	const parts = name.split(' ');
+	const parts = name.split(' ')
 	if (parts.length > 1) {
-		return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+		return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
 	}
-	return name.substring(0, 2).toUpperCase();
-});
+	return name.substring(0, 2).toUpperCase()
+})
 
 const formatDate = (date: Date | string | undefined): string => {
 	if (!date) {
-		return '';
+		return ''
 	}
 	return new Intl.DateTimeFormat('en-US', {
 		day: 'numeric',
 		month: 'short',
 		year: 'numeric',
-	}).format(new Date(date));
-};
+	}).format(new Date(date))
+}
 
 const followUser = () => {
-	isFollowing.value = !isFollowing.value;
-};
+	isFollowing.value = !isFollowing.value
+}
 
 const createPost = () => {
 	if (!newPost.value.trim()) {
-		return;
+		return
 	}
-	newPost.value = '';
-};
+	newPost.value = ''
+}
 
 const handleSubscribe = () => {
-	isSubscribed.value = true;
-};
+	isSubscribed.value = true
+}
 
 const handleTip = () => {
 	// Implement tip logic
-};
+}
 
 onMounted(() => {
 	// Implement API calls to fetch user data and posts
-});
+})
 </script>

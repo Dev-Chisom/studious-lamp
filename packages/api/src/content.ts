@@ -1,25 +1,25 @@
-import { createApiClient } from './client';
+import { createApiClient } from './client'
 
 export interface ContentApiResponse {
-  data: [];
+	data: []
 }
 
 export interface ContentApi {
-  getContent: () => Promise<ContentApiResponse>;
-  deleteContent: (id: string) => Promise<void>;
+	getContent: () => Promise<ContentApiResponse>
+	deleteContent: (id: string) => Promise<void>
 }
 
 export function createContentApi(): ContentApi {
-	const client = createApiClient();
+	const client = createApiClient()
 
 	return {
 		async getContent() {
-			const response = await client.get('/api/content');
-			return response.data;
+			const response = await client.get('/api/content')
+			return response.data
 		},
 
 		async deleteContent(id: string) {
-			await client.delete(`/api/content/${id}`);
-		}
-	};
-} 
+			await client.delete(`/api/content/${id}`)
+		},
+	}
+}

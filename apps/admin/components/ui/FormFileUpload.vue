@@ -69,8 +69,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import MediaPreviewModal from './MediaPreviewModal.vue';
+import { ref, computed } from 'vue'
+import MediaPreviewModal from './MediaPreviewModal.vue'
 
 const props = defineProps({
 	modelValue: {
@@ -105,117 +105,117 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-});
+})
 
-const emit = defineEmits(['update:modelValue', 'error']);
+const emit = defineEmits(['update:modelValue', 'error'])
 
-const isDragging = ref(false);
-const files = ref([]);
-const previewUrls = ref([]);
+const isDragging = ref(false)
+const files = ref([])
+const previewUrls = ref([])
 
 // Preview modal state
 const previewModal = ref({
 	isOpen: false,
 	items: [],
 	currentIndex: 0,
-});
+})
 
 const acceptText = computed(() => {
 	if (props.accept === 'image/*') {
-		return `PNG, JPG, GIF up to ${formatSize(props.maxSize)}`;
+		return `PNG, JPG, GIF up to ${formatSize(props.maxSize)}`
 	} else if (props.accept.includes('video')) {
-		return `Video files up to ${formatSize(props.maxSize)}`;
+		return `Video files up to ${formatSize(props.maxSize)}`
 	} else {
-		return `Files up to ${formatSize(props.maxSize)}`;
+		return `Files up to ${formatSize(props.maxSize)}`
 	}
-});
+})
 
 function formatSize(bytes) {
 	if (bytes === 0) {
-		return '0 Bytes';
+		return '0 Bytes'
 	}
-	const k = 1024;
-	const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-	const i = Math.floor(Math.log(bytes) / Math.log(k));
-	return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+	const k = 1024
+	const sizes = ['Bytes', 'KB', 'MB', 'GB']
+	const i = Math.floor(Math.log(bytes) / Math.log(k))
+	return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
 }
 
 function isImage(url) {
-	return /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+	return /\.(jpg|jpeg|png|gif|webp)$/i.test(url)
 }
 
 function onFileChange(event) {
-	const newFiles = Array.from(event.target.files);
-	processFiles(newFiles);
-	event.target.value = ''; // Reset file input
+	const newFiles = Array.from(event.target.files)
+	processFiles(newFiles)
+	event.target.value = '' // Reset file input
 }
 
 function onDrop(event) {
-	isDragging.value = false;
-	const newFiles = Array.from(event.dataTransfer.files);
-	processFiles(newFiles);
+	isDragging.value = false
+	const newFiles = Array.from(event.dataTransfer.files)
+	processFiles(newFiles)
 }
 
 function processFiles(newFiles) {
 	const validFiles = newFiles.filter((file) => {
 		// Check file size
 		if (file.size > props.maxSize) {
-			emit('error', `File "${file.name}" exceeds the maximum size of ${formatSize(props.maxSize)}`);
-			return false;
+			emit('error', `File "${file.name}" exceeds the maximum size of ${formatSize(props.maxSize)}`)
+			return false
 		}
 
 		// Check file type if accept is specified
 		if (props.accept && props.accept !== '*') {
-			const fileType = file.type;
-			const acceptTypes = props.accept.split(',').map((type) => type.trim());
+			const fileType = file.type
+			const acceptTypes = props.accept.split(',').map((type) => type.trim())
 			const isValid = acceptTypes.some((type) => {
 				if (type.endsWith('/*')) {
-					const category = type.replace('/*', '');
-					return fileType.startsWith(category + '/');
+					const category = type.replace('/*', '')
+					return fileType.startsWith(category + '/')
 				}
-				return type === fileType;
-			});
+				return type === fileType
+			})
 
 			if (!isValid) {
-				emit('error', `File "${file.name}" has an invalid file type`);
-				return false;
+				emit('error', `File "${file.name}" has an invalid file type`)
+				return false
 			}
 		}
 
-		return true;
-	});
+		return true
+	})
 
 	if (!props.multiple) {
 		// Replace existing files
-		files.value = validFiles;
-		createPreviews(validFiles);
+		files.value = validFiles
+		createPreviews(validFiles)
 	} else {
 		// Add to existing files
-		files.value = [...files.value, ...validFiles];
-		createPreviews(validFiles, true);
+		files.value = [...files.value, ...validFiles]
+		createPreviews(validFiles, true)
 	}
 
-	emit('update:modelValue', files.value);
+	emit('update:modelValue', files.value)
 }
 
 function createPreviews(newFiles, append = false) {
 	if (!append) {
-		previewUrls.value = [];
+		previewUrls.value = []
 	}
 
 	newFiles.forEach((file) => {
-		const reader = new FileReader();
+		const reader = new FileReader()
 		reader.onload = (e) => {
-			previewUrls.value.push(e.target.result);
-		};
-		reader.readAsDataURL(file);
-	});
+			previewUrls.value.push(e.target.result)
+		}
+		reader.readAsDataURL(file)
+	})
 }
 
 function removeFile(index) {
-	files.value.splice(index, 1);
-	previewUrls.value.splice(index, 1);
-	emit('update:modelValue', files.value);
+	files.value.splice(index, 1)
+	previewUrls.value.splice(index, 1)
+	emit('update:modelValue', files.value)
 }
 
 function openPreview(index) {
@@ -226,10 +226,10 @@ function openPreview(index) {
 			url,
 		})),
 		currentIndex: index,
-	};
+	}
 }
 
 function closePreview() {
-	previewModal.value.isOpen = false;
+	previewModal.value.isOpen = false
 }
 </script>

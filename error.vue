@@ -32,14 +32,14 @@
 
 <script setup>
 defineProps({
-  error: Object,
-  default: () => ({}),
-});
+	error: Object,
+	default: () => ({}),
+})
 
 function handleError() {
-  if (error.value?.statusCode === 404) {
-    return navigateTo('/');
-  }
-  clearError({ redirect: '/' });
+	if (error.value?.statusCode === 404) {
+		return navigateTo('/')
+	}
+	clearError({ redirect: '/' })
 }
 </script>

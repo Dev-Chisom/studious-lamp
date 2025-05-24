@@ -1,11 +1,11 @@
-import type { User } from './user.types';
+import type { User } from './user.types'
 
-export type SocialMediaPlatform = 'facebook' | 'instagram' | 'twitter' | 'tiktok' | 'youtube';
+export type SocialMediaPlatform = 'facebook' | 'instagram' | 'twitter' | 'tiktok' | 'youtube'
 
 export interface SocialMediaLink {
-	platform: SocialMediaPlatform;
-	username: string;
-	url: string;
+	platform: SocialMediaPlatform
+	username: string
+	url: string
 }
 
 export interface Creator extends User {
@@ -19,18 +19,18 @@ export interface Creator extends User {
 }
 
 export interface CreatorApplicationPayload {
-	displayName: string;
-	username: string;
-	bio: string;
-	categories: string[];
-	socialMedia: SocialMediaLink[];
+	displayName: string
+	username: string
+	bio: string
+	categories: string[]
+	socialMedia: SocialMediaLink[]
 	pricing: {
-		amount: number;
-		models: string[];
-	};
+		amount: number
+		models: string[]
+	}
 	legal: {
-		termsOfService: boolean;
-		legallyAnAdult: boolean;
-		contentGuidelines: boolean;
-	};
-} 
+		termsOfService: boolean
+		legallyAnAdult: boolean
+		contentGuidelines: boolean
+	}
+}

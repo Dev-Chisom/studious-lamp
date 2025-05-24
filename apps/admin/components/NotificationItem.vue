@@ -31,49 +31,49 @@ const props = defineProps({
 		type: Object,
 		required: true,
 	},
-});
+})
 
-const emit = defineEmits(['read']);
+const emit = defineEmits(['read'])
 
 function getIcon(type) {
 	switch (type) {
 		case 'subscription':
-			return 'lucide:user-plus';
+			return 'lucide:user-plus'
 		case 'tip':
-			return 'lucide:dollar-sign';
+			return 'lucide:dollar-sign'
 		case 'message':
-			return 'lucide:message-circle';
+			return 'lucide:message-circle'
 		case 'post_like':
-			return 'lucide:heart';
+			return 'lucide:heart'
 		case 'post_comment':
-			return 'lucide:message-square';
+			return 'lucide:message-square'
 		default:
-			return 'lucide:bell';
+			return 'lucide:bell'
 	}
 }
 
 function formatTime(date) {
-	const now = new Date();
-	const diff = now - new Date(date);
+	const now = new Date()
+	const diff = now - new Date(date)
 
-	const minutes = Math.floor(diff / (1000 * 60));
-	const hours = Math.floor(diff / (1000 * 60 * 60));
-	const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+	const minutes = Math.floor(diff / (1000 * 60))
+	const hours = Math.floor(diff / (1000 * 60 * 60))
+	const days = Math.floor(diff / (1000 * 60 * 60 * 24))
 
 	if (minutes < 60) {
-		return `${minutes}m ago`;
+		return `${minutes}m ago`
 	} else if (hours < 24) {
-		return `${hours}h ago`;
+		return `${hours}h ago`
 	} else if (days < 7) {
-		return `${days}d ago`;
+		return `${days}d ago`
 	} else {
-		return new Date(date).toLocaleDateString();
+		return new Date(date).toLocaleDateString()
 	}
 }
 
 function handleClick() {
 	if (!props.notification.isRead) {
-		emit('read');
+		emit('read')
 	}
 	// Handle click based on notification type
 	// e.g., navigateTo(props.notification.link)

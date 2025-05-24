@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 
 export function createApiClient() {
 	return axios.create({
@@ -6,5 +6,5 @@ export function createApiClient() {
 		headers: {
 			'Content-Type': 'application/json',
 		},
-	});
-} 
+	})
+}
