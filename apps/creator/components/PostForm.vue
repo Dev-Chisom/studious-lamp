@@ -1,10 +1,10 @@
 <template>
-  <Form @submit="onSubmit" :validation-schema="schema" :initial-values="formValues" v-slot="{ errors, meta }">
+  <Form @submit="onSubmit" :validation-schema="schema" :initial-values="formValues" v-slot="{ errors, meta, resetForm }">
     <div class="p-6 space-y-6">
       <!-- Title -->
       <div>
         <Field v-slot="{ field, errorMessage }" name="title">
-          <form-input v-model="formValues.title" :label="t('postTitle')" :placeholder="t('enterPostTitle')"
+          <form-input v-model="formValues.title" v-bind="field" :label="t('postTitle')" :placeholder="t('enterPostTitle')"
             :error="errorMessage" :required="true" />
         </Field>
       </div>
@@ -15,7 +15,7 @@
           <label class="form-label">
             {{ t('postContent') }} <span class="text-error-500 ml-1">*</span>
           </label>
-          <textarea v-model="formValues.content" @blur="field.handleBlur" rows="5" :placeholder="t('writePostContent')"
+          <textarea v-model="formValues.content" v-bind="field" rows="5" :placeholder="t('writePostContent')"
             class="form-input"
             :class="errorMessage ? 'border-error-300 focus:border-error-500 focus:ring-error-500' : ''" required />
           <p v-if="errorMessage" class="form-error">{{ errorMessage }}</p>
@@ -116,15 +116,14 @@
       </div>
     </div>
 
-    <div class="p-4" v-if="debug">
-      <pre>Form valid: {{ meta.valid }}</pre>
-      <pre>Errors: {{ errors }}</pre>
-      <pre>Values: {{ formValues }}</pre>
-    
-    </div>
-
     <div class="bg-gray-50 dark:bg-gray-800 py-3 flex justify-end">
-      <button type="submit" class="btn-primary" :disabled="!meta.valid || loading">
+      <button type="submit"
+        class="w-full sm:w-auto px-6 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2"
+        :class="{
+          'bg-primary-600 text-white hover:bg-primary-700': meta.valid && !loaading,
+          'bg-primary-500 text-white cursor-wait': loaading,
+          'bg-gray-300 text-gray-500 cursor-not-allowed': !meta.valid,
+        }">
         <Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
         {{ isScheduled ? t('schedulePost') : t('publishNow') }}
       </button>
@@ -228,26 +227,25 @@ const schema = yup.object({
     .max(200, t('validation.maxLength', { max: 200 })),
   content: yup.string()
     .required(t('validation.required'))
-    .min(10, t('validation.minLength', { min: 10 })),
+    .min(10, t('validation.minLength', { min: 10 }))
+    .max(5000, t('validation.maxLength', { max: 5000 })),
   visibility: yup.string()
     .required(t('validation.required'))
-    .oneOf(['public', 'subscribers', 'premium']),
+    .oneOf(['public', 'subscribers', 'premium'], t('validation.invalidVisibility')),
   price: yup.number().when('visibility', {
     is: 'premium',
     then: (schema) => schema
       .required(t('validation.required'))
-      .min(0.01)
-      .max(999.99)
+      .min(0.01, t('validation.minValue', { min: 0.01 }))
+      .max(999.99, t('validation.maxValue', { max: 999.99 }))
   }),
   mediaFiles: yup
     .mixed()
-    .optional() // Explicitly mark as optional
-    .default(undefined) // Ensure undefined is the default rather than null
+    .optional()
     .test(
       'fileSize',
       t('validation.fileTooLarge'),
       (value) => {
-        // Skip validation if no files are provided
         if (!value || (Array.isArray(value) && value.length === 0)) return true
         return Array.from(value as File[]).every(file => file.size <= 10 * 1024 * 1024)
       }
@@ -281,10 +279,24 @@ const schema = yup.object({
   })
 })
 
-function onSubmit() {
+// Reset form function
+const resetForm = () => {
+  Object.assign(formValues, {
+    title: '',
+    content: '',
+    visibility: 'public',
+    price: 4.99,
+  })
+  mediaFiles.value = []
+  existingMediaFiles.value = []
+  isScheduled.value = false
+  scheduledDate.value = ''
+}
+
+function onSubmit(values: any) {
   const submitData = {
     title: formValues.title,
-    body: formValues.content, // Map content to body for backend
+    body: formValues.content,
     visibility: formValues.visibility,
     ...(formValues.visibility === 'premium' && { price: formValues.price }),
     mediaFiles: mediaFiles.value,
@@ -294,4 +306,9 @@ function onSubmit() {
   }
   emit('submit', submitData)
 }
+
+// Expose resetForm to parent
+defineExpose({
+  resetForm
+})
 </script>
