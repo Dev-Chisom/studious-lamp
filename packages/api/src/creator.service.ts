@@ -30,5 +30,10 @@ export function createCreatorApi() {
 		updateCreator: (id: string, creatorData: Partial<Creator>) => api.put<Creator>(`/creator/${id}`, creatorData),
 		deleteCreator: (id: string) => api.del<void>(`/creator/${id}`),
 		getCreatorPreferences: () => api.get<ApiResponse>('/preferences/pricing-models'),
+		uploadMediaFile: (fileName: string, fileType: string) => api.post<{ uploadUrl: string, fileKey: string, fileUrl: string, mediaFileId: string, status: string }>(
+			'/media-files',
+			{ fileName, fileType }
+		),
+		createPost: (data: { title: string, body: string, mediaFiles?: string[], visibility: string }) => api.post<any>('/posts', data),
 	}
 }

@@ -1,153 +1,120 @@
 <template>
-	<div class="max-w-6xl mx-auto">
-		<Head>
-			<Title>{{ $t('content.new.title') }} - Whispers</Title>
-		</Head>
+  <div class="max-w-6xl mx-auto">
 
-		<div class="mb-6">
-			<div class="flex items-center">
-				<NuxtLink to="/creator/content" class="mr-2 text-gray-500 dark:text-gray-200 hover:text-gray-700">
-					<Icon name="lucide:arrow-left" class="h-5 w-5" />
-				</NuxtLink>
+    <Head>
+      <Title>{{ $t('content.new.title') }} - Whispers</Title>
+    </Head>
 
-				<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $t('content.new.title') }}</h1>
-			</div>
+    <div class="mb-6">
+      <div class="flex items-center">
+        <NuxtLink to="/creator/content" class="mr-2 text-gray-500 dark:text-gray-200 hover:text-gray-700">
+          <Icon name="lucide:arrow-left" class="h-5 w-5" />
+        </NuxtLink>
 
-			<p class="mt-1 text-sm text-gray-500 dark:text-gray-200">{{ $t('content.new.description') }}</p>
-		</div>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ $t('content.new.title') }}</h1>
+      </div>
 
-		<div class="bg-white dark:bg-gray-900 shadow-sm rounded-lg overflow-hidden">
-			<post-form
-				:initial-values="post"
-				:errors="errors"
-				:loading="contentStore.loading"
-				:min-schedule-date="minScheduleDate"
-				@submit="handleSubmit"
-				@draft="saveAsDraft"
-				@cancel="() => router.push('/creator/content')"
-			/>
-		</div>
-	</div>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-200">{{ $t('content.new.description') }}</p>
+    </div>
+
+    <div class="bg-white dark:bg-gray-900 shadow-sm rounded-lg overflow-hidden">
+      <post-form :initial-values="post" :loading="apiLoading" :min-schedule-date="minScheduleDate"
+        @submit="handleSubmit" @draft="saveAsDraft" @cancel="() => router.push('/creator/content')" />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
 import { toast } from 'vue3-toastify'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useContentStore } from '../../../store/content'
 import PostForm from '@/components/PostForm.vue'
+import { createCreatorApi } from '@whispers/api'
+import { useApiRequest } from '~/composables/useApiRequest'
 
 const router = useRouter()
 const contentStore = useContentStore()
 const { t } = useI18n()
+const creatorApi = createCreatorApi()
 
 definePageMeta({
-	middleware: ['auth'],
-	layout: 'creator',
-	meta: {
-		requiresAuth: true,
-		requiresCreator: true,
-	},
+  middleware: ['auth'],
+  layout: 'creator',
+  meta: {
+    requiresAuth: true,
+    requiresCreator: true,
+  },
 })
 
-interface PostFormData {
-	title: string
-	content: string
-	visibility: 'public' | 'private' | 'premium'
-	price: number
-	mediaUrls: string[]
-}
 
-interface PostFormErrors {
-	title: string
-	content: string
-	mediaFiles: string
-	visibility: string
-	price: string
-	scheduledDate: string
-}
-
-const post = reactive<PostFormData>({
-	title: '',
-	content: '',
-	visibility: 'public',
-	price: 4.99,
-	mediaUrls: [],
-})
-
-const errors = reactive<PostFormErrors>({
-	title: '',
-	content: '',
-	mediaFiles: '',
-	visibility: '',
-	price: '',
-	scheduledDate: '',
+const post = reactive({
+  title: '',
+  content: '',
+  visibility: 'public',
+  price: 4.99,
+  mediaUrls: [],
 })
 
 const minScheduleDate = computed<string>(() => {
-	const date = new Date()
-	date.setMinutes(date.getMinutes() + 10)
-	return date.toISOString().slice(0, 16)
+  const date = new Date()
+  date.setMinutes(date.getMinutes() + 10)
+  return date.toISOString().slice(0, 16)
 })
 
-function validateForm(formData: PostFormData): boolean {
-	let isValid = true
-	Object.keys(errors).forEach((key) => {
-		;(errors as any)[key] = ''
-	})
-	if (!formData.title || !formData.title.trim()) {
-		errors.title = t('validation.required', { field: t('content.form.title') })
-		isValid = false
-	} else if (formData.title.length > 100) {
-		errors.title = t('validation.maxLength', { field: t('content.form.title'), max: 100 })
-		isValid = false
-	}
-	if (!formData.content || !formData.content.trim()) {
-		errors.content = t('validation.required', { field: t('content.form.content') })
-		isValid = false
-	}
-	if (formData.mediaUrls && formData.mediaUrls.length > 10) {
-		errors.mediaFiles = t('validation.maxFiles', { max: 10 })
-		isValid = false
-	}
-	if (formData.visibility === 'premium') {
-		if (!formData.price) {
-			errors.price = t('validation.required', { field: t('content.form.price') })
-			isValid = false
-		} else if (formData.price < 1 || formData.price > 100) {
-			errors.price = t('validation.priceRange')
-			isValid = false
-		}
-	}
-	return isValid
+const { loading: apiLoading, error: apiError, execute: uploadMediaFile } = useApiRequest(creatorApi.uploadMediaFile)
+const { execute: createPost } = useApiRequest(creatorApi.createPost)
+
+async function handleSubmit(formData) {
+  console.log(formData, 'jsjsjjs')
+  // 1. Check for real files
+  if (
+    formData.mediaFiles &&
+    Array.isArray(formData.mediaFiles) &&
+    formData.mediaFiles.length > 0 &&
+    formData.mediaFiles[0] instanceof File
+  ) {
+    const mediaFileIds = [];
+    for (const file of formData.mediaFiles) {
+      // 2. Call uploadMediaFile for each file
+      const response = await uploadMediaFile(file.name, file.type);
+      const { uploadUrl, mediaFileId } = response.data;
+      console.log('dgnbdhjgd')
+      // 3. Upload the file to the uploadUrl
+      await fetch(uploadUrl, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': file.type },
+      });
+      mediaFileIds.push(mediaFileId);
+    }
+    console.log('got here first')
+
+    // 4. Now call createPost with the mediaFileIds
+    await createPost({
+      title: formData.title,
+      body: formData.content,
+      mediaFiles: mediaFileIds,
+      visibility: formData.visibility === 'ppv' ? 'pay-to-view' : formData.visibility,
+      price: formData.visibility === 'ppv' ? formData.price : undefined,
+      scheduledDate: formData.isScheduled ? formData.scheduledDate : undefined,
+    });
+  } else {
+    // No files, just create the post
+    console.log('got here')
+    await createPost({
+      title: formData.title,
+      body: formData.content,
+      mediaFiles: [],
+      visibility: formData.visibility === 'ppv' ? 'pay-to-view' : formData.visibility,
+      price: formData.visibility === 'ppv' ? formData.price : undefined,
+      scheduledDate: formData.isScheduled ? formData.scheduledDate : undefined,
+    });
+  }
 }
 
-async function handleSubmit(formData: PostFormData): Promise<void> {
-	if (!validateForm(formData)) {
-		toast.error(t('validation.fixErrors'))
-		return
-	}
-	try {
-		post.title = formData.title
-		post.content = formData.content
-		post.visibility = formData.visibility
-		post.price = formData.price
-		post.mediaUrls = formData.mediaUrls
-		const postData = {
-			...post,
-			creatorId: '123', // This should come from the auth store
-		}
-		await contentStore.createPost(postData)
-		toast.success(t('notifications.contentCreated'))
-		router.push('/creator/content')
-	} catch {
-		toast.error(t('notifications.contentCreateFailed'))
-	}
-}
-
-function saveAsDraft(formData: PostFormData): void {
-	console.log(formData)
-	toast.info(t('notifications.draftSaved'))
+function saveAsDraft(formData: any): void {
+  toast.info(t('notifications.draftSaved'))
 }
 </script>

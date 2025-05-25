@@ -1,25 +1,58 @@
-import { createApiClient } from './client'
+import { api } from './api.service'
 
-export interface ContentApiResponse {
-	data: []
+export interface ContentMetadata {
+	tags: string[]
+	categories: string[]
+	likes: string[]
+	views: number
+	shares: number
 }
 
-export interface ContentApi {
-	getContent: () => Promise<ContentApiResponse>
-	deleteContent: (id: string) => Promise<void>
+export interface Content {
+	_id: string
+	title: string
+	body: string
+	mediaFiles: string[]
+	creator: string
+	status: string
+	visibility: 'public' | 'private' | 'premium'
+	price: number
+	metadata: ContentMetadata
+	createdAt: string
+	updatedAt: string
 }
 
-export function createContentApi(): ContentApi {
-	const client = createApiClient()
+export interface ContentListResponse {
+	posts: Content[]
+	pagination: {
+		page: number
+		limit: number
+		total: number
+		pages: number
+	}
+}
 
+export interface ContentListParams {
+	page?: number
+	limit?: number
+	search?: string
+	visibility?: 'public' | 'private' | 'premium'
+}
+
+export function createContentApi() {
 	return {
-		async getContent() {
-			const response = await client.get('/api/content')
-			return response.data
-		},
-
-		async deleteContent(id: string) {
-			await client.delete(`/api/content/${id}`)
-		},
+		getAllPosts: (params?: ContentListParams) =>
+			api.get<{ success: boolean; data: ContentListResponse; message: string }>('/posts', params),
+		getPostById: (id: string) => api.get<Content>(`/posts/${id}`),
+		createPost: (data: {
+			title: string
+			body: string
+			mediaFiles?: string[]
+			visibility: 'public' | 'private' | 'premium'
+			price?: number
+			scheduledDate?: string
+		}) => api.post<Content>('/posts', data),
+		updatePost: (id: string, data: Partial<Content>) => api.put<Content>(`/posts/${id}`, data),
+		deletePost: (id: string) => api.del<void>(`/posts/${id}`),
 	}
 }

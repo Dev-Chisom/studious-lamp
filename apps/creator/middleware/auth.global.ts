@@ -23,6 +23,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 		try {
 			const authApi = authStore.getAuthApi()
 			const profile = await authApi.getProfile()
+      // console.log(profile, 'profile here')
 			authStore.setProfile(profile)
 		} catch (e) {
 			if (refreshToken) {

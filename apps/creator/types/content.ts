@@ -1,15 +1,31 @@
-export interface Content {
-	id: string
-	title: string
-	description: string
-	thumbnail: string
-	visibility: 'public' | 'private' | 'premium'
+export interface ContentMetadata {
+	tags: string[]
+	categories: string[]
+	likes: string[]
 	views: number
-	createdAt: string
+	shares: number
 }
 
-export interface ContentStore {
-	content: Content[]
-	fetchContent: () => Promise<void>
-	deleteContent: (id: string) => Promise<void>
+export interface Content {
+	_id: string
+	title: string
+	body: string
+	mediaFiles: string[]
+	creator: string
+	status: string
+	visibility: 'public' | 'private' | 'premium'
+	price: number
+	metadata: ContentMetadata
+	createdAt: string
+	updatedAt: string
+}
+
+export interface ContentListResponse {
+	posts: Content[]
+	pagination: {
+		page: number
+		limit: number
+		total: number
+		pages: number
+	}
 }
