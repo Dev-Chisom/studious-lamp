@@ -1,21 +1,21 @@
 <template>
-  <Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, meta }">
+  <Form @submit="onSubmit" :validation-schema="schema" :initial-values="formValues" v-slot="{ errors, meta }">
     <div class="p-6 space-y-6">
       <!-- Title -->
       <div>
-        <Field v-slot="{ field }" name="title">
-          <form-input v-model="form.title" v-bind="field" :label="t('postTitle')" :placeholder="t('enterPostTitle')"
-            :error="errors.title" required />
+        <Field v-slot="{ field, errorMessage }" name="title">
+          <form-input v-model="formValues.title" :label="t('postTitle')" :placeholder="t('enterPostTitle')"
+            :error="errorMessage" :required="true" />
         </Field>
       </div>
 
-      <!-- Content -->
+      <!-- Content Field -->
       <div>
         <Field v-slot="{ field, errorMessage }" name="content">
           <label class="form-label">
             {{ t('postContent') }} <span class="text-error-500 ml-1">*</span>
           </label>
-          <textarea v-model="form.content" v-bind="field" rows="5" :placeholder="t('writePostContent')"
+          <textarea v-model="formValues.content" @blur="field.handleBlur" rows="5" :placeholder="t('writePostContent')"
             class="form-input"
             :class="errorMessage ? 'border-error-300 focus:border-error-500 focus:ring-error-500' : ''" required />
           <p v-if="errorMessage" class="form-error">{{ errorMessage }}</p>
@@ -25,8 +25,8 @@
       <!-- Media upload -->
       <div>
         <Field v-slot="{ field, errorMessage }" name="mediaFiles">
-          <form-file-upload id="media-file" v-model="mediaFiles" v-bind="field" :label="t('mediaFiles')" accept="image/*,video/*"
-            multiple :error="errorMessage" />
+          <form-file-upload id="media-file" v-model="mediaFiles" v-bind="field" :label="t('mediaFiles')"
+            accept="image/*,video/*" multiple :error="errorMessage" :existing-files="existingMediaFiles" />
           <p class="mt-1 text-xs text-gray-500 dark:text-gray-200">
             {{ t('uploadMediaHint') }}
           </p>
@@ -37,13 +37,13 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
         <!-- Visibility -->
         <div>
-          <Field v-slot="{ field, errorMessage }" name="visibility" type="radio">
+          <Field v-slot="{ field, errorMessage }" name="visibility">
             <label class="form-label"> {{ t('visibility') }} </label>
             <div class="mt-2 space-y-3">
               <div class="flex items-start">
                 <div class="flex items-center h-5">
-                  <input id="visibility-public" v-model="form.visibility" v-bind="field" type="radio" value="public"
-                    class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500" />
+                  <input id="visibility-public" v-model="formValues.visibility" v-bind="field" type="radio"
+                    value="public" class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500" />
                 </div>
                 <div class="ml-3 text-sm">
                   <label for="visibility-public" class="font-medium text-gray-700 dark:text-gray-200">
@@ -55,7 +55,7 @@
 
               <div class="flex items-start">
                 <div class="flex items-center h-5">
-                  <input id="visibility-subscribers" v-model="form.visibility" v-bind="field" type="radio"
+                  <input id="visibility-subscribers" v-model="formValues.visibility" v-bind="field" type="radio"
                     value="subscribers" class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500" />
                 </div>
                 <div class="ml-3 text-sm">
@@ -68,11 +68,11 @@
 
               <div class="flex items-start">
                 <div class="flex items-center h-5">
-                  <input id="visibility-ppv" v-model="form.visibility" v-bind="field" type="radio" value="ppv"
-                    class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500" />
+                  <input id="visibility-premium" v-model="formValues.visibility" v-bind="field" type="radio"
+                    value="premium" class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500" />
                 </div>
                 <div class="ml-3 text-sm">
-                  <label for="visibility-ppv" class="font-medium text-gray-700 dark:text-gray-200">
+                  <label for="visibility-premium" class="font-medium text-gray-700 dark:text-gray-200">
                     {{ t('payPerView') }}
                   </label>
                   <p class="text-gray-500 dark:text-gray-200">{{ t('payPerViewHint') }}</p>
@@ -84,9 +84,9 @@
         </div>
 
         <!-- Price field (conditional) -->
-        <div v-if="form.visibility === 'ppv'">
+        <div v-if="formValues.visibility === 'premium'">
           <Field v-slot="{ field, errorMessage }" name="price">
-            <form-input v-model="form.price" v-bind="field" :label="t('price')" type="number" min="1" step="0.01"
+            <form-input v-model="formValues.price" v-bind="field" :label="t('price')" type="number" min="1" step="0.01"
               :placeholder="t('pricePlaceholder')" :error="errorMessage" required />
           </Field>
         </div>
@@ -116,19 +116,18 @@
       </div>
     </div>
 
+    <div class="p-4" v-if="debug">
+      <pre>Form valid: {{ meta.valid }}</pre>
+      <pre>Errors: {{ errors }}</pre>
+      <pre>Values: {{ formValues }}</pre>
+    
+    </div>
+
     <div class="bg-gray-50 dark:bg-gray-800 py-3 flex justify-end">
-      <!-- <button type="button" class="btn-outline" @click="$emit('cancel')">
-        {{ t('cancel') }}
-      </button> -->
-      <div class="flex space-x-2">
-        <!-- <button type="button" class="btn-outline" @click="onDraft">
-          {{ t('saveAsDraft') }}
-        </button> -->
-        <button type="submit" class="btn-primary" :disabled="!meta.valid || loading">
-          <Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
-          {{ isScheduled ? t('schedulePost') : t('publishNow') }}
-        </button>
-      </div>
+      <button type="submit" class="btn-primary" :disabled="!meta.valid || loading">
+        <Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
+        {{ isScheduled ? t('schedulePost') : t('publishNow') }}
+      </button>
     </div>
   </Form>
 </template>
@@ -141,20 +140,29 @@ import * as yup from 'yup'
 import FormInput from '@/components/ui/BaseInput.vue'
 import FormFileUpload from '@/components/ui/FormFileUpload.vue'
 
-type Visibility = 'public' | 'subscribers' | 'ppv'
+type Visibility = 'public' | 'subscribers' | 'premium'
+
+interface MediaFile {
+  id?: string
+  url: string
+  type: string
+  name: string
+}
 
 interface FormData {
   title: string
   content: string
   visibility: Visibility
   price: number
-  mediaUrls: string[]
+  scheduledDate?: string
+  mediaUrls?: MediaFile[]
 }
 
 interface PostFormProps {
   initialValues?: Partial<FormData>
   loading?: boolean
   minScheduleDate?: string
+  debug?: boolean
 }
 
 interface PostFormEmits {
@@ -164,16 +172,10 @@ interface PostFormEmits {
       mediaFiles: File[]
       isScheduled: boolean
       scheduledDate: string
+      existingMediaFiles: MediaFile[]
     },
   ): void
-  (
-    e: 'draft',
-    data: FormData & {
-      mediaFiles: File[]
-      isScheduled: boolean
-      scheduledDate: string
-    },
-  ): void
+  (e: 'draft'): void
   (e: 'cancel'): void
 }
 
@@ -181,36 +183,94 @@ const props = withDefaults(defineProps<PostFormProps>(), {
   initialValues: () => ({}),
   loading: false,
   minScheduleDate: '',
+  debug: true
 })
 
 const emit = defineEmits<PostFormEmits>()
 
 const { t } = useI18n()
 
-const form = reactive<FormData>({
+// Reactive form values
+const formValues = reactive({
   title: '',
   content: '',
-  visibility: 'public',
+  visibility: 'public' as Visibility,
   price: 4.99,
-  mediaUrls: [],
+  mediaUrls: [] as MediaFile[]
 })
 
 const mediaFiles = ref<File[]>([])
+const existingMediaFiles = ref<MediaFile[]>([])
 const isScheduled = ref(false)
 const scheduledDate = ref('')
 
+// Watch for initialValues changes
+watch(() => props.initialValues, (newVal) => {
+  if (newVal) {
+    Object.assign(formValues, {
+      title: newVal.title || '',
+      content: newVal.content || '',
+      visibility: newVal.visibility || 'public',
+      price: newVal.price || 4.99,
+    })
+
+    existingMediaFiles.value = newVal.mediaUrls || []
+    isScheduled.value = !!newVal.scheduledDate
+    scheduledDate.value = newVal.scheduledDate || ''
+  }
+}, { deep: true, immediate: true })
+
 // Validation schema
 const schema = yup.object({
-  title: yup.string().required(t('validation.required')),
-  content: yup.string().required(t('validation.required')),
-  visibility: yup.string().required().oneOf(['public', 'subscribers', 'ppv']),
+  title: yup.string()
+    .required(t('validation.required'))
+    .min(3, t('validation.minLength', { min: 3 }))
+    .max(200, t('validation.maxLength', { max: 200 })),
+  content: yup.string()
+    .required(t('validation.required'))
+    .min(10, t('validation.minLength', { min: 10 })),
+  visibility: yup.string()
+    .required(t('validation.required'))
+    .oneOf(['public', 'subscribers', 'premium']),
   price: yup.number().when('visibility', {
-    is: 'ppv',
+    is: 'premium',
     then: (schema) => schema
       .required(t('validation.required'))
-      .min(0.01, t('validation.minValue', { min: 0.01 }))
+      .min(0.01)
+      .max(999.99)
   }),
-  mediaFiles: yup.array().nullable(),
+  mediaFiles: yup
+    .mixed()
+    .optional() // Explicitly mark as optional
+    .default(undefined) // Ensure undefined is the default rather than null
+    .test(
+      'fileSize',
+      t('validation.fileTooLarge'),
+      (value) => {
+        // Skip validation if no files are provided
+        if (!value || (Array.isArray(value) && value.length === 0)) return true
+        return Array.from(value as File[]).every(file => file.size <= 10 * 1024 * 1024)
+      }
+    )
+    .test(
+      'fileType',
+      t('validation.invalidFileType'),
+      (value) => {
+        if (!value || (Array.isArray(value) && value.length === 0)) return true
+        return Array.from(value as File[]).every(file =>
+          ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'video/quicktime'].includes(file.type)
+        )
+      }
+    )
+    .test(
+      'totalSize',
+      t('validation.totalSizeExceeded'),
+      (value) => {
+        if (!value || (Array.isArray(value) && value.length === 0)) return true
+        const totalSize = Array.from(value as File[]).reduce((acc, file) => acc + file.size, 0)
+        return totalSize <= 50 * 1024 * 1024
+      }
+    ),
   scheduledDate: yup.string().when('isScheduled', {
     is: true,
     then: (schema) => schema
@@ -221,40 +281,17 @@ const schema = yup.object({
   })
 })
 
-watch(
-  () => props.initialValues,
-  (val) => {
-    if (val) {
-      Object.assign(form, val)
-      if (val.mediaUrls) {
-        mediaFiles.value = val.mediaUrls.map((url) => new File([], url))
-      }
-    }
-  },
-  { immediate: true }
-)
-
 function onSubmit() {
-  console.log({
-    ...form,
+  const submitData = {
+    title: formValues.title,
+    body: formValues.content, // Map content to body for backend
+    visibility: formValues.visibility,
+    ...(formValues.visibility === 'premium' && { price: formValues.price }),
     mediaFiles: mediaFiles.value,
+    existingMediaFiles: existingMediaFiles.value,
     isScheduled: isScheduled.value,
-    scheduledDate: scheduledDate.value,
-  }, 'dhddnvbnb')
-  emit('submit', {
-    ...form,
-    mediaFiles: mediaFiles.value,
-    isScheduled: isScheduled.value,
-    scheduledDate: scheduledDate.value,
-  })
-}
-
-function onDraft() {
-  emit('draft', {
-    ...form,
-    mediaFiles: mediaFiles.value,
-    isScheduled: isScheduled.value,
-    scheduledDate: scheduledDate.value,
-  })
+    ...(isScheduled.value && { scheduledDate: scheduledDate.value })
+  }
+  emit('submit', submitData)
 }
 </script>

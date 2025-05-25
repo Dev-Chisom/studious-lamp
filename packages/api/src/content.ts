@@ -41,7 +41,7 @@ export interface ContentListParams {
 
 export function createContentApi() {
 	return {
-		getAllPosts: (params?: ContentListParams) =>
+		getAllPosts: (params?: Record<string, any>) =>
 			api.get<{ success: boolean; data: ContentListResponse; message: string }>('/posts', params),
 		getPostById: (id: string) => api.get<Content>(`/posts/${id}`),
 		createPost: (data: {
@@ -52,7 +52,7 @@ export function createContentApi() {
 			price?: number
 			scheduledDate?: string
 		}) => api.post<Content>('/posts', data),
-		updatePost: (id: string, data: Partial<Content>) => api.put<Content>(`/posts/${id}`, data),
+		updateContent: (id: string, data: Partial<Content>) => api.put<Content>(`/posts/${id}`, data),
 		deletePost: (id: string) => api.del<void>(`/posts/${id}`),
 	}
 }
