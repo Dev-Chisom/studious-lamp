@@ -95,7 +95,7 @@
 		"comment": "Commenter",
 		"share": "Partager",
 		"tipCreator": "Pourboire au créateur",
-    "save": "Enregistrer"
+		"save": "Enregistrer"
 	},
 	"legal": {
 		"privacy": {
@@ -563,6 +563,8 @@
 	"shareWithFollowers": "Partagez quelque chose avec vos abonnés...",
 	"noPostsYet": "Pas encore de publications.",
 	"suggestions": "SUGGESTIONS",
+  "searchUsersOrPosts": "Rechercher des utilisateurs ou des publications",
+	"expiredSubscriptions": "ABONNEMENTS EXPIRÉS",
 	"sendTipTo": "Envoyer un pourboire à {name}",
 	"sendTip": "Envoyer un pourboire",
 	"analytics": {

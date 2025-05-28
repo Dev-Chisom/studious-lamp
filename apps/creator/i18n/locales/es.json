@@ -95,7 +95,7 @@
 		"comment": "Comentar",
 		"share": "Compartir",
 		"tipCreator": "Propina al creador",
-    "save": "Guardar"
+		"save": "Guardar"
 	},
 	"legal": {
 		"privacy": {
@@ -562,6 +562,8 @@
 	"shareWithFollowers": "Comparte algo con tus seguidores...",
 	"noPostsYet": "Aún no hay publicaciones.",
 	"suggestions": "SUGERENCIAS",
+	"searchUsersOrPosts": "Buscar usuarios o publicaciones",
+	"expiredSubscriptions": "SUSCRIPCIONES CADUCADAS",
 	"sendTipTo": "Enviar propina a {name}",
 	"sendTip": "Enviar propina",
 	"analytics": {

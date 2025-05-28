@@ -1,9 +1,9 @@
 <template>
-  <div class="max-w-6xl mx-auto px-4 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <div class="max-w-7xl mx-auto px-2 py-4">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
       <!-- Main Feed -->
 
-      <div class="lg:col-span-2">
+      <div class="lg:col-span-3">
         <div class="space-y-6">
           <div v-for="post in posts" :key="post.id">
             <post-card :post="post" :is-subscribed="isSubscribedToCreator(post.creator.id)"
@@ -12,43 +12,24 @@
         </div>
       </div>
       <!-- Suggestions Panel -->
-
-      <div class="hidden lg:block">
-        <div class="sticky top-20">
+      <div class="hidden lg:block col-span-2">
+        <div class="sticky top-4 z-10 h-[calc(100vh-2rem)] overflow-y-auto pb-4">
           <div
-            class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-800 p-4 w-full max-w-xs mx-auto">
+            class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-800 p-4 w-full max-w-xl mx-auto">
+            <!-- Search Bar -->
             <div class="mb-4">
-              <input v-model="suggestionSearch" type="text" placeholder="Search posts"
+              <input v-model="suggestionSearch" type="text" :placeholder="$t('searchUsersOrPosts')"
                 class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-primary-500 focus:ring-primary-500 px-3 py-2 text-sm" />
             </div>
 
-            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">SUGGESTIONS</h3>
-
-            <div class="h-80">
-              <swiper v-if="filteredSuggestions.length > 0" :modules="[Pagination, Keyboard]" :slides-per-view="1"
-                :keyboard="{ enabled: true }" :pagination="{ clickable: true }" :space-between="16" :mousewheel="true"
-                :speed="500" effect="slide" class="h-full">
-                <swiper-slide v-for="(userGroup, slideIdx) in chunkedSuggestions" :key="slideIdx">
-                  <div class="flex flex-col gap-2">
-                    <div v-for="user in userGroup" :key="user.id"
-                      class="flex items-center bg-gray-50 dark:bg-gray-800 rounded-lg p-2 hover:bg-primary-50 dark:hover:bg-primary-900/40 transition cursor-pointer">
-                      <img :src="user.avatar" :alt="user.name"
-                        class="w-12 h-12 rounded-full object-cover border border-gray-200 dark:border-gray-700" />
-
-                      <div class="ml-3 flex-1 min-w-0">
-                        <div class="flex items-center space-x-1">
-                          <span class="font-medium text-gray-900 dark:text-white truncate">{{ user.name }}</span>
-                        </div>
-                        <span class="text-xs text-gray-500 dark:text-gray-300 truncate">@{{ user.username }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </swiper-slide>
-              </swiper>
+            <UserSwiperList :users="filteredSuggestions" :title="$t('suggestions')" :users-per-slide="3" />
+            <div class="mt-8">
+              <UserSwiperList :users="expiredSubscriptions" :title="$t('expiredSubscriptions')" :users-per-slide="3" />
             </div>
           </div>
         </div>
       </div>
+
       <!-- Tip Modal -->
       <modal v-if="showingTipModal" @close="showingTipModal = false">
         <div class="p-6 bg-white dark:bg-gray-900 rounded-lg">
@@ -77,14 +58,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { toast } from 'vue3-toastify'
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Pagination, Keyboard } from 'swiper/modules'
 import { useUserStore } from '~/store/user'
 import Modal from '~/components/ui/Modal.vue'
 import BaseButton from '~/components/ui/BaseButton.vue'
-import PostCard from '@/components/PostCard.vue'
-import 'swiper/css'
-import 'swiper/css/pagination'
+import PostCard from '~/components/PostCard.vue'
+import UserSwiperList from '~/components/ui/UserSwiperList.vue'
 
 definePageMeta({
   layout: 'creator',
@@ -116,6 +94,7 @@ interface SuggestionUser {
   name: string
   username: string
   avatar: string
+  expired?: boolean
 }
 
 const userStore = useUserStore()
@@ -126,10 +105,10 @@ const posts = ref<Post[]>([
     creator: {
       id: 'creator1',
       name: 'John Doe',
-      avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg',
+      avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     },
     content: 'This is a free post that everyone can see!',
-    image: 'https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg',
+    image: 'https://images.pexels.com/photos/1170412/pexels-photo-1170412.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     createdAt: new Date('2024-03-01'),
     likes: 42,
     isPremium: false,
@@ -140,10 +119,10 @@ const posts = ref<Post[]>([
     creator: {
       id: 'creator2',
       name: 'Jane Smith',
-      avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg',
+      avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     },
     content: 'This is a premium post that requires subscription!',
-    image: 'https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg',
+    image: 'https://images.pexels.com/photos/2014422/pexels-photo-2014422.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
     createdAt: new Date('2024-03-02'),
     likes: 156,
     isPremium: true,
@@ -159,99 +138,72 @@ const isSendingTip = ref(false)
 const suggestionSearch = ref('')
 const suggestions = ref<SuggestionUser[]>([
   {
-    id: '1',
-    name: 'Remy Rune',
-    username: 'remyunplugged',
-    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+    id: 'fil-1',
+    name: 'Ana Mei',
+    username: 'anamei',
+    avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg', // Woman smiling
+    banner: 'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg' // Portrait background
   },
   {
-    id: '2',
-    name: 'Alanna',
-    username: 'alannam',
-    avatar: 'https://randomuser.me/api/portraits/women/45.jpg',
+    id: 'fil-2',
+    name: 'Teacher Chloe',
+    username: 'teacherchloe',
+    avatar: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg', // Woman in glasses
+    banner: 'https://images.pexels.com/photos/1595385/pexels-photo-1595385.jpeg' // Classroom
   },
   {
-    id: '3',
-    name: 'Gin',
-    username: 'ginfit',
-    avatar: 'https://randomuser.me/api/portraits/women/46.jpg',
+    id: 'fil-3',
+    name: 'Kissa',
+    username: 'kugsandkissahy',
+    avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg', // Woman with curly hair
+    banner: 'https://images.pexels.com/photos/3764160/pexels-photo-3764160.jpeg' // Fashion background
   },
   {
-    id: '4',
-    name: 'Cat',
-    username: 'catfit',
-    avatar: 'https://randomuser.me/api/portraits/women/47.jpg',
+    id: 'fil-4',
+    name: 'Bryce Adams',
+    username: 'bryceadams',
+    avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    banner: 'https://images.pexels.com/photos/2387866/pexels-photo-2387866.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
   },
   {
-    id: '5',
-    name: 'OFTV',
-    username: 'oftv',
-    avatar: 'https://randomuser.me/api/portraits/men/48.jpg',
+    id: 'fil-5',
+    name: 'LotusBombo',
+    username: 'lotusbombo',
+    avatar: 'https://images.pexels.com/photos/1858175/pexels-photo-1858175.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    banner: 'https://images.pexels.com/photos/1081685/pexels-photo-1081685.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  }
+]);
+
+const expiredSubscriptions = ref<SuggestionUser[]>([
+  {
+    id: 'exp-1',
+    name: 'Bryce Adams',
+    username: 'bryceadams',
+    avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    banner: 'https://images.pexels.com/photos/2387866/pexels-photo-2387866.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    expired: true
   },
   {
-    id: '6',
-    name: 'Sarah Johnson',
-    username: 'sarahj',
-    avatar: 'https://randomuser.me/api/portraits/women/49.jpg',
-  },
-  {
-    id: '7',
-    name: 'Mike Wilson',
-    username: 'mikew',
-    avatar: 'https://randomuser.me/api/portraits/men/50.jpg',
-  },
-  {
-    id: '8',
-    name: 'Emma Davis',
-    username: 'emmad',
-    avatar: 'https://randomuser.me/api/portraits/women/51.jpg',
-  },
-  {
-    id: '9',
-    name: 'James Brown',
-    username: 'jamesb',
-    avatar: 'https://randomuser.me/api/portraits/men/52.jpg',
-  },
-  {
-    id: '10',
-    name: 'Lisa Anderson',
-    username: 'lisaa',
-    avatar: 'https://randomuser.me/api/portraits/women/53.jpg',
-  },
-  {
-    id: '11',
-    name: 'David Miller',
-    username: 'davidm',
-    avatar: 'https://randomuser.me/api/portraits/men/54.jpg',
-  },
-  {
-    id: '12',
-    name: 'Sophie Taylor',
-    username: 'sophiet',
-    avatar: 'https://randomuser.me/api/portraits/women/55.jpg',
-  },
-])
+    id: 'exp-2',
+    name: 'LotusBombo',
+    username: 'lotusbombo',
+    avatar: 'https://images.pexels.com/photos/1858175/pexels-photo-1858175.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    banner: 'https://images.pexels.com/photos/1081685/pexels-photo-1081685.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+    expired: true
+  }
+]);
 
 const filteredSuggestions = computed<SuggestionUser[]>(() => {
   if (!suggestionSearch.value) {
-    return suggestions.value
+    return suggestions.value.filter(user => !expiredSubscriptions.value.some(expired => expired.id === user.id))
   }
   return suggestions.value.filter(
     (user) =>
-      user.name.toLowerCase().includes(suggestionSearch.value.toLowerCase()) ||
-      user.username.toLowerCase().includes(suggestionSearch.value.toLowerCase()),
+      (user.name.toLowerCase().includes(suggestionSearch.value.toLowerCase()) ||
+        user.username.toLowerCase().includes(suggestionSearch.value.toLowerCase())) &&
+      !expiredSubscriptions.value.some(expired => expired.id === user.id)
   )
 })
-
-const usersPerSlide = 3
-function chunkArray<T>(array: T[], size: number): T[][] {
-  const result: T[][] = []
-  for (let i = 0; i < array.length; i += size) {
-    result.push(array.slice(i, i + size))
-  }
-  return result
-}
-const chunkedSuggestions = computed<SuggestionUser[][]>(() => chunkArray(filteredSuggestions.value, usersPerSlide))
 
 const isSubscribedToCreator = (creatorId: string): boolean => {
   return userStore?.getSubscriptions?.includes(creatorId) || false
@@ -301,5 +253,33 @@ onMounted(async () => {
 ::v-deep(.swiper-pagination-bullet-active) {
   background-color: theme('colors.primary.700') !important;
   opacity: 1;
+}
+
+/* For Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  /* gray-400 */
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+  /* gray-500 */
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #9ca3af transparent;
+  /* gray-400 */
 }
 </style>
