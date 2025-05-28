@@ -89,7 +89,13 @@
 		},
 		"sendTipTo": "Envoyer un pourboire à {name}",
 		"amount": "Montant (₦)",
-		"sendTip": "Envoyer un pourboire"
+		"sendTip": "Envoyer un pourboire",
+		"unlike": "Je n'aime plus",
+		"like": "J'aime",
+		"comment": "Commenter",
+		"share": "Partager",
+		"tipCreator": "Pourboire au créateur",
+    "save": "Enregistrer"
 	},
 	"legal": {
 		"privacy": {

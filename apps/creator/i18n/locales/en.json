@@ -89,7 +89,13 @@
 		},
 		"sendTipTo": "Send tip to {name}",
 		"amount": "Amount (₦)",
-		"sendTip": "Send Tip"
+		"sendTip": "Send Tip",
+    "unlike": "Unlike",
+    "like": "Like",
+    "comment": "Comment",
+    "share": "Share",
+    "tipCreator": "Tip Creator",
+    "save": "Save"
 	},
 	"legal": {
 		"privacy": {

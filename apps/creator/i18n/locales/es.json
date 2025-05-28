@@ -89,7 +89,13 @@
 		},
 		"sendTipTo": "Enviar propina a {name}",
 		"amount": "Monto (₦)",
-		"sendTip": "Enviar propina"
+		"sendTip": "Enviar propina",
+		"unlike": "Ya no me gusta",
+		"like": "Me gusta",
+		"comment": "Comentar",
+		"share": "Compartir",
+		"tipCreator": "Propina al creador",
+    "save": "Guardar"
 	},
 	"legal": {
 		"privacy": {
