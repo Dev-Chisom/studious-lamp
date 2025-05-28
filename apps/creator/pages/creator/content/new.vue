@@ -67,8 +67,6 @@ const { loading: apiLoading, error: apiError, execute: uploadMediaFile } = useAp
 const { execute: createPost } = useApiRequest(creatorApi.createPost)
 
 async function handleSubmit(formData) {
-  console.log(formData, 'jsjsjjs')
-  // 1. Check for real files
   if (
     formData.mediaFiles &&
     Array.isArray(formData.mediaFiles) &&
@@ -77,11 +75,8 @@ async function handleSubmit(formData) {
   ) {
     const mediaFileIds = [];
     for (const file of formData.mediaFiles) {
-      // 2. Call uploadMediaFile for each file
       const response = await uploadMediaFile(file.name, file.type);
       const { uploadUrl, mediaFileId } = response.data;
-      console.log('dgnbdhjgd')
-      // 3. Upload the file to the uploadUrl
       await fetch(uploadUrl, {
         method: 'PUT',
         body: file,
@@ -89,23 +84,19 @@ async function handleSubmit(formData) {
       });
       mediaFileIds.push(mediaFileId);
     }
-    console.log('got here first')
 
-    // 4. Now call createPost with the mediaFileIds
     await createPost({
       title: formData.title,
-      body: formData.content,
+      body: formData.body,
       mediaFiles: mediaFileIds,
       visibility: formData.visibility === 'ppv' ? 'pay-to-view' : formData.visibility,
       price: formData.visibility === 'ppv' ? formData.price : undefined,
       scheduledDate: formData.isScheduled ? formData.scheduledDate : undefined,
     });
   } else {
-    // No files, just create the post
-    console.log('got here')
     await createPost({
       title: formData.title,
-      body: formData.content,
+      body: formData.body,
       mediaFiles: [],
       visibility: formData.visibility === 'ppv' ? 'pay-to-view' : formData.visibility,
       price: formData.visibility === 'ppv' ? formData.price : undefined,
@@ -115,6 +106,7 @@ async function handleSubmit(formData) {
 }
 
 function saveAsDraft(formData: any): void {
+  console.log(formData)
   toast.info(t('notifications.draftSaved'))
 }
 </script>
