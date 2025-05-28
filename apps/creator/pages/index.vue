@@ -24,7 +24,7 @@
 
             <UserSwiperList :users="filteredSuggestions" :title="$t('suggestions')" :users-per-slide="3" />
             <div class="mt-8">
-              <UserSwiperList :users="expiredSubscriptions" :title="$t('expiredSubscriptions')" :users-per-slide="3" />
+              <UserSwiperList :users="expiredSubscriptions" :title="$t('subscriptions.expiredSubscriptions')" :users-per-slide="3" />
             </div>
           </div>
         </div>
