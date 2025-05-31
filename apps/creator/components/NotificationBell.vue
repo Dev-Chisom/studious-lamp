@@ -60,8 +60,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import NotificationItem from './NotificationItem.vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import NotificationItem from './NotificationItem.vue';
 
 type NotificationType = 'subscription' | 'tip' | 'message' | 'post_like' | 'post_comment' | 'other'
 
@@ -74,7 +74,7 @@ interface Notification {
 	image?: string
 }
 
-const isOpen = ref(false)
+const isOpen = ref(false);
 const notifications = ref<Notification[]>([
 	{
 		id: 1,
@@ -100,42 +100,42 @@ const notifications = ref<Notification[]>([
 		createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
 		image: '',
 	},
-])
+]);
 
-const notificationRef = ref<HTMLElement | null>(null)
+const notificationRef = ref<HTMLElement | null>(null);
 
 const unreadCount = computed((): number => {
-	return notifications.value.filter((notification) => !notification.isRead).length
-})
+	return notifications.value.filter((notification) => !notification.isRead).length;
+});
 
 function markAsRead(id: number): void {
-	const notification = notifications.value.find((n) => n.id === id)
+	const notification = notifications.value.find((n) => n.id === id);
 	if (notification) {
-		notification.isRead = true
+		notification.isRead = true;
 	}
 }
 
 function markAllAsRead(): void {
 	notifications.value.forEach((notification) => {
-		notification.isRead = true
-	})
+		notification.isRead = true;
+	});
 }
 
 const closeDropdown = (e: MouseEvent): void => {
 	if (notificationRef.value && !notificationRef.value.contains(e.target as Node)) {
-		isOpen.value = false
+		isOpen.value = false;
 	}
-}
+};
 
 const showContent = (): void => {
-	isOpen.value = !isOpen.value
-}
+	isOpen.value = !isOpen.value;
+};
 
 onMounted(() => {
-	document.addEventListener('click', closeDropdown)
-})
+	document.addEventListener('click', closeDropdown);
+});
 
 onUnmounted(() => {
-	document.removeEventListener('click', closeDropdown)
-})
+	document.removeEventListener('click', closeDropdown);
+});
 </script>

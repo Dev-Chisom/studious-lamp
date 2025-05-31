@@ -19,9 +19,9 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import ApplyForm from '../../components/apply/ApplyForm.vue'
-const { t } = useI18n()
+import { useI18n } from 'vue-i18n';
+import ApplyForm from '../../components/apply/ApplyForm.vue';
+const { t } = useI18n();
 
 definePageMeta({
 	layout: 'creator',
@@ -29,5 +29,5 @@ definePageMeta({
 	meta: {
 		requiresAuth: true,
 	},
-})
+});
 </script>

@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia'
-import { createAuthApi } from '@whispers/api'
+import { defineStore } from 'pinia';
+import { createAuthApi } from '@whispers/api';
 
 interface UserProfile {
 	id: string
@@ -25,21 +25,21 @@ export const useUserStore = defineStore('user', {
 
 	actions: {
 		async fetchProfile(accessToken: string) {
-			this.loading = true
+			this.loading = true;
 			try {
-				const authApi = createAuthApi(accessToken)
-				this.profile = await authApi.getProfile()
+				const authApi = createAuthApi(accessToken);
+				this.profile = await authApi.getProfile();
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Failed to fetch profile'
-				throw error
+				this.error = error instanceof Error ? error.message : 'Failed to fetch profile';
+				throw error;
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 
 		updateWalletBalance(amount: number) {
 			if (this.profile) {
-				this.profile.walletBalance = amount
+				this.profile.walletBalance = amount;
 			}
 		},
 	},
@@ -50,4 +50,4 @@ export const useUserStore = defineStore('user', {
 		getSubscriptions: (state) => state.profile?.subscriptions ?? [],
 		getCollections: (state) => state.profile?.collections ?? [],
 	},
-})
+});

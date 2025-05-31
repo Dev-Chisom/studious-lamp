@@ -199,15 +199,15 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed } from 'vue';
 
 definePageMeta({
 	layout: 'default',
-})
+});
 
-const searchQuery = ref('')
-const selectedCategory = ref('')
-const loading = ref(false)
+const searchQuery = ref('');
+const selectedCategory = ref('');
+const loading = ref(false);
 
 // Dummy data for creators
 const creators = [
@@ -283,57 +283,57 @@ const creators = [
 		categories: ['Music', 'Production'],
 		monthlyPrice: 15.99,
 	},
-]
+];
 
 // Get unique categories from all creators
 const categories = computed(() => {
-	const allCategories = creators.flatMap((creator) => creator.categories)
-	return [...new Set(allCategories)].sort()
-})
+	const allCategories = creators.flatMap((creator) => creator.categories);
+	return [...new Set(allCategories)].sort();
+});
 
 // Popular categories for quick filtering
 const popularCategories = computed(() => {
-	return categories.value.slice(0, 6)
-})
+	return categories.value.slice(0, 6);
+});
 
 // Featured creators (top 3 by subscriber count)
 const featuredCreators = computed(() => {
-	return [...creators].sort((a, b) => b.subscriberCount - a.subscriberCount).slice(0, 3)
-})
+	return [...creators].sort((a, b) => b.subscriberCount - a.subscriberCount).slice(0, 3);
+});
 
 // Filtered creators based on search and category
 const filteredCreators = computed(() => {
-	let result = [...creators]
+	let result = [...creators];
 
 	// Filter by category if selected
 	if (selectedCategory.value) {
-		result = result.filter((creator) => creator.categories.includes(selectedCategory.value))
+		result = result.filter((creator) => creator.categories.includes(selectedCategory.value));
 	}
 
 	// Filter by search query
 	if (searchQuery.value) {
-		const query = searchQuery.value.toLowerCase()
+		const query = searchQuery.value.toLowerCase();
 		result = result.filter(
 			(creator) =>
 				creator.displayName.toLowerCase().includes(query) ||
 				creator.username.toLowerCase().includes(query) ||
 				creator.bio.toLowerCase().includes(query) ||
 				creator.categories.some((category) => category.toLowerCase().includes(query)),
-		)
+		);
 	}
 
 	// Exclude featured creators if no filters are applied
 	if (!selectedCategory.value && !searchQuery.value) {
-		const featuredIds = featuredCreators.value.map((creator) => creator.id)
-		result = result.filter((creator) => !featuredIds.includes(creator.id))
+		const featuredIds = featuredCreators.value.map((creator) => creator.id);
+		result = result.filter((creator) => !featuredIds.includes(creator.id));
 	}
 
-	return result
-})
+	return result;
+});
 
 // Reset all filters
 function resetFilters() {
-	searchQuery.value = ''
-	selectedCategory.value = ''
+	searchQuery.value = '';
+	selectedCategory.value = '';
 }
 </script>

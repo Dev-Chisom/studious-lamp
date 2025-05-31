@@ -249,7 +249,7 @@ const testimonials = [
 		quote:
 			'I love that I can share my travel photography and behind-the-scenes content with my community. The subscription model gives me stable income while I pursue my passion.',
 	},
-]
+];
 
 // Page setup
 const featuredCreators = [
@@ -289,5 +289,5 @@ const featuredCreators = [
 		categories: ['Travel', 'Photography'],
 		monthlyPrice: 19.99,
 	},
-]
+];
 </script>

@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
-import forms from '@tailwindcss/forms'
-import typography from '@tailwindcss/typography'
+import forms from '@tailwindcss/forms';
+import typography from '@tailwindcss/typography';
 
 module.exports = {
 	content: [
@@ -129,4 +129,4 @@ module.exports = {
 		},
 	},
 	plugins: [forms, typography],
-}
+};

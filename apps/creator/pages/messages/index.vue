@@ -285,12 +285,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from 'vue'
-import { useI18n } from 'vue-i18n'
-import FormInput from '@/components/ui/BaseInput.vue'
-import MediaPreviewModal from '@/components/ui/MediaPreviewModal.vue'
+import { ref, computed, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+import FormInput from '@/components/ui/BaseInput.vue';
+import MediaPreviewModal from '@/components/ui/MediaPreviewModal.vue';
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 definePageMeta({
 	middleware: ['auth'],
@@ -298,7 +298,7 @@ definePageMeta({
 	meta: {
 		requiresAuth: true,
 	},
-})
+});
 
 interface User {
 	name: string
@@ -343,16 +343,16 @@ interface MediaModal {
 	url?: string | null
 }
 
-const searchQuery = ref<string>('')
-const selectedChat = ref<Chat | null>(null)
-const newMessage = ref<string>('')
-const typingTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
-const mediaPreview = ref<MediaItem[]>([])
+const searchQuery = ref<string>('');
+const selectedChat = ref<Chat | null>(null);
+const newMessage = ref<string>('');
+const typingTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
+const mediaPreview = ref<MediaItem[]>([]);
 const mediaModal = ref<MediaModal>({
 	isOpen: false,
 	type: null,
 	url: null,
-})
+});
 
 // Mock data for chats
 const chats = ref<Chat[]>([
@@ -431,73 +431,73 @@ const chats = ref<Chat[]>([
 			},
 		],
 	},
-])
+]);
 
 // Computed
 const filteredChats = computed<Chat[]>(() => {
 	if (!searchQuery.value) {
-		return chats.value
+		return chats.value;
 	}
 
-	const query = searchQuery.value.toLowerCase()
+	const query = searchQuery.value.toLowerCase();
 	return chats.value.filter(
 		(chat: Chat) =>
 			chat.user.name.toLowerCase().includes(query) || chat.lastMessage.content.toLowerCase().includes(query),
-	)
-})
+	);
+});
 
 const allChatMedia = computed<MediaItem[]>(() => {
 	if (!selectedChat.value) {
-		return []
+		return [];
 	}
-	const mediaList: MediaItem[] = []
+	const mediaList: MediaItem[] = [];
 	selectedChat.value.messages.forEach((msg: Message) => {
 		if (msg.media) {
 			if (Array.isArray(msg.media)) {
-				;(msg.media as MediaItem[]).forEach((m: MediaItem) => mediaList.push({ ...m, _msgId: msg.id }))
+				;(msg.media as MediaItem[]).forEach((m: MediaItem) => mediaList.push({ ...m, _msgId: msg.id }));
 			} else {
-				mediaList.push({ ...(msg.media as MediaItem), _msgId: msg.id })
+				mediaList.push({ ...(msg.media as MediaItem), _msgId: msg.id });
 			}
 		}
-	})
-	return mediaList
-})
+	});
+	return mediaList;
+});
 
 // Methods
 function formatTime(date: Date | string): string {
-	const now = new Date()
-	const d = new Date(date)
-	const diff = now.getTime() - d.getTime()
+	const now = new Date();
+	const d = new Date(date);
+	const diff = now.getTime() - d.getTime();
 
-	const minutes = Math.floor(diff / (1000 * 60))
-	const hours = Math.floor(diff / (1000 * 60 * 60))
-	const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+	const minutes = Math.floor(diff / (1000 * 60));
+	const hours = Math.floor(diff / (1000 * 60 * 60));
+	const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
 	if (minutes < 60) {
-		return `${minutes}m ago`
+		return `${minutes}m ago`;
 	} else if (hours < 24) {
-		return `${hours}h ago`
+		return `${hours}h ago`;
 	} else if (days < 7) {
-		return `${days}d ago`
+		return `${days}d ago`;
 	} else {
-		return d.toLocaleDateString()
+		return d.toLocaleDateString();
 	}
 }
 
 function selectChat(chat: Chat): void {
-	selectedChat.value = chat
+	selectedChat.value = chat;
 	// Mark messages as read
-	chat.unreadCount = 0
+	chat.unreadCount = 0;
 	chat.messages.forEach((message: Message) => {
 		if (!message.isSelf) {
-			message.isRead = true
+			message.isRead = true;
 		}
-	})
+	});
 }
 
 function handleTyping() {
 	if (typingTimeout.value) {
-		clearTimeout(typingTimeout.value)
+		clearTimeout(typingTimeout.value);
 	}
 
 	// Emit typing event
@@ -506,77 +506,77 @@ function handleTyping() {
 	typingTimeout.value = setTimeout(() => {
 		// Stop typing
 		// In a real app, this would be sent to the server
-	}, 3000)
+	}, 3000);
 }
 
 function handleImageUpload(event: Event) {
-	const input = event.target as HTMLInputElement
-	const files = Array.from(input.files || [])
+	const input = event.target as HTMLInputElement;
+	const files = Array.from(input.files || []);
 
 	for (const file of files) {
 		if (file.type.startsWith('image/')) {
-			const preview = URL.createObjectURL(file)
+			const preview = URL.createObjectURL(file);
 			mediaPreview.value.push({
 				file,
 				type: 'image',
 				preview,
-			})
+			});
 		}
 	}
-	input.value = ''
+	input.value = '';
 }
 
 function handleVideoUpload(event: Event) {
-	const input = event.target as HTMLInputElement
-	const file = input.files ? input.files[0] : undefined
+	const input = event.target as HTMLInputElement;
+	const file = input.files ? input.files[0] : undefined;
 
 	if (file && file.type.startsWith('video/')) {
-		const preview = URL.createObjectURL(file)
+		const preview = URL.createObjectURL(file);
 		mediaPreview.value.push({
 			file,
 			type: 'video',
 			preview,
-		})
+		});
 	}
-	input.value = ''
+	input.value = '';
 }
 
 function removeMedia(index: number) {
-	const media = mediaPreview.value[index]
+	const media = mediaPreview.value[index];
 	if (media && media.preview) {
-		URL.revokeObjectURL(media.preview)
+		URL.revokeObjectURL(media.preview);
 	}
-	mediaPreview.value.splice(index, 1)
+	mediaPreview.value.splice(index, 1);
 }
 
 function openMediaPreviewForChat(media: MediaItem, msgId: string) {
-	const allMedia = allChatMedia.value
-	let globalIdx = 0
-	let found = false
+	const allMedia = allChatMedia.value;
+	let globalIdx = 0;
+	let found = false;
 	for (let i = 0; i < allMedia.length; i++) {
 		if (allMedia[i].url === media.url && allMedia[i].type === media.type && allMedia[i]._msgId === msgId) {
-			globalIdx = i
-			found = true
-			break
+			globalIdx = i;
+			found = true;
+			break;
 		}
 	}
 	if (!found) {
-		globalIdx = 0
+		globalIdx = 0;
 	}
 	mediaModal.value = {
 		isOpen: true,
 		mediaItems: allMedia,
 		currentIndex: globalIdx,
-	}
+	};
 }
 
 function closeMediaPreview() {
-	mediaModal.value.isOpen = false
+	mediaModal.value.isOpen = false;
 }
 
 function sendMessage() {
 	if (!newMessage.value.trim() && mediaPreview.value.length === 0) {
-		return
+		return;
 	}
 
 	try {
@@ -584,7 +584,7 @@ function sendMessage() {
 		const mediaUrls = mediaPreview.value.map((media) => ({
 			type: media.type,
 			url: media.preview, // In real app, this would be the uploaded file URL
-		}))
+		}));
 
 		const message = {
 			id: `msg-${Date.now()}`,
@@ -592,27 +592,27 @@ function sendMessage() {
 			timestamp: new Date(),
 			isSelf: true,
 			isRead: false,
-		}
+		};
 
 		if (mediaUrls.length > 0) {
-			message.media = mediaUrls // Assign all media
+			message.media = mediaUrls; // Assign all media
 		}
 
-		selectedChat.value.messages.push(message)
+		selectedChat.value.messages.push(message);
 		selectedChat.value.lastMessage = {
 			content: newMessage.value || 'Sent a media file',
 			timestamp: new Date(),
-		}
+		};
 
-		newMessage.value = ''
-		mediaPreview.value = []
+		newMessage.value = '';
+		mediaPreview.value = [];
 
 		// Simulate other user typing
 		setTimeout(() => {
-			selectedChat.value.isTyping = true
+			selectedChat.value.isTyping = true;
 
 			setTimeout(() => {
-				selectedChat.value.isTyping = false
+				selectedChat.value.isTyping = false;
 
 				// Simulate response
 				selectedChat.value.messages.push({
@@ -621,18 +621,18 @@ function sendMessage() {
 					timestamp: new Date(),
 					isSelf: false,
 					isRead: true,
-				})
-			}, 3000)
-		}, 1000)
+				});
+			}, 3000);
+		}, 1000);
 	} catch (error) {
-		console.log('Failed to send message:', error)
+		console.log('Failed to send message:', error);
 	}
 }
 
 // Cleanup
 onUnmounted(() => {
 	mediaPreview.value.forEach((media) => {
-		URL.revokeObjectURL(media.preview)
-	})
-})
+		URL.revokeObjectURL(media.preview);
+	});
+});
 </script>

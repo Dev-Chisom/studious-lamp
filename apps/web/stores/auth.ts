@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 export interface User {
 	id: string
@@ -33,21 +33,21 @@ export const useAuthStore = defineStore('auth', {
 		initAuth() {
 			// Initialize auth from localStorage
 			try {
-				const token = localStorage.getItem('token')
-				const userData = localStorage.getItem('user')
+				const token = localStorage.getItem('token');
+				const userData = localStorage.getItem('user');
 
 				if (token && userData) {
-					this.token = token
-					this.user = JSON.parse(userData)
+					this.token = token;
+					this.user = JSON.parse(userData);
 				}
 			} catch (error) {
-				console.log('Failed to initialize auth from localStorage', error)
+				console.log('Failed to initialize auth from localStorage', error);
 			}
 		},
 
 		login(email: string, password: string, remember: boolean = false) {
-			this.loading = true
-			this.error = null
+			this.loading = true;
+			this.error = null;
 
 			try {
 				if (email === 'demo@example.com' && password === 'password') {
@@ -57,32 +57,32 @@ export const useAuthStore = defineStore('auth', {
 						displayName: 'Demo User',
 						isCreator: false,
 						createdAt: new Date().toISOString(),
-					}
+					};
 
-					const token = 'mock-jwt-token'
+					const token = 'mock-jwt-token';
 
-					this.setAuth(userData, token)
+					this.setAuth(userData, token);
 
 					if (remember) {
-						localStorage.setItem('token', token)
-						localStorage.setItem('user', JSON.stringify(userData))
+						localStorage.setItem('token', token);
+						localStorage.setItem('user', JSON.stringify(userData));
 					}
 
-					return true
+					return true;
 				} else {
-					throw new Error('Invalid email or password')
+					throw new Error('Invalid email or password');
 				}
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Authentication failed'
-				return false
+				this.error = error instanceof Error ? error.message : 'Authentication failed';
+				return false;
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 
 		register(userData: { email: string; password: string; displayName: string }) {
-			this.loading = true
-			this.error = null
+			this.loading = true;
+			this.error = null;
 
 			try {
 				const newUser: User = {
@@ -91,62 +91,62 @@ export const useAuthStore = defineStore('auth', {
 					displayName: userData.displayName,
 					isCreator: false,
 					createdAt: new Date().toISOString(),
-				}
+				};
 
-				const token = `mock-jwt-token-${Math.random().toString(36).substring(2, 9)}`
+				const token = `mock-jwt-token-${Math.random().toString(36).substring(2, 9)}`;
 
-				this.setAuth(newUser, token)
-				localStorage.setItem('token', token)
-				localStorage.setItem('user', JSON.stringify(newUser))
+				this.setAuth(newUser, token);
+				localStorage.setItem('token', token);
+				localStorage.setItem('user', JSON.stringify(newUser));
 
-				return true
+				return true;
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Registration failed'
-				return false
+				this.error = error instanceof Error ? error.message : 'Registration failed';
+				return false;
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 
 		forgotPassword(email: string) {
-			this.loading = true
-			this.error = null
+			this.loading = true;
+			this.error = null;
 
 			try {
-				console.log('Password reset email sent to', email)
-				return true
+				console.log('Password reset email sent to', email);
+				return true;
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Failed to send password reset email'
-				return false
+				this.error = error instanceof Error ? error.message : 'Failed to send password reset email';
+				return false;
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 
 		resetPassword(token: string) {
-			this.loading = true
-			this.error = null
+			this.loading = true;
+			this.error = null;
 
 			try {
-				return true
+				return true;
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Failed to reset password'
-				return false
+				this.error = error instanceof Error ? error.message : 'Failed to reset password';
+				return false;
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 
 		setAuth(user: User, token: string) {
-			this.user = user
-			this.token = token
+			this.user = user;
+			this.token = token;
 		},
 
 		logout() {
-			this.user = null
-			this.token = null
-			localStorage.removeItem('token')
-			localStorage.removeItem('user')
+			this.user = null;
+			this.token = null;
+			localStorage.removeItem('token');
+			localStorage.removeItem('user');
 		},
 	},
-})
+});

@@ -1,4 +1,4 @@
-import { api } from './api.service'
+import { api } from './api.service';
 
 export interface ContentMetadata {
 	tags: string[]
@@ -54,5 +54,5 @@ export function createContentApi() {
 		}) => api.post<Content>('/posts', data),
 		updateContent: (id: string, data: Partial<Content>) => api.put<Content>(`/posts/${id}`, data),
 		deletePost: (id: string) => api.del<void>(`/posts/${id}`),
-	}
+	};
 }

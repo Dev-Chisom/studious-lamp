@@ -64,4 +64,4 @@ export default defineNuxtConfig({
 			redirectOn: 'root',
 		},
 	},
-})
+});

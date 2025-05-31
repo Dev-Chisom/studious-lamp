@@ -304,17 +304,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { Form, Field, ErrorMessage, useForm } from 'vee-validate'
-import * as yup from 'yup'
-import { createCreatorApi } from '@whispers/api'
-import { useApiRequest } from '../../composables/useApiRequest'
-import FormInput from '../ui/BaseInput.vue'
-import { useNotification } from '../../composables/useNotifications'
+import { ref, computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
+import * as yup from 'yup';
+import { createCreatorApi } from '@whispers/api';
+import { useApiRequest } from '../../composables/useApiRequest';
+import FormInput from '../ui/BaseInput.vue';
+import { useNotification } from '../../composables/useNotifications';
 
-const { t } = useI18n()
-const notification = useNotification()
+const { t } = useI18n();
+const notification = useNotification();
 
 interface SocialFields {
 	facebook: string
@@ -362,15 +362,15 @@ const applyFormSchema = yup.object({
 			tiktok: yup.string(),
 		})
 		.test('at-least-one', t('validation.atLeastOneSocial'), function (value) {
-			if (!this.parent.socialTouched) return true
-			return Object.values(value || {}).some((val) => val?.trim())
+			if (!this.parent.socialTouched) return true;
+			return Object.values(value || {}).some((val) => val?.trim());
 		}),
 	socialTouched: yup.boolean().default(false),
 	monthlyPrice: yup.number().required().min(4.99),
 	discounts: yup.object(),
 	acceptTerms: yup.boolean().oneOf([true], t('apply.basicInfo.required')),
 	confirmAge: yup.boolean().oneOf([true], t('apply.basicInfo.required')),
-})
+});
 
 const { setTouched, setFieldValue } = useForm<FormValues>({
 	validationSchema: applyFormSchema,
@@ -391,7 +391,7 @@ const { setTouched, setFieldValue } = useForm<FormValues>({
 		confirmAge: false,
 		socialTouched: false,
 	},
-})
+});
 
 const availableCategories = computed(() => [
 	t('categories.art'),
@@ -404,58 +404,58 @@ const availableCategories = computed(() => [
 	t('categories.lifestyle'),
 	t('categories.sports'),
 	t('categories.gaming'),
-])
+]);
 
 function toggleCategory(category: string, currentCategories: string[], handleChange: (categories: string[]) => void) {
 	const newCategories = currentCategories.includes(category)
 		? currentCategories.filter((c: string) => c !== category)
-		: [...currentCategories, category]
-	handleChange(newCategories)
+		: [...currentCategories, category];
+	handleChange(newCategories);
 }
 
 function removeCategory(category: string, currentCategories: string[], handleChange: (categories: string[]) => void) {
-	handleChange(currentCategories.filter((c: string) => c !== category))
+	handleChange(currentCategories.filter((c: string) => c !== category));
 }
 
-const creatorApi = createCreatorApi()
-const { loading: apiLoading, error: apiError, execute: createCreator } = useApiRequest(creatorApi.createCreator)
+const creatorApi = createCreatorApi();
+const { loading: apiLoading, error: apiError, execute: createCreator } = useApiRequest(creatorApi.createCreator);
 
-const pricingPreferences = ref<any[]>([])
+const pricingPreferences = ref<any[]>([]);
 const preferencesByCycle = computed<Record<string, any[]>>(() => {
-	const grouped: Record<string, any[]> = {}
+	const grouped: Record<string, any[]> = {};
 	for (const pref of pricingPreferences.value) {
-		if (!grouped[pref.cycle]) grouped[pref.cycle] = []
-		grouped[pref.cycle].push(pref)
+		if (!grouped[pref.cycle]) grouped[pref.cycle] = [];
+		grouped[pref.cycle].push(pref);
 	}
-	return grouped
-})
+	return grouped;
+});
 
-const periodPrices = ref<Record<string, number>>({})
+const periodPrices = ref<Record<string, number>>({});
 
 onMounted(async () => {
 	try {
-		const { data } = await creatorApi.getCreatorPreferences()
-		pricingPreferences.value = data
+		const { data } = await creatorApi.getCreatorPreferences();
+		pricingPreferences.value = data;
 		for (const cycle in preferencesByCycle.value) {
-			if (!preferencesByCycle.value[cycle]) continue
-			const zeroDiscount = preferencesByCycle.value[cycle].find((opt: any) => opt.discount === 0)
+			if (!preferencesByCycle.value[cycle]) continue;
+			const zeroDiscount = preferencesByCycle.value[cycle].find((opt: any) => opt.discount === 0);
 			if (zeroDiscount) {
-				setFieldValue(`discounts.${cycle}`, zeroDiscount._id)
+				setFieldValue(`discounts.${cycle}`, zeroDiscount._id);
 			} else if (preferencesByCycle.value[cycle][0]) {
-				setFieldValue(`discounts.${cycle}`, preferencesByCycle.value[cycle][0]._id)
+				setFieldValue(`discounts.${cycle}`, preferencesByCycle.value[cycle][0]._id);
 			}
 		}
 	} catch (e) {
-		notification.error(t('notifications.preferencesFailed'))
+		notification.error(t('notifications.preferencesFailed'));
 	}
-})
+});
 
 const initialValues = computed(() => {
-	const discounts = {} as Record<string, string>
+	const discounts = {} as Record<string, string>;
 
 	for (const cycle in preferencesByCycle.value) {
-		const zeroDiscount = preferencesByCycle.value[cycle].find((opt) => opt.discount === 0)
-		discounts[cycle] = zeroDiscount?._id || preferencesByCycle.value[cycle][0]?._id
+		const zeroDiscount = preferencesByCycle.value[cycle].find((opt) => opt.discount === 0);
+		discounts[cycle] = zeroDiscount?._id || preferencesByCycle.value[cycle][0]?._id;
 	}
 
 	return {
@@ -474,43 +474,43 @@ const initialValues = computed(() => {
 		acceptTerms: false,
 		confirmAge: false,
 		socialTouched: false,
-	}
-})
+	};
+});
 
 const onSocialBlur = (setFieldValue: (field: keyof FormValues, value: any) => void) => {
-	setFieldValue('socialTouched', true)
+	setFieldValue('socialTouched', true);
 	setTouched({
 		'social.facebook': true,
 		'social.instagram': true,
 		'social.twitter': true,
 		'social.tiktok': true,
-	})
-}
+	});
+};
 
 function calculatePeriodPrices(monthlyPrice: number, discounts: Record<string, string>) {
 	for (const cycle in discounts) {
-		if (!preferencesByCycle.value[cycle]) continue
-		const selectedId = discounts[cycle]
-		const option = preferencesByCycle.value[cycle]?.find((opt: any) => opt._id === selectedId)
+		if (!preferencesByCycle.value[cycle]) continue;
+		const selectedId = discounts[cycle];
+		const option = preferencesByCycle.value[cycle]?.find((opt: any) => opt._id === selectedId);
 		if (option) {
-			let multiplier = 1
-			if (cycle === 'quarterly') multiplier = 3
-			if (cycle === 'yearly') multiplier = 12
-			periodPrices.value[cycle] = Math.round(monthlyPrice * multiplier * (1 - option.discount / 100) * 100) / 100
+			let multiplier = 1;
+			if (cycle === 'quarterly') multiplier = 3;
+			if (cycle === 'yearly') multiplier = 12;
+			periodPrices.value[cycle] = Math.round(monthlyPrice * multiplier * (1 - option.discount / 100) * 100) / 100;
 		}
 	}
 }
 
 async function onSubmit(values: FormValues, { resetForm }: { resetForm: () => void }) {
 	try {
-		const allowedPlatforms = ['facebook', 'instagram', 'twitter', 'tiktok', 'youtube'] as const
+		const allowedPlatforms = ['facebook', 'instagram', 'twitter', 'tiktok', 'youtube'] as const;
 		const socialUrlMap = {
 			facebook: (username: string) => `https://facebook.com/${username}`,
 			instagram: (username: string) => `https://instagram.com/${username}`,
 			twitter: (username: string) => `https://twitter.com/${username}`,
 			tiktok: (username: string) => `https://tiktok.com/@${username}`,
 			youtube: (username: string) => `https://youtube.com/${username}`,
-		}
+		};
 		const payload = {
 			displayName: values.displayName,
 			username: values.username,
@@ -525,7 +525,7 @@ async function onSubmit(values: FormValues, { resetForm }: { resetForm: () => vo
 			pricing: {
 				amount: values.monthlyPrice,
 				models: Object.keys(preferencesByCycle.value).map((cycle) => {
-					return values.discounts[cycle] || preferencesByCycle.value[cycle][0]?._id
+					return values.discounts[cycle] || preferencesByCycle.value[cycle][0]?._id;
 				}),
 			},
 			legal: {
@@ -533,44 +533,44 @@ async function onSubmit(values: FormValues, { resetForm }: { resetForm: () => vo
 				legallyAnAdult: values.confirmAge,
 				contentGuidelines: values.acceptTerms,
 			},
-		}
-		await createCreator(payload)
-		notification.success(t('notifications.applicationSubmitted'))
-		resetForm()
+		};
+		await createCreator(payload);
+		notification.success(t('notifications.applicationSubmitted'));
+		resetForm();
 
-		setFieldValue('displayName', '')
-		setFieldValue('username', '')
-		setFieldValue('bio', '')
-		setFieldValue('categories', [])
+		setFieldValue('displayName', '');
+		setFieldValue('username', '');
+		setFieldValue('bio', '');
+		setFieldValue('categories', []);
 		setFieldValue('social', {
 			facebook: '',
 			instagram: '',
 			twitter: '',
 			tiktok: '',
-		})
-		setFieldValue('monthlyPrice', 4.99)
-		setFieldValue('acceptTerms', false)
-		setFieldValue('confirmAge', false)
-		setFieldValue('socialTouched', false)
+		});
+		setFieldValue('monthlyPrice', 4.99);
+		setFieldValue('acceptTerms', false);
+		setFieldValue('confirmAge', false);
+		setFieldValue('socialTouched', false);
 
 		Object.keys(preferencesByCycle.value).forEach((cycle) => {
-			const zeroDiscount = preferencesByCycle.value[cycle].find((opt) => opt.discount === 0)
-			setFieldValue(`discounts.${cycle}`, zeroDiscount?._id || preferencesByCycle.value[cycle][0]?._id)
-		})
+			const zeroDiscount = preferencesByCycle.value[cycle].find((opt) => opt.discount === 0);
+			setFieldValue(`discounts.${cycle}`, zeroDiscount?._id || preferencesByCycle.value[cycle][0]?._id);
+		});
 		for (const cycle in preferencesByCycle.value) {
-			if (!preferencesByCycle.value[cycle]) continue
-			const zeroDiscount = preferencesByCycle.value[cycle].find((opt: any) => opt.discount === 0)
+			if (!preferencesByCycle.value[cycle]) continue;
+			const zeroDiscount = preferencesByCycle.value[cycle].find((opt: any) => opt.discount === 0);
 			if (zeroDiscount) {
-				setFieldValue(`discounts.${cycle}`, zeroDiscount._id)
+				setFieldValue(`discounts.${cycle}`, zeroDiscount._id);
 			} else if (preferencesByCycle.value[cycle][0]) {
-				setFieldValue(`discounts.${cycle}`, preferencesByCycle.value[cycle][0]._id)
+				setFieldValue(`discounts.${cycle}`, preferencesByCycle.value[cycle][0]._id);
 			}
 		}
-		calculatePeriodPrices(initialValues.value.monthlyPrice, initialValues.value.discounts)
+		calculatePeriodPrices(initialValues.value.monthlyPrice, initialValues.value.discounts);
 	} catch (error: any) {
-		notification.error(apiError.value || t('notifications.applicationFailed'))
+		notification.error(apiError.value || t('notifications.applicationFailed'));
 	} finally {
-		apiLoading.value = false
+		apiLoading.value = false;
 	}
 }
 </script>

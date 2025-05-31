@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 export interface Creator {
 	id: string
@@ -44,36 +44,36 @@ export const useSubscriptionStore = defineStore('subscription', {
 
 	getters: {
 		getCreatorById: (state) => (id: string) => {
-			return state.creators.find((creator) => creator.id === id) || null
+			return state.creators.find((creator) => creator.id === id) || null;
 		},
 
 		getTopCreators:
 			(state) =>
-			(limit = 10) => {
-				return [...state.creators].sort((a, b) => b.subscriberCount - a.subscriberCount).slice(0, limit)
-			},
+				(limit = 10) => {
+					return [...state.creators].sort((a, b) => b.subscriberCount - a.subscriberCount).slice(0, limit);
+				},
 
 		getSubscribedCreators: (state) => (userId: string) => {
 			const subscriptionCreatorIds = state.subscriptions
 				.filter((sub) => sub.userId === userId && sub.isActive)
-				.map((sub) => sub.creatorId)
+				.map((sub) => sub.creatorId);
 
-			return state.creators.filter((creator) => subscriptionCreatorIds.includes(creator.id))
+			return state.creators.filter((creator) => subscriptionCreatorIds.includes(creator.id));
 		},
 
 		isSubscribed: (state) => (userId: string, creatorId: string) => {
-			return state.subscriptions.some((sub) => sub.userId === userId && sub.creatorId === creatorId && sub.isActive)
+			return state.subscriptions.some((sub) => sub.userId === userId && sub.creatorId === creatorId && sub.isActive);
 		},
 	},
 
 	actions: {
 		async fetchCreators({ category, query } = {}) {
-			console.log(category, query)
-			this.loading = true
-			this.error = null
+			console.log(category, query);
+			this.loading = true;
+			this.error = null;
 
 			try {
-				await new Promise((resolve) => setTimeout(resolve, 500))
+				await new Promise((resolve) => setTimeout(resolve, 500));
 
 				const mockCreators: Creator[] = [
 					{
@@ -122,22 +122,22 @@ export const useSubscriptionStore = defineStore('subscription', {
 						categories: ['Gaming', 'Technology'],
 						isVerified: false,
 					},
-				]
+				];
 
-				this.creators = mockCreators
+				this.creators = mockCreators;
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Failed to fetch creators'
+				this.error = error instanceof Error ? error.message : 'Failed to fetch creators';
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 
 		async fetchUserSubscriptions(userId: string) {
-			this.loading = true
-			this.error = null
+			this.loading = true;
+			this.error = null;
 
 			try {
-				await new Promise((resolve) => setTimeout(resolve, 300))
+				await new Promise((resolve) => setTimeout(resolve, 300));
 
 				const mockSubscriptions: Subscription[] = [
 					{
@@ -151,35 +151,35 @@ export const useSubscriptionStore = defineStore('subscription', {
 						isActive: true,
 						autoRenew: true,
 					},
-				]
+				];
 
-				this.subscriptions = mockSubscriptions
+				this.subscriptions = mockSubscriptions;
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Failed to fetch subscriptions'
+				this.error = error instanceof Error ? error.message : 'Failed to fetch subscriptions';
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 
 		async subscribe(userId: string, creatorId: string, plan: 'monthly' | 'yearly') {
-			this.loading = true
-			this.error = null
+			this.loading = true;
+			this.error = null;
 
 			try {
-				const creator = this.getCreatorById(creatorId)
+				const creator = this.getCreatorById(creatorId);
 				if (!creator) {
-					throw new Error('Creator not found')
+					throw new Error('Creator not found');
 				}
 
-				const price = plan === 'yearly' ? creator.yearlyPrice! : creator.monthlyPrice // Mock API call - replace with actual API call
-				await new Promise((resolve) => setTimeout(resolve, 800))
+				const price = plan === 'yearly' ? creator.yearlyPrice! : creator.monthlyPrice; // Mock API call - replace with actual API call
+				await new Promise((resolve) => setTimeout(resolve, 800));
 
-				const now = new Date()
-				const endDate = new Date(now)
+				const now = new Date();
+				const endDate = new Date(now);
 				if (plan === 'monthly') {
-					endDate.setMonth(endDate.getMonth() + 1)
+					endDate.setMonth(endDate.getMonth() + 1);
 				} else {
-					endDate.setFullYear(endDate.getFullYear() + 1)
+					endDate.setFullYear(endDate.getFullYear() + 1);
 				}
 
 				const newSubscription: Subscription = {
@@ -192,42 +192,42 @@ export const useSubscriptionStore = defineStore('subscription', {
 					endDate: endDate.toISOString(),
 					isActive: true,
 					autoRenew: true,
-				}
+				};
 
-				this.subscriptions.push(newSubscription)
-				return newSubscription
+				this.subscriptions.push(newSubscription);
+				return newSubscription;
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Failed to subscribe'
-				throw error
+				this.error = error instanceof Error ? error.message : 'Failed to subscribe';
+				throw error;
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 
 		async cancelSubscription(subscriptionId: string) {
-			this.loading = true
-			this.error = null
+			this.loading = true;
+			this.error = null;
 
 			try {
-				await new Promise((resolve) => setTimeout(resolve, 500))
+				await new Promise((resolve) => setTimeout(resolve, 500));
 
-				const index = this.subscriptions.findIndex((sub) => sub.id === subscriptionId)
+				const index = this.subscriptions.findIndex((sub) => sub.id === subscriptionId);
 				if (index === -1) {
-					throw new Error('Subscription not found')
+					throw new Error('Subscription not found');
 				}
 
 				this.subscriptions[index] = {
 					...this.subscriptions[index],
 					autoRenew: false,
-				}
+				};
 
-				return true
+				return true;
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Failed to cancel subscription'
-				throw error
+				this.error = error instanceof Error ? error.message : 'Failed to cancel subscription';
+				throw error;
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 	},
-})
+});

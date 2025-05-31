@@ -1,68 +1,71 @@
 <template>
-  <div class="max-w-7xl mx-auto px-2 py-4">
-    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
-      <!-- Main Feed -->
+	<div class="max-w-7xl mx-auto px-2 py-4">
+		<div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+			<!-- Main Feed -->
 
-      <div class="lg:col-span-3">
-        <div class="space-y-6">
-          <div v-for="post in posts" :key="post.id">
-            <post-card :post="post" :is-subscribed="isSubscribedToCreator(post.creator.id)"
-              @subscribe="subscribeToCreator(post.creator.id)" @tip="showTipModal(post)" />
-          </div>
-        </div>
-      </div>
-      <!-- Suggestions Panel -->
-      <div class="hidden lg:block col-span-2">
-        <div class="sticky top-4 z-10 h-[calc(100vh-2rem)] overflow-y-auto pb-4">
-          <div
-            class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-800 p-4 w-full max-w-xl mx-auto">
-            <!-- Search Bar -->
-            <div class="mb-4">
-              <input v-model="suggestionSearch" type="text" :placeholder="$t('searchUsersOrPosts')"
-                class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-primary-500 focus:ring-primary-500 px-3 py-2 text-sm" />
-            </div>
+			<div class="lg:col-span-3">
+				<div class="space-y-6">
+					<div v-for="post in posts" :key="post.id">
+						<post-card
+							:post="post" :is-subscribed="isSubscribedToCreator(post.creator.id)"
+							@subscribe="subscribeToCreator(post.creator.id)" @tip="showTipModal(post)" />
+					</div>
+				</div>
+			</div>
+			<!-- Suggestions Panel -->
+			<div class="hidden lg:block col-span-2">
+				<div class="sticky top-4 z-10 h-[calc(100vh-2rem)] overflow-y-auto pb-4">
+					<div
+						class="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-100 dark:border-gray-800 p-4 w-full max-w-xl mx-auto">
+						<!-- Search Bar -->
+						<div class="mb-4">
+							<input
+								v-model="suggestionSearch" type="text" :placeholder="$t('searchUsersOrPosts')"
+								class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-primary-500 focus:ring-primary-500 px-3 py-2 text-sm" />
+						</div>
 
-            <UserSwiperList :users="filteredSuggestions" :title="$t('suggestions')" :users-per-slide="3" />
-            <div class="mt-8">
-              <UserSwiperList :users="expiredSubscriptions" :title="$t('subscriptions.expiredSubscriptions')" :users-per-slide="3" />
-            </div>
-          </div>
-        </div>
-      </div>
+						<UserSwiperList :users="filteredSuggestions" :title="$t('suggestions')" :users-per-slide="3" />
+						<div class="mt-8">
+							<UserSwiperList :users="expiredSubscriptions" :title="$t('subscriptions.expiredSubscriptions')" :users-per-slide="3" />
+						</div>
+					</div>
+				</div>
+			</div>
 
-      <!-- Tip Modal -->
-      <modal v-if="showingTipModal" @close="showingTipModal = false">
-        <div class="p-6 bg-white dark:bg-gray-900 rounded-lg">
-          <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
-            {{ $t('home.sendTipTo', { name: selectedPost?.creator.name }) }}
-          </h2>
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
-                {{ $t('home.amount') }}
-              </label>
-              <input v-model="tipAmount" type="number"
-                class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-primary-500 focus:ring-primary-500"
-                min="100" />
-            </div>
-            <BaseButton :loading="isSendingTip" variant="primary" class="w-full" @click="sendTip">
-              {{ $t('home.sendTip') }}
-            </BaseButton>
-          </div>
-        </div>
-      </modal>
-    </div>
-  </div>
+			<!-- Tip Modal -->
+			<modal v-if="showingTipModal" @close="showingTipModal = false">
+				<div class="p-6 bg-white dark:bg-gray-900 rounded-lg">
+					<h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+						{{ $t('home.sendTipTo', { name: selectedPost?.creator.name }) }}
+					</h2>
+					<div class="space-y-4">
+						<div>
+							<label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+								{{ $t('home.amount') }}
+							</label>
+							<input
+								v-model="tipAmount" type="number"
+								class="w-full rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-primary-500 focus:ring-primary-500"
+								min="100" />
+						</div>
+						<BaseButton :loading="isSendingTip" variant="primary" class="w-full" @click="sendTip">
+							{{ $t('home.sendTip') }}
+						</BaseButton>
+					</div>
+				</div>
+			</modal>
+		</div>
+	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { toast } from 'vue3-toastify'
-import { useUserStore } from '~/store/user'
-import Modal from '~/components/ui/Modal.vue'
-import BaseButton from '~/components/ui/BaseButton.vue'
-import PostCard from '~/components/PostCard.vue'
-import UserSwiperList from '~/components/ui/UserSwiperList.vue'
+import { ref, computed, onMounted } from 'vue';
+import { toast } from 'vue3-toastify';
+import { useUserStore } from '~/store/user';
+import Modal from '~/components/ui/Modal.vue';
+import BaseButton from '~/components/ui/BaseButton.vue';
+import PostCard from '~/components/PostCard.vue';
+import UserSwiperList from '~/components/ui/UserSwiperList.vue';
 
 definePageMeta({
   layout: 'creator',
@@ -70,7 +73,7 @@ definePageMeta({
   meta: {
     requiresAuth: true,
   },
-})
+});
 
 interface Creator {
   id: string
@@ -97,7 +100,7 @@ interface SuggestionUser {
   expired?: boolean
 }
 
-const userStore = useUserStore()
+const userStore = useUserStore();
 
 const posts = ref<Post[]>([
   {
@@ -128,14 +131,14 @@ const posts = ref<Post[]>([
     isPremium: true,
     comments: [],
   },
-])
+]);
 
-const showingTipModal = ref(false)
-const selectedPost = ref<Post | null>(null)
-const tipAmount = ref<number>(1000)
-const isSendingTip = ref(false)
+const showingTipModal = ref(false);
+const selectedPost = ref<Post | null>(null);
+const tipAmount = ref<number>(1000);
+const isSendingTip = ref(false);
 
-const suggestionSearch = ref('')
+const suggestionSearch = ref('');
 const suggestions = ref<SuggestionUser[]>([
   {
     id: 'fil-1',
@@ -195,53 +198,53 @@ const expiredSubscriptions = ref<SuggestionUser[]>([
 
 const filteredSuggestions = computed<SuggestionUser[]>(() => {
   if (!suggestionSearch.value) {
-    return suggestions.value.filter(user => !expiredSubscriptions.value.some(expired => expired.id === user.id))
+    return suggestions.value.filter(user => !expiredSubscriptions.value.some(expired => expired.id === user.id));
   }
   return suggestions.value.filter(
     (user) =>
       (user.name.toLowerCase().includes(suggestionSearch.value.toLowerCase()) ||
         user.username.toLowerCase().includes(suggestionSearch.value.toLowerCase())) &&
       !expiredSubscriptions.value.some(expired => expired.id === user.id)
-  )
-})
+  );
+});
 
 const isSubscribedToCreator = (creatorId: string): boolean => {
-  return userStore?.getSubscriptions?.includes(creatorId) || false
-}
+  return userStore?.getSubscriptions?.includes(creatorId) || false;
+};
 
 const subscribeToCreator = async (creatorId: string): Promise<void> => {
   try {
-    await userStore.addSubscription(creatorId)
-    toast.success('Successfully subscribed to creator!')
+    await userStore.addSubscription(creatorId);
+    toast.success('Successfully subscribed to creator!');
   } catch {
-    toast.error('Failed to subscribe to creator')
+    toast.error('Failed to subscribe to creator');
   }
-}
+};
 
 const showTipModal = (post: Post): void => {
-  selectedPost.value = post
-  showingTipModal.value = true
-}
+  selectedPost.value = post;
+  showingTipModal.value = true;
+};
 
 const sendTip = async (): Promise<void> => {
   if (!selectedPost.value || tipAmount.value < 100) {
-    return
+    return;
   }
-  isSendingTip.value = true
+  isSendingTip.value = true;
   try {
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    toast.success(`Successfully sent tip to ${selectedPost.value.creator.name}!`)
-    showingTipModal.value = false
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    toast.success(`Successfully sent tip to ${selectedPost.value.creator.name}!`);
+    showingTipModal.value = false;
   } catch {
-    toast.error('Failed to send tip')
+    toast.error('Failed to send tip');
   } finally {
-    isSendingTip.value = false
+    isSendingTip.value = false;
   }
-}
+};
 
 onMounted(async () => {
   // Fetch posts from API
-})
+});
 </script>
 
 <style scoped>

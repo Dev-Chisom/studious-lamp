@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 
 interface Creator {
 	name: string
@@ -64,25 +64,25 @@ interface Notification {
 	link?: string
 }
 
-const notifications = ref<Notification[]>([])
+const notifications = ref<Notification[]>([]);
 
 const viewContent = (notification: Notification): void => {
 	if (notification.link) {
-		navigateTo(notification.link)
+		navigateTo(notification.link);
 	}
-	dismissNotification(notification.id)
-}
+	dismissNotification(notification.id);
+};
 
 const dismissNotification = (id: string): void => {
-	notifications.value = notifications.value.filter((n: Notification) => n.id !== id)
-}
+	notifications.value = notifications.value.filter((n: Notification) => n.id !== id);
+};
 
 const addNotification = (notification: Notification): void => {
-	notifications.value.push(notification)
-	setTimeout(() => dismissNotification(notification.id), 5000)
-}
+	notifications.value.push(notification);
+	setTimeout(() => dismissNotification(notification.id), 5000);
+};
 
 defineExpose<{
 	addNotification: (notification: Notification) => void
-}>({ addNotification })
+}>({ addNotification });
 </script>

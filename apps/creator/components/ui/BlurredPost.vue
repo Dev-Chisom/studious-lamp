@@ -18,5 +18,5 @@
 </template>
 
 <script setup lang="ts">
-const emit = defineEmits(['subscribe'])
+const emit = defineEmits(['subscribe']);
 </script>

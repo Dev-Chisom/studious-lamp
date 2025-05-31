@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 export interface Post {
 	id: string
@@ -29,32 +29,32 @@ export const useContentStore = defineStore('content', {
 
 	getters: {
 		getPostById: (state) => (id: string) => {
-			return state.posts.find((post) => post.id === id) || null
+			return state.posts.find((post) => post.id === id) || null;
 		},
 
 		getPostsByCreator: (state) => (creatorId: string) => {
-			return state.posts.filter((post) => post.creatorId === creatorId)
+			return state.posts.filter((post) => post.creatorId === creatorId);
 		},
 
 		getPublicPosts: (state) => {
-			return state.posts.filter((post) => post.visibility === 'public')
+			return state.posts.filter((post) => post.visibility === 'public');
 		},
 
 		getSubscriberPosts: (state) => (creatorId: string) => {
 			return state.posts.filter(
 				(post) => post.creatorId === creatorId && (post.visibility === 'public' || post.visibility === 'subscribers'),
-			)
+			);
 		},
 	},
 
 	actions: {
 		async fetchPosts({ creatorId, visibility } = {}) {
-			this.loading = true
-			this.error = null
-			console.log(creatorId, visibility)
+			this.loading = true;
+			this.error = null;
+			console.log(creatorId, visibility);
 
 			try {
-				await new Promise((resolve) => setTimeout(resolve, 500))
+				await new Promise((resolve) => setTimeout(resolve, 500));
 
 				const mockPosts: Post[] = [
 					{
@@ -98,19 +98,19 @@ export const useContentStore = defineStore('content', {
 						comments: 8,
 						createdAt: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString(),
 					},
-				]
+				];
 
-				this.posts = mockPosts
+				this.posts = mockPosts;
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Failed to fetch posts'
+				this.error = error instanceof Error ? error.message : 'Failed to fetch posts';
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 
 		async createPost(postData: Omit<Post, 'id' | 'likes' | 'comments' | 'createdAt'>) {
-			this.loading = true
-			this.error = null
+			this.loading = true;
+			this.error = null;
 
 			try {
 				// Mock API call - replace with actual API call
@@ -122,7 +122,7 @@ export const useContentStore = defineStore('content', {
 				// const data = await response.json();
 
 				// Simulate API call
-				await new Promise((resolve) => setTimeout(resolve, 800))
+				await new Promise((resolve) => setTimeout(resolve, 800));
 
 				const newPost: Post = {
 					...postData,
@@ -130,21 +130,21 @@ export const useContentStore = defineStore('content', {
 					likes: 0,
 					comments: 0,
 					createdAt: new Date().toISOString(),
-				}
+				};
 
-				this.posts.unshift(newPost)
-				return newPost
+				this.posts.unshift(newPost);
+				return newPost;
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Failed to create post'
-				throw error
+				this.error = error instanceof Error ? error.message : 'Failed to create post';
+				throw error;
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 
 		async updatePost(id: string, postData: Partial<Post>) {
-			this.loading = true
-			this.error = null
+			this.loading = true;
+			this.error = null;
 
 			try {
 				// Mock API call - replace with actual API call
@@ -156,31 +156,31 @@ export const useContentStore = defineStore('content', {
 				// const data = await response.json();
 
 				// Simulate API call
-				await new Promise((resolve) => setTimeout(resolve, 500))
+				await new Promise((resolve) => setTimeout(resolve, 500));
 
-				const index = this.posts.findIndex((post) => post.id === id)
+				const index = this.posts.findIndex((post) => post.id === id);
 				if (index === -1) {
-					throw new Error('Post not found')
+					throw new Error('Post not found');
 				}
 
 				const updatedPost = {
 					...this.posts[index],
 					...postData,
-				}
+				};
 
-				this.posts[index] = updatedPost
-				return updatedPost
+				this.posts[index] = updatedPost;
+				return updatedPost;
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Failed to update post'
-				throw error
+				this.error = error instanceof Error ? error.message : 'Failed to update post';
+				throw error;
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 
 		async deletePost(id: string) {
-			this.loading = true
-			this.error = null
+			this.loading = true;
+			this.error = null;
 
 			try {
 				// Mock API call - replace with actual API call
@@ -189,21 +189,21 @@ export const useContentStore = defineStore('content', {
 				// });
 
 				// Simulate API call
-				await new Promise((resolve) => setTimeout(resolve, 300))
+				await new Promise((resolve) => setTimeout(resolve, 300));
 
-				const index = this.posts.findIndex((post) => post.id === id)
+				const index = this.posts.findIndex((post) => post.id === id);
 				if (index === -1) {
-					throw new Error('Post not found')
+					throw new Error('Post not found');
 				}
 
-				this.posts.splice(index, 1)
-				return true
+				this.posts.splice(index, 1);
+				return true;
 			} catch (error) {
-				this.error = error instanceof Error ? error.message : 'Failed to delete post'
-				throw error
+				this.error = error instanceof Error ? error.message : 'Failed to delete post';
+				throw error;
 			} finally {
-				this.loading = false
+				this.loading = false;
 			}
 		},
 	},
-})
+});

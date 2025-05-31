@@ -13,58 +13,58 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
-import { onMounted } from 'vue'
-import { createAuthApi } from '@whispers/api'
-import { useI18n } from 'vue-i18n'
-import { useApiRequest } from '../../composables/useApiRequest'
-import { useNotification } from '../../composables/useNotifications'
-import { useAuthStore } from '../../store/auth'
-import OAuthLogin from '@/components/auth/OAuthLogin.vue'
+import { useRoute, useRouter } from 'vue-router';
+import { onMounted } from 'vue';
+import { createAuthApi } from '@whispers/api';
+import { useI18n } from 'vue-i18n';
+import { useApiRequest } from '../../composables/useApiRequest';
+import { useNotification } from '../../composables/useNotifications';
+import { useAuthStore } from '../../store/auth';
+import OAuthLogin from '@/components/auth/OAuthLogin.vue';
 
-const { t } = useI18n()
-const route = useRoute()
-const router = useRouter()
-const authStore = useAuthStore()
-const notification = useNotification()
+const { t } = useI18n();
+const route = useRoute();
+const router = useRouter();
+const authStore = useAuthStore();
+const notification = useNotification();
 
-const { loading: apiLoading, error: apiError } = useApiRequest(async () => Promise.resolve())
+const { loading: apiLoading, error: apiError } = useApiRequest(async () => Promise.resolve());
 
 onMounted(async () => {
 	if (authStore.isAuthenticated) {
-		await router.replace('/')
-		return
+		await router.replace('/');
+		return;
 	}
 
-	const { accessToken, refreshToken } = route.query
+	const { accessToken, refreshToken } = route.query;
 
 	if (accessToken && typeof accessToken === 'string') {
-		await router.replace({ path: route.path })
+		await router.replace({ path: route.path });
 
-		apiLoading.value = true
+		apiLoading.value = true;
 		try {
-			authStore.setTokens(accessToken, refreshToken)
-			const authApi = createAuthApi(accessToken)
-			const profile = await authApi.getProfile()
-			authStore.setProfile(profile)
-			notification.success(t('auth.loginSuccess'))
-			await router.replace('/')
+			authStore.setTokens(accessToken, refreshToken);
+			const authApi = createAuthApi(accessToken);
+			const profile = await authApi.getProfile();
+			authStore.setProfile(profile);
+			notification.success(t('auth.loginSuccess'));
+			await router.replace('/');
 		} catch {
 			try {
-				const authApi = createAuthApi()
-				const { accessToken: newAccessToken } = await authApi.refreshToken(refreshToken)
-				authStore.setTokens(newAccessToken, refreshToken)
-				const profile = await authApi.getProfile()
-				authStore.setProfile(profile)
-				notification.success(t('auth.loginSuccess'))
-				await router.replace('/')
+				const authApi = createAuthApi();
+				const { accessToken: newAccessToken } = await authApi.refreshToken(refreshToken);
+				authStore.setTokens(newAccessToken, refreshToken);
+				const profile = await authApi.getProfile();
+				authStore.setProfile(profile);
+				notification.success(t('auth.loginSuccess'));
+				await router.replace('/');
 			} catch {
-				notification.error(apiError.value)
-				authStore.logout()
+				notification.error(apiError.value);
+				authStore.logout();
 			}
 		} finally {
-			apiLoading.value = false
+			apiLoading.value = false;
 		}
 	}
-})
+});
 </script>

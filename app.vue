@@ -5,11 +5,11 @@
 </template>
 
 <script setup>
-import { useAuthStore } from '~/stores/auth'
+import { useAuthStore } from '~/stores/auth';
 
 // Initialize auth state from local storage on app start
-const authStore = useAuthStore()
+const authStore = useAuthStore();
 onMounted(() => {
-	authStore.initAuth()
-})
+	authStore.initAuth();
+});
 </script>

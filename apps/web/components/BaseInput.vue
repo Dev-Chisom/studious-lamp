@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue';
 
 const props = defineProps({
 	modelValue: {
@@ -90,26 +90,26 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-})
+});
 
-defineEmits(['update:modelValue'])
+defineEmits(['update:modelValue']);
 
-const input = ref(null)
-const passwordVisible = ref(false)
+const input = ref(null);
+const passwordVisible = ref(false);
 const inputType = computed(() => {
 	if (props.type === 'password' && passwordVisible.value) {
-		return 'text'
+		return 'text';
 	}
-	return props.type
-})
+	return props.type;
+});
 
 function togglePasswordVisibility() {
-	passwordVisible.value = !passwordVisible.value
+	passwordVisible.value = !passwordVisible.value;
 }
 
 onMounted(() => {
 	if (props.autofocus && input.value) {
-		input.value.focus()
+		input.value.focus();
 	}
-})
+});
 </script>

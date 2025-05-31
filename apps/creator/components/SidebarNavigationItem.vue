@@ -25,8 +25,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 
 interface NavigationItem {
 	name: string
@@ -39,14 +39,14 @@ interface SidebarNavigationItemProps {
 	item: NavigationItem
 }
 
-const props = defineProps<SidebarNavigationItemProps>()
+const props = defineProps<SidebarNavigationItemProps>();
 
-const route = useRoute()
+const route = useRoute();
 
 const isActive = computed((): boolean => {
 	if (props.item.href === '/') {
-		return route.path === '/'
+		return route.path === '/';
 	}
-	return route.path.startsWith(props.item.href)
-})
+	return route.path.startsWith(props.item.href);
+});
 </script>

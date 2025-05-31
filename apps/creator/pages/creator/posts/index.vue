@@ -339,9 +339,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { toast } from 'vue3-toastify'
-import { useI18n } from 'vue-i18n'
+import { ref, computed, onMounted } from 'vue';
+import { toast } from 'vue3-toastify';
+import { useI18n } from 'vue-i18n';
 // import { useContentStore } from '../../../store/content';
 
 definePageMeta({
@@ -351,7 +351,7 @@ definePageMeta({
 		requiresAuth: true,
 		requiresCreator: true,
 	},
-})
+});
 
 interface Post {
 	id: string
@@ -375,17 +375,17 @@ interface Filters {
 }
 
 // const contentStore = useContentStore();
-const loading = ref<boolean>(true)
-const currentPage = ref<number>(1)
-const itemsPerPage = 10
+const loading = ref<boolean>(true);
+const currentPage = ref<number>(1);
+const itemsPerPage = 10;
 
 const filters = ref<Filters>({
 	search: '',
 	visibility: '',
 	sortBy: 'newest',
-})
+});
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 // Mock data for posts
 const posts = ref<Post[]>([
@@ -429,80 +429,80 @@ const posts = ref<Post[]>([
 		purchases: 30,
 		createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
 	},
-])
+]);
 
 // Computed properties
 const filteredPosts = computed<Post[]>(() => {
-	let result = [...posts.value]
+	let result = [...posts.value];
 
 	// Apply search filter
 	if (filters.value.search) {
-		const searchLower = filters.value.search.toLowerCase()
+		const searchLower = filters.value.search.toLowerCase();
 		result = result.filter(
 			(post) => post.title.toLowerCase().includes(searchLower) || post.content.toLowerCase().includes(searchLower),
-		)
+		);
 	}
 
 	// Apply visibility filter
 	if (filters.value.visibility) {
-		result = result.filter((post) => post.visibility === filters.value.visibility)
+		result = result.filter((post) => post.visibility === filters.value.visibility);
 	}
 
 	// Apply sorting
 	switch (filters.value.sortBy) {
 		case 'newest':
-			result.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-			break
+			result.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+			break;
 		case 'oldest':
-			result.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
-			break
+			result.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+			break;
 		case 'popular':
-			result.sort((a, b) => b.views - a.views)
-			break
+			result.sort((a, b) => b.views - a.views);
+			break;
 		case 'earnings':
-			result.sort((a, b) => b.earnings - a.earnings)
-			break
+			result.sort((a, b) => b.earnings - a.earnings);
+			break;
 	}
 
-	return result
-})
+	return result;
+});
 
-const totalPosts = computed<number>(() => filteredPosts.value.length)
-const totalPages = computed<number>(() => Math.ceil(totalPosts.value / itemsPerPage))
+const totalPosts = computed<number>(() => filteredPosts.value.length);
+const totalPages = computed<number>(() => Math.ceil(totalPosts.value / itemsPerPage));
 
-const startIndex = computed<number>(() => (currentPage.value - 1) * itemsPerPage)
-const endIndex = computed<number>(() => Math.min(startIndex.value + itemsPerPage, totalPosts.value))
+const startIndex = computed<number>(() => (currentPage.value - 1) * itemsPerPage);
+const endIndex = computed<number>(() => Math.min(startIndex.value + itemsPerPage, totalPosts.value));
 
 const displayedPages = computed<number[]>(() => {
-	const pages: number[] = []
-	const maxPages = 5
+	const pages: number[] = [];
+	const maxPages = 5;
 
 	if (totalPages.value <= maxPages) {
 		for (let i = 1; i <= totalPages.value; i++) {
-			pages.push(i)
+			pages.push(i);
 		}
 	} else {
-		let start = Math.max(1, currentPage.value - 2)
-		const end = Math.min(totalPages.value, start + maxPages - 1)
+		let start = Math.max(1, currentPage.value - 2);
+		const end = Math.min(totalPages.value, start + maxPages - 1);
 
 		if (end - start < maxPages - 1) {
-			start = Math.max(1, end - maxPages + 1)
+			start = Math.max(1, end - maxPages + 1);
 		}
 
 		for (let i = start; i <= end; i++) {
-			pages.push(i)
+			pages.push(i);
 		}
 	}
 
-	return pages
-})
+	return pages;
+});
 
 // Methods
 function truncateText(text: string, length: number): string {
 	if (text.length <= length) {
-		return text
+		return text;
 	}
-	return text.substring(0, length) + '...'
+	return text.substring(0, length) + '...';
 }
 
 function formatDate(date: Date): string {
@@ -510,28 +510,28 @@ function formatDate(date: Date): string {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',
-	})
+	});
 }
 
 function editPost(id: string): void {
-	navigateTo(`/creator/content/edit/${id}`)
+	navigateTo(`/creator/content/edit/${id}`);
 }
 
 function confirmDelete(id: string): void {
-	console.log(id)
+	console.log(id);
 	// Implement delete confirmation logic
-	toast.info('Delete functionality to be implemented')
+	toast.info('Delete functionality to be implemented');
 }
 
 // Load posts on mount
 onMounted(async () => {
 	try {
 		// In a real app, this would fetch from the API
-		await new Promise((resolve) => setTimeout(resolve, 1000))
-		loading.value = false
+		await new Promise((resolve) => setTimeout(resolve, 1000));
+		loading.value = false;
 	} catch {
-		toast.error('Failed to load posts')
-		loading.value = false
+		toast.error('Failed to load posts');
+		loading.value = false;
 	}
-})
+});
 </script>

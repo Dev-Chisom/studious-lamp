@@ -232,8 +232,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 definePageMeta({
 	layout: 'creator',
@@ -242,7 +242,7 @@ definePageMeta({
 		requiresAuth: true,
 		requiresCreator: true,
 	},
-})
+});
 
 interface StatCard {
 	name: string
@@ -280,7 +280,7 @@ interface Payout {
 	platformFee: number
 }
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 const stats = ref<StatCard[]>([
 	{
@@ -311,7 +311,7 @@ const stats = ref<StatCard[]>([
 		color: 'accent',
 		trend: -3,
 	},
-])
+]);
 
 const sucbscriptions = ref<Subscription[]>([
 	{
@@ -330,7 +330,7 @@ const sucbscriptions = ref<Subscription[]>([
 		amount: '99.99',
 		date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
 	},
-])
+]);
 
 const recentPosts = ref<ContentPost[]>([
 	{
@@ -351,7 +351,7 @@ const recentPosts = ref<ContentPost[]>([
 		views: 987,
 		date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
 	},
-])
+]);
 
 const nextPayout = ref<Payout>({
 	amount: 1245.67,
@@ -360,13 +360,13 @@ const nextPayout = ref<Payout>({
 	tips: 156.78,
 	ppv: 101.44,
 	platformFee: 200.0,
-})
+});
 
 function formatDate(date: Date): string {
 	return new Date(date).toLocaleDateString('en-US', {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',
-	})
+	});
 }
 </script>

@@ -177,47 +177,54 @@ const rangeText = computed(() => {
 </script>
 
 <template>
-  <div :class="['flex flex-col items-center gap-4 w-full py-4', paginationClass]" role="navigation"
-    aria-label="Pagination">
-    <div class="flex w-full justify-between items-center">
-      <div class="text-sm text-gray-700 dark:text-gray-300 mr-4" v-if="showRange">
-        {{ rangeText }}
-      </div>
+	<div
+		:class="['flex flex-col items-center gap-4 w-full py-4', paginationClass]" role="navigation"
+		aria-label="Pagination">
+		<div class="flex w-full justify-between items-center">
+			<div v-if="showRange" class="text-sm text-gray-700 dark:text-gray-300 mr-4">
+				{{ rangeText }}
+			</div>
 
 
-      <div class="flex items-center gap-1">
-        <PaginationButton v-if="showEndButtons" icon="first" label="First" :disabled="isFirstPage || disabled"
-          aria-label="Go to first page" @click="goToFirstPage" />
+			<div class="flex items-center gap-1">
+				<PaginationButton
+					v-if="showEndButtons" icon="first" label="First" :disabled="isFirstPage || disabled"
+					aria-label="Go to first page" @click="goToFirstPage" />
 
-        <PaginationButton icon="prev" label="Previous" :disabled="isFirstPage || disabled"
-          aria-label="Go to previous page" @click="goToPrevPage" />
+				<PaginationButton
+					icon="prev" label="Previous" :disabled="isFirstPage || disabled"
+					aria-label="Go to previous page" @click="goToPrevPage" />
 
-        <div class="flex items-center gap-1">
-          <template v-for="(page, index) in visiblePages" :key="index">
-            <PaginationButton v-if="typeof page === 'number'" :label="page" :active="page === localCurrentPage"
-              :disabled="disabled" :aria-label="`Go to page ${page}`" @click="goToPage(page)" />
-            <span v-else class="px-3 py-1 text-gray-600 dark:text-gray-400">{{ page }}</span>
-          </template>
-        </div>
+				<div class="flex items-center gap-1">
+					<template v-for="(page, index) in visiblePages" :key="index">
+						<PaginationButton
+							v-if="typeof page === 'number'" :label="page" :active="page === localCurrentPage"
+							:disabled="disabled" :aria-label="`Go to page ${page}`" @click="goToPage(page)" />
+						<span v-else class="px-3 py-1 text-gray-600 dark:text-gray-400">{{ page }}</span>
+					</template>
+				</div>
 
-        <PaginationButton icon="next" label="Next" :disabled="isLastPage || disabled" aria-label="Go to next page"
-          @click="goToNextPage" />
+				<PaginationButton
+					icon="next" label="Next" :disabled="isLastPage || disabled" aria-label="Go to next page"
+					@click="goToNextPage" />
 
-        <PaginationButton v-if="showEndButtons" icon="last" label="Last" :disabled="isLastPage || disabled"
-          aria-label="Go to last page" @click="goToLastPage" />
-      </div>
+				<PaginationButton
+					v-if="showEndButtons" icon="last" label="Last" :disabled="isLastPage || disabled"
+					aria-label="Go to last page" @click="goToLastPage" />
+			</div>
 
-      <div class="flex items-center gap-2" v-if="showPerPage">
-        <label for="per-page-select" class="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">Per
-          page:</label>
-        <select id="per-page-select"
-          class="appearance-none bg-gray-100 dark:bg-gray-800 border border-transparent rounded-md px-3 py-1.5 pr-8 text-sm text-gray-900 dark:text-gray-100 cursor-pointer bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E')] bg-no-repeat bg-[right_0.5rem_center] bg-[length:1rem] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-          :value="localPerPage" @change="changePerPage" :disabled="disabled">
-          <option v-for="option in perPageOptions" :key="option" :value="option">
-            {{ option }}
-          </option>
-        </select>
-      </div>
-    </div>
-  </div>
+			<div v-if="showPerPage" class="flex items-center gap-2">
+				<label for="per-page-select" class="text-sm text-gray-700 dark:text-gray-300 whitespace-nowrap">Per
+					page:</label>
+				<select
+					id="per-page-select"
+					class="appearance-none bg-gray-100 dark:bg-gray-800 border border-transparent rounded-md px-3 py-1.5 pr-8 text-sm text-gray-900 dark:text-gray-100 cursor-pointer bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E')] bg-no-repeat bg-[right_0.5rem_center] bg-[length:1rem] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+					:value="localPerPage" :disabled="disabled" @change="changePerPage">
+					<option v-for="option in perPageOptions" :key="option" :value="option">
+						{{ option }}
+					</option>
+				</select>
+			</div>
+		</div>
+	</div>
 </template>

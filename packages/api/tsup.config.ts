@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsup'
+import { defineConfig } from 'tsup';
 
 export default defineConfig({
 	entry: ['src/index.ts'],
@@ -13,6 +13,6 @@ export default defineConfig({
 	outExtension({ format }) {
 		return {
 			js: format === 'cjs' ? '.js' : '.mjs',
-		}
+		};
 	},
-})
+});

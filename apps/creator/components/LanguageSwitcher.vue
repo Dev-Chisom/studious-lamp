@@ -30,11 +30,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
-const { locale, locales, setLocale } = useI18n()
-const isOpen = ref(false)
+const { locale, locales, setLocale } = useI18n();
+const isOpen = ref(false);
 
 const availableLocales = computed(() => {
 	return locales.value
@@ -42,37 +42,37 @@ const availableLocales = computed(() => {
 		.map((l) => ({
 			code: l.code,
 			name: l.name,
-		}))
-})
+		}));
+});
 
 const currentLocaleName = computed(() => {
-	return availableLocales.value.find((l) => l.code === locale.value)?.name || 'English'
-})
+	return availableLocales.value.find((l) => l.code === locale.value)?.name || 'English';
+});
 
 const toggleDropdown = () => {
-	isOpen.value = !isOpen.value
-}
+	isOpen.value = !isOpen.value;
+};
 
 const closeDropdown = () => {
-	isOpen.value = false
-}
+	isOpen.value = false;
+};
 
 const switchLanguage = (code: string) => {
-	setLocale(code)
-	isOpen.value = false
-}
+	setLocale(code);
+	isOpen.value = false;
+};
 
 const vClickOutside = {
 	beforeMount(el: HTMLElement, binding: any) {
 		el.clickOutsideEvent = (event: MouseEvent) => {
 			if (!(el === event.target || el.contains(event.target as Node))) {
-				binding.value()
+				binding.value();
 			}
-		}
-		document.addEventListener('click', el.clickOutsideEvent)
+		};
+		document.addEventListener('click', el.clickOutsideEvent);
 	},
 	unmounted(el: HTMLElement) {
-		document.removeEventListener('click', el.clickOutsideEvent)
+		document.removeEventListener('click', el.clickOutsideEvent);
 	},
-}
+};
 </script>

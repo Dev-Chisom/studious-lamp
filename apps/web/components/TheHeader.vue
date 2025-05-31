@@ -74,13 +74,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
 
-const mobileMenuOpen = ref(false)
+const mobileMenuOpen = ref(false);
 
 const navItems = [
 	{ name: 'Home', href: '/' },
 	{ name: 'Explore', href: '/explore' },
 	// { name: 'Creators', href: '/creators' },
-]
+];
 </script>

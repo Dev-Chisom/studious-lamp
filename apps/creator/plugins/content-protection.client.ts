@@ -3,11 +3,11 @@ export default defineNuxtPlugin(() => {
 	window.addEventListener(
 		'contextmenu',
 		(e) => {
-			const target = e.target as HTMLElement
+			const target = e.target as HTMLElement;
 			if (target && (target.tagName === 'IMG' || target.tagName === 'VIDEO')) {
-				e.preventDefault()
+				e.preventDefault();
 			}
 		},
 		true,
-	)
-})
+	);
+});

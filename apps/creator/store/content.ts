@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia'
-import { createContentApi } from '@whispers/api'
-import type { Content, ContentListResponse } from '@whispers/api'
+import { defineStore } from 'pinia';
+import { createContentApi } from '@whispers/api';
+import type { Content, ContentListResponse } from '@whispers/api';
 
 export interface ContentQuery {
 	page?: number
@@ -19,34 +19,34 @@ export const useContentStore = defineStore('content', {
 	actions: {
 		// In your content store
 		async fetchContent(params?: ContentQuery) {
-			this.loading = true
-			const api = createContentApi()
-			const response = await api.getAllPosts(params)
-			this.content = response.data
-			this.loading = false
+			this.loading = true;
+			const api = createContentApi();
+			const response = await api.getAllPosts(params);
+			this.content = response.data;
+			this.loading = false;
 		},
 
 		async updateContent(id: string, data: Partial<Content>) {
-			const api = createContentApi()
-			const updated = await api.updateContent(id, data)
+			const api = createContentApi();
+			const updated = await api.updateContent(id, data);
 			if (this.content) {
-				const idx = this.content.posts.findIndex((p) => p._id === id)
-				if (idx !== -1) this.content.posts[idx] = updated
+				const idx = this.content.posts.findIndex((p) => p._id === id);
+				if (idx !== -1) this.content.posts[idx] = updated;
 			}
-			return updated
+			return updated;
 		},
 
 		async deleteContent(id: string) {
-			const api = createContentApi()
-			await api.deletePost(id)
+			const api = createContentApi();
+			await api.deletePost(id);
 			if (this.content) {
-				this.content.posts = this.content.posts.filter((item) => item._id !== id)
+				this.content.posts = this.content.posts.filter((item) => item._id !== id);
 			}
 		},
 
 		async getContentById(id: string) {
-			const api = createContentApi()
-			return await api.getPostById(id)
+			const api = createContentApi();
+			return await api.getPostById(id);
 		},
 	},
-})
+});

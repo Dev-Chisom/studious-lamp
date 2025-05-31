@@ -168,14 +168,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { toast } from 'vue3-toastify'
-import { useI18n } from 'vue-i18n'
-import { useUserStore } from '~/store/user'
-import { useAuthStore } from '~/store/auth'
-import FormInput from '@/components/ui/BaseInput.vue'
+import { ref, computed, onMounted } from 'vue';
+import { toast } from 'vue3-toastify';
+import { useI18n } from 'vue-i18n';
+import { useUserStore } from '~/store/user';
+import { useAuthStore } from '~/store/auth';
+import FormInput from '@/components/ui/BaseInput.vue';
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 definePageMeta({
 	middleware: ['auth'],
@@ -183,32 +183,32 @@ definePageMeta({
 	meta: {
 		requiresAuth: true,
 	},
-})
+});
 
-const userStore = useUserStore()
-const authStore = useAuthStore()
+const userStore = useUserStore();
+const authStore = useAuthStore();
 
-const loading = ref(false)
-const profileImage = ref(userStore.user?.profileImage || '')
-const errors = ref({})
+const loading = ref(false);
+const profileImage = ref(userStore.user?.profileImage || '');
+const errors = ref({});
 
 const profile = ref({
 	displayName: userStore.user?.displayName || '',
 	username: '',
 	bio: '',
-})
+});
 
 const email = ref({
 	current: userStore.user?.email || '',
 	new: '',
 	password: '',
-})
+});
 
 const password = ref({
 	current: '',
 	new: '',
 	confirm: '',
-})
+});
 
 const notifications = ref({
 	newSubscriber: true,
@@ -217,20 +217,20 @@ const notifications = ref({
 	newTip: true,
 	marketing: false,
 	newsletter: true,
-})
+});
 
 const userInitials = computed(() => {
-	const name = profile.value.displayName
+	const name = profile.value.displayName;
 	if (!name) {
-		return '?'
+		return '?';
 	}
 
-	const parts = name.split(' ')
+	const parts = name.split(' ');
 	if (parts.length > 1) {
-		return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+		return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
 	}
-	return name.substring(0, 2).toUpperCase()
-})
+	return name.substring(0, 2).toUpperCase();
+});
 
 function getNotificationLabel(key) {
 	const labels = {
@@ -240,8 +240,8 @@ function getNotificationLabel(key) {
 		newTip: t('settings.notifications.newTip'),
 		marketing: t('settings.notifications.marketing'),
 		newsletter: t('settings.notifications.newsletter'),
-	}
-	return labels[key] || key
+	};
+	return labels[key] || key;
 }
 
 function getNotificationDescription(key) {
@@ -252,118 +252,118 @@ function getNotificationDescription(key) {
 		newTip: t('settings.notifications.newTipDesc'),
 		marketing: t('settings.notifications.marketingDesc'),
 		newsletter: t('settings.notifications.newsletterDesc'),
-	}
-	return descriptions[key] || ''
+	};
+	return descriptions[key] || '';
 }
 
 function handleImageUpload(event) {
-	const file = event.target.files[0]
+	const file = event.target.files[0];
 	if (!file) {
-		return
+		return;
 	}
 
-	profileImage.value = URL.createObjectURL(file)
-	toast.success('Profile picture updated')
+	profileImage.value = URL.createObjectURL(file);
+	toast.success('Profile picture updated');
 }
 
 function updateProfile() {
-	loading.value = true
-	errors.value = {}
+	loading.value = true;
+	errors.value = {};
 
 	try {
 		if (!profile.value.displayName) {
-			errors.value.displayName = 'Display name is required'
-			return
+			errors.value.displayName = 'Display name is required';
+			return;
 		}
 
-		toast.success('Profile updated successfully')
+		toast.success('Profile updated successfully');
 	} catch {
-		toast.error('Failed to update profile')
+		toast.error('Failed to update profile');
 	} finally {
-		loading.value = false
+		loading.value = false;
 	}
 }
 
 function updateEmail() {
-	loading.value = true
-	errors.value = {}
+	loading.value = true;
+	errors.value = {};
 
 	try {
 		if (!email.value.new) {
-			errors.value.email = 'New email is required'
-			return
+			errors.value.email = 'New email is required';
+			return;
 		}
 		if (!email.value.password) {
-			errors.value.password = 'Password is required'
-			return
+			errors.value.password = 'Password is required';
+			return;
 		}
 
-		toast.success('Email updated successfully')
-		email.value.current = email.value.new
-		email.value.new = ''
-		email.value.password = ''
+		toast.success('Email updated successfully');
+		email.value.current = email.value.new;
+		email.value.new = '';
+		email.value.password = '';
 	} catch {
-		toast.error('Failed to update email')
+		toast.error('Failed to update email');
 	} finally {
-		loading.value = false
+		loading.value = false;
 	}
 }
 
 function updatePassword() {
-	loading.value = true
-	errors.value = {}
+	loading.value = true;
+	errors.value = {};
 
 	try {
 		if (!password.value.current) {
-			errors.value.currentPassword = 'Current password is required'
-			return
+			errors.value.currentPassword = 'Current password is required';
+			return;
 		}
 		if (!password.value.new) {
-			errors.value.newPassword = 'New password is required'
-			return
+			errors.value.newPassword = 'New password is required';
+			return;
 		}
 		if (password.value.new !== password.value.confirm) {
-			errors.value.confirmPassword = 'Passwords do not match'
-			return
+			errors.value.confirmPassword = 'Passwords do not match';
+			return;
 		}
 
-		toast.success('Password updated successfully')
-		password.value = { current: '', new: '', confirm: '' }
+		toast.success('Password updated successfully');
+		password.value = { current: '', new: '', confirm: '' };
 	} catch {
-		toast.error('Failed to update password')
+		toast.error('Failed to update password');
 	} finally {
-		loading.value = false
+		loading.value = false;
 	}
 }
 
 function updateNotifications() {
-	loading.value = true
+	loading.value = true;
 
 	try {
-		toast.success('Notification preferences updated')
+		toast.success('Notification preferences updated');
 	} catch (error) {
-		toast.error('Failed to update notification preferences')
+		toast.error('Failed to update notification preferences');
 	} finally {
-		loading.value = false
+		loading.value = false;
 	}
 }
 
 function confirmDeleteAccount() {
 	if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-		toast.success('Account deleted successfully')
-		authStore.logout()
-		navigateTo('/')
+		toast.success('Account deleted successfully');
+		authStore.logout();
+		navigateTo('/');
 	}
 }
 
 onMounted(() => {
 	try {
-		profile.value.displayName = 'John Doe'
-		profile.value.username = 'johndoe'
-		profile.value.bio = 'Content creator and digital artist'
-		profileImage.value = '/images/default-avatar.png'
+		profile.value.displayName = 'John Doe';
+		profile.value.username = 'johndoe';
+		profile.value.bio = 'Content creator and digital artist';
+		profileImage.value = '/images/default-avatar.png';
 	} catch (error) {
-		console.log('Error loading profile:', error)
+		console.log('Error loading profile:', error);
 	}
-})
+});
 </script>

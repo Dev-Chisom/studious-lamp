@@ -64,9 +64,9 @@ defineProps({
 		type: Boolean,
 		default: false,
 	},
-})
+});
 
-defineEmits(['close'])
+defineEmits(['close']);
 
 const navigationItems = [
 	{
@@ -90,5 +90,5 @@ const navigationItems = [
 		icon: 'lucide:external-link',
 		divider: true,
 	},
-]
+];
 </script>

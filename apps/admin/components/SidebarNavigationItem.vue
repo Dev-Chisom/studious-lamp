@@ -21,25 +21,25 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 
 const props = defineProps({
 	item: {
 		type: Object,
 		required: true,
 	},
-})
+});
 
-const route = useRoute()
+const route = useRoute();
 
 const isActive = computed(() => {
 	if (route.path === props.item.href) {
-		return true
+		return true;
 	}
 	if (props.item.exact) {
-		return false
+		return false;
 	}
-	return route.path.startsWith(props.item.href)
-})
+	return route.path.startsWith(props.item.href);
+});
 </script>

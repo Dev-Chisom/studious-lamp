@@ -77,7 +77,7 @@ const platformLinks = [
 	{ name: 'How It Works', href: '/how-it-works' },
 	// { name: 'Pricing', href: '/pricing' },
 	// { name: 'FAQ', href: '/faq' },
-]
+];
 
 // const creatorLinks = [
 //   { name: 'Become a Creator', href: '/creators/apply' },
@@ -91,12 +91,12 @@ const legalLinks = [
 	{ name: 'Privacy Policy', href: '/privacy' },
 	// { name: 'Cookie Policy', href: '/cookies' },
 	// { name: 'Content Policy', href: '/content-policy' },
-]
+];
 
 const socialLinks = [
 	{ name: 'Twitter', href: '#', icon: 'lucide:twitter' },
 	{ name: 'Instagram', href: '#', icon: 'lucide:instagram' },
 	{ name: 'Facebook', href: '#', icon: 'lucide:facebook' },
 	{ name: 'TikTok', href: '#', icon: 'lucide:music' },
-]
+];
 </script>

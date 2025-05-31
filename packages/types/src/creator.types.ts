@@ -1,4 +1,4 @@
-import type { User } from './user.types'
+import type { User } from './user.types';
 
 export type SocialMediaPlatform = 'facebook' | 'instagram' | 'twitter' | 'tiktok' | 'youtube'
 

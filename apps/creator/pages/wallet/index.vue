@@ -109,13 +109,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { usePaystack } from '~/composables/usePaystack'
-import { useBani } from '~/composables/useBani'
-import { useNotification } from '~/composables/useNotifications'
-import Modal from '~/components/ui/Modal.vue'
-import BaseButton from '~/components/ui/BaseButton.vue'
+import { ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { usePaystack } from '~/composables/usePaystack';
+import { useBani } from '~/composables/useBani';
+import { useNotification } from '~/composables/useNotifications';
+import Modal from '~/components/ui/Modal.vue';
+import BaseButton from '~/components/ui/BaseButton.vue';
 
 definePageMeta({
 	layout: 'creator',
@@ -123,22 +123,22 @@ definePageMeta({
 	meta: {
 		requiresAuth: true,
 	},
-})
+});
 
-const isClient = ref(false)
+const isClient = ref(false);
 
 onMounted(() => {
-	isClient.value = true
-})
+	isClient.value = true;
+});
 
-const notification = useNotification()
-const balance = ref(25000)
-const showFundingModal = ref(false)
-const showTransactionHistory = ref(false)
-const fundingAmount = ref(1000)
+const notification = useNotification();
+const balance = ref(25000);
+const showFundingModal = ref(false);
+const showTransactionHistory = ref(false);
+const fundingAmount = ref(1000);
 
-const { initializePayment: initializePaystackPayment, isLoading: paystackLoading } = usePaystack()
-const { initializePayment: initializeBaniPayment, isLoading: baniLoading } = useBani()
+const { initializePayment: initializePaystackPayment, isLoading: paystackLoading } = usePaystack();
+const { initializePayment: initializeBaniPayment, isLoading: baniLoading } = useBani();
 
 const transactions = ref([
 	{
@@ -162,13 +162,13 @@ const transactions = ref([
 		type: 'debit',
 		date: new Date('2024-03-30'),
 	},
-])
+]);
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 const formatAmount = (amount: number) => {
-	return amount.toLocaleString('en-NG')
-}
+	return amount.toLocaleString('en-NG');
+};
 
 const formatDate = (date: Date) => {
 	return new Intl.DateTimeFormat('en-NG', {
@@ -177,8 +177,8 @@ const formatDate = (date: Date) => {
 		year: 'numeric',
 		hour: '2-digit',
 		minute: '2-digit',
-	}).format(new Date(date))
-}
+	}).format(new Date(date));
+};
 
 const initializePaystack = () => {
 	initializePaystackPayment({
@@ -187,8 +187,8 @@ const initializePaystack = () => {
 		publicKey: 'your-paystack-public-key',
 		callback: (response) => {
 			if (response.status === 'success') {
-				balance.value += fundingAmount.value
-				showFundingModal.value = false
+				balance.value += fundingAmount.value;
+				showFundingModal.value = false;
 				// Add transaction to history
 				transactions.value.unshift({
 					id: `TXN-${Date.now()}`,
@@ -196,15 +196,15 @@ const initializePaystack = () => {
 					amount: fundingAmount.value,
 					type: 'credit',
 					date: new Date(),
-				})
-				notification.success('Wallet funded successfully!')
+				});
+				notification.success('Wallet funded successfully!');
 			}
 		},
 		onClose: () => {
-			showFundingModal.value = false
+			showFundingModal.value = false;
 		},
-	})
-}
+	});
+};
 
 const initializeBani = () => {
 	initializeBaniPayment({
@@ -214,21 +214,21 @@ const initializeBani = () => {
 		lastName: 'Doe',
 		phoneNumber: '08012345678',
 		onSuccess: (response) => {
-			balance.value += fundingAmount.value
-			showFundingModal.value = false
-			console.log(response)
+			balance.value += fundingAmount.value;
+			showFundingModal.value = false;
+			console.log(response);
 			transactions.value.unshift({
 				id: `TXN-${Date.now()}`,
 				description: 'Wallet Funding via Bani',
 				amount: fundingAmount.value,
 				type: 'credit',
 				date: new Date(),
-			})
-			notification.success('Wallet funded successfully!')
+			});
+			notification.success('Wallet funded successfully!');
 		},
 		onClose: () => {
-			showFundingModal.value = false
+			showFundingModal.value = false;
 		},
-	})
-}
+	});
+};
 </script>

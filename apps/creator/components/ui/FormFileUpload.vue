@@ -82,7 +82,7 @@
 				:media-items="previewModal.items"
 				:current-index="previewModal.currentIndex"
 				:current-user="currentUser"
-        :enable-video-edit="true"
+				:enable-video-edit="true"
 				@close="closePreview"
 				@update:current-index="previewModal.currentIndex = $event"
 			/>
@@ -91,11 +91,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
-import { useI18n } from 'vue-i18n'
-import MediaPreviewModal from './MediaPreviewModal.vue'
+import { ref, computed, reactive } from 'vue';
+import { useI18n } from 'vue-i18n';
+import MediaPreviewModal from './MediaPreviewModal.vue';
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 const props = defineProps({
 	modelValue: {
@@ -130,131 +130,131 @@ const props = defineProps({
 		type: Boolean,
 		default: false,
 	},
-})
+});
 
 const currentUser = ref({
 	name: 'YourUsername',
 	avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-})
+});
 
-const emit = defineEmits(['update:modelValue', 'error'])
+const emit = defineEmits(['update:modelValue', 'error']);
 
-const isDragging = ref(false)
-const files = ref([])
-const previewUrls = ref([])
+const isDragging = ref(false);
+const files = ref([]);
+const previewUrls = ref([]);
 
 const previewModal = reactive({
 	isOpen: false,
 	items: [],
 	currentIndex: 0,
-})
+});
 
 const acceptText = computed(() => {
 	if (props.accept === 'image/*') {
-		return t('upload.imageTypes', { size: formatSize(props.maxSize) })
+		return t('upload.imageTypes', { size: formatSize(props.maxSize) });
 	} else if (props.accept.includes('video')) {
-		return t('upload.videoTypes', { size: formatSize(props.maxSize) })
+		return t('upload.videoTypes', { size: formatSize(props.maxSize) });
 	} else {
-		return t('upload.fileTypes', { size: formatSize(props.maxSize) })
+		return t('upload.fileTypes', { size: formatSize(props.maxSize) });
 	}
-})
+});
 
 function formatSize(bytes) {
 	if (bytes === 0) {
-		return '0 Bytes'
+		return '0 Bytes';
 	}
-	const k = 1024
-	const sizes = ['Bytes', 'KB', 'MB', 'GB']
-	const i = Math.floor(Math.log(bytes) / Math.log(k))
-	return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
+	const k = 1024;
+	const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+	const i = Math.floor(Math.log(bytes) / Math.log(k));
+	return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 }
 
 function isImage(file) {
-	return file.type.startsWith('image/')
+	return file.type.startsWith('image/');
 }
 
 function isVideo(file) {
-	return file.type.startsWith('video/')
+	return file.type.startsWith('video/');
 }
 
 function onFileChange(event) {
-	const newFiles = Array.from(event.target.files)
-	processFiles(newFiles)
-	event.target.value = ''
+	const newFiles = Array.from(event.target.files);
+	processFiles(newFiles);
+	event.target.value = '';
 }
 
 function onDrop(event) {
-	isDragging.value = false
-	const newFiles = Array.from(event.dataTransfer.files)
-	processFiles(newFiles)
+	isDragging.value = false;
+	const newFiles = Array.from(event.dataTransfer.files);
+	processFiles(newFiles);
 }
 
 function processFiles(newFiles) {
 	const validFiles = newFiles.filter((file) => {
 		if (file.size > props.maxSize) {
-			emit('error', `File "${file.name}" exceeds the maximum size of ${formatSize(props.maxSize)}`)
-			return false
+			emit('error', `File "${file.name}" exceeds the maximum size of ${formatSize(props.maxSize)}`);
+			return false;
 		}
 
 		if (props.accept && props.accept !== '*') {
-			const fileType = file.type
-			const acceptTypes = props.accept.split(',').map((type) => type.trim())
+			const fileType = file.type;
+			const acceptTypes = props.accept.split(',').map((type) => type.trim());
 			const isValidType = acceptTypes.some((type) => {
 				if (type.endsWith('/*')) {
-					const baseType = type.split('/')[0]
-					return fileType.startsWith(`${baseType}/`)
+					const baseType = type.split('/')[0];
+					return fileType.startsWith(`${baseType}/`);
 				}
-				return fileType === type
-			})
+				return fileType === type;
+			});
 
 			if (!isValidType) {
-				emit('error', `File "${file.name}" is not an accepted file type`)
-				return false
+				emit('error', `File "${file.name}" is not an accepted file type`);
+				return false;
 			}
 		}
 
-		return true
-	})
+		return true;
+	});
 
 	if (validFiles.length > 0) {
 		const newPreviewUrls = validFiles.map((file) => {
-			const url = URL.createObjectURL(file)
+			const url = URL.createObjectURL(file);
 			return {
 				url,
 				type: isImage(file) ? 'image' : isVideo(file) ? 'video' : 'other',
-			}
-		})
+			};
+		});
 
-		previewUrls.value = [...previewUrls.value, ...newPreviewUrls]
-		files.value = [...files.value, ...validFiles]
-		emit('update:modelValue', files.value)
+		previewUrls.value = [...previewUrls.value, ...newPreviewUrls];
+		files.value = [...files.value, ...validFiles];
+		emit('update:modelValue', files.value);
 	}
 }
 
 function removeFile(index) {
-	URL.revokeObjectURL(previewUrls.value[index].url)
-	previewUrls.value.splice(index, 1)
-	files.value.splice(index, 1)
-	emit('update:modelValue', files.value)
+	URL.revokeObjectURL(previewUrls.value[index].url);
+	previewUrls.value.splice(index, 1);
+	files.value.splice(index, 1);
+	emit('update:modelValue', files.value);
 }
 
 // ... existing code ...
 function openPreview(index) {
-  console.log('Opening preview at index:', index)
+  console.log('Opening preview at index:', index);
   
   // Directly update the reactive object's properties
   previewModal.items = previewUrls.value.map(item => ({
     type: item.type,
     url: item.url
-  }))
-  previewModal.currentIndex = index
-  previewModal.isOpen = true
+  }));
+  previewModal.currentIndex = index;
+  previewModal.isOpen = true;
   
-  console.log('Modal state:', previewModal)
+  console.log('Modal state:', previewModal);
 }
 // ... existing code ...
 
 function closePreview() {
-	previewModal.isOpen = false
+	previewModal.isOpen = false;
 }
 </script>

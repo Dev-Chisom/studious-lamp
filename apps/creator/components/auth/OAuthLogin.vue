@@ -30,25 +30,25 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { getOAuthUrl } from '@whispers/api'
+import { ref } from 'vue';
+import { getOAuthUrl } from '@whispers/api';
 
-const props = defineProps<{ loading: boolean }>()
+const props = defineProps<{ loading: boolean }>();
 
-const googleLoading = ref(false)
-const twitterLoading = ref(false)
+const googleLoading = ref(false);
+const twitterLoading = ref(false);
 
 function loginWithGoogle(): void {
 	if (!props.loading && !googleLoading.value) {
-		googleLoading.value = true
-		window.location.href = getOAuthUrl('google')
+		googleLoading.value = true;
+		window.location.href = getOAuthUrl('google');
 	}
 }
 
 function loginWithTwitter(): void {
 	if (!props.loading && !twitterLoading.value) {
-		twitterLoading.value = true
-		window.location.href = getOAuthUrl('x')
+		twitterLoading.value = true;
+		window.location.href = getOAuthUrl('x');
 	}
 }
 </script>

@@ -307,8 +307,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 definePageMeta({
 	layout: 'creator',
@@ -317,9 +317,9 @@ definePageMeta({
 		requiresAuth: true,
 		requiresCreator: true,
 	},
-})
+});
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 interface StatCard {
 	name: string
@@ -359,8 +359,8 @@ const periods = computed(() => {
 		'30d': t('earnings.overview.periods.30d'),
 		'90d': t('earnings.overview.periods.90d'),
 		'1y': t('earnings.overview.periods.1y'),
-	}
-})
+	};
+});
 
 // Stats data
 const stats = ref<StatCard[]>([
@@ -396,10 +396,10 @@ const stats = ref<StatCard[]>([
 		color: 'accent',
 		trend: 15,
 	},
-])
+]);
 
 // Chart period
-const chartPeriod = ref<string>('30d')
+const chartPeriod = ref<string>('30d');
 
 // Revenue breakdown data
 const revenueByType = ref<RevenueItem[]>([
@@ -424,7 +424,7 @@ const revenueByType = ref<RevenueItem[]>([
 		percentage: 8,
 		color: 'accent',
 	},
-])
+]);
 
 const transactionHeaders = computed(() => {
 	return {
@@ -433,8 +433,8 @@ const transactionHeaders = computed(() => {
 		customer: t('earnings.transactions.headers.customer'),
 		amount: t('earnings.transactions.headers.amount'),
 		status: t('earnings.transactions.headers.status'),
-	}
-})
+	};
+});
 
 const revenueBySubscription = ref<RevenueItem[]>([
 	{
@@ -451,7 +451,7 @@ const revenueBySubscription = ref<RevenueItem[]>([
 		percentage: 40,
 		color: 'secondary',
 	},
-])
+]);
 
 // Mock transactions data
 const transactions = ref<Transaction[]>([
@@ -491,41 +491,41 @@ const transactions = ref<Transaction[]>([
 		amount: 4.99,
 		status: 'completed',
 	},
-])
+]);
 
 // Pagination
-const currentPage = ref<number>(1)
-const itemsPerPage = 10
+const currentPage = ref<number>(1);
+const itemsPerPage = 10;
 
-const totalTransactions = computed<number>(() => transactions.value.length)
-const totalPages = computed<number>(() => Math.ceil(totalTransactions.value / itemsPerPage))
+const totalTransactions = computed<number>(() => transactions.value.length);
+const totalPages = computed<number>(() => Math.ceil(totalTransactions.value / itemsPerPage));
 
-const startIndex = computed<number>(() => (currentPage.value - 1) * itemsPerPage)
-const endIndex = computed<number>(() => Math.min(startIndex.value + itemsPerPage, totalTransactions.value))
+const startIndex = computed<number>(() => (currentPage.value - 1) * itemsPerPage);
+const endIndex = computed<number>(() => Math.min(startIndex.value + itemsPerPage, totalTransactions.value));
 
 const displayedPages = computed<number[]>(() => {
-	const pages: number[] = []
-	const maxPages = 5
+	const pages: number[] = [];
+	const maxPages = 5;
 
 	if (totalPages.value <= maxPages) {
 		for (let i = 1; i <= totalPages.value; i++) {
-			pages.push(i)
+			pages.push(i);
 		}
 	} else {
-		let start = Math.max(1, currentPage.value - 2)
-		const end = Math.min(totalPages.value, start + maxPages - 1)
+		let start = Math.max(1, currentPage.value - 2);
+		const end = Math.min(totalPages.value, start + maxPages - 1);
 
 		if (end - start < maxPages - 1) {
-			start = Math.max(1, end - maxPages + 1)
+			start = Math.max(1, end - maxPages + 1);
 		}
 
 		for (let i = start; i <= end; i++) {
-			pages.push(i)
+			pages.push(i);
 		}
 	}
 
-	return pages
-})
+	return pages;
+});
 
 // Methods
 function formatDate(date: Date): string {
@@ -533,6 +533,6 @@ function formatDate(date: Date): string {
 		year: 'numeric',
 		month: 'short',
 		day: 'numeric',
-	})
+	});
 }
 </script>

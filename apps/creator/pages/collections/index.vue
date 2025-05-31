@@ -19,7 +19,7 @@
 					</div>
 
 					<BaseButton variant="outline" class="w-full" @click="viewCollection(collection)"
-						>{{ t('viewCollection') }}
+					>{{ t('viewCollection') }}
 					</BaseButton>
 				</div>
 			</Card>
@@ -51,11 +51,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { toast } from 'vue3-toastify'
-import { useUserStore } from '~/store/user'
-import BaseButton from '~/components/ui/BaseButton.vue'
+import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { toast } from 'vue3-toastify';
+import { useUserStore } from '~/store/user';
+import BaseButton from '~/components/ui/BaseButton.vue';
 
 interface CollectionPost {
 	id: string
@@ -69,36 +69,36 @@ interface Collection {
 	posts: CollectionPost[]
 }
 
-const userStore = useUserStore()
-const collections = ref<Collection[]>(userStore.getCollections)
+const userStore = useUserStore();
+const collections = ref<Collection[]>(userStore.getCollections);
 
-const showNewCollectionModal = ref(false)
-const newCollectionName = ref('')
-const isCreating = ref(false)
+const showNewCollectionModal = ref(false);
+const newCollectionName = ref('');
+const isCreating = ref(false);
 
-const { t } = useI18n()
+const { t } = useI18n();
 
 const createNewCollection = async (): Promise<void> => {
 	if (!newCollectionName.value.trim()) {
-		return
+		return;
 	}
 
-	isCreating.value = true
+	isCreating.value = true;
 	try {
-		await userStore.createCollection(newCollectionName.value)
-		collections.value = userStore.getCollections
-		showNewCollectionModal.value = false
-		newCollectionName.value = ''
-		toast.success('Collection created successfully!')
+		await userStore.createCollection(newCollectionName.value);
+		collections.value = userStore.getCollections;
+		showNewCollectionModal.value = false;
+		newCollectionName.value = '';
+		toast.success('Collection created successfully!');
 	} catch {
-		toast.error('Failed to create collection')
+		toast.error('Failed to create collection');
 	} finally {
-		isCreating.value = false
+		isCreating.value = false;
 	}
-}
+};
 
 const viewCollection = (collection: Collection): void => {
 	// Navigate to collection detail view
-	navigateTo(`/collections/${collection.id}`)
-}
+	navigateTo(`/collections/${collection.id}`);
+};
 </script>

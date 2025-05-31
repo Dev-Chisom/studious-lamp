@@ -181,25 +181,25 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
-import { toast } from 'vue3-toastify'
-import { useSubscriptionStore } from '~/stores/subscription'
-import { useContentStore } from '~/stores/content'
-import { useAuthStore } from '~/stores/auth'
+import { computed, onMounted } from 'vue';
+import { toast } from 'vue3-toastify';
+import { useSubscriptionStore } from '~/stores/subscription';
+import { useContentStore } from '~/stores/content';
+import { useAuthStore } from '~/stores/auth';
 
-const route = useRoute()
-const subscriptionStore = useSubscriptionStore()
-const contentStore = useContentStore()
-const authStore = useAuthStore()
+const route = useRoute();
+const subscriptionStore = useSubscriptionStore();
+const contentStore = useContentStore();
+const authStore = useAuthStore();
 
 onMounted(async () => {
 	try {
-		await subscriptionStore.fetchCreators()
-		await contentStore.fetchPosts({ creatorId: creator.value?.id })
+		await subscriptionStore.fetchCreators();
+		await contentStore.fetchPosts({ creatorId: creator.value?.id });
 	} catch (error) {
-		console.log('Failed to fetch creator data:', error)
+		console.log('Failed to fetch creator data:', error);
 	}
-})
+});
 const creator = computed(() => {
 	return (
 		subscriptionStore.creators.find((c) => c.username === route.params.username) || {
@@ -214,45 +214,45 @@ const creator = computed(() => {
 			monthlyPrice: 0,
 			categories: [],
 		}
-	)
-})
+	);
+});
 
 // Calculate yearly savings percentage
 const calculateYearlySavings = computed(() => {
 	if (!creator.value.yearlyPrice || !creator.value.monthlyPrice) {
-		return 0
+		return 0;
 	}
-	const monthlyTotal = creator.value.monthlyPrice * 12
-	const yearlyTotal = creator.value.yearlyPrice
-	return Math.round((1 - yearlyTotal / monthlyTotal) * 100)
-})
+	const monthlyTotal = creator.value.monthlyPrice * 12;
+	const yearlyTotal = creator.value.yearlyPrice;
+	return Math.round((1 - yearlyTotal / monthlyTotal) * 100);
+});
 
 // Get preview posts (public only)
 const previewPosts = computed(() => {
 	return contentStore.posts
 		.filter((post) => post.creatorId === creator.value.id && post.visibility === 'public')
-		.slice(0, 4)
-})
+		.slice(0, 4);
+});
 
 function formatDate(dateString) {
 	return new Date(dateString).toLocaleDateString('en-US', {
 		month: 'short',
 		day: 'numeric',
 		year: 'numeric',
-	})
+	});
 }
 
 async function subscribe(plan) {
 	if (!authStore.isAuthenticated) {
-		navigateTo('https://studious-lamp-creator.vercel.app/auth/login')
-		return
+		navigateTo('https://studious-lamp-creator.vercel.app/auth/login');
+		return;
 	}
 
 	try {
-		await subscriptionStore.subscribe(authStore.user.id, creator.value.id, plan)
-		toast.success(`Successfully subscribed to ${creator.value.displayName}`)
+		await subscriptionStore.subscribe(authStore.user.id, creator.value.id, plan);
+		toast.success(`Successfully subscribed to ${creator.value.displayName}`);
 	} catch {
-		toast.error('Failed to process subscription')
+		toast.error('Failed to process subscription');
 	}
 }
 </script>

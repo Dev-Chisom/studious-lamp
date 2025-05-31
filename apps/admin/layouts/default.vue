@@ -78,11 +78,11 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed } from 'vue';
+import { useRoute } from 'vue-router';
 
-const route = useRoute()
-const userMenuOpen = ref(false)
+const route = useRoute();
+const userMenuOpen = ref(false);
 
 const navigation = [
 	{ name: 'Dashboard', href: '/', icon: 'lucide:layout-dashboard' },
@@ -92,11 +92,11 @@ const navigation = [
 	{ name: 'Payouts', href: '/payouts', icon: 'lucide:credit-card' },
 	{ name: 'Analytics', href: '/analytics', icon: 'lucide:bar-chart-2' },
 	{ name: 'Settings', href: '/settings', icon: 'lucide:settings' },
-]
+];
 
 const currentPageTitle = computed(() => {
-	const currentRoute = navigation.find((item) => item.href === route.path)
-	return currentRoute?.name || 'Dashboard'
-})
+	const currentRoute = navigation.find((item) => item.href === route.path);
+	return currentRoute?.name || 'Dashboard';
+});
 </script>
 ```

@@ -1,5 +1,5 @@
-import { api } from './api.service'
-import type { CreatorApplicationPayload } from './types/creator-apply.types'
+import { api } from './api.service';
+import type { CreatorApplicationPayload } from './types/creator-apply.types';
 
 export interface Creator {
 	id: string
@@ -35,5 +35,5 @@ export function createCreatorApi() {
 			{ fileName, fileType }
 		),
 		createPost: (data: { title: string, body: string, mediaFiles?: string[], visibility: string }) => api.post<any>('/posts', data),
-	}
+	};
 }

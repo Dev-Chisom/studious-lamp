@@ -33,4 +33,4 @@ export default defineNuxtConfig({
 		exposeConfig: false,
 		viewer: true,
 	},
-})
+});

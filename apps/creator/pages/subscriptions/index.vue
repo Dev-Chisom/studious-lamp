@@ -24,7 +24,7 @@
 						{{ $t('subscriptions.noActiveSubscriptions.description') }}
 					</p>
 					<NuxtLink to="/explore" class="btn-primary mt-4"
-						>{{ $t('subscriptions.noActiveSubscriptions.cta') }}
+					>{{ $t('subscriptions.noActiveSubscriptions.cta') }}
 					</NuxtLink>
 				</div>
 
@@ -67,9 +67,9 @@
 								<div class="flex justify-between text-sm">
 									<span class="text-gray-500 dark:text-gray-200">{{ $t('subscriptions.price') }}</span>
 									<span class="font-medium"
-										>${{ subscription.price }}/{{
-											subscription.plan === 'monthly' ? $t('common.month') : $t('common.year')
-										}}</span
+									>${{ subscription.price }}/{{
+										subscription.plan === 'monthly' ? $t('common.month') : $t('common.year')
+									}}</span
 									>
 								</div>
 
@@ -156,8 +156,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { ref, computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 // import { useSubscriptionStore } from '~/stores/subscription';
 
 // const { t } = useI18n();
@@ -168,10 +168,10 @@ definePageMeta({
 	meta: {
 		requiresAuth: true,
 	},
-})
+});
 
 // const subscriptionStore = useSubscriptionStore();
-const loading = ref(true)
+const loading = ref(true);
 
 // Dummy data for 5 subscriptions
 const dummySubscriptions = [
@@ -245,34 +245,34 @@ const dummySubscriptions = [
 			isVerified: true,
 		},
 	},
-]
+];
 
-const subscriptions = ref(dummySubscriptions)
+const subscriptions = ref(dummySubscriptions);
 
 onMounted(() => {
 	// await subscriptionStore.fetchUserSubscriptions('current-user');
 	// loading.value = false;
-	loading.value = false
-})
+	loading.value = false;
+});
 
 const activeSubscriptions = computed(() => {
-	return subscriptions.value.filter((sub) => sub.isActive)
-})
+	return subscriptions.value.filter((sub) => sub.isActive);
+});
 
 const expiredSubscriptions = computed(() => {
-	return subscriptions.value.filter((sub) => !sub.isActive)
-})
+	return subscriptions.value.filter((sub) => !sub.isActive);
+});
 
 function formatDate(date) {
 	return new Date(date).toLocaleDateString('en-US', {
 		year: 'numeric',
 		month: 'long',
 		day: 'numeric',
-	})
+	});
 }
 
 function cancelSubscription(id) {
-	console.log(id)
+	console.log(id);
 	// await subscriptionStore.cancelSubscription(id);
 	// Show success message
 }

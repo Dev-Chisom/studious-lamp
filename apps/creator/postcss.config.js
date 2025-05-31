@@ -4,4 +4,4 @@ module.exports = {
 		autoprefixer: {},
 		'@tailwindcss/postcss': {}, // This is the new plugin you need to add
 	},
-}
+};

@@ -44,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue';
 
 type InputType = 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search'
 
@@ -76,29 +76,29 @@ const props = withDefaults(defineProps<FormInputProps>(), {
 	required: false,
 	showPasswordToggle: true,
 	autofocus: false,
-})
+});
 
-defineEmits<FormInputEmits>()
+defineEmits<FormInputEmits>();
 
-const stableId = computed(() => (props.name ? `input-${props.name}` : undefined))
+const stableId = computed(() => (props.name ? `input-${props.name}` : undefined));
 
-const input = ref<HTMLInputElement | null>(null)
-const passwordVisible = ref(false)
+const input = ref<HTMLInputElement | null>(null);
+const passwordVisible = ref(false);
 
 const inputType = computed<InputType>(() => {
 	if (props.type === 'password' && passwordVisible.value) {
-		return 'text'
+		return 'text';
 	}
-	return props.type
-})
+	return props.type;
+});
 
 function togglePasswordVisibility(): void {
-	passwordVisible.value = !passwordVisible.value
+	passwordVisible.value = !passwordVisible.value;
 }
 
 onMounted(() => {
 	if (props.autofocus && input.value) {
-		input.value.focus()
+		input.value.focus();
 	}
-})
+});
 </script>

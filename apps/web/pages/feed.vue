@@ -271,29 +271,29 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { useAuthStore } from '~/stores/auth'
+import { ref, computed } from 'vue';
+import { useAuthStore } from '~/stores/auth';
 
 definePageMeta({
 	middleware: ['auth'],
 	meta: {
 		requiresAuth: true,
 	},
-})
+});
 
-const authStore = useAuthStore()
-const loading = ref(true)
-const loadingMore = ref(false)
-const sortBy = ref('latest')
-const activeSlide = ref({})
-const newComments = ref({})
+const authStore = useAuthStore();
+const loading = ref(true);
+const loadingMore = ref(false);
+const sortBy = ref('latest');
+const activeSlide = ref({});
+const newComments = ref({});
 
 // Media preview modal state
 const mediaModal = ref({
 	isOpen: false,
 	items: [],
 	currentIndex: 0,
-})
+});
 
 // Mock posts data
 const posts = ref([
@@ -360,61 +360,61 @@ const posts = ref([
 		showComments: false,
 		createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
 	},
-])
+]);
 
 // Computed
 const sortedPosts = computed(() => {
-	const sorted = [...posts.value]
+	const sorted = [...posts.value];
 	if (sortBy.value === 'popular') {
-		sorted.sort((a, b) => b.likes - a.likes)
+		sorted.sort((a, b) => b.likes - a.likes);
 	} else {
-		sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+		sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 	}
-	return sorted
-})
+	return sorted;
+});
 
 const hasMorePosts = computed(() => {
 	// In a real app, this would be based on pagination info from the API
-	return false
-})
+	return false;
+});
 
 const currentMedia = computed(() => {
-	return mediaModal.value.items[mediaModal.value.currentIndex] || {}
-})
+	return mediaModal.value.items[mediaModal.value.currentIndex] || {};
+});
 
 // Methods
 function formatTime(date) {
-	const now = new Date()
-	const diff = now - new Date(date)
+	const now = new Date();
+	const diff = now - new Date(date);
 
-	const minutes = Math.floor(diff / (1000 * 60))
-	const hours = Math.floor(diff / (1000 * 60 * 60))
-	const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+	const minutes = Math.floor(diff / (1000 * 60));
+	const hours = Math.floor(diff / (1000 * 60 * 60));
+	const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
 	if (minutes < 60) {
-		return `${minutes}m ago`
+		return `${minutes}m ago`;
 	} else if (hours < 24) {
-		return `${hours}h ago`
+		return `${hours}h ago`;
 	} else if (days < 7) {
-		return `${days}d ago`
+		return `${days}d ago`;
 	} else {
-		return new Date(date).toLocaleDateString()
+		return new Date(date).toLocaleDateString();
 	}
 }
 
 function toggleLike(post) {
-	post.isLiked = !post.isLiked
-	post.likes += post.isLiked ? 1 : -1
+	post.isLiked = !post.isLiked;
+	post.likes += post.isLiked ? 1 : -1;
 }
 
 function showComments(post) {
-	post.showComments = !post.showComments
+	post.showComments = !post.showComments;
 }
 
 function addComment(post) {
-	const content = newComments.value[post.id]
+	const content = newComments.value[post.id];
 	if (!content?.trim()) {
-		return
+		return;
 	}
 
 	const comment = {
@@ -425,27 +425,27 @@ function addComment(post) {
 		},
 		content,
 		createdAt: new Date(),
-	}
+	};
 
-	post.comments.push(comment)
-	newComments.value[post.id] = ''
+	post.comments.push(comment);
+	newComments.value[post.id] = '';
 }
 
 function prevSlide(postId) {
 	if (activeSlide.value[postId] > 0) {
-		activeSlide.value[postId]--
+		activeSlide.value[postId]--;
 	}
 }
 
 function nextSlide(postId) {
-	const post = posts.value.find((p) => p.id === postId)
+	const post = posts.value.find((p) => p.id === postId);
 	if (activeSlide.value[postId] < post.media.length - 1) {
-		activeSlide.value[postId]++
+		activeSlide.value[postId]++;
 	}
 }
 
 function setSlide(postId, index) {
-	activeSlide.value[postId] = index
+	activeSlide.value[postId] = index;
 }
 
 function openMediaPreview(items, index = 0) {
@@ -453,32 +453,32 @@ function openMediaPreview(items, index = 0) {
 		isOpen: true,
 		items,
 		currentIndex: index,
-	}
+	};
 }
 
 function closeMediaPreview() {
-	mediaModal.value.isOpen = false
+	mediaModal.value.isOpen = false;
 }
 
 function prevMediaPreview() {
 	if (mediaModal.value.currentIndex > 0) {
-		mediaModal.value.currentIndex--
+		mediaModal.value.currentIndex--;
 	}
 }
 
 function nextMediaPreview() {
 	if (mediaModal.value.currentIndex < mediaModal.value.items.length - 1) {
-		mediaModal.value.currentIndex++
+		mediaModal.value.currentIndex++;
 	}
 }
 
 async function loadMorePosts() {
-	loadingMore.value = true
+	loadingMore.value = true;
 	try {
 		// In a real app, fetch more posts from API
-		await new Promise((resolve) => setTimeout(resolve, 1000))
+		await new Promise((resolve) => setTimeout(resolve, 1000));
 	} finally {
-		loadingMore.value = false
+		loadingMore.value = false;
 	}
 }
 
@@ -486,14 +486,14 @@ async function loadMorePosts() {
 onMounted(async () => {
 	try {
 		// In a real app, fetch posts from API
-		await new Promise((resolve) => setTimeout(resolve, 1000))
+		await new Promise((resolve) => setTimeout(resolve, 1000));
 
 		// Initialize active slide for each post
 		posts.value.forEach((post) => {
-			activeSlide.value[post.id] = 0
-		})
+			activeSlide.value[post.id] = 0;
+		});
 	} finally {
-		loading.value = false
+		loading.value = false;
 	}
-})
+});
 </script>
