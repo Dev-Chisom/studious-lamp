@@ -90,12 +90,12 @@
 		"sendTipTo": "Send tip to {name}",
 		"amount": "Amount (₦)",
 		"sendTip": "Send Tip",
-    "unlike": "Unlike",
-    "like": "Like",
-    "comment": "Comment",
-    "share": "Share",
-    "tipCreator": "Tip Creator",
-    "save": "Save"
+		"unlike": "Unlike",
+		"like": "Like",
+		"comment": "Comment",
+		"share": "Share",
+		"tipCreator": "Tip Creator",
+		"save": "Save"
 	},
 	"legal": {
 		"privacy": {
@@ -631,5 +631,16 @@
 		"lifestyle": "Lifestyle",
 		"sports": "Sports",
 		"gaming": "Gaming"
+	},
+	"mediaLibrary": {
+		"title": "Media Library",
+		"tabLibrary": "Media Library",
+		"tabDevice": "From Device",
+		"search": "Search media...",
+		"noMedia": "No media found.",
+		"uploadFromDevice": "Upload from your device",
+		"next": "Next",
+		"open": "Choose from Media Library",
+    "uploadFiles": "Upload files"
 	}
 }

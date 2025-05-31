@@ -622,5 +622,16 @@
 		"lifestyle": "Mode de Vie",
 		"sports": "Sports",
 		"gaming": "Jeux"
-	}
+	},
+  "mediaLibrary": {
+    "title": "Bibliothèque multimédia",
+    "tabLibrary": "Bibliothèque multimédia",
+    "tabDevice": "Depuis l'appareil",
+    "search": "Rechercher des médias...",
+    "noMedia": "Aucun média trouvé.",
+    "uploadFromDevice": "Télécharger depuis votre appareil",
+    "next": "Suivant",
+    "open": "Choisir dans la bibliothèque multimédia",
+    "uploadFiles": "Télécharger des fichiers"
+  }
 }

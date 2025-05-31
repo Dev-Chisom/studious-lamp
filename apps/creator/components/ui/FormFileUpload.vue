@@ -82,6 +82,7 @@
 				:media-items="previewModal.items"
 				:current-index="previewModal.currentIndex"
 				:current-user="currentUser"
+        :enable-video-edit="true"
 				@close="closePreview"
 				@update:current-index="previewModal.currentIndex = $event"
 			/>
@@ -90,7 +91,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 import MediaPreviewModal from './MediaPreviewModal.vue'
 
@@ -142,7 +143,7 @@ const isDragging = ref(false)
 const files = ref([])
 const previewUrls = ref([])
 
-const previewModal = ref({
+const previewModal = reactive({
 	isOpen: false,
 	items: [],
 	currentIndex: 0,
@@ -237,15 +238,23 @@ function removeFile(index) {
 	emit('update:modelValue', files.value)
 }
 
+// ... existing code ...
 function openPreview(index) {
-	previewModal.value = {
-		isOpen: true,
-		items: previewUrls.value,
-		currentIndex: index,
-	}
+  console.log('Opening preview at index:', index)
+  
+  // Directly update the reactive object's properties
+  previewModal.items = previewUrls.value.map(item => ({
+    type: item.type,
+    url: item.url
+  }))
+  previewModal.currentIndex = index
+  previewModal.isOpen = true
+  
+  console.log('Modal state:', previewModal)
 }
+// ... existing code ...
 
 function closePreview() {
-	previewModal.value.isOpen = false
+	previewModal.isOpen = false
 }
 </script>

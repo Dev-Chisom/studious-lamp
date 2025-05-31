@@ -23,15 +23,41 @@
       </div>
 
       <!-- Media upload -->
-      <div>
-        <Field v-slot="{ field, errorMessage }" name="mediaFiles">
-          <form-file-upload id="media-file" v-model="mediaFiles" v-bind="field" :label="t('mediaFiles')"
-            accept="image/*,video/*" multiple :error="errorMessage" :existing-files="existingMediaFiles" />
-          <p class="mt-1 text-xs text-gray-500 dark:text-gray-200">
-            {{ t('uploadMediaHint') }}
-          </p>
-        </Field>
+   <div>
+  <Field v-slot="{ field, errorMessage }" name="mediaFiles">
+    <div class="mt-2">
+      <div 
+        class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 px-6 py-10 text-center cursor-pointer"
+        @click="showMediaGallery = true"
+      >
+        <!-- Upload icon -->
+        <Icon name="lucide:upload" class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+        
+        <div class="mt-4 flex text-sm text-gray-600 dark:text-gray-300">
+          <span class="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300">
+            {{ t('uploadFiles') }}
+          </span>
+          <p class="pl-1">or drag and drop</p>
+        </div>
+        
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+          {{ t('videoFilesUpTo') }} 10 MB
+        </p>
       </div>
+      
+      <!-- Media Gallery Modal -->
+      <MediaGallery 
+        :is-open="showMediaGallery" 
+        @close="showMediaGallery = false" 
+        @select="addMediaFromGallery" 
+      />
+      
+      <p class="mt-1 text-xs text-gray-500 dark:text-gray-200">
+        {{ t('uploadMediaHint') }}
+      </p>
+    </div>
+  </Field>
+</div>
 
       <!-- Post settings -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
@@ -138,6 +164,8 @@ import { Form, Field } from 'vee-validate'
 import * as yup from 'yup'
 import FormInput from '@/components/ui/BaseInput.vue'
 import FormFileUpload from '@/components/ui/FormFileUpload.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
+import MediaGallery from '@/components/ui/MediaGallery.vue'
 
 type Visibility = 'public' | 'subscribers' | 'premium'
 
@@ -202,6 +230,7 @@ const mediaFiles = ref<File[]>([])
 const existingMediaFiles = ref<MediaFile[]>([])
 const isScheduled = ref(false)
 const scheduledDate = ref('')
+const showMediaGallery = ref(false)
 
 // Watch for initialValues changes
 watch(() => props.initialValues, (newVal) => {
@@ -305,6 +334,29 @@ function onSubmit(values: any) {
     ...(isScheduled.value && { scheduledDate: scheduledDate.value })
   }
   emit('submit', submitData)
+}
+
+function addMediaFromGallery(selectedMedia: any[]) {
+  // If from device, selectedMedia will be File[]; if from library, it will be MediaItem[]
+  const filesToAdd: File[] = []
+  selectedMedia.forEach((item) => {
+    if (item instanceof File) {
+      filesToAdd.push(item)
+    } else if (item.url) {
+      // For library items, fetch as blob and create File
+      fetch(item.url)
+        .then(res => res.blob())
+        .then(blob => {
+          const file = new File([blob], item.name, { type: blob.type })
+          filesToAdd.push(file)
+          mediaFiles.value = [...mediaFiles.value, file]
+        })
+    }
+  })
+  // For device files, add immediately
+  if (filesToAdd.length > 0) {
+    mediaFiles.value = [...mediaFiles.value, ...filesToAdd]
+  }
 }
 
 // Expose resetForm to parent
