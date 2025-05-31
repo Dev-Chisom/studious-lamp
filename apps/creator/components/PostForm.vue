@@ -1,12 +1,16 @@
 <template>
-	<Form v-slot="{ errors, meta, resetForm }" :validation-schema="schema" :initial-values="formValues" @submit="onSubmit">
+	<Form v-slot="{ errors, meta, values, setFieldValue }" :validation-schema="schema" :initial-values="initialFormValues" @submit="onSubmit">
 		<div class="p-6 space-y-6">
 			<!-- Title -->
 			<div>
 				<Field v-slot="{ field, errorMessage }" name="title">
 					<form-input
-						v-model="formValues.title" v-bind="field" :label="t('postTitle')" :placeholder="t('enterPostTitle')"
-						:error="errorMessage" :required="true" />
+						:model-value="field.value" 
+						@update:model-value="field.onChange"
+						:label="t('postTitle')" 
+						:placeholder="t('enterPostTitle')"
+						:error="errorMessage" 
+						:required="true" />
 				</Field>
 			</div>
 
@@ -17,9 +21,14 @@
 						{{ t('postContent') }} <span class="text-error-500 ml-1">*</span>
 					</label>
 					<textarea
-						v-model="formValues.content" v-bind="field" rows="5" :placeholder="t('writePostContent')"
+						:value="field.value"
+						@input="field.onChange"
+						@blur="field.onBlur"
+						rows="5" 
+						:placeholder="t('writePostContent')"
 						class="form-input"
-						:class="errorMessage ? 'border-error-300 focus:border-error-500 focus:ring-error-500' : ''" required />
+						:class="errorMessage ? 'border-error-300 focus:border-error-500 focus:ring-error-500' : ''" 
+						required />
 					<p v-if="errorMessage" class="form-error">{{ errorMessage }}</p>
 				</Field>
 			</div>
@@ -39,7 +48,7 @@
 									class="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
 									@click="showMediaGallery = true"
 								>
-									{{ t('addMore') || 'addMore' }}
+									{{ t('addMore') || 'Add More' }}
 								</button>
 							</div>
               
@@ -49,6 +58,7 @@
 									v-for="(media, index) in uploadedMediaFiles"
 									:key="media.id"
 									class="media-item group relative overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+                  @click="openMediaPreview(index)"
 								>
 									<!-- Image Display -->
 									<img
@@ -88,22 +98,21 @@
 									</div>
                   
 									<!-- Remove Button -->
-									<button
-										type="button"
-										class="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-lg"
-										@click="removeMediaFile(index)"
-									>
-										<Icon name="lucide:x" class="w-4 h-4" />
-									</button>
-                  
+                  <button
+                    type="button"
+                    class="absolute top-2 right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-lg flex items-center justify-center p-0"
+                    @click.stop="removeMediaFile(index, setFieldValue)"
+                  >
+                    <Icon name="lucide:x" class="w-4 h-4" />
+                  </button>
 									<!-- Set Cover Button for Videos -->
 									<button
 										v-if="media.type === 'video'"
 										type="button"
 										class="absolute bottom-2 left-2 bg-white/95 dark:bg-gray-900/95 text-gray-900 dark:text-white text-xs px-2 py-1 rounded font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-lg"
-										@click="setCoverForVideo(media, index)"
+										@click.stop="setCoverForVideo(media, index)"
 									>
-										{{ media.cover ? t('changeCover') || 'changeCover' : t('setCover') || 'Set Cover' }}
+										{{ media.cover ? t('changeCover') || 'Change Cover' : t('setCover') || 'Set Cover' }}
 									</button>
 								</div>
 							</div>
@@ -126,13 +135,13 @@
               
 							<div class="mt-4 flex text-sm text-gray-600 dark:text-gray-300">
 								<span class="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300">
-									{{ t('mediaLibrary.uploadFiles') }}
+									{{ t('uploadFiles') || 'Upload files' }}
 								</span>
 								<p class="pl-1">or drag and drop</p>
 							</div>
               
 							<p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
-								{{ t('mediaLibrary.videoFilesUpTo') }} 10 MB, max 10 files
+								Images and videos up to 10 MB, max 10 files
 							</p>
 						</div>
             
@@ -140,63 +149,76 @@
 						<MediaGallery 
 							:is-open="showMediaGallery" 
 							@close="showMediaGallery = false" 
-							@select="addMediaFromGallery"
-							@upload-complete="handleUploadComplete"
+							@select="(media) => addMediaFromGallery(media, setFieldValue)"
+							@upload-complete="(results) => handleUploadComplete(results, setFieldValue)"
 						/>
             
 						<p class="mt-1 text-xs text-gray-500 dark:text-gray-200">
-							{{ t('uploadMediaHint') }}
+							{{ t('uploadMediaHint') || 'Upload images or videos to share with your subscribers' }}
 						</p>
+						<p v-if="errorMessage" class="form-error mt-2">{{ errorMessage }}</p>
 					</div>
 				</Field>
 			</div>
 
 			<!-- Post settings -->
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100">
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-gray-100 dark:border-gray-700">
 				<!-- Visibility -->
 				<div>
 					<Field v-slot="{ field, errorMessage }" name="visibility">
-						<label class="form-label"> {{ t('visibility') }} </label>
+						<label class="form-label"> {{ t('visibility') || 'Visibility' }} </label>
 						<div class="mt-2 space-y-3">
 							<div class="flex items-start">
 								<div class="flex items-center h-5">
 									<input
-										id="visibility-public" v-model="formValues.visibility" v-bind="field" type="radio"
-										value="public" class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500" />
+										id="visibility-public" 
+										:checked="field.value === 'public'"
+										@change="field.onChange"
+										type="radio"
+										value="public" 
+										class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500" />
 								</div>
 								<div class="ml-3 text-sm">
 									<label for="visibility-public" class="font-medium text-gray-700 dark:text-gray-200">
-										{{ t('public') }}
+										{{ t('public') || 'Public' }}
 									</label>
-									<p class="text-gray-500 dark:text-gray-200">{{ t('publicHint') }}</p>
+									<p class="text-gray-500 dark:text-gray-400">{{ t('publicHint') || 'Visible to everyone, including non-subscribers' }}</p>
 								</div>
 							</div>
 
 							<div class="flex items-start">
 								<div class="flex items-center h-5">
 									<input
-										id="visibility-subscribers" v-model="formValues.visibility" v-bind="field" type="radio"
-										value="subscribers" class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500" />
+										id="visibility-subscribers" 
+										:checked="field.value === 'subscribers'"
+										@change="field.onChange"
+										type="radio"
+										value="subscribers" 
+										class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500" />
 								</div>
 								<div class="ml-3 text-sm">
 									<label for="visibility-subscribers" class="font-medium text-gray-700 dark:text-gray-200">
-										{{ t('subscribersOnly') }}
+										{{ t('subscribersOnly') || 'Subscribers Only' }}
 									</label>
-									<p class="text-gray-500 dark:text-gray-200">{{ t('subscribersOnlyHint') }}</p>
+									<p class="text-gray-500 dark:text-gray-400">{{ t('subscribersOnlyHint') || 'Only visible to your paid subscribers' }}</p>
 								</div>
 							</div>
 
 							<div class="flex items-start">
 								<div class="flex items-center h-5">
 									<input
-										id="visibility-premium" v-model="formValues.visibility" v-bind="field" type="radio"
-										value="premium" class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500" />
+										id="visibility-pay-to-view" 
+										:checked="field.value === 'pay-to-view'"
+										@change="field.onChange"
+										type="radio"
+										value="pay-to-view" 
+										class="h-4 w-4 border-gray-300 text-primary-600 focus:ring-primary-500" />
 								</div>
 								<div class="ml-3 text-sm">
-									<label for="visibility-premium" class="font-medium text-gray-700 dark:text-gray-200">
-										{{ t('payPerView') }}
+									<label for="visibility-pay-to-view" class="font-medium text-gray-700 dark:text-gray-200">
+										{{ t('payPerView') || 'Pay-to-view' }}
 									</label>
-									<p class="text-gray-500 dark:text-gray-200">{{ t('payPerViewHint') }}</p>
+									<p class="text-gray-500 dark:text-gray-400">{{ t('payPerViewHint') || 'Users must pay a one-time fee to access' }}</p>
 								</div>
 							</div>
 						</div>
@@ -205,11 +227,18 @@
 				</div>
 
 				<!-- Price field (conditional) -->
-				<div v-if="formValues.visibility === 'premium'">
+				<div v-if="values?.visibility === 'pay-to-view'">
 					<Field v-slot="{ field, errorMessage }" name="price">
 						<form-input
-							v-model="formValues.price" v-bind="field" :label="t('price')" type="number" min="1" step="0.01"
-							:placeholder="t('pricePlaceholder')" :error="errorMessage" required />
+							:model-value="field.value" 
+							@update:model-value="field.onChange"
+							:label="t('price') || 'Price'" 
+							type="number" 
+							min="0.01" 
+							step="0.01"
+							:placeholder="t('pricePlaceholder') || 'Enter price'" 
+							:error="errorMessage" 
+							required />
 					</Field>
 				</div>
 
@@ -218,53 +247,89 @@
 					<div class="flex items-start">
 						<div class="flex items-center h-5">
 							<input
-								id="schedule" v-model="isScheduled" type="checkbox"
+								id="schedule" 
+								v-model="isScheduled" 
+								type="checkbox"
 								class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
 						</div>
 						<div class="ml-3 text-sm">
 							<label for="schedule" class="font-medium text-gray-700 dark:text-gray-200">
-								{{ t('scheduleForLater') }}
+								{{ t('scheduleForLater') || 'Schedule for later' }}
 							</label>
-							<p class="text-gray-500 dark:text-gray-200">{{ t('scheduleHint') }}</p>
+							<p class="text-gray-500 dark:text-gray-400">{{ t('scheduleHint') || 'Set a future date and time to publish this post' }}</p>
 						</div>
 					</div>
 
-					<div v-if="isScheduled">
+					<div v-if="isScheduled" class="mt-4">
 						<Field v-slot="{ field, errorMessage }" name="scheduledDate">
 							<form-input
-								v-model="scheduledDate" v-bind="field" :label="t('publishDate')" type="datetime-local"
-								:min="minScheduleDate" :error="errorMessage" required />
+								:model-value="field.value" 
+								@update:model-value="field.onChange"
+								:label="t('publishDate') || 'Publish Date'" 
+								type="datetime-local"
+								:min="minScheduleDate" 
+								:error="errorMessage" 
+								required />
 						</Field>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<div class="bg-gray-50 dark:bg-gray-800 py-3 flex justify-end">
+		<div class="bg-gray-50 dark:bg-gray-800 py-3 flex justify-end gap-3 px-1 md:px-6 w-full">
+			<!-- Draft button for creation mode -->
+			<button
+				v-if="!isEditMode"
+				type="button"
+				class="px-4 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full"
+				@click="saveDraft"
+			>
+				{{ t('saveDraft') || 'Save Draft' }}
+			</button>
+
+			<!-- Debug info (remove in production) -->
+			<div v-if="debug" class="text-xs text-gray-500 mr-4">
+				Valid: {{ meta.valid }}, Errors: {{ Object.keys(errors).length }}
+			</div>
+
+			<!-- Submit button -->
 			<button
 				type="submit"
-				class="w-full sm:w-auto px-6 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2"
+				class="px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2 w-full"
+				:disabled="!meta.valid || loading"
 				:class="{
 					'bg-primary-600 text-white hover:bg-primary-700': meta.valid && !loading,
 					'bg-primary-500 text-white cursor-wait': loading,
-					'bg-gray-300 text-gray-500 cursor-not-allowed': !meta.valid,
+					'bg-gray-300 text-gray-500 cursor-not-allowed': !meta.valid || loading,
 				}">
-				<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
-				{{ isScheduled ? t('schedulePost') : t('publishNow') }}
+				<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5" />
+				{{ getSubmitButtonText() }}
 			</button>
 		</div>
+
+    <!-- Media Preview Modal -->
+    <MediaPreviewModal
+      :is-open="previewModal.isOpen"
+      :media-items="previewModal.items"
+      :current-index="previewModal.currentIndex"
+      :enable-video-edit="true"
+      @close="closePreview"
+      @update:current-index="previewModal.currentIndex = $event"
+      @update:cover="handleCoverUpdate"
+    />
 	</Form>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch, onMounted } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Form, Field } from 'vee-validate';
 import * as yup from 'yup';
-import FormInput from '@/components/ui/BaseInput.vue';
-import MediaGallery from '@/components/ui/MediaGallery.vue';
+import FormInput from '../components/ui/BaseInput.vue';
+import MediaGallery from '../components/ui/MediaGallery.vue';
+import MediaPreviewModal from '../components/ui/MediaPreviewModal.vue';
 
-type Visibility = 'public' | 'subscribers' | 'premium'
+type Visibility = 'public' | 'subscribers' | 'pay-to-view'
 
 interface MediaFile {
   id?: string
@@ -289,6 +354,7 @@ interface PostFormProps {
   initialValues?: Partial<FormData>
   loading?: boolean
   minScheduleDate?: string
+  isEditMode?: boolean
   debug?: boolean
 }
 
@@ -310,198 +376,157 @@ const props = withDefaults(defineProps<PostFormProps>(), {
   initialValues: () => ({}),
   loading: false,
   minScheduleDate: '',
-  debug: true
+  isEditMode: false,
+  debug: false
 });
 
 const emit = defineEmits<PostFormEmits>();
 
 const { t } = useI18n();
 
-// Reactive form values
-const formValues = reactive({
-  title: '',
-  content: '',
-  visibility: 'public' as Visibility,
-  price: 4.99,
-  mediaUrls: [] as MediaFile[]
-});
-
 const mediaFiles = ref<File[]>([]);
 const existingMediaFiles = ref<MediaFile[]>([]);
 const uploadedMediaFiles = ref<MediaFile[]>([]);
 const isScheduled = ref(false);
-const scheduledDate = ref('');
 const showMediaGallery = ref(false);
 
-// Sample data for demonstration
-// onMounted(() => {
-//   // Add some sample uploaded media to demonstrate the grid layout
-//   uploadedMediaFiles.value = [
-//     {
-//       id: '1',
-//       url: '/placeholder.svg?height=200&width=200',
-//       type: 'image',
-//       name: 'Portrait Photo.jpg',
-//       size: 2500000
-//     },
-//     {
-//       id: '2',
-//       url: '/placeholder.svg?height=200&width=200',
-//       type: 'video',
-//       name: 'Landscape Video.mp4',
-//       size: 8500000,
-//       cover: '/placeholder.svg?height=200&width=200',
-//       duration: 45
-//     },
-//     {
-//       id: '3',
-//       url: '/placeholder.svg?height=200&width=200',
-//       type: 'image',
-//       name: 'Square Image.jpg',
-//       size: 1800000
-//     },
-//     {
-//       id: '4',
-//       url: '/placeholder.svg?height=200&width=200',
-//       type: 'video',
-//       name: 'Vertical Video.mp4',
-//       size: 12000000,
-//       cover: '/placeholder.svg?height=200&width=200',
-//       duration: 30
-//     },
-//     {
-//       id: '5',
-//       url: '/placeholder.svg?height=200&width=200',
-//       type: 'image',
-//       name: 'Wide Image.jpg',
-//       size: 3200000
-//     },
-//      {
-//       id: '6',
-//       url: '/placeholder.svg?height=200&width=200',
-//       type: 'image',
-//       name: 'Square Image.jpg',
-//       size: 1800000
-//     },
-//     {
-//       id: '7',
-//       url: '/placeholder.svg?height=200&width=200',
-//       type: 'video',
-//       name: 'Vertical Video.mp4',
-//       size: 12000000,
-//       cover: '/placeholder.svg?height=200&width=200',
-//       duration: 30
-//     },
-//     {
-//       id: '8',
-//       url: '/placeholder.svg?height=200&width=200',
-//       type: 'image',
-//       name: 'Wide Image.jpg',
-//       size: 3200000
-//     }
-//   ]
-// })
+// Media preview modal state
+const previewModal = ref({
+  isOpen: false,
+  items: [] as MediaFile[],
+  currentIndex: 0
+});
+
+// Initial form values for VeeValidate
+const initialFormValues = computed(() => ({
+  title: props.initialValues?.title || '',
+  content: props.initialValues?.content || '',
+  visibility: props.initialValues?.visibility || 'public',
+  price: props.initialValues?.price || 4.99,
+  scheduledDate: props.initialValues?.scheduledDate || '',
+  mediaFiles: uploadedMediaFiles.value
+}));
 
 // Watch for initialValues changes
 watch(() => props.initialValues, (newVal) => {
   if (newVal) {
-    Object.assign(formValues, {
-      title: newVal.title || '',
-      content: newVal.content || '',
-      visibility: newVal.visibility || 'public',
-      price: newVal.price || 4.99,
-    });
-
     existingMediaFiles.value = newVal.mediaUrls || [];
     if (newVal.mediaUrls && newVal.mediaUrls.length > 0) {
-      uploadedMediaFiles.value = newVal.mediaUrls;
+      uploadedMediaFiles.value = [...newVal.mediaUrls];
     }
     isScheduled.value = !!newVal.scheduledDate;
-    scheduledDate.value = newVal.scheduledDate || '';
   }
 }, { deep: true, immediate: true });
 
-// Validation schema
-const schema = yup.object({
+// Enhanced validation schema
+const schema = computed(() => yup.object({
   title: yup.string()
-    .required(t('validation.required'))
-    .min(3, t('validation.minLength', { min: 3 }))
-    .max(200, t('validation.maxLength', { max: 200 })),
+    .required(t('validation.title.required'))
+    .min(3, t('validation.title.minLength'))
+    .max(200, t('validation.title.maxLength')),
+  
   content: yup.string()
-    .required(t('validation.required'))
-    .min(10, t('validation.minLength', { min: 10 }))
-    .max(5000, t('validation.maxLength', { max: 5000 })),
+    .required(t('validation.content.required'))
+    .min(10, t('validation.content.minLength'))
+    .max(5000, t('validation.content.maxLength')),
+  
   visibility: yup.string()
-    .required(t('validation.required'))
-    .oneOf(['public', 'subscribers', 'premium'], t('validation.invalidVisibility')),
+    .required(t('validation.required', { field: t('visibility') }))
+    .oneOf(['public', 'subscribers', 'pay-to-view'], t('validation.invalidVisibility')),
+  
   price: yup.number().when('visibility', {
-    is: 'premium',
+    is: 'pay-to-view',
     then: (schema) => schema
-      .required(t('validation.required'))
-      .min(0.01, t('validation.minValue', { min: 0.01 }))
-      .max(999.99, t('validation.maxValue', { max: 999.99 }))
+      .required(t('validation.price.required'))
+      .min(0.01, t('validation.price.minValue'))
+      .max(999.99, t('validation.price.maxValue')),
+    otherwise: (schema) => schema.notRequired()
   }),
-  scheduledDate: yup.string().when('isScheduled', {
-    is: true,
+  
+  scheduledDate: yup.string().when([], {
+    is: () => isScheduled.value,
     then: (schema) => schema
-      .required(t('validation.required'))
-      .test('is-future', t('validation.futureDate'), value => {
+      .required(t('validation.scheduledDate.required'))
+      .test('is-future', t('validation.scheduledDate.futureDate'), value => {
+        if (!value) return false;
         return new Date(value) > new Date();
-      })
-  })
-});
+      }),
+    otherwise: (schema) => schema.notRequired()
+  }),
+  
+  mediaFiles: yup.array()
+    .test(
+      'max-media-files',
+      t('validation.maxMediaFiles'),
+      (value) => {
+        // If no files, it's allowed (since media is optional)
+        if (!value || value.length === 0) return true;
+        
+        // Check if total files (existing + new) exceed 10
+        const totalFiles = (existingMediaFiles.value?.length || 0) + (uploadedMediaFiles.value?.length || 0);
+        return totalFiles <= 10;
+      }
+    ),
+}));
+
+// Get submit button text based on mode and state
+function getSubmitButtonText(): string {
+  if (props.isEditMode) {
+    return isScheduled.value ? (t('updateSchedule') || 'Update Schedule') : (t('updatePost') || 'Update Post');
+  } else {
+    return isScheduled.value ? (t('schedulePost') || 'Schedule Post') : (t('publishNow') || 'Publish Now');
+  }
+}
 
 // Reset form function
 const resetForm = () => {
-  Object.assign(formValues, {
-    title: '',
-    content: '',
-    visibility: 'public',
-    price: 4.99,
-  });
   mediaFiles.value = [];
   existingMediaFiles.value = [];
   uploadedMediaFiles.value = [];
   isScheduled.value = false;
-  scheduledDate.value = '';
 };
 
 function onSubmit(values: any) {
   const submitData = {
-    title: formValues.title,
-    body: formValues.content,
-    visibility: formValues.visibility,
-    ...(formValues.visibility === 'premium' && { price: formValues.price }),
+    title: values.title,
+    body: values.content,
+    visibility: values.visibility,
+    ...(values.visibility === 'pay-to-view' && { price: values.price }),
     mediaFiles: mediaFiles.value,
     existingMediaFiles: uploadedMediaFiles.value,
     isScheduled: isScheduled.value,
-    ...(isScheduled.value && { scheduledDate: scheduledDate.value })
+    ...(isScheduled.value && { scheduledDate: values.scheduledDate })
   };
+  console.log(submitData, 'submitData')
   emit('submit', submitData);
 }
 
-function addMediaFromGallery(selectedMedia: any[]) {
-  // Handle media selection from gallery
-  uploadedMediaFiles.value = [...uploadedMediaFiles.value, ...selectedMedia];
+function saveDraft() {
+  emit('draft');
 }
 
-function handleUploadComplete(results: any[]) {
-  // Handle successful uploads
+function addMediaFromGallery(selectedMedia: any[], setFieldValue: Function) {
+  uploadedMediaFiles.value = [...uploadedMediaFiles.value, ...selectedMedia];
+  setFieldValue('mediaFiles', uploadedMediaFiles.value);
+}
+
+function handleUploadComplete(results: any[], setFieldValue: Function) {
   const successfulUploads = results.filter(result => result.success);
   const newMedia = successfulUploads.map(result => result.data);
   uploadedMediaFiles.value = [...uploadedMediaFiles.value, ...newMedia];
+  setFieldValue('mediaFiles', uploadedMediaFiles.value);
 }
 
-function removeMediaFile(index: number) {
+function removeMediaFile(index: number, setFieldValue: Function) {
   uploadedMediaFiles.value.splice(index, 1);
+  setFieldValue('mediaFiles', uploadedMediaFiles.value);
 }
 
 function setCoverForVideo(media: MediaFile, index: number) {
-  // Open cover selection interface
-  console.log('Set cover for video:', media.name);
+  // Open the preview modal directly to the video
+  openMediaPreview(index);
 }
 
-// Format video duration
 function formatDuration(seconds: number): string {
   if (!seconds) return '0:00';
   const mins = Math.floor(seconds / 60);
@@ -509,7 +534,26 @@ function formatDuration(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-// Expose resetForm to parent
+// Media preview modal functions
+function openMediaPreview(index: number) {
+  previewModal.value = {
+    isOpen: true,
+    items: [...uploadedMediaFiles.value],
+    currentIndex: index
+  };
+}
+
+function closePreview() {
+  previewModal.value.isOpen = false;
+}
+
+function handleCoverUpdate(data: { index: number, cover: string | null }) {
+  // Update the cover for the media item
+  if (data.index >= 0 && data.index < uploadedMediaFiles.value.length) {
+    uploadedMediaFiles.value[data.index].cover = data.cover || undefined;
+  }
+}
+
 defineExpose({
   resetForm
 });
@@ -538,6 +582,7 @@ defineExpose({
 .media-item {
   aspect-ratio: 1;
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer;
 }
 
 .media-item:hover {

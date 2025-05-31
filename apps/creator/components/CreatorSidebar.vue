@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div v-if="isMobileOpen" class="fixed inset-0 lg:hidden" role="dialog" aria-modal="true" style="z-index: 400">
+		<div v-if="isMobileOpen" class="fixed inset-0 lg:hidden z-[400]" role="dialog" aria-modal="true">
 			<div class="fixed inset-0 bg-gray-600 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-80" @click="emit('close')" />
 
 			<div class="fixed inset-y-0 left-0 flex max-w-xs w-full bg-white dark:bg-gray-900 dark:bg-gray-800 shadow-lg">
@@ -89,12 +89,12 @@ const navigationItems = computed(() => {
     { name: t('nav.messages'), href: '/messages', icon: 'lucide:message-circle' },
     { name: t('nav.wallet'), href: '/wallet', icon: 'lucide:wallet' },
     { name: t('nav.subscriptions'), href: '/subscriptions', icon: 'lucide:credit-card' },
+    { name: t('nav.content'), href: '/content', icon: 'lucide:image' },
   ];
 
   // Creator-specific navigation items
   const creatorItems = isApprovedCreator ? [
     { name: t('nav.analytics'), href: '/creator/analytics', icon: 'lucide:bar-chart' },
-    { name: t('nav.content'), href: '/creator/content', icon: 'lucide:image' },
     { name: t('nav.subscribers'), href: '/creator/subscribers', icon: 'lucide:users' },
     { name: t('nav.earnings'), href: '/creator/earnings', icon: 'lucide:dollar-sign' },
   ] : [];

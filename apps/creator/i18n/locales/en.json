@@ -173,7 +173,32 @@
 		"bioRequired": "Bio is required.",
 		"bioMin": "Bio must be at least 10 characters.",
 		"bioMax": "Bio must be at most 500 characters.",
-		"socialUsername": "Enter a valid username (letters, numbers, underscores, min 2 characters, may start with)."
+		"socialUsername": "Enter a valid username (letters, numbers, underscores, min 2 characters, may start with).",
+		"minLength": "{field} must be at least {min} characters",
+		"minValue": "{field} must be at least {min}",
+		"maxValue": "{field} must be less than {max}",
+		"invalidVisibility": "Invalid visibility option",
+		"futureDate": "Scheduled date must be in the future",
+		"maxMediaFiles": "Maximum 10 media files allowed",
+		"title": {
+			"required": "Title is required",
+			"minLength": "Title must be at least 3 characters",
+			"maxLength": "Title must be less than 200 characters"
+		},
+		"content": {
+			"required": "Content is required",
+			"minLength": "Content must be at least 10 characters",
+			"maxLength": "Content must be less than 5000 characters"
+		},
+		"price": {
+			"required": "Price is required for pay-to-view posts",
+			"minValue": "Price must be at least $0.01",
+			"maxValue": "Price must be less than $999.99"
+		},
+		"scheduledDate": {
+			"required": "Scheduled date is required",
+			"futureDate": "Scheduled date must be in the future"
+		}
 	},
 	"notifications": {
 		"title": "Notifications",
@@ -192,7 +217,9 @@
 		"contentUpdateFailed": "Failed to update post. Please try again.",
 		"draftSaved": "Draft saved successfully",
 		"contentCreated": "Post published successfully",
-		"contentCreateFailed": "Failed to create post. Please try again."
+		"contentCreateFailed": "Failed to create post. Please try again.",
+		"mediaUploadFailed": "Failed to upload media files",
+		"draftSaveFailed": "Failed to save draft"
 	},
 	"time": {
 		"minutesAgo": "{count}m ago",
@@ -222,7 +249,7 @@
 				"all": "All Content",
 				"public": "Public",
 				"private": "Private",
-				"premium": "Premium"
+				"pay-to-view": "Pay-to-view"
 			},
 			"list": {
 				"title": "Title",
@@ -249,13 +276,14 @@
 		},
 		"new": {
 			"title": "Create New Post",
-			"description": "Share new content with your subscribers."
+			"description": "Create and share your content with your audience"
 		},
 		"form": {
 			"title": "Title",
 			"content": "Content",
 			"price": "Price"
-		}
+		},
+		"untitledDraft": "Untitled Draft"
 	},
 	"upload": {
 		"title": "Upload files",
@@ -308,7 +336,7 @@
 			"types": {
 				"subscriptions": "Subscriptions",
 				"tips": "Tips",
-				"ppv": "Pay-per-view"
+				"ppv": "Pay-to-view"
 			},
 			"subscriptionTypes": {
 				"monthly": "Monthly",
@@ -474,7 +502,7 @@
 	"publicHint": "Visible to everyone, including non-subscribers",
 	"subscribersOnly": "Subscribers Only",
 	"subscribersOnlyHint": "Only visible to your paid subscribers",
-	"payPerView": "Pay-per-view",
+	"payPerView": "Pay-to-view",
 	"payPerViewHint": "Users must pay a one-time fee to access",
 	"price": "Price ($)",
 	"pricePlaceholder": "4.99",
@@ -599,7 +627,7 @@
 		"payout_breakdown": "Payout Breakdown",
 		"subscription_revenue": "Subscription Revenue",
 		"tips": "Tips",
-		"pay_per_view": "Pay-per-view",
+		"pay_per_view": "Pay-to-view",
 		"platform_fee": "Platform Fee",
 		"content-view": "Content Views",
 		"revenue": "Revenue This Month",
@@ -618,7 +646,45 @@
 		"noSubscribers": "No subscribers yet.",
 		"blockConfirmation": "Are you sure you want to block this subscriber? They will no longer be able to view your content or message you.",
 		"block": "Block",
-		"cancel": "Cancel"
+		"cancel": "Cancel",
+    "stats": {
+      "totalSubscribers": "Total Subscribers",
+      "activeSubscribers": "Active Subscribers",
+      "monthlyRevenue": "Monthly Revenue",
+      "totalRevenue": "Total Revenue",
+      "fromLastMonth": "from last month"
+    },
+    "filters": {
+      "search": "Search subscribers...",
+      "allPlans": "All Plans",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "allStatus": "All Status",
+      "active": "Active",
+      "expired": "Expired",
+      "cancelled": "Cancelled"
+    },
+    "table": {
+      "subscriber": "Subscriber",
+      "plan": "Plan",
+      "status": "Status",
+      "revenue": "Revenue",
+      "joined": "Joined",
+      "actions": "Actions",
+      "lifetimeValue": "Lifetime value"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results"
+    },
+    "actions": {
+      "message": "Message subscriber",
+      "block": "Block subscriber"
+    }
 	},
 	"categories": {
 		"art": "Art",
@@ -641,11 +707,70 @@
 		"uploadFromDevice": "Upload from your device",
 		"next": "Next",
 		"open": "Choose from Media Library",
-    "uploadFiles": "Upload files",
-    "videoFilesUpTo": "Video files up to",
-    "selectFromComputer": "Select From Computer",
-    "coverPhoto": "Cover Photo",
-    "clearCover": "Clear Cover",
-    "selectThumbnailToCover": "Select Thumbnail To Cover"
+		"uploadFiles": "Upload files",
+		"videoFilesUpTo": "Video files up to",
+		"selectFromComputer": "Select From Computer",
+		"coverPhoto": "Cover Photo",
+		"clearCover": "Clear Cover",
+		"selectThumbnailToCover": "Select Thumbnail To Cover"
+	},
+	"postForm": {
+		"title": "Title",
+		"content": "Content",
+		"visibility": "Visibility",
+		"price": "Price",
+		"media": "Media",
+		"addMedia": "Add Media",
+		"remove": "Remove",
+		"next": "Next",
+		"back": "Back",
+		"cancel": "Cancel",
+		"save": "Save",
+		"submit": "Submit",
+		"draft": "Save as Draft",
+		"schedule": "Schedule",
+		"scheduledDate": "Scheduled Date",
+		"public": "Public",
+		"private": "Subscribers only",
+		"premium": "Pay to view",
+		"uploadLimit": "You can upload up to {max} files.",
+		"uploadTypes": "Accepted file types: {types}",
+		"uploadSize": "Max file size: {size}",
+		"uploading": "Uploading...",
+		"uploadFailed": "Upload failed",
+		"uploadSuccess": "Upload successful"
+	},
+	"mediaGallery": {
+		"title": "Media Library",
+		"tabLibrary": "Media Library",
+		"tabDevice": "From Device",
+		"search": "Search media...",
+		"noMedia": "No media found.",
+		"next": "Next",
+		"remove": "Remove",
+		"select": "Select",
+		"upload": "Upload",
+		"dragAndDrop": "or drag and drop",
+		"uploadMore": "Upload more",
+		"fromDevice": "From Device",
+		"selectFromDevice": "Select from device"
+	},
+	"mediaPreview": {
+		"edit": "Edit",
+		"coverPhoto": "Cover Photo",
+		"selectFromComputer": "Select from computer",
+		"selectThumbnailToCover": "Select a thumbnail to use as cover photo",
+		"clearCover": "Clear cover photo",
+		"trim": "Trim",
+		"soundOn": "Sound On",
+		"comments": "Comments",
+		"addComment": "Add a comment...",
+		"post": "Post",
+		"loading": "Loading...",
+		"delete": "Delete",
+		"confirmDelete": "Are you sure you want to delete this media?",
+		"cancel": "Cancel",
+		"save": "Save",
+		"uploadCustomCover": "Upload custom cover"
 	}
 }

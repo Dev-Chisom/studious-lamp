@@ -297,7 +297,7 @@
 			"types": {
 				"subscriptions": "Suscripciones",
 				"tips": "Propinas",
-				"ppv": "Pay-per-view"
+				"ppv": "Pay-to-view"
 			},
 			"subscriptionTypes": {
 				"monthly": "Mensual",

@@ -2,7 +2,7 @@
 	<div class="max-w-6xl mx-auto">
 
 		<Head>
-			<Title>{{ $t('content.management.title') }} - Whispers</Title>
+			<Title>{{ t('content.management.title') }} - Whispers</Title>
 		</Head>
 
 		<div class="sm:flex sm:items-center sm:justify-between">
@@ -15,7 +15,7 @@
 			</div>
 
 			<div class="mt-4 sm:mt-0">
-				<NuxtLink to="/creator/content/new" class="btn-primary">
+				<NuxtLink to="/content/new" class="btn-primary">
 					<Icon name="lucide:plus" class="mr-2 h-4 w-4" /> {{ $t('content.management.createNew') }}
 				</NuxtLink>
 			</div>
@@ -41,7 +41,7 @@
 					<option value="all">{{ $t('content.management.filters.all') }}</option>
 					<option value="public">{{ $t('content.management.filters.public') }}</option>
 					<option value="subscribers">{{ $t('content.management.filters.private') }}</option>
-					<option value="pay-to-view">{{ $t('content.management.filters.premium') }}</option>
+					<option value="pay-to-view">{{ $t('content.management.filters.pay-to-view') }}</option>
 				</select>
 			</div>
 		</div>
@@ -49,7 +49,7 @@
 		<!-- Content table/list -->
 
 		<div class="mt-8 flow-root">
-			<SkeletonLoader v-if="loading" :rows="6" height="2rem" class="mb-4" />
+			<SkeletonLoader v-if="loading" variant="table" :rows="6" height="4rem" class="mb-4" />
 			<div v-else class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
 				<div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
 					<div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
@@ -104,7 +104,7 @@
 													'bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400':
 														item.visibility === 'private',
 													'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400':
-														item.visibility === 'premium',
+														item.visibility === 'pay-to-view',
 												}">
 												{{ $t(`content.management.filters.${item.visibility}`) }}
 											</span>
@@ -193,14 +193,14 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { toast } from 'vue3-toastify';
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue';
 import { useI18n } from 'vue-i18n';
-import { useContentStore } from '../../../store/content';
-import type { Content } from '../../../types/content';
-import Pagination from '~/components/ui/Pagination.vue';
-import DebouncedInput from '~/components/ui/DebouncedInput.vue';
-import SkeletonLoader from '~/components/ui/SkeletonLoader.vue';
+import { useContentStore } from '../../store/content';
+import type { Content } from '../../types/content';
+import Pagination from '../../components/ui/Pagination.vue';
+import DebouncedInput from '../../components/ui/DebouncedInput.vue';
+import SkeletonLoader from '../../components/ui/SkeletonLoader.vue';
+import { useNotification } from '../../composables/useNotifications';
 
 definePageMeta({
   layout: 'creator',
@@ -213,6 +213,7 @@ definePageMeta({
 
 const { t } = useI18n();
 const contentStore = useContentStore();
+const { success, error, info } = useNotification();
 
 const loading = ref<boolean>(true);
 const search = ref<string>('');
@@ -229,7 +230,7 @@ const filteredContent = computed<Content[]>(() => {
 });
 
 function editContent(content: Content): void {
-  navigateTo(`/creator/content/edit/${content._id}`);
+  navigateTo(`/content/edit/${content._id}`);
 }
 
 function confirmDelete(content: Content): void {
@@ -246,10 +247,10 @@ async function deleteContent(): Promise<void> {
   if (!contentToDelete.value) return;
   try {
     await contentStore.deleteContent(contentToDelete.value._id);
-    toast.success(t('notifications.contentDeleted'));
+    success(t('notifications.contentDeleted'));
     closeDeleteModal();
-  } catch {
-    toast.error(t('notifications.contentDeleteFailed'));
+  } catch (err) {
+    error(t('notifications.contentDeleteFailed'));
   }
 }
 

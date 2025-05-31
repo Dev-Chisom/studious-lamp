@@ -12,7 +12,7 @@
 			</div>
 
 			<div class="mt-4 sm:mt-0">
-				<NuxtLink to="/creator/content/new" class="btn-primary">
+				<NuxtLink to="/content/new" class="btn-primary">
 					<Icon name="lucide:plus" class="mr-2 h-4 w-4" /> {{ t('createNewPost') }}
 				</NuxtLink>
 			</div>
@@ -39,7 +39,7 @@
 
 					<option value="subscribers">Subscribers Only</option>
 
-					<option value="ppv">Pay-per-view</option>
+					<option value="ppv">Pay-to-view</option>
 				</select>
 
 				<select
@@ -74,7 +74,7 @@
 				</p>
 
 				<div class="mt-6">
-					<NuxtLink to="/creator/content/new" class="btn-primary">
+					<NuxtLink to="/content/new" class="btn-primary">
 						<Icon name="lucide:plus" class="mr-2 h-4 w-4" /> {{ t('createNewPost') }}
 					</NuxtLink>
 				</div>
@@ -164,7 +164,7 @@
 											'badge-secondary': post.visibility === 'ppv',
 										}"
 									>
-										{{ post.visibility === 'ppv' ? 'Pay-per-view' : post.visibility }}
+										{{ post.visibility === 'ppv' ? 'Pay-to-view' : post.visibility }}
 									</span>
 
 									<div v-if="post.price" class="mt-1 text-sm text-gray-500 dark:text-gray-300">${{ post.price }}</div>
@@ -287,7 +287,7 @@
 
 		<!-- Delete confirmation modal -->
 
-		<div v-if="showDeleteModal" class="fixed inset-0 overflow-y-auto" style="z-index: 400">
+		<div v-if="showDeleteModal" class="fixed inset-0 overflow-y-auto z-[400]">
 			<div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
 				<div class="fixed inset-0 transition-opacity">
 					<div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75" />
@@ -514,7 +514,7 @@ function formatDate(date: Date): string {
 }
 
 function editPost(id: string): void {
-	navigateTo(`/creator/content/edit/${id}`);
+	navigateTo(`/content/edit/${id}`);
 }
 
 function confirmDelete(id: string): void {

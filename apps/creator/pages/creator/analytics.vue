@@ -154,7 +154,7 @@
 				</ul>
 
 				<div class="border-t border-gray-200 px-4 py-4 sm:px-6">
-					<NuxtLink to="/creator/content" class="text-sm font-medium text-primary-600 hover:text-primary-500">
+					<NuxtLink to="/content" class="text-sm font-medium text-primary-600 hover:text-primary-500">
 						{{ t('analytics.view_all_content') }} <span aria-hidden="true"> &rarr;</span>
 					</NuxtLink>
 				</div>
@@ -237,11 +237,7 @@ import { useI18n } from 'vue-i18n';
 
 definePageMeta({
 	layout: 'creator',
-	middleware: ['auth'],
-	meta: {
-		requiresAuth: true,
-		requiresCreator: true,
-	},
+	middleware: ['auth', 'creator'],
 });
 
 interface StatCard {

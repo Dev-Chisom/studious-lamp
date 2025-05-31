@@ -10,8 +10,7 @@
 
 		<div
 			v-if="isOpen"
-			class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5"
-			style="z-index: 500"
+			class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-[500]"
 		>
 			<div class="py-1" role="menu">
 				<button

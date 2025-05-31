@@ -1,6 +1,6 @@
 <template>
 	<div class="max-w-6xl mx-auto">
-		<Head> <Title>Subscribers - Creator Dashboard</Title> </Head>
+		<Head> <Title>{{ t('subscribers.title') }} - Creator Dashboard</Title> </Head>
 
 		<div class="mb-6">
 			<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ t('subscribers.title') }}</h1>
@@ -27,7 +27,7 @@
 						<div class="ml-5 w-0 flex-1">
 							<dl>
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-200 dark:text-gray-400 truncate">
-									{{ stat.name }}
+									{{ t(`subscribers.stats.${stat.key}`) }}
 								</dt>
 
 								<dd>
@@ -51,7 +51,7 @@
 							>
 								{{ Math.abs(stat.trend) }}%
 							</span>
-							<span class="ml-2 text-gray-500 dark:text-gray-200 dark:text-gray-400">from last month</span>
+							<span class="ml-2 text-gray-500 dark:text-gray-200 dark:text-gray-400">{{ t('subscribers.stats.fromLastMonth') }}</span>
 						</div>
 					</div>
 				</div>
@@ -65,24 +65,24 @@
 				<!-- Filters -->
 
 				<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-					<FormInput v-model="filters.search" placeholder="Search subscribers..." icon="lucide:search" />
+					<FormInput v-model="filters.search" :placeholder="t('subscribers.filters.search')" icon="lucide:search" />
 
 					<select v-model="filters.plan" class="form-input">
-						<option value="">All Plans</option>
+						<option value="">{{ t('subscribers.filters.allPlans') }}</option>
 
-						<option value="monthly">Monthly</option>
+						<option value="monthly">{{ t('subscribers.filters.monthly') }}</option>
 
-						<option value="yearly">Yearly</option>
+						<option value="yearly">{{ t('subscribers.filters.yearly') }}</option>
 					</select>
 
 					<select v-model="filters.status" class="form-input">
-						<option value="">All Status</option>
+						<option value="">{{ t('subscribers.filters.allStatus') }}</option>
 
-						<option value="active">Active</option>
+						<option value="active">{{ t('subscribers.filters.active') }}</option>
 
-						<option value="expired">Expired</option>
+						<option value="expired">{{ t('subscribers.filters.expired') }}</option>
 
-						<option value="cancelled">Cancelled</option>
+						<option value="cancelled">{{ t('subscribers.filters.cancelled') }}</option>
 					</select>
 				</div>
 
@@ -95,37 +95,37 @@
 								<th
 									class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider"
 								>
-									Subscriber
+									{{ t('subscribers.table.subscriber') }}
 								</th>
 
 								<th
 									class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider"
 								>
-									Plan
+									{{ t('subscribers.table.plan') }}
 								</th>
 
 								<th
 									class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider"
 								>
-									Status
+									{{ t('subscribers.table.status') }}
 								</th>
 
 								<th
 									class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider"
 								>
-									Revenue
+									{{ t('subscribers.table.revenue') }}
 								</th>
 
 								<th
 									class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider"
 								>
-									Joined
+									{{ t('subscribers.table.joined') }}
 								</th>
 
 								<th
 									class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-200 uppercase tracking-wider"
 								>
-									Actions
+									{{ t('subscribers.table.actions') }}
 								</th>
 							</tr>
 						</thead>
@@ -154,7 +154,7 @@
 
 								<td class="px-6 py-4 whitespace-nowrap">
 									<div class="text-sm text-gray-900 dark:text-gray-100">
-										{{ subscriber.plan === 'monthly' ? 'Monthly' : 'Yearly' }}
+										{{ t(`subscribers.filters.${subscriber.plan}`) }}
 									</div>
 
 									<div class="text-sm text-gray-500 dark:text-gray-200 dark:text-gray-400">
@@ -171,14 +171,16 @@
 											'badge-error': subscriber.status === 'expired',
 										}"
 									>
-										{{ subscriber.status }}
+										{{ t(`subscribers.filters.${subscriber.status}`) }}
 									</span>
 								</td>
 
 								<td class="px-6 py-4 whitespace-nowrap">
 									<div class="text-sm text-gray-900 dark:text-gray-100">${{ subscriber.totalRevenue.toFixed(2) }}</div>
 
-									<div class="text-xs text-gray-500 dark:text-gray-200 dark:text-gray-400">Lifetime value</div>
+									<div class="text-xs text-gray-500 dark:text-gray-200 dark:text-gray-400">
+										{{ t('subscribers.table.lifetimeValue') }}
+									</div>
 								</td>
 
 								<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">
@@ -187,13 +189,18 @@
 
 								<td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
 									<div class="flex justify-end space-x-2">
-										<button class="text-gray-400 hover:text-primary-600" @click="messageSubscriber(subscriber)">
+										<button 
+											class="text-gray-400 hover:text-primary-600" 
+											@click="messageSubscriber(subscriber)"
+											:title="t('subscribers.actions.message')"
+										>
 											<Icon name="lucide:message-circle" class="h-5 w-5" />
 										</button>
 										<button
 											v-if="subscriber.status === 'active'"
 											class="text-gray-400 hover:text-error-600"
 											@click="confirmBlock(subscriber)"
+											:title="t('subscribers.actions.block')"
 										>
 											<Icon name="lucide:ban" class="h-5 w-5" />
 										</button>
@@ -208,16 +215,23 @@
 
 				<div class="mt-6 flex items-center justify-between">
 					<div class="flex-1 flex justify-between sm:hidden">
-						<button class="btn-outline" :disabled="currentPage === 1" @click="currentPage--">Previous</button>
-						<button class="btn-outline" :disabled="currentPage === totalPages" @click="currentPage++">Next</button>
+						<button class="btn-outline" :disabled="currentPage === 1" @click="currentPage--">
+							{{ t('subscribers.pagination.previous') }}
+						</button>
+						<button class="btn-outline" :disabled="currentPage === totalPages" @click="currentPage++">
+							{{ t('subscribers.pagination.next') }}
+						</button>
 					</div>
 
 					<div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
 						<div>
 							<p class="text-sm text-gray-700">
-								Showing <span class="font-medium">{{ startIndex + 1 }}</span> to
-								<span class="font-medium">{{ endIndex }}</span> of
-								<span class="font-medium">{{ totalSubscribers }}</span> results
+								{{ t('subscribers.pagination.showing') }} <span class="font-medium">{{ startIndex + 1 }}</span>
+								{{ t('subscribers.pagination.to') }}
+								<span class="font-medium">{{ endIndex }}</span>
+								{{ t('subscribers.pagination.of') }}
+								<span class="font-medium">{{ totalSubscribers }}</span>
+								{{ t('subscribers.pagination.results') }}
 							</p>
 						</div>
 
@@ -313,28 +327,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { toast } from 'vue3-toastify';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
-
-definePageMeta({
-	layout: 'creator',
-	middleware: ['auth'],
-	meta: {
-		requiresAuth: true,
-		requiresCreator: true,
-	},
-});
-
-interface StatCard {
-	name: string
-	value: string
-	icon: string
-	color: string
-	trend: number
-}
+import { ref, computed } from '#imports'
+import { useI18n } from 'vue-i18n'
 
 interface Subscriber {
 	id: string
@@ -344,7 +338,16 @@ interface Subscriber {
 	plan: 'monthly' | 'yearly'
 	status: 'active' | 'expired' | 'cancelled'
 	totalRevenue: number
-	joinedAt: Date
+	joinedAt: string
+}
+
+interface Stats {
+	name: string
+	key: string
+	value: number
+	trend: number
+	icon: string
+	color: string
 }
 
 interface Filters {
@@ -353,176 +356,146 @@ interface Filters {
 	status: string
 }
 
-// Stats data
-const stats = ref<StatCard[]>([
+definePageMeta({
+	layout: 'creator',
+	middleware: ['auth', 'creator']
+})
+
+const { t } = useI18n()
+
+const stats = ref<Stats[]>([
 	{
 		name: 'Total Subscribers',
-		value: '1,234',
-		icon: 'lucide:users',
-		color: 'primary',
+		key: 'totalSubscribers',
+		value: 1234,
 		trend: 12,
-	},
-	{
-		name: 'Monthly Revenue',
-		value: '$12,345',
-		icon: 'lucide:dollar-sign',
-		color: 'success',
-		trend: 8,
+		icon: 'lucide:users',
+		color: 'primary'
 	},
 	{
 		name: 'Active Subscribers',
-		value: '1,100',
+		key: 'activeSubscribers',
+		value: 890,
+		trend: 8,
 		icon: 'lucide:user-check',
-		color: 'secondary',
-		trend: 5,
+		color: 'success'
+	},
+	{
+		name: 'Monthly Revenue',
+		key: 'monthlyRevenue',
+		value: 8900,
+		trend: 15,
+		icon: 'lucide:dollar-sign',
+		color: 'warning'
 	},
 	{
 		name: 'Churn Rate',
-		value: '2.3%',
+		key: 'churnRate',
+		value: 2.4,
+		trend: -0.5,
 		icon: 'lucide:trending-down',
-		color: 'error',
-		trend: -1,
-	},
-]);
+		color: 'error'
+	}
+])
 
-// Filters and pagination
 const filters = ref<Filters>({
 	search: '',
 	plan: '',
-	status: '',
-});
+	status: ''
+})
 
-const currentPage = ref<number>(1);
-const itemsPerPage = 10;
-const showBlockModal = ref<boolean>(false);
-const subscriberToBlock = ref<Subscriber | null>(null);
+const currentPage = ref(1)
+const itemsPerPage = 10
+const showBlockModal = ref<boolean>(false)
+const subscriberToBlock = ref<Subscriber | null>(null)
 
-// Mock subscribers data
 const subscribers = ref<Subscriber[]>([
 	{
 		id: '1',
 		name: 'John Doe',
 		email: 'john@example.com',
-		avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=200',
+		avatar: 'https://i.pravatar.cc/150?u=john@example.com',
 		plan: 'monthly',
 		status: 'active',
-		totalRevenue: 29.97,
-		joinedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+		totalRevenue: 99.99,
+		joinedAt: '2024-01-01'
 	},
 	{
 		id: '2',
 		name: 'Jane Smith',
 		email: 'jane@example.com',
-		avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=200',
+		avatar: 'https://i.pravatar.cc/150?u=jane@example.com',
 		plan: 'yearly',
 		status: 'active',
-		totalRevenue: 99.99,
-		joinedAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000),
-	},
-	{
-		id: '3',
-		name: 'Mike Johnson',
-		email: 'mike@example.com',
-		avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=200',
-		plan: 'monthly',
-		status: 'cancelled',
-		totalRevenue: 9.99,
-		joinedAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000),
-	},
-]);
+		totalRevenue: 999.99,
+		joinedAt: '2024-02-01'
+	}
+])
 
-// Computed properties
-const filteredSubscribers = computed<Subscriber[]>(() => {
-	let result = [...subscribers.value];
+const filteredSubscribers = computed(() => {
+	return subscribers.value.filter((s: Subscriber) => {
+		const matchesSearch = s.name.toLowerCase().includes(filters.value.search.toLowerCase()) ||
+			s.email.toLowerCase().includes(filters.value.search.toLowerCase())
+		const matchesPlan = !filters.value.plan || s.plan === filters.value.plan
+		const matchesStatus = !filters.value.status || s.status === filters.value.status
+		return matchesSearch && matchesPlan && matchesStatus
+	})
+})
 
-	// Apply search filter
-	if (filters.value.search) {
-		const searchLower = filters.value.search.toLowerCase();
-		result = result.filter(
-			(subscriber) =>
-				subscriber.name.toLowerCase().includes(searchLower) || subscriber.email.toLowerCase().includes(searchLower),
-		);
+const totalSubscribers = computed(() => filteredSubscribers.value.length)
+const totalPages = computed(() => Math.ceil(totalSubscribers.value / itemsPerPage))
+const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage)
+const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage, totalSubscribers.value))
+
+const displayedPages = computed(() => {
+	const pages = []
+	const maxPages = 5
+	const halfMax = Math.floor(maxPages / 2)
+
+	let start = Math.max(1, currentPage.value - halfMax)
+	let end = Math.min(totalPages.value, start + maxPages - 1)
+
+	if (end - start + 1 < maxPages) {
+		start = Math.max(1, end - maxPages + 1)
 	}
 
-	// Apply plan filter
-	if (filters.value.plan) {
-		result = result.filter((subscriber) => subscriber.plan === filters.value.plan);
+	for (let i = start; i <= end; i++) {
+		pages.push(i)
 	}
 
-	// Apply status filter
-	if (filters.value.status) {
-		result = result.filter((subscriber) => subscriber.status === filters.value.status);
-	}
+	return pages
+})
 
-	return result;
-});
-
-const totalSubscribers = computed<number>(() => filteredSubscribers.value.length);
-const totalPages = computed<number>(() => Math.ceil(totalSubscribers.value / itemsPerPage));
-
-const startIndex = computed<number>(() => (currentPage.value - 1) * itemsPerPage);
-const endIndex = computed<number>(() => Math.min(startIndex.value + itemsPerPage, totalSubscribers.value));
-
-const displayedPages = computed<number[]>(() => {
-	const pages: number[] = [];
-	const maxPages = 5;
-
-	if (totalPages.value <= maxPages) {
-		for (let i = 1; i <= totalPages.value; i++) {
-			pages.push(i);
-		}
-	} else {
-		let start = Math.max(1, currentPage.value - 2);
-		const end = Math.min(totalPages.value, start + maxPages - 1);
-
-		if (end - start < maxPages - 1) {
-			start = Math.max(1, end - maxPages + 1);
-		}
-
-		for (let i = start; i <= end; i++) {
-			pages.push(i);
-		}
-	}
-
-	return pages;
-});
-
-// Methods
-function formatDate(date: Date): string {
-	return new Date(date).toLocaleDateString('en-US', {
-		year: 'numeric',
-		month: 'short',
-		day: 'numeric',
-	});
+const formatDate = (date: string) => {
+	return new Date(date).toLocaleDateString()
 }
 
-function messageSubscriber(subscriber: Subscriber): void {
+const messageSubscriber = (subscriber: Subscriber) => {
 	// Implement messaging functionality
-	toast.info(`Messaging ${subscriber.name} - To be implemented`);
 }
 
-function confirmBlock(subscriber: Subscriber): void {
-	subscriberToBlock.value = subscriber;
-	showBlockModal.value = true;
+const confirmBlock = (subscriber: Subscriber) => {
+	subscriberToBlock.value = subscriber
+	showBlockModal.value = true
 }
 
-function blockSubscriber(): void {
+const blockSubscriber = () => {
 	if (!subscriberToBlock.value) {
-		return;
+		return
 	}
 
 	try {
 		// In a real app, make API call to block subscriber
-		const index = subscribers.value.findIndex((s) => s.id === subscriberToBlock.value?.id);
+		const index = subscribers.value.findIndex((s) => s.id === subscriberToBlock.value?.id)
 		if (index !== -1) {
-			subscribers.value[index].status = 'cancelled';
+			subscribers.value[index].status = 'cancelled'
 		}
 
-		showBlockModal.value = false;
-		subscriberToBlock.value = null;
-		toast.success('Subscriber blocked successfully');
+		showBlockModal.value = false
+		subscriberToBlock.value = null
+		// Implement toast notification
 	} catch {
-		toast.error('Failed to block subscriber');
+		// Implement toast notification
 	}
 }
 </script>

@@ -31,8 +31,7 @@
 
 		<div
 			v-if="isOpen"
-			class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-900 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 dark:divide-gray-700"
-			style="z-index: 300"
+			class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-900 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 dark:divide-gray-700 z-300"
 		>
 			<div class="py-1">
 				<div class="px-4 py-2 text-sm text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-gray-700">
@@ -137,7 +136,7 @@ const userLinks: NavLink[] = computed(() => [
 
 const creatorLinks: NavLink[] = computed(() => [
 	{ name: t('nav.creator.dashboard'), href: '/creator/analytics' },
-	{ name: t('nav.creator.content'), href: '/creator/content' },
+	{ name: t('nav.creator.content'), href: '/content' },
 	{ name: t('nav.creator.earnings'), href: '/creator/earnings' },
 ]);
 

@@ -7,7 +7,7 @@
 
 		<div class="mb-6">
 			<div class="flex items-center">
-				<NuxtLink to="/creator/content" class="mr-2 text-gray-500 dark:text-gray-200 hover:text-gray-700">
+				<NuxtLink to="/content" class="mr-2 text-gray-500 dark:text-gray-200 hover:text-gray-700">
 					<Icon name="lucide:arrow-left" class="h-5 w-5" />
 				</NuxtLink>
 
@@ -18,11 +18,11 @@
 		</div>
 
 		<div class="bg-white dark:bg-gray-900 shadow-sm rounded-lg overflow-hidden">
-			<SkeletonLoader v-if="loading" :rows="5" width="80%" height="2rem" class="mx-auto my-8" />
+			<SkeletonLoader v-if="loading" variant="post-form" :rows="5" width="80%" height="2rem" class="mx-auto my-8" />
 			<PostForm
 				v-else-if="postData" :initial-values="postData" :errors="errors" :loading="contentStore.loading"
 				:min-schedule-date="minScheduleDate" @submit="handleSubmit" @draft="saveAsDraft"
-				@cancel="() => router.push('/creator/content')" />
+				@cancel="() => router.push('/content')" />
 
 			<div v-else class="p-8 text-center text-gray-500 dark:text-gray-200">{{ $t('content.edit.loading') }}</div>
 		</div>
@@ -31,17 +31,18 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue';
-import { toast } from 'vue3-toastify';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { useContentStore } from '../../../../store/content';
-import PostForm from '@/components/PostForm.vue';
-import SkeletonLoader from '@/components/ui/SkeletonLoader.vue';
+import { useContentStore } from '../../../store/content';
+import PostForm from '../../../components/PostForm.vue';
+import SkeletonLoader from '../../../components/ui/SkeletonLoader.vue';
+import { useNotification } from '../../../composables/useNotifications';
 
 const router = useRouter();
 const route = useRoute();
 const contentStore = useContentStore();
 const { t } = useI18n();
+const { success, error, info } = useNotification();
 
 definePageMeta({
   middleware: ['auth'],
@@ -100,7 +101,7 @@ onMounted(async () => {
       mediaUrls: post.mediaFiles || [],
     };
   } catch (e) {
-    toast.error(t('content.edit.loadFailed'));
+    error(t('content.edit.loadFailed'));
   } finally {
     loading.value = false;
   }
@@ -139,21 +140,17 @@ function validateForm(formData: PostFormData): boolean {
 }
 
 async function handleSubmit(formData: PostFormData): Promise<void> {
-  // if (!validateForm(formData)) {
-  //   toast.error(t('validation.fixErrors'))
-  //   return
-  // }
   try {
     await contentStore.updateContent(route.params.id as string, formData);
-    toast.success(t('notifications.contentUpdated'));
-    router.push('/creator/content');
-  } catch (error) {
-    console.log(error, 'jhjkh');
-    toast.error(t('notifications.contentUpdateFailed'));
+    success(t('notifications.contentUpdated'));
+    router.push('/content');
+  } catch (err) {
+    error(t('notifications.contentUpdateFailed'));
+    console.log(err, 'jhjkh');
   }
 }
 
 function saveAsDraft(formData: PostFormData): void {
-  toast.info(t('notifications.draftSaved'));
+  info(t('notifications.draftSaved'));
 }
 </script>

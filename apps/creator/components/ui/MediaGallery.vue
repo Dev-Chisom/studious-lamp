@@ -6,13 +6,6 @@
 				<h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
 					{{ t('mediaLibrary.title') || 'Media' }}
 				</h2>
-				<!-- <button 
-          type="button"
-          @click="close"
-          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          <Icon name="lucide:x" class="h-5 w-5" />
-        </button> -->
 			</div>
 
 			<!-- Tabs -->
@@ -76,13 +69,6 @@
 							<div class="absolute bottom-0 left-0 right-0 bg-black/40 text-xs text-white px-2 py-1 truncate">
 								{{ media.name }}
 							</div>
-							<!-- <button 
-                type="button" 
-                @click.stop="removeMedia(media)" 
-                class="absolute top-2 right-2 bg-white dark:bg-gray-900 rounded-full p-1 text-error-600 dark:text-error-200 hover:bg-error-200 dark:hover:bg-error-600"
-              >
-                <Icon name="lucide:trash-2" class="h-4 w-4" />
-              </button> -->
 						</div>
 					</div>
 				</div>

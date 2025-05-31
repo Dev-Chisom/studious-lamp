@@ -8,8 +8,7 @@
 			<!-- Close button -->
 			<button
 				type="button"
-				class="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-full hover:bg-black/75 transition-colors"
-				style="z-index: 300"
+				class="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-full hover:bg-black/75 transition-colors z-[300]"
 				@click.stop="close"
 			>
 				<Icon name="lucide:x" class="h-6 w-6" />
@@ -85,8 +84,7 @@
 								<!-- Cover overlay -->
 								<div 
 									v-if="hasSelectedCover(index) && !isVideoPlaying"
-									class="absolute inset-0 flex items-center justify-center cursor-pointer"
-									style="z-index: 10;"
+									class="absolute inset-0 flex items-center justify-center cursor-pointer z-10"
 									@click="playVideoFromCover"
 								>
 									<img

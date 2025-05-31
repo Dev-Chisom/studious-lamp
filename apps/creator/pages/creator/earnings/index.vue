@@ -312,11 +312,7 @@ import { useI18n } from 'vue-i18n';
 
 definePageMeta({
 	layout: 'creator',
-	middleware: ['auth'],
-	meta: {
-		requiresAuth: true,
-		requiresCreator: true,
-	},
+	middleware: ['auth', 'creator'],
 });
 
 const { t } = useI18n();
