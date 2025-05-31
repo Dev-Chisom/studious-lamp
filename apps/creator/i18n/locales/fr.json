@@ -563,7 +563,7 @@
 	"shareWithFollowers": "Partagez quelque chose avec vos abonnés...",
 	"noPostsYet": "Pas encore de publications.",
 	"suggestions": "SUGGESTIONS",
-  "searchUsersOrPosts": "Rechercher des utilisateurs ou des publications",
+	"searchUsersOrPosts": "Rechercher des utilisateurs ou des publications",
 	"expiredSubscriptions": "ABONNEMENTS EXPIRÉS",
 	"sendTipTo": "Envoyer un pourboire à {name}",
 	"sendTip": "Envoyer un pourboire",
@@ -623,15 +623,20 @@
 		"sports": "Sports",
 		"gaming": "Jeux"
 	},
-  "mediaLibrary": {
-    "title": "Bibliothèque multimédia",
-    "tabLibrary": "Bibliothèque multimédia",
-    "tabDevice": "Depuis l'appareil",
-    "search": "Rechercher des médias...",
-    "noMedia": "Aucun média trouvé.",
-    "uploadFromDevice": "Télécharger depuis votre appareil",
-    "next": "Suivant",
-    "open": "Choisir dans la bibliothèque multimédia",
-    "uploadFiles": "Télécharger des fichiers"
-  }
+	"mediaLibrary": {
+		"title": "Multimédia",
+		"tabLibrary": "Bibliothèque multimédia",
+		"tabDevice": "Depuis l'appareil",
+		"search": "Rechercher des médias...",
+		"noMedia": "Aucun média trouvé.",
+		"uploadFromDevice": "Télécharger depuis votre appareil",
+		"next": "Suivant",
+		"open": "Choisir dans la bibliothèque multimédia",
+		"uploadFiles": "Télécharger des fichiers",
+		"videoFilesUpTo": "Fichiers vidéo jusqu'à",
+		"selectFromComputer": "Sélectionner depuis l'ordinateur",
+		"coverPhoto": "Photo de couverture",
+		"clearCover": "Effacer la couverture",
+		"selectThumbnailToCover": "Sélectionner une miniature comme couverture"
+	}
 }

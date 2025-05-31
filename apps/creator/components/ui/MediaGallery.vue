@@ -4,11 +4,19 @@
       <!-- Header -->
       <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 px-6 pt-6 pb-2">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
-          {{ t('mediaLibrary.title') }}
+          {{ t('mediaLibrary.title') || 'Media' }}
         </h2>
+        <!-- <button 
+          type="button"
+          @click="close"
+          class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+        >
+          <Icon name="lucide:x" class="h-5 w-5" />
+        </button> -->
       </div>
+
       <!-- Tabs -->
-      <div class="flex border-b border-gray-200 dark:border-gray-700 px-6">
+      <div class="flex border-b border-gray-200 dark:border-gray-700">
         <button
           v-for="tab in tabs"
           :key="tab.key"
@@ -21,21 +29,22 @@
               : 'text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400'
           ]"
         >
-          {{ t(tab.label) }}
+          {{ t(tab.label) || (tab.key === 'library' ? 'Media Library' : 'From Device') }}
         </button>
       </div>
+      
       <!-- Tab Content -->
       <div class="p-6">
         <!-- Media Library Tab -->
         <div v-if="activeTab === 'library'">
-          <div class="mb-4 flex items-center gap-2">
-            <DebouncedInput v-model="search" :placeholder="t('mediaLibrary.search')" class="w-full" />
-          </div>
+          <!-- <div class="mb-4 flex items-center gap-2">
+            <DebouncedInput v-model="search" :placeholder="t('mediaLibrary.search') || 'Search media...'" class="w-full" />
+          </div> -->
           <div v-if="loading" class="flex justify-center items-center py-8">
             <Icon name="lucide:loader-2" class="animate-spin h-6 w-6 text-primary-600 dark:text-primary-400" />
           </div>
           <div v-else-if="filteredMedia.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-8">
-            {{ t('mediaLibrary.noMedia') }}
+            {{ t('mediaLibrary.noMedia') || 'No media found' }}
           </div>
           <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div
@@ -50,49 +59,65 @@
               ]"
             >
               <img v-if="media.type === 'image'" :src="media.url" class="w-full h-32 object-cover" />
-              <video v-else :src="media.url" class="w-full h-32 object-cover" />
+              <div v-else-if="media.type === 'video'" class="relative w-full h-32">
+                <video :src="media.url" class="w-full h-full object-cover" />
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <div class="bg-black/50 rounded-full p-2">
+                    <Icon name="lucide:play" class="h-5 w-5 text-white" />
+                  </div>
+                </div>
+                <div v-if="media.duration" class="absolute bottom-1 right-1 bg-black/70 text-white text-xs px-1.5 py-0.5 rounded">
+                  {{ formatDuration(media.duration) }}
+                </div>
+              </div>
               <div v-if="selectedIds.includes(media.id)" class="absolute top-2 left-2 bg-primary-600 dark:bg-primary-400 text-white rounded-full p-1">
                 <Icon name="lucide:check" class="h-4 w-4" />
               </div>
               <div class="absolute bottom-0 left-0 right-0 bg-black/40 text-xs text-white px-2 py-1 truncate">
                 {{ media.name }}
               </div>
-              <button @click.stop="removeMedia(media)" class="absolute top-2 right-2 bg-white dark:bg-gray-900 rounded-full p-1 text-error-600 dark:text-error-200 hover:bg-error-200 dark:hover:bg-error-600">
+              <!-- <button 
+                type="button" 
+                @click.stop="removeMedia(media)" 
+                class="absolute top-2 right-2 bg-white dark:bg-gray-900 rounded-full p-1 text-error-600 dark:text-error-200 hover:bg-error-200 dark:hover:bg-error-600"
+              >
                 <Icon name="lucide:trash-2" class="h-4 w-4" />
-              </button>
+              </button> -->
             </div>
           </div>
         </div>
+        
         <!-- From Device Tab -->
         <div v-else>
-          <div class="mb-4">
-            <button
-              class="px-4 py-2 bg-primary-600 text-white rounded hover:bg-primary-700 transition w-full"
-              @click="() => deviceFileInput?.click()"
-            >
-              Pick from device & continue
-            </button>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
-              Maximum {{ MAX_FILES }} files allowed
-            </p>
-          </div>
+          <!-- Pick from device button -->
+          <button
+            type="button"
+            class="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md transition-colors mt-3"
+            @click="() => deviceFileInput?.click()"
+          >
+            Pick from device & continue
+          </button>
+          
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 mb-6">
+            Maximum {{ MAX_FILES }} files allowed
+          </p>
           
           <!-- Selected files list -->
-          <div v-if="previewFiles.length > 0" class="space-y-2 mb-4">
+          <div v-if="selectedFiles.length > 0" class="space-y-3 mb-6">
             <div
-              v-for="(file, index) in previewFiles"
+              v-for="(file, index) in selectedFiles"
               :key="index"
-              class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+              class="flex items-center justify-between p-3 bg-gray-100 dark:bg-gray-800 rounded-lg"
             >
-              <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center">
+              <div class="flex items-center gap-3">
+                <div class="flex-shrink-0">
                   <Icon 
-                    :name="file.type.startsWith('image/') ? 'lucide:image' : 'lucide:video'" 
-                    class="w-5 h-5 text-gray-500 dark:text-gray-400" 
+                    :name="file.type === 'image' ? 'lucide:image' : 'lucide:video'" 
+                    class="h-6 w-6 text-gray-500 dark:text-gray-400" 
                   />
                 </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate max-w-xs">
+                <div class="min-w-0">
+                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                     {{ file.name }}
                   </p>
                   <p class="text-xs text-gray-500 dark:text-gray-400">
@@ -101,11 +126,11 @@
                 </div>
               </div>
               <button
-                @click="removeFile(index)"
                 type="button"
-                class="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                @click="removeSelectedFile(index)"
+                class="text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"
               >
-                <Icon name="lucide:x" class="w-4 h-4" />
+                <Icon name="lucide:x" class="h-5 w-5" />
               </button>
             </div>
           </div>
@@ -116,53 +141,59 @@
             accept="image/*,video/*"
             multiple
             class="hidden"
-            @change="e => onDeviceFilesPicked(e.target.files)"
+            @change="onFilesSelected"
           />
-          
-          <Teleport to="body">
-            <media-preview-modal
-              v-if="showPreviewModal"
-              :is-open="showPreviewModal"
-              :media-items="previewMediaItems"
-              :current-index="previewCurrentIndex"
-              :enable-video-edit="true"
-              :show-edit="true"
-              :show-next-button="true"
-              :max-files="MAX_FILES"
-              :is-uploading="isUploading"
-              :upload-progress="uploadProgress"
-              @close="closePreviewModal"
-              @add-media="onAddMedia"
-              @update:currentIndex="updatePreviewIndex"
-              @next="handleBatchUpload"
-            />
-          </Teleport>
         </div>
       </div>
+      
       <!-- Footer -->
-      <div class="flex justify-end gap-2 border-t border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-800">
-        <BaseButton type="button" variant="primary" class="w-full" :disabled="!canSelect" @click="confirmSelection">
-          {{ t('mediaLibrary.next') }}
-        </BaseButton>
+      <div class="flex justify-end border-t border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-800">
+        <button
+          type="button"
+          class="px-6 py-2 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md transition-colors"
+          :disabled="!canProceed"
+          :class="{'opacity-50 cursor-not-allowed': !canProceed}"
+          @click="handleNext"
+        >
+          Next
+        </button>
       </div>
     </div>
+
+    <!-- Preview Modal -->
+    <Teleport to="body">
+      <MediaPreviewModal
+        v-if="showPreviewModal"
+        :is-open="showPreviewModal"
+        :media-items="previewMediaItems"
+        :current-index="previewCurrentIndex"
+        :enable-video-edit="true"
+        :show-edit="true"
+        :show-next-button="true"
+        :max-files="MAX_FILES"
+        :is-uploading="isUploading"
+        :upload-progress="uploadProgress"
+        @close="closePreviewModal"
+        @add-media="onAddMedia"
+        @update:currentIndex="updatePreviewIndex"
+        @next="handleBatchUpload"
+      />
+    </Teleport>
   </Modal>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Modal from './Modal.vue'
-import BaseButton from './BaseButton.vue'
 import DebouncedInput from './DebouncedInput.vue'
 import MediaPreviewModal from './MediaPreviewModal.vue'
-import { useContentStore } from '../../store/content'
 
 const props = defineProps<{ isOpen: boolean }>()
 
 const emit = defineEmits<{
   (e: 'close'): void
-  (e: 'select', files: MediaItem[] | any[]): void
+  (e: 'select', files: any[]): void
   (e: 'upload-complete', results: any[]): void
 }>()
 
@@ -173,6 +204,9 @@ interface MediaItem {
   url: string
   name: string
   type: 'image' | 'video'
+  size?: number
+  duration?: number
+  file?: File
 }
 
 const MAX_FILES = 10
@@ -181,127 +215,152 @@ const tabs = [
   { key: 'library', label: 'mediaLibrary.tabLibrary' },
   { key: 'device', label: 'mediaLibrary.tabDevice' }
 ]
-const activeTab = ref<'library' | 'device'>('library')
+const activeTab = ref<'library' | 'device'>('device')
 const search = ref('')
 const loading = ref(false)
 const mediaFiles = ref<MediaItem[]>([])
 const selectedIds = ref<string[]>([])
-const deviceFiles = ref<any[]>([])
-const showPreviewModal = ref(false)
-const previewFiles = ref<any[]>([])
+const selectedFiles = ref<MediaItem[]>([])
 const deviceFileInput = ref<HTMLInputElement | null>(null)
+
+// Preview modal state
+const showPreviewModal = ref(false)
+const previewFiles = ref<File[]>([])
 const previewCurrentIndex = ref(0)
 const isUploading = ref(false)
 const uploadProgress = ref({ completed: 0, total: 0 })
 
-const contentStore = useContentStore()
+// Add dummy media files for the library tab
+onMounted(() => {
+  mediaFiles.value = [
+    {
+      id: '1',
+      url: '/placeholder.svg?height=300&width=400',
+      name: 'Beach sunset.jpg',
+      type: 'image',
+      size: 1240000
+    },
+    {
+      id: '2',
+      url: '/placeholder.svg?height=300&width=400',
+      name: 'Product demo.mp4',
+      type: 'video',
+      size: 8500000,
+      duration: 125
+    },
+    {
+      id: '3',
+      url: '/placeholder.svg?height=300&width=400',
+      name: 'Team photo.jpg',
+      type: 'image',
+      size: 2800000
+    },
+    {
+      id: '4',
+      url: '/placeholder.svg?height=300&width=400',
+      name: 'Office tour.mp4',
+      type: 'video',
+      size: 15000000,
+      duration: 210
+    },
+    {
+      id: '5',
+      url: '/placeholder.svg?height=300&width=400',
+      name: 'Conference presentation.jpg',
+      type: 'image',
+      size: 3500000
+    },
+    {
+      id: '6',
+      url: '/placeholder.svg?height=300&width=400',
+      name: 'Product showcase.jpg',
+      type: 'image',
+      size: 2100000
+    }
+  ]
+})
 
-// Only fetch media when the modal is opened
+// Reset when modal opens
 watch(() => props.isOpen, (isOpen) => {
   if (isOpen) {
-    fetchMedia()
-    // Reset selections when opening
     selectedIds.value = []
-    deviceFiles.value = []
+    selectedFiles.value = []
     previewFiles.value = []
+    loading.value = false
     isUploading.value = false
     uploadProgress.value = { completed: 0, total: 0 }
   }
 })
 
-async function fetchMedia() {
-  loading.value = true;
-  try {
-    await contentStore.fetchContent({ limit: 100 });
-    
-    mediaFiles.value = (contentStore.content?.posts || [])
-      .flatMap((post: any) => {
-        if (!post.mediaFiles || !Array.isArray(post.mediaFiles)) {
-          return [];
-        }
-        
-        return post.mediaFiles.map((media: any) => {
-          const url = typeof media === 'string' ? media : 
-                     typeof media?.url === 'string' ? media.url : '';
-          
-          if (!url) return null;
-          
-          return {
-            id: url,
-            url,
-            name: url.split('/').pop() || 'unnamed',
-            type: url.match(/\.(mp4|mov|webm)$/i) ? 'video' : 'image'
-          };
-        }).filter(Boolean);
-      });
-  } catch (error) {
-    console.error('Failed to fetch media:', error);
-  } finally {
-    loading.value = false;
-  }
-}
-
 const filteredMedia = computed(() => {
   if (!search.value) return mediaFiles.value
-  return mediaFiles.value.filter((m: MediaItem) => m.name.toLowerCase().includes(search.value.toLowerCase()))
+  return mediaFiles.value.filter(m => m.name.toLowerCase().includes(search.value.toLowerCase()))
 })
+
+const canProceed = computed(() => {
+  if (activeTab.value === 'library') {
+    return selectedIds.value.length > 0
+  } else {
+    return selectedFiles.value.length > 0
+  }
+})
+
+const previewMediaItems = computed(() =>
+  previewFiles.value.map((file, index) => ({
+    id: `preview-${index}`,
+    url: URL.createObjectURL(file),
+    name: file.name,
+    type: file.type.startsWith('image/') ? 'image' : 'video',
+    file
+  }))
+)
 
 function toggleSelect(media: MediaItem) {
   if (selectedIds.value.includes(media.id)) {
-    selectedIds.value = selectedIds.value.filter((id: string) => id !== media.id)
+    selectedIds.value = selectedIds.value.filter(id => id !== media.id)
   } else {
     selectedIds.value.push(media.id)
   }
 }
 
 function removeMedia(media: MediaItem) {
-  mediaFiles.value = mediaFiles.value.filter((m: MediaItem) => m.id !== media.id)
-  selectedIds.value = selectedIds.value.filter((id: string) => id !== media.id)
+  mediaFiles.value = mediaFiles.value.filter(m => m.id !== media.id)
+  selectedIds.value = selectedIds.value.filter(id => id !== media.id)
 }
 
-function confirmSelection() {
-  if (activeTab.value === 'library') {
-    const selected = mediaFiles.value.filter((m: MediaItem) => selectedIds.value.includes(m.id))
-    emit('select', selected)
-  } else {
-    emit('select', deviceFiles.value)
-  }
-  close()
-}
-
-function close() { 
-  emit('close') 
-}
-
-const canSelect = computed(() =>
-  (activeTab.value === 'library' && selectedIds.value.length > 0) ||
-  (activeTab.value === 'device' && deviceFiles.value.length > 0)
-)
-
-function onDeviceFilesPicked(files: FileList | File[]) {
-  if (!files || files.length === 0) return
+function onFilesSelected(event: Event) {
+  const input = event.target as HTMLInputElement
+  if (!input.files || input.files.length === 0) return
   
+  const files = Array.from(input.files)
   const remainingSlots = MAX_FILES - previewFiles.value.length
+  
   if (remainingSlots <= 0) {
     alert(`Maximum ${MAX_FILES} files allowed`)
     return
   }
   
-  const filesToAdd = Array.from(files).slice(0, remainingSlots)
+  const filesToAdd = files.slice(0, remainingSlots)
   if (filesToAdd.length < files.length) {
     alert(`Only ${filesToAdd.length} files added. Maximum ${MAX_FILES} files allowed.`)
   }
   
   previewFiles.value.push(...filesToAdd)
-  previewCurrentIndex.value = previewFiles.value.length - filesToAdd.length // Go to first new file
+  previewCurrentIndex.value = previewFiles.value.length - filesToAdd.length
   showPreviewModal.value = true
+  
+  // Reset input
+  if (deviceFileInput.value) {
+    deviceFileInput.value.value = ''
+  }
 }
 
-function removeFile(index: number) {
-  previewFiles.value.splice(index, 1)
-  if (previewCurrentIndex.value >= previewFiles.value.length) {
-    previewCurrentIndex.value = Math.max(0, previewFiles.value.length - 1)
+function removeSelectedFile(index: number) {
+  const file = selectedFiles.value[index]
+  if (file.url.startsWith('blob:')) {
+    URL.revokeObjectURL(file.url)
   }
+  selectedFiles.value.splice(index, 1)
 }
 
 function closePreviewModal() {
@@ -311,17 +370,8 @@ function closePreviewModal() {
   })
   showPreviewModal.value = false
   previewCurrentIndex.value = 0
+  previewFiles.value = []
 }
-
-const previewMediaItems = computed(() =>
-  previewFiles.value.map((file, index) => ({
-    id: `preview-${index}`, // Add unique ID with prefix
-    url: URL.createObjectURL(file),
-    name: file.name,
-    type: file.type.startsWith('image/') ? 'image' : 'video',
-    file // Keep reference to original file
-  }))
-)
 
 // Handle adding new media to the preview
 async function onAddMedia(files: File[]) {
@@ -346,16 +396,7 @@ function updatePreviewIndex(newIndex: number) {
   previewCurrentIndex.value = newIndex
 }
 
-// Format file size
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 Bytes'
-  const k = 1024
-  const sizes = ['Bytes', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
-
-// Handle batch upload
+// Handle batch upload from preview modal
 async function handleBatchUpload(mediaData: any[]) {
   if (mediaData.length === 0) return
   
@@ -385,14 +426,25 @@ async function handleBatchUpload(mediaData: any[]) {
       }
     }
     
+    // Process successful uploads and add to selected files
+    const successfulUploads = uploadResults.filter(result => result.success)
+    const newSelectedFiles = successfulUploads.map(result => ({
+      id: result.data.id || `uploaded-${Date.now()}-${Math.random()}`,
+      url: result.data.url || result.originalMedia.url,
+      name: result.originalMedia.name,
+      type: result.originalMedia.type,
+      size: result.originalMedia.file?.size || 0,
+      cover: result.originalMedia.cover,
+      duration: result.originalMedia.type === 'video' ? result.originalMedia.trimEnd - result.originalMedia.trimStart : undefined
+    }))
+    
+    selectedFiles.value = [...selectedFiles.value, ...newSelectedFiles]
+    
+    // Close preview modal
+    closePreviewModal()
+    
     // Emit completion event
     emit('upload-complete', uploadResults)
-    
-    // Close modal after successful upload
-    setTimeout(() => {
-      closePreviewModal()
-      close()
-    }, 1000)
     
   } catch (error) {
     console.error('Batch upload failed:', error)
@@ -425,5 +477,51 @@ async function uploadFile(mediaData: any): Promise<any> {
   }
   
   return await response.json()
+}
+
+function handleNext() {
+  if (!canProceed.value) return
+  
+  if (activeTab.value === 'library') {
+    const selected = mediaFiles.value.filter(m => selectedIds.value.includes(m.id))
+    emit('select', selected)
+  } else {
+    emit('select', selectedFiles.value)
+  }
+  
+  close()
+}
+
+function close() {
+  // Clean up any blob URLs
+  selectedFiles.value.forEach(file => {
+    if (file.url.startsWith('blob:')) {
+      URL.revokeObjectURL(file.url)
+    }
+  })
+  
+  // Clean up preview URLs
+  previewMediaItems.value.forEach(item => {
+    URL.revokeObjectURL(item.url)
+  })
+  
+  emit('close')
+}
+
+// Format file size
+function formatFileSize(bytes?: number): string {
+  if (!bytes) return '0 Bytes'
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+}
+
+// Format video duration
+function formatDuration(seconds?: number): string {
+  if (!seconds) return '0:00'
+  const mins = Math.floor(seconds / 60)
+  const secs = Math.floor(seconds % 60)
+  return `${mins}:${secs.toString().padStart(2, '0')}`
 }
 </script>

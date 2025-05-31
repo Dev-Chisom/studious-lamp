@@ -633,7 +633,7 @@
 		"gaming": "Gaming"
 	},
 	"mediaLibrary": {
-		"title": "Media Library",
+		"title": "Media",
 		"tabLibrary": "Media Library",
 		"tabDevice": "From Device",
 		"search": "Search media...",
@@ -641,6 +641,11 @@
 		"uploadFromDevice": "Upload from your device",
 		"next": "Next",
 		"open": "Choose from Media Library",
-    "uploadFiles": "Upload files"
+    "uploadFiles": "Upload files",
+    "videoFilesUpTo": "Video files up to",
+    "selectFromComputer": "Select From Computer",
+    "coverPhoto": "Cover Photo",
+    "clearCover": "Clear Cover",
+    "selectThumbnailToCover": "Select Thumbnail To Cover"
 	}
 }

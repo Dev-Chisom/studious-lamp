@@ -18,6 +18,7 @@
       <!-- Add Media Button (top-left, only when showEdit is true) -->
       <button
         v-if="showEdit && mediaItems.length < maxFiles"
+        type="button"
         @click="triggerAddMedia"
         class="absolute top-4 left-4 z-50 bg-white/80 hover:bg-white rounded-full p-2 shadow transition"
         title="Add more media"
@@ -120,16 +121,12 @@
         <!-- Cover Photo Selection -->
         <div class="mb-4 md:mb-6">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs text-gray-700 dark:text-gray-200 font-semibold">{{ t('coverPhoto') }}</span>
-            <label class="text-xs text-primary-400 cursor-pointer hover:underline">
-              {{ t('selectFromComputer') }}
-              <input type="file" accept="image/*" class="hidden" @change="onCustomCoverChange" />
-            </label>
+            <span class="text-xs text-gray-700 dark:text-gray-200 font-semibold">{{ t('mediaLibrary.coverPhoto') }}</span>
           </div>
           
           <!-- Show message when no cover is selected -->
           <div v-if="!hasSelectedCover(internalCurrentIndex) && !isGeneratingThumbs" class="text-xs text-gray-500 dark:text-gray-400 mb-2">
-            {{ t('selectThumbnailToCover') || 'Select a thumbnail to use as cover photo' }}
+            {{ t('mediaLibrary.selectThumbnailToCover') || 'Select a thumbnail to use as cover photo' }}
           </div>
           
           <div class="flex gap-2 overflow-x-auto pb-2">
@@ -159,69 +156,27 @@
             </template>
           </div>
           
-          <!-- Clear cover button -->
+          <div class="flex items-center justify-between mt-2">
+          <!-- Conditional Clear cover button -->
           <button 
             v-if="hasSelectedCover(internalCurrentIndex)"
+            type="button"
             @click="clearCover"
-            class="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 mt-2"
+            class="text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           >
-            {{ t('clearCover') || 'Clear cover photo' }}
+            {{ t('mediaLibrary.clearCover') || 'Clear cover photo' }}
           </button>
-        </div>
-        
-        <!-- Trim Timeline -->
-        <div class="mb-4 md:mb-6">
-          <span class="text-xs text-gray-700 dark:text-gray-200 font-semibold">{{ t('trim') }}</span>
-          <div class="relative mt-3 mb-2">
-            <!-- Timeline Thumbnails -->
-            <div id="trim-timeline" class="flex gap-1 overflow-x-auto mb-2 relative select-none" style="height: 40px;" @mousedown.stop.prevent>
-              <div v-for="(thumb, i) in getCurrentThumbnails()" :key="'timeline-'+i" class="w-12 h-8 rounded overflow-hidden bg-gray-200 dark:bg-gray-700 flex-shrink-0">
-                <img :src="thumb" class="w-full h-full object-cover" />
-              </div>
-              
-              <!-- Highlighted Trim Area -->
-              <div
-                v-if="getCurrentThumbnails().length > 0"
-                class="absolute top-0 h-8 bg-primary-500/20 z-0"
-                :style="{
-                  left: `${(getCurrentTrimStart() / getCurrentVideoDuration()) * 100}%`,
-                  width: `${((getCurrentTrimEnd() - getCurrentTrimStart()) / getCurrentVideoDuration()) * 100}%`
-                }"
-              ></div>
-              
-              <!-- Draggable Handles -->
-              <div
-                v-if="getCurrentThumbnails().length > 0"
-                class="absolute top-0 left-0 h-8 w-2 bg-primary-500 rounded cursor-ew-resize z-10"
-                :style="{ left: `${(getCurrentTrimStart() / getCurrentVideoDuration()) * 100}%` }"
-                @mousedown.stop.prevent="onTimelineMouseDown($event, 'start')"
-              ></div>
-              <div
-                v-if="getCurrentThumbnails().length > 0"
-                class="absolute top-0 left-0 h-8 w-2 bg-primary-500 rounded cursor-ew-resize z-10"
-                :style="{ left: `${(getCurrentTrimEnd() / getCurrentVideoDuration()) * 100}%` }"
-                @mousedown.stop.prevent="onTimelineMouseDown($event, 'end')"
-              ></div>
-            </div>
-            <div class="flex items-center justify-between mt-2">
-              <span class="text-xs text-gray-400">{{ getCurrentTrimStart().toFixed(1) }}s</span>
-              <span class="text-xs text-gray-400">{{ getCurrentTrimEnd().toFixed(1) }}s</span>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Sound Toggle -->
-        <div class="flex items-center gap-3 mt-1 md:mt-2">
-          <span class="text-xs text-gray-700 dark:text-gray-200 font-semibold">{{ t('soundOn') }}</span>
-          <label class="inline-flex items-center cursor-pointer relative">
-            <input type="checkbox" v-model="isMuted" @change="onSoundToggle" class="sr-only peer" />
-            <div class="w-10 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-500 dark:bg-gray-700 rounded-full peer dark:peer-focus:ring-primary-400 transition-all duration-200"></div>
-            <div
-              class="absolute left-1 top-1 bg-white border border-gray-300 dark:bg-gray-900 dark:border-gray-700 rounded-full w-4 h-4 transition-all duration-200"
-              :class="isMuted ? 'translate-x-0' : 'translate-x-4'"
-            ></div>
+          
+          <!-- Spacer that takes up equal space when clear button isn't visible -->
+          <div v-else class="flex-1"></div>
+          
+          <!-- Always visible Select from computer button -->
+          <label class="text-xs text-primary-400 cursor-pointer hover:underline">
+            {{ t('mediaLibrary.selectFromComputer') }}
+            <input type="file" accept="image/*" class="hidden" @change="onCustomCoverChange" />
           </label>
         </div>
+      </div>
       </div>
 
       <!-- Thread/Comments Sidebar (only if not editing video) -->
@@ -249,8 +204,8 @@
               </div>
               <div class="flex items-center mt-2 space-x-4 text-xs text-gray-500 dark:text-gray-400">
                 <span>{{ formatTimeAgo(message.timestamp) }}</span>
-                <button class="font-semibold hover:text-gray-700 dark:hover:text-gray-300">Reply</button>
-                <button class="font-semibold hover:text-gray-700 dark:hover:text-gray-300">Like</button>
+                <button type="button" class="font-semibold hover:text-gray-700 dark:hover:text-gray-300">Reply</button>
+                <button type="button" class="font-semibold hover:text-gray-700 dark:hover:text-gray-300">Like</button>
               </div>
             </div>
           </div>
@@ -272,6 +227,7 @@
             />
             <button
               class="ml-2 text-primary-600 dark:text-primary-400 font-semibold text-sm disabled:opacity-50"
+              type="button"
               :disabled="!newComment.trim()"
               @click.stop="sendComment"
             >
@@ -445,18 +401,6 @@ function getCurrentCustomCover() {
   return getVideoState(internalCurrentIndex.value).customCover
 }
 
-function getCurrentTrimStart() {
-  return getVideoState(internalCurrentIndex.value).trimStart
-}
-
-function getCurrentTrimEnd() {
-  return getVideoState(internalCurrentIndex.value).trimEnd
-}
-
-function getCurrentVideoDuration() {
-  return getVideoState(internalCurrentIndex.value).videoDuration
-}
-
 function hasSelectedCover(index: number) {
   const state = getVideoState(index)
   return state.selectedCoverIndex !== null || state.customCover !== null
@@ -606,6 +550,11 @@ function onVideoLoaded(event: Event, index: number) {
   state.trimStart = 0
   state.trimEnd = video.duration
   
+  // If no cover is selected yet, set a flag to select the first thumbnail as default
+  if (state.selectedCoverIndex === null && state.customCover === null) {
+    state.selectedCoverIndex = 0
+  }
+  
   // Generate thumbnails once video is loaded
   generateThumbnails(video, index)
 }
@@ -652,6 +601,12 @@ function onCustomCoverChange(e: Event) {
 // Clear cover selection
 function clearCover() {
   const state = getVideoState(internalCurrentIndex.value)
+  
+  // Don't allow clearing if it's the default cover
+  if (state.coverThumbnails.length > 0 && state.selectedCoverIndex === 0 && !state.customCover) {
+    return
+  }
+  
   state.selectedCoverIndex = null
   state.customCover = null
   emit('update:cover', { index: internalCurrentIndex.value, cover: null })
@@ -697,6 +652,12 @@ async function generateThumbnails(video: HTMLVideoElement, index: number) {
           const thumbnail = canvas.toDataURL('image/jpeg', 0.9)
           state.coverThumbnails.push(thumbnail)
           
+          // Set the first thumbnail as default cover if no cover is selected
+          if (i === 0 && state.selectedCoverIndex === null && state.customCover === null) {
+            state.selectedCoverIndex = 0
+            emit('update:cover', { index, cover: thumbnail })
+          }
+          
           resolve()
         }
         
@@ -711,68 +672,6 @@ async function generateThumbnails(video: HTMLVideoElement, index: number) {
   } finally {
     state.isGeneratingThumbs = false
   }
-}
-
-// Trim functionality
-function onTimelineMouseDown(e: MouseEvent, handle: 'start' | 'end') {
-  e.preventDefault()
-  e.stopPropagation()
-  draggingHandle.value = handle
-  
-  document.addEventListener('mousemove', onTimelineMouseMove)
-  document.addEventListener('mouseup', onTimelineMouseUp)
-}
-
-function onTimelineMouseMove(e: MouseEvent) {
-  if (!draggingHandle.value) return
-  
-  const timeline = document.getElementById('trim-timeline')
-  if (!timeline) return
-  
-  const rect = timeline.getBoundingClientRect()
-  let percent = (e.clientX - rect.left) / rect.width
-  percent = Math.max(0, Math.min(1, percent))
-  
-  const state = getVideoState(internalCurrentIndex.value)
-  const time = percent * state.videoDuration
-  const minGap = 0.5
-  
-  if (draggingHandle.value === 'start') {
-    state.trimStart = Math.min(time, state.trimEnd - minGap)
-    const video = getCurrentVideoRef()
-    if (video) {
-      video.currentTime = state.trimStart
-    }
-  } else if (draggingHandle.value === 'end') {
-    state.trimEnd = Math.max(time, state.trimStart + minGap)
-    const video = getCurrentVideoRef()
-    if (video) {
-      video.currentTime = state.trimEnd
-    }
-  }
-}
-
-function onTimelineMouseUp() {
-  if (!draggingHandle.value) return
-  
-  draggingHandle.value = null
-  document.removeEventListener('mousemove', onTimelineMouseMove)
-  document.removeEventListener('mouseup', onTimelineMouseUp)
-  
-  const state = getVideoState(internalCurrentIndex.value)
-  emit('update:trim', { 
-    index: internalCurrentIndex.value, 
-    start: state.trimStart, 
-    end: state.trimEnd 
-  })
-}
-
-function onSoundToggle() {
-  const video = getCurrentVideoRef()
-  if (video) {
-    video.muted = isMuted.value
-  }
-  emit('update:sound', { index: internalCurrentIndex.value, muted: isMuted.value })
 }
 
 function triggerAddMedia() {
@@ -806,11 +705,12 @@ async function onAddMedia(e: Event) {
 function handleNext() {
   if (props.mediaItems.length === 0) return
   
-  // Collect all video editing data
   const mediaData = props.mediaItems.map((media, index) => {
     const baseData = {
-      ...media,
-      index
+      name: media.name || media.file?.name || `media-${index}`,
+      size: media.size || media.file?.size || 0,
+      type: media.file?.type || (media.type === 'image' ? 'image/jpeg' : 'video/mp4'), // More specific type
+      originalData: media // Keep reference to original data
     }
     
     if (media.type === 'video') {
