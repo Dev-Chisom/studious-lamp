@@ -483,6 +483,7 @@
 			"offline": "Desconectado"
 		}
 	},
+  "searchUsersOrPosts": "Buscar usuarios o publicaciones",
 	"unknownLocation": "Ubicación desconocida",
 	"subscribe": "Suscribirse",
 	"likes": "me gusta",

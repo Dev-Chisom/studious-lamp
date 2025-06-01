@@ -483,6 +483,7 @@
 			"offline": "Offline"
 		}
 	},
+  "searchUsersOrPosts": "Search users or posts",
 	"unknownLocation": "Unknown location",
 	"subscribe": "Subscribe",
 	"likes": "likes",

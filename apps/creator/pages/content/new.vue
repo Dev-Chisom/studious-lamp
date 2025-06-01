@@ -82,40 +82,12 @@ function navigateBack() {
 
 async function handleSubmit(formData) {
   try {
-    // Process media files if present
-    let mediaFileIds = [];
-    if (formData.mediaFiles?.length > 0) {
-      try {
-        // Upload each media file
-        for (const file of formData.mediaFiles) {
-          if (file instanceof File) {
-            const response = await uploadMediaFile(file.name, file.type);
-            const { uploadUrl, mediaFileId } = response.data;
-            await fetch(uploadUrl, {
-              method: 'PUT',
-              body: file,
-              headers: { 'Content-Type': file.type },
-            });
-            mediaFileIds.push(mediaFileId);
-          }
-        }
-      } catch (err) {
-        error(t('notifications.mediaUploadFailed'));
-        console.error('Media upload failed:', err);
-        return;
-      }
-    }
-    // Handle existing media files
-    if (formData.existingMediaFiles?.length > 0) {
-      mediaFileIds = [...mediaFileIds, ...formData.existingMediaFiles.map(media => media.id)].filter(Boolean);
-    }
-    // Create the post
     await createPost({
       title: formData.title,
       body: formData.body,
-      mediaFiles: mediaFileIds,
-      visibility: formData.visibility === 'premium' ? 'pay-to-view' : formData.visibility,
-      price: formData.visibility === 'premium' ? formData.price : undefined,
+      mediaFiles: formData.mediaFiles,
+      visibility: formData.visibility === 'pay-to-view' ? 'pay-to-view' : formData.visibility,
+      price: formData.visibility === 'pay-to-view' ? formData.price : undefined,
       scheduledDate: formData.isScheduled ? formData.scheduledDate : undefined,
     });
     success(t('notifications.contentCreated'));
@@ -131,27 +103,12 @@ async function handleSubmit(formData) {
  */
 async function saveAsDraft(formData) {
   try {
-    let mediaFileIds = [];
-    if (formData.mediaFiles?.length > 0) {
-      for (const file of formData.mediaFiles) {
-        if (file instanceof File) {
-          const response = await uploadMediaFile(file.name, file.type);
-          const { uploadUrl, mediaFileId } = response.data;
-          await fetch(uploadUrl, {
-            method: 'PUT',
-            body: file,
-            headers: { 'Content-Type': file.type },
-          });
-          mediaFileIds.push(mediaFileId);
-        }
-      }
-    }
     await createPost({
       title: formData.title || t('content.untitledDraft'),
       body: formData.body || '',
-      mediaFiles: mediaFileIds,
+      mediaFiles: formData.mediaFiles,
       visibility: formData.visibility || 'public',
-      price: formData.visibility === 'premium' ? formData.price : undefined,
+      price: formData.visibility === 'pay-to-view' ? formData.price : undefined,
       isDraft: true
     });
     info(t('notifications.draftSaved'));

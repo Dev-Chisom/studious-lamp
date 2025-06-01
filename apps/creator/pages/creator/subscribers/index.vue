@@ -457,9 +457,9 @@ const displayedPages = computed(() => {
 
 	if (end - start + 1 < maxPages) {
 		start = Math.max(1, end - maxPages + 1)
-	}
+		}
 
-	for (let i = start; i <= end; i++) {
+		for (let i = start; i <= end; i++) {
 		pages.push(i)
 	}
 

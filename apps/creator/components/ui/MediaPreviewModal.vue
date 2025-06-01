@@ -70,10 +70,10 @@
 								class="max-w-full max-h-full w-auto h-auto object-contain"
 							/>
 							<div v-else-if="media.type === 'video'" class="w-full h-full flex flex-col items-center justify-center relative">
-								<video
+							<video
 									:ref="el => setVideoRef(el, index)"
-									:src="media.url"
-									controls
+								:src="media.url"
+								controls
 									:muted="isMuted"
 									class="max-w-full max-h-[80vh] w-auto h-auto object-contain"
 									@play="onPlay"
@@ -240,11 +240,11 @@
 				<!-- Navigation dots - centered -->
 				<div class="flex-1 flex justify-center">
 					<div v-if="mediaItems.length > 1" class="flex space-x-2">
-						<button
-							v-for="(_, index) in mediaItems"
-							:key="index"
-							type="button"
-							class="w-2 h-2 rounded-full transition-colors"
+				<button
+					v-for="(_, index) in mediaItems"
+					:key="index"
+					type="button"
+					class="w-2 h-2 rounded-full transition-colors"
 							:class="[index === internalCurrentIndex ? 'bg-white' : 'bg-white/50 hover:bg-white/75']"
 							@click.stop="goToSlide(index)"
 						/>
@@ -285,24 +285,24 @@ const Keyboard = SwiperKeyboard;
 
 const props = defineProps({
   isOpen: Boolean,
-  mediaItems: {
-    type: Array,
+	mediaItems: {
+		type: Array,
     default: () => []
-  },
-  currentIndex: {
-    type: Number,
+	},
+	currentIndex: {
+		type: Number,
     default: 0
-  },
-  showSidebar: {
-    type: Boolean,
-    default: false,
-  },
-  messages: {
-    type: Array,
-    default: () => [],
-  },
-  currentUser: {
-    type: Object,
+	},
+	showSidebar: {
+		type: Boolean,
+		default: false,
+	},
+	messages: {
+		type: Array,
+		default: () => [],
+	},
+	currentUser: {
+		type: Object,
     default: () => ({ name: '', avatar: '' }),
   },
   enableVideoEdit: {
@@ -353,6 +353,7 @@ const isVideoPlaying = ref(false);
 const newComment = ref('');
 const isMuted = ref(false);
 const addMediaInput = ref<HTMLInputElement | null>(null);
+const isGeneratingThumbs = ref(false);
 
 // Video editing state - now per video index
 const videoStates = ref<Map<number, {
@@ -446,13 +447,13 @@ const formatTimeAgo = (date: Date) => {
   const now = new Date();
   const diffInSeconds = Math.floor((now.getTime() - new Date(date).getTime()) / 1000);
 
-  if (diffInSeconds < 60) {
+	if (diffInSeconds < 60) {
     return `${diffInSeconds}s ago`;
-  }
-  if (diffInSeconds < 3600) {
+	}
+	if (diffInSeconds < 3600) {
     return `${Math.floor(diffInSeconds / 60)}m ago`;
-  }
-  if (diffInSeconds < 86400) {
+	}
+	if (diffInSeconds < 86400) {
     return `${Math.floor(diffInSeconds / 3600)}h ago`;
   }
   return `${Math.floor(diffInSeconds / 86400)}d ago`;
@@ -482,7 +483,7 @@ function onSlideChange() {
 }
 
 function goToSlide(index: number) {
-  if (swiper.value) {
+	if (swiper.value) {
     swiper.value.slideTo(index);
   }
 }
@@ -567,7 +568,7 @@ function playVideoFromCover() {
 
 // Comments
 function sendComment() {
-  if (newComment.value.trim()) {
+	if (newComment.value.trim()) {
     emit('send-message', newComment.value.trim());
     newComment.value = '';
   }
@@ -732,27 +733,27 @@ function handleNext() {
 <style>
 .swiper-button-next,
 .swiper-button-prev {
-  color: white !important;
-  background: rgba(0, 0, 0, 0.5);
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 50%;
+	color: white !important;
+	background: rgba(0, 0, 0, 0.5);
+	width: 40px !important;
+	height: 40px !important;
+	border-radius: 50%;
 }
 
 .swiper-button-next:after,
 .swiper-button-prev:after {
-  font-size: 20px !important;
+	font-size: 20px !important;
 }
 
 .dark .swiper-button-next,
 .dark .swiper-button-prev {
-  background: rgba(255, 255, 255, 0.2);
+	background: rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 768px) {
-  .swiper-button-next,
-  .swiper-button-prev {
-    display: none !important;
-  }
+	.swiper-button-next,
+	.swiper-button-prev {
+		display: none !important;
+	}
 }
 </style>

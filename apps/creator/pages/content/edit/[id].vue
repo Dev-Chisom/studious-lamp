@@ -56,7 +56,7 @@ definePageMeta({
 interface PostFormData {
   title: string
   content: string
-  visibility: 'public' | 'private' | 'premium'
+  visibility: 'public' | 'private' | 'pay-to-view'
   price: number
   mediaUrls: string[]
 }
@@ -127,7 +127,7 @@ function validateForm(formData: PostFormData): boolean {
     errors.mediaFiles = t('validation.maxFiles', { max: 10 });
     isValid = false;
   }
-  if (formData.visibility === 'premium') {
+  if (formData.visibility === 'pay-to-view') {
     if (!formData.price) {
       errors.price = t('validation.required', { field: t('content.form.price') });
       isValid = false;
@@ -141,7 +141,11 @@ function validateForm(formData: PostFormData): boolean {
 
 async function handleSubmit(formData: PostFormData): Promise<void> {
   try {
-    await contentStore.updateContent(route.params.id as string, formData);
+    const mediaFileIds = (formData.mediaUrls || []).map((m: any) => m.id).filter(Boolean);
+    await contentStore.updateContent(route.params.id as string, {
+      ...formData,
+      mediaFiles: mediaFileIds
+    });
     success(t('notifications.contentUpdated'));
     router.push('/content');
   } catch (err) {

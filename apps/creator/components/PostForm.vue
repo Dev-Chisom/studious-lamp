@@ -487,22 +487,22 @@ const resetForm = () => {
 };
 
 function onSubmit(values: any) {
+  const mediaFileIds = uploadedMediaFiles.value.map(m => m.id).filter(Boolean);
   const submitData = {
     title: values.title,
     body: values.content,
     visibility: values.visibility,
     ...(values.visibility === 'pay-to-view' && { price: values.price }),
-    mediaFiles: mediaFiles.value,
-    existingMediaFiles: uploadedMediaFiles.value,
+    mediaFiles: mediaFileIds,
     isScheduled: isScheduled.value,
     ...(isScheduled.value && { scheduledDate: values.scheduledDate })
   };
-  console.log(submitData, 'submitData')
   emit('submit', submitData);
 }
 
 function saveDraft() {
-  emit('draft');
+  const mediaFileIds = uploadedMediaFiles.value.map(m => m.id).filter(Boolean);
+  emit('draft', { mediaFiles: mediaFileIds });
 }
 
 function addMediaFromGallery(selectedMedia: any[], setFieldValue: Function) {

@@ -30,9 +30,6 @@
 			<div class="p-6">
 				<!-- Media Library Tab -->
 				<div v-if="activeTab === 'library'">
-					<!-- <div class="mb-4 flex items-center gap-2">
-            <DebouncedInput v-model="search" :placeholder="t('mediaLibrary.search') || 'Search media...'" class="w-full" />
-          </div> -->
 					<div v-if="loading" class="flex justify-center items-center py-8">
 						<Icon name="lucide:loader-2" class="animate-spin h-6 w-6 text-primary-600 dark:text-primary-400" />
 					</div>
@@ -71,6 +68,14 @@
 							</div>
 						</div>
 					</div>
+					<Pagination
+						v-if="totalPages > 1"
+						:current-page="currentPage"
+						:per-page="perPage"
+						:total-items="totalItems"
+						@update:current-page="(val: number) => { currentPage.value = val }"
+						@update:per-page="(val: number) => { perPage.value = val }"
+					/>
 				</div>
         
 				<!-- From Device Tab -->
@@ -169,11 +174,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, nextTick } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Modal from './Modal.vue';
-import DebouncedInput from './DebouncedInput.vue';
 import MediaPreviewModal from './MediaPreviewModal.vue';
+import { createCreatorApi } from '@whispers/api';
+import { useNotification } from '../../composables/useNotifications';
+import Pagination from './Pagination.vue';
 
 const props = defineProps<{ isOpen: boolean }>();
 
@@ -202,7 +209,6 @@ const tabs = [
   { key: 'device', label: 'mediaLibrary.tabDevice' }
 ];
 const activeTab = ref<'library' | 'device'>('device');
-const search = ref('');
 const loading = ref(false);
 const mediaFiles = ref<MediaItem[]>([]);
 const selectedIds = ref<string[]>([]);
@@ -216,58 +222,45 @@ const previewCurrentIndex = ref(0);
 const isUploading = ref(false);
 const uploadProgress = ref({ completed: 0, total: 0 });
 
-// Add dummy media files for the library tab
-onMounted(() => {
-  mediaFiles.value = [
-    {
-      id: '1',
-      url: '/placeholder.svg?height=300&width=400',
-      name: 'Beach sunset.jpg',
-      type: 'image',
-      size: 1240000
-    },
-    {
-      id: '2',
-      url: '/placeholder.svg?height=300&width=400',
-      name: 'Product demo.mp4',
-      type: 'video',
-      size: 8500000,
-      duration: 125
-    },
-    {
-      id: '3',
-      url: '/placeholder.svg?height=300&width=400',
-      name: 'Team photo.jpg',
-      type: 'image',
-      size: 2800000
-    },
-    {
-      id: '4',
-      url: '/placeholder.svg?height=300&width=400',
-      name: 'Office tour.mp4',
-      type: 'video',
-      size: 15000000,
-      duration: 210
-    },
-    {
-      id: '5',
-      url: '/placeholder.svg?height=300&width=400',
-      name: 'Conference presentation.jpg',
-      type: 'image',
-      size: 3500000
-    },
-    {
-      id: '6',
-      url: '/placeholder.svg?height=300&width=400',
-      name: 'Product showcase.jpg',
-      type: 'image',
-      size: 2100000
-    }
-  ];
-});
+const notification = useNotification();
 
-// Reset when modal opens
-watch(() => props.isOpen, (isOpen) => {
+// Pagination state
+const currentPage = ref(1);
+const perPage = ref(10);
+const totalItems = ref(0);
+const totalPages = ref(1);
+
+async function fetchMediaFiles() {
+  loading.value = true;
+  try {
+    const creatorApi = createCreatorApi();
+    const response = await creatorApi.getMediaFiles({ 
+      page: currentPage.value.toString(), 
+      limit: perPage.value.toString() 
+    });
+    mediaFiles.value = (response.mediaFiles || []).map((file: any) => ({
+      id: file._id,
+      url: file.url,
+      name: file.url.split('/').pop() || 'media',
+      type: file.type,
+      size: file.size,
+      duration: file.duration
+    }));
+    totalItems.value = response.pagination?.total || 0;
+    totalPages.value = response.pagination?.pages || 1;
+  } catch (error) {
+    notification.error(t('notifications.contentLoadFailed'));
+    mediaFiles.value = [];
+  } finally {
+    loading.value = false;
+  }
+}
+
+onMounted(fetchMediaFiles);
+
+watch([currentPage, perPage], fetchMediaFiles);
+
+watch(() => props.isOpen, (isOpen: boolean) => {
   if (isOpen) {
     selectedIds.value = [];
     selectedFiles.value = [];
@@ -278,10 +271,7 @@ watch(() => props.isOpen, (isOpen) => {
   }
 });
 
-const filteredMedia = computed(() => {
-  if (!search.value) return mediaFiles.value;
-  return mediaFiles.value.filter(m => m.name.toLowerCase().includes(search.value.toLowerCase()));
-});
+const filteredMedia = computed(() => mediaFiles.value);
 
 const canProceed = computed(() => {
   if (activeTab.value === 'library') {
@@ -292,7 +282,7 @@ const canProceed = computed(() => {
 });
 
 const previewMediaItems = computed(() =>
-  previewFiles.value.map((file, index) => ({
+  previewFiles.value.map((file: File, index: number) => ({
     id: `preview-${index}`,
     url: URL.createObjectURL(file),
     name: file.name,
@@ -302,40 +292,43 @@ const previewMediaItems = computed(() =>
 );
 
 function toggleSelect(media: MediaItem) {
-  if (selectedIds.value.includes(media.id)) {
-    selectedIds.value = selectedIds.value.filter(id => id !== media.id);
+  const index = selectedIds.value.indexOf(media.id);
+  if (index > -1) {
+    selectedIds.value.splice(index, 1);
   } else {
     selectedIds.value.push(media.id);
   }
 }
 
-function removeMedia(media: MediaItem) {
-  mediaFiles.value = mediaFiles.value.filter(m => m.id !== media.id);
-  selectedIds.value = selectedIds.value.filter(id => id !== media.id);
-}
-
 function onFilesSelected(event: Event) {
   const input = event.target as HTMLInputElement;
   if (!input.files || input.files.length === 0) return;
-  
+
   const files = Array.from(input.files);
-  const remainingSlots = MAX_FILES - previewFiles.value.length;
-  
+  const remainingSlots = MAX_FILES - selectedFiles.value.length;
+
   if (remainingSlots <= 0) {
-    alert(`Maximum ${MAX_FILES} files allowed`);
+    notification.error(`Maximum ${MAX_FILES} files allowed`);
     return;
   }
-  
-  const filesToAdd = files.slice(0, remainingSlots);
-  if (filesToAdd.length < files.length) {
-    alert(`Only ${filesToAdd.length} files added. Maximum ${MAX_FILES} files allowed.`);
-  }
-  
-  previewFiles.value.push(...filesToAdd);
-  previewCurrentIndex.value = previewFiles.value.length - filesToAdd.length;
+
+  const filesToAdd = files.slice(0, remainingSlots).map((file) => {
+    const mediaItem = {
+      id: `selected-${Date.now()}-${Math.random()}`,
+      url: URL.createObjectURL(file),
+      name: file.name,
+      type: file.type.startsWith('image/') ? 'image' : 'video',
+      size: file.size,
+      file
+    };
+    selectedFiles.value.push(mediaItem);
+    return file;
+  });
+
+  previewFiles.value = [...previewFiles.value, ...filesToAdd];
+  previewCurrentIndex.value = Math.max(0, previewFiles.value.length - filesToAdd.length);
   showPreviewModal.value = true;
-  
-  // Reset input
+
   if (deviceFileInput.value) {
     deviceFileInput.value.value = '';
   }
@@ -347,129 +340,204 @@ function removeSelectedFile(index: number) {
     URL.revokeObjectURL(file.url);
   }
   selectedFiles.value.splice(index, 1);
+  
+  // Also remove from previewFiles if it exists there
+  const previewIndex = previewFiles.value.findIndex(f => 
+    file.file ? f === file.file : f.name === file.name
+  );
+  if (previewIndex > -1) {
+    previewFiles.value.splice(previewIndex, 1);
+  }
 }
 
-function closePreviewModal() {
-  // Revoke object URLs to prevent memory leaks
-  previewMediaItems.value.forEach(item => {
-    URL.revokeObjectURL(item.url);
-  });
-  showPreviewModal.value = false;
-  previewCurrentIndex.value = 0;
-  previewFiles.value = [];
+function updatePreviewIndex(newIndex: number) {
+  previewCurrentIndex.value = newIndex;
 }
 
-// Handle adding new media to the preview
 async function onAddMedia(files: File[]) {
   if (!files || files.length === 0) return;
   
   const remainingSlots = MAX_FILES - previewFiles.value.length;
   if (remainingSlots <= 0) {
-    alert(`Maximum ${MAX_FILES} files allowed`);
+    notification.error(`Maximum ${MAX_FILES} files allowed`);
     return;
   }
   
   const filesToAdd = files.slice(0, remainingSlots);
   if (filesToAdd.length < files.length) {
-    alert(`Only ${filesToAdd.length} files added. Maximum ${MAX_FILES} files allowed.`);
+    notification.warning(`Only ${filesToAdd.length} files added. Maximum ${MAX_FILES} files allowed.`);
   }
   
-  previewFiles.value.push(...filesToAdd);
+  // Add to both preview and selected files
+  filesToAdd.forEach(file => {
+    const mediaItem = {
+      id: `selected-${Date.now()}-${Math.random()}`,
+      url: URL.createObjectURL(file),
+      name: file.name,
+      type: file.type.startsWith('image/') ? 'image' : 'video',
+      size: file.size,
+      file
+    };
+    selectedFiles.value.push(mediaItem);
+  });
+  
+  previewFiles.value = [...previewFiles.value, ...filesToAdd];
 }
 
-// Handle preview index updates
-function updatePreviewIndex(newIndex: number) {
-  previewCurrentIndex.value = newIndex;
+function dataURLtoFile(dataurl: string, filename: string): File {
+  const arr = dataurl.split(',');
+  const mimeMatch = arr[0].match(/:(.*?);/);
+  const mime = mimeMatch ? mimeMatch[1] : 'image/jpeg';
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) u8arr[n] = bstr.charCodeAt(n);
+  return new File([u8arr], filename, { type: mime });
 }
 
-// Handle batch upload from preview modal
+// Update the handleBatchUpload function
 async function handleBatchUpload(mediaData: any[]) {
   if (mediaData.length === 0) return;
-  
+
   isUploading.value = true;
   uploadProgress.value = { completed: 0, total: mediaData.length };
-  
-  const uploadResults = [];
-  
+
   try {
-    for (let i = 0; i < mediaData.length; i++) {
-      const media = mediaData[i];
-      
-      try {
-        // Simulate upload process - replace with your actual upload logic
-        const result = await uploadFile(media);
-        uploadResults.push({ success: true, data: result, originalMedia: media });
-        
-        uploadProgress.value.completed = i + 1;
-        
-        // Small delay to show progress
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-      } catch (error) {
-        console.error(`Failed to upload ${media.name}:`, error);
-        uploadResults.push({ success: false, error, originalMedia: media });
-        uploadProgress.value.completed = i + 1;
+    // 1. Upload covers for videos first, if needed
+    const coverUploads: Record<number, string> = {};
+    await Promise.all(mediaData.map(async (media, i) => {
+      const file = media.file || media.originalData?.file;
+      const fileType = file?.type?.startsWith('video') || media.type === 'video' ? 'video' : 'image';
+      if (fileType === 'video' && media.cover) {
+        let coverFile: File | null = null;
+        if (media.cover instanceof File) {
+          coverFile = media.cover;
+        } else if (typeof media.cover === 'string' && media.cover.startsWith('data:')) {
+          const uuid = crypto.randomUUID();
+          const coverFileName = `${uuid}.jpg`;
+          coverFile = dataURLtoFile(media.cover, coverFileName);
+        }
+        if (coverFile) {
+          // Get a pre-signed URL for the cover upload
+          const creatorApi = createCreatorApi();
+          const coverPayload = {
+            files: [{
+              uuid: crypto.randomUUID(),
+              fileName: coverFile.name,
+              fileType: 'image',
+              size: coverFile.size
+            }]
+          };
+          const coverResp = await creatorApi.uploadMediaFile(coverPayload);
+          const coverUploadUrl = Array.isArray(coverResp)
+            ? coverResp[0]?.uploadUrl
+            : coverResp.uploadUrl;
+          const coverFileName = Array.isArray(coverResp)
+            ? coverResp[0]?.fileName
+            : coverResp.fileName;
+          if (coverUploadUrl && coverFileName) {
+            await fetch(coverUploadUrl, {
+              method: 'PUT',
+              body: coverFile,
+              headers: { 'Content-Type': coverFile.type },
+            });
+            coverUploads[i] = coverFileName;
+          }
+        }
       }
-    }
-    
-    // Process successful uploads and add to selected files
-    const successfulUploads = uploadResults.filter(result => result.success);
-    const newSelectedFiles = successfulUploads.map(result => ({
-      id: result.data.id || `uploaded-${Date.now()}-${Math.random()}`,
-      url: result.data.url || result.originalMedia.url,
-      name: result.originalMedia.name,
-      type: result.originalMedia.type,
-      size: result.originalMedia.file?.size || 0,
-      cover: result.originalMedia.cover,
-      duration: result.originalMedia.type === 'video' ? result.originalMedia.trimEnd - result.originalMedia.trimStart : undefined
     }));
-    
-    selectedFiles.value = [...selectedFiles.value, ...newSelectedFiles];
-    
-    // Close preview modal
-    closePreviewModal();
-    
-    // Emit completion event
-    emit('upload-complete', uploadResults);
-    
+
+    // 2. Prepare the main payload for videos/images
+    const payload = {
+      files: mediaData.map((media, i) => {
+        const file = media.file || media.originalData?.file;
+        const fileType = file?.type?.startsWith('video') || media.type === 'video' ? 'video' : 'image';
+        const filePayload: any = {
+          uuid: crypto.randomUUID(),
+          fileName: file?.name || media.name,
+          fileType,
+          size: file?.size || 0
+        };
+        if (fileType === 'video' && coverUploads[i]) {
+          filePayload.coverName = coverUploads[i];
+        }
+        return filePayload;
+      })
+    };
+
+    // 3. Get pre-signed URLs for main files (call uploadMediaFile ONCE)
+    const response = await createCreatorApi().uploadMediaFile(payload);
+    const uploadResponses = Array.isArray(response)
+      ? response
+      : Array.isArray(response.data)
+        ? response.data
+        : [response];
+
+    // 4. Upload each file to S3 using the returned uploadUrl
+    await Promise.all(
+      uploadResponses.map(async (res: any, i: number) => {
+        if (!res.uploadUrl) {
+          console.error('Missing uploadUrl for file', i, res);
+          return;
+        }
+        const fileToUpload = mediaData[i].file || mediaData[i].originalData?.file;
+        if (!fileToUpload) {
+          console.error('No file to upload for item', i);
+          return;
+        }
+        await fetch(res.uploadUrl, {
+          method: 'PUT',
+          body: fileToUpload,
+          headers: { 'Content-Type': fileToUpload.type },
+        });
+        uploadProgress.value.completed++;
+      })
+    );
+
+    // 5. Add uploaded files to selectedFiles and clear preview
+    const uploadedFiles = uploadResponses.map((res: any, i: number) => ({
+      id: res.mediaFileId,
+      url: res.fileUrl,
+      name: mediaData[i].name,
+      type: mediaData[i].type.startsWith('image/') ? 'image' : 'video',
+      size: mediaData[i].file?.size || 0
+    })).filter((f: any) => f.size > 0);
+
+    notification.success(t('notifications.contentCreated'));
+    await fetchMediaFiles();
+    emit('upload-complete', uploadedFiles);
+    selectedFiles.value = [
+      ...selectedFiles.value,
+      ...uploadedFiles
+    ];
+    previewFiles.value = [];
+    showPreviewModal.value = false;
   } catch (error) {
-    console.error('Batch upload failed:', error);
+    notification.error(t('notifications.mediaUploadFailed'));
+    console.error('Upload failed:', error);
   } finally {
     isUploading.value = false;
   }
 }
 
-// Mock upload function - replace with your actual upload implementation
-async function uploadFile(mediaData: any): Promise<any> {
-  const formData = new FormData();
-  formData.append('file', mediaData.file);
-  
-  // Add video editing metadata if it's a video
-  if (mediaData.type === 'video') {
-    formData.append('cover', mediaData.cover || '');
-    formData.append('trimStart', mediaData.trimStart?.toString() || '0');
-    formData.append('trimEnd', mediaData.trimEnd?.toString() || '0');
-    formData.append('muted', mediaData.muted?.toString() || 'false');
-  }
-  
-  // Replace this with your actual upload endpoint
-  const response = await fetch('/api/upload', {
-    method: 'POST',
-    body: formData
+// Update the closePreviewModal function
+function closePreviewModal() {
+  // Clear all preview data
+  previewMediaItems.value.forEach((item: any) => {
+    URL.revokeObjectURL(item.url);
   });
   
-  if (!response.ok) {
-    throw new Error(`Upload failed: ${response.statusText}`);
-  }
+  previewFiles.value = [];
+  showPreviewModal.value = false;
+  previewCurrentIndex.value = 0;
   
-  return await response.json();
+  // Don't clear selectedFiles here - let user keep their selection
 }
-
 function handleNext() {
   if (!canProceed.value) return;
   
   if (activeTab.value === 'library') {
-    const selected = mediaFiles.value.filter(m => selectedIds.value.includes(m.id));
+    const selected = mediaFiles.value.filter((m: any) => selectedIds.value.includes(m.id));
     emit('select', selected);
   } else {
     emit('select', selectedFiles.value);
@@ -479,22 +547,19 @@ function handleNext() {
 }
 
 function close() {
-  // Clean up any blob URLs
-  selectedFiles.value.forEach(file => {
+  // Clean up all blob URLs
+  selectedFiles.value.forEach((file: any) => {
     if (file.url.startsWith('blob:')) {
       URL.revokeObjectURL(file.url);
     }
   });
-  
-  // Clean up preview URLs
-  previewMediaItems.value.forEach(item => {
+  previewMediaItems.value.forEach((item: any) => {
     URL.revokeObjectURL(item.url);
   });
-  
+  selectedFiles.value = [];
   emit('close');
 }
 
-// Format file size
 function formatFileSize(bytes?: number): string {
   if (!bytes) return '0 Bytes';
   const k = 1024;
@@ -503,11 +568,23 @@ function formatFileSize(bytes?: number): string {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-// Format video duration
 function formatDuration(seconds?: number): string {
   if (!seconds) return '0:00';
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
+
+onUnmounted(() => {
+  // Final cleanup
+  selectedFiles.value.forEach((file: any) => {
+    if (file.url.startsWith('blob:')) {
+      URL.revokeObjectURL(file.url);
+    }
+  });
+  
+  previewMediaItems.value.forEach((item: any) => {
+    URL.revokeObjectURL(item.url);
+  });
+});
 </script>

@@ -6,6 +6,7 @@ export default defineNuxtRouteMiddleware((to) => {
   
   const authStore = useAuthStore();
   const isApprovedCreator = authStore.profile?.data?.creatorProfile?.status === 'approved';
+  console.log(isApprovedCreator, 'fghfghf')
   
   if (!isApprovedCreator) {
     return navigateTo('/apply');
