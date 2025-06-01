@@ -714,7 +714,9 @@
 		"selectFromComputer": "Select From Computer",
 		"coverPhoto": "Cover Photo",
 		"clearCover": "Clear Cover",
-		"selectThumbnailToCover": "Select Thumbnail To Cover"
+		"selectThumbnailToCover": "Select Thumbnail To Cover",
+    "tabImages": "Media Images",
+    "tabVideos": "Media Videos"
 	},
 	"postForm": {
 		"title": "Title",

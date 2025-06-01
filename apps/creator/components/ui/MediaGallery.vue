@@ -8,7 +8,7 @@
 				</h2>
 			</div>
 
-			<!-- Tabs -->
+			<!-- Main Tabs -->
 			<div class="flex border-b border-gray-200 dark:border-gray-700">
 				<button
 					v-for="tab in tabs"
@@ -25,6 +25,24 @@
 					{{ t(tab.label) || (tab.key === 'library' ? 'Media Library' : 'From Device') }}
 				</button>
 			</div>
+
+			<!-- Media Library Sub-tabs -->
+			<div v-if="activeTab === 'library'" class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+				<button
+					v-for="subTab in mediaSubTabs"
+					:key="subTab.key"
+					type="button"
+					:class="[
+						'flex-1 py-2 text-center text-sm font-medium transition',
+						activeMediaTab === subTab.key
+							? 'border-b-2 border-primary-600 dark:border-primary-400 text-primary-600 dark:text-primary-400 bg-white dark:bg-gray-700'
+							: 'text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400'
+					]"
+					@click="activeMediaTab = subTab.key"
+				>
+					{{ t(subTab.label) || (subTab.key === 'all' ? 'All' : subTab.key === 'images' ? 'Images' : 'Videos') }}
+				</button>
+			</div>
       
 			<!-- Tab Content -->
 			<div class="p-6">
@@ -34,7 +52,11 @@
 						<Icon name="lucide:loader-2" class="animate-spin h-6 w-6 text-primary-600 dark:text-primary-400" />
 					</div>
 					<div v-else-if="filteredMedia.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-8">
-						{{ t('mediaLibrary.noMedia') || 'No media found' }}
+						{{ activeMediaTab === 'images' 
+							? (t('mediaLibrary.noImages') || 'No images found') 
+							: activeMediaTab === 'videos' 
+								? (t('mediaLibrary.noVideos') || 'No videos found')
+								: (t('mediaLibrary.noMedia') || 'No media found') }}
 					</div>
 					<div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-4">
 						<div
@@ -44,7 +66,7 @@
 								'relative rounded-lg border transition cursor-pointer overflow-hidden',
 								selectedIds.includes(media.id)
 									? 'border-primary-600 dark:border-primary-400 ring-2 ring-primary-500 dark:ring-primary-400'
-									: 'border-gray-200 dark:border-gray-700 hover:border-primary-400 dark:hover:border-primary-400'
+									: 'border-gray-200 dark:border-gray-700 hover:border-primary-600 dark:hover:border-primary-400'
 							]"
 							@click="toggleSelect(media)"
 						>
@@ -77,7 +99,7 @@
 						@update:per-page="(val: number) => { perPage.value = val }"
 					/>
 				</div>
-        
+				
 				<!-- From Device Tab -->
 				<div v-else>
 					<!-- Pick from device button -->
@@ -88,11 +110,11 @@
 					>
 						Pick from device & continue
 					</button>
-          
+					
 					<p class="text-sm text-gray-500 dark:text-gray-400 mt-2 mb-6">
 						Maximum {{ MAX_FILES }} files allowed
 					</p>
-          
+					
 					<!-- Selected files list -->
 					<div v-if="selectedFiles.length > 0" class="space-y-3 mb-6">
 						<div
@@ -125,7 +147,7 @@
 							</button>
 						</div>
 					</div>
-          
+					
 					<input
 						ref="deviceFileInput"
 						type="file"
@@ -208,7 +230,15 @@ const tabs = [
   { key: 'library', label: 'mediaLibrary.tabLibrary' },
   { key: 'device', label: 'mediaLibrary.tabDevice' }
 ];
+
+const mediaSubTabs = [
+  { key: 'images', label: 'mediaLibrary.tabImages' },
+  { key: 'videos', label: 'mediaLibrary.tabVideos' }
+];
+
 const activeTab = ref<'library' | 'device'>('device');
+const activeMediaTab = ref<'all' | 'images' | 'videos'>('all');
+
 const loading = ref(false);
 const mediaFiles = ref<MediaItem[]>([]);
 const selectedIds = ref<string[]>([]);
@@ -230,14 +260,24 @@ const perPage = ref(10);
 const totalItems = ref(0);
 const totalPages = ref(1);
 
-async function fetchMediaFiles() {
+const fetchMediaFiles = async () => {
   loading.value = true;
   try {
     const creatorApi = createCreatorApi();
-    const response = await creatorApi.getMediaFiles({ 
+    const params: any = { 
       page: currentPage.value.toString(), 
       limit: perPage.value.toString() 
-    });
+    };
+    
+    // Add type filter if on specific sub-tab
+    if (activeMediaTab.value === 'images') {
+      params.type = 'image';
+    } else if (activeMediaTab.value === 'videos') {
+      params.type = 'video';
+    }
+    
+    const response = await creatorApi.getMediaFiles(params);
+    
     mediaFiles.value = (response.mediaFiles || []).map((file: any) => ({
       id: file._id,
       url: file.url,
@@ -246,6 +286,7 @@ async function fetchMediaFiles() {
       size: file.size,
       duration: file.duration
     }));
+    
     totalItems.value = response.pagination?.total || 0;
     totalPages.value = response.pagination?.pages || 1;
   } catch (error) {
@@ -254,11 +295,11 @@ async function fetchMediaFiles() {
   } finally {
     loading.value = false;
   }
-}
+};
 
 onMounted(fetchMediaFiles);
 
-watch([currentPage, perPage], fetchMediaFiles);
+watch([currentPage, perPage, activeMediaTab], fetchMediaFiles);
 
 watch(() => props.isOpen, (isOpen: boolean) => {
   if (isOpen) {
@@ -271,7 +312,14 @@ watch(() => props.isOpen, (isOpen: boolean) => {
   }
 });
 
-const filteredMedia = computed(() => mediaFiles.value);
+const filteredMedia = computed(() => {
+  if (activeMediaTab.value === 'images') {
+    return mediaFiles.value.filter(file => file.type === 'image');
+  } else if (activeMediaTab.value === 'videos') {
+    return mediaFiles.value.filter(file => file.type === 'video');
+  }
+  return mediaFiles.value;
+});
 
 const canProceed = computed(() => {
   if (activeTab.value === 'library') {
@@ -436,6 +484,8 @@ async function handleBatchUpload(mediaData: any[]) {
             ? coverResp[0]?.fileName
             : coverResp.fileName;
           if (coverUploadUrl && coverFileName) {
+            // Actually upload the cover file to S3
+            console.log('Uploading cover to:', coverUploadUrl);
             await fetch(coverUploadUrl, {
               method: 'PUT',
               body: coverFile,
@@ -465,8 +515,12 @@ async function handleBatchUpload(mediaData: any[]) {
       })
     };
 
-    // 3. Get pre-signed URLs for main files (call uploadMediaFile ONCE)
-    const response = await createCreatorApi().uploadMediaFile(payload);
+    // 3. Get pre-signed URLs for main files
+    const creatorApi = createCreatorApi();
+    const response = await creatorApi.uploadMediaFile(payload);
+    console.log('Upload media file response:', response);
+    
+    // Handle different response formats
     const uploadResponses = Array.isArray(response)
       ? response
       : Array.isArray(response.data)
@@ -474,42 +528,63 @@ async function handleBatchUpload(mediaData: any[]) {
         : [response];
 
     // 4. Upload each file to S3 using the returned uploadUrl
-    await Promise.all(
+    const uploadedFiles = await Promise.all(
       uploadResponses.map(async (res: any, i: number) => {
         if (!res.uploadUrl) {
           console.error('Missing uploadUrl for file', i, res);
-          return;
+          return null;
         }
+        
         const fileToUpload = mediaData[i].file || mediaData[i].originalData?.file;
         if (!fileToUpload) {
           console.error('No file to upload for item', i);
-          return;
+          return null;
         }
-        await fetch(res.uploadUrl, {
-          method: 'PUT',
-          body: fileToUpload,
-          headers: { 'Content-Type': fileToUpload.type },
-        });
-        uploadProgress.value.completed++;
+        
+        console.log(`Uploading file ${i} to S3:`, res.uploadUrl);
+        try {
+          // This is the critical S3 PUT request that was missing
+          const uploadResult = await fetch(res.uploadUrl, {
+            method: 'PUT',
+            body: fileToUpload,
+            headers: { 'Content-Type': fileToUpload.type },
+          });
+          
+          if (!uploadResult.ok) {
+            throw new Error(`Upload failed with status: ${uploadResult.status}`);
+          }
+          
+          uploadProgress.value.completed++;
+          
+          return {
+            id: res.mediaFileId || res._id,
+            url: res.fileUrl,
+            name: fileToUpload.name,
+            type: fileToUpload.type.startsWith('image/') ? 'image' : 'video',
+            size: fileToUpload.size
+          };
+        } catch (error) {
+          console.error(`Error uploading file ${i}:`, error);
+          return null;
+        }
       })
     );
 
-    // 5. Add uploaded files to selectedFiles and clear preview
-    const uploadedFiles = uploadResponses.map((res: any, i: number) => ({
-      id: res.mediaFileId,
-      url: res.fileUrl,
-      name: mediaData[i].name,
-      type: mediaData[i].type.startsWith('image/') ? 'image' : 'video',
-      size: mediaData[i].file?.size || 0
-    })).filter((f: any) => f.size > 0);
-
+    // Filter out failed uploads
+    const successfulUploads = uploadedFiles.filter(Boolean);
+    
     notification.success(t('notifications.contentCreated'));
-    await fetchMediaFiles();
-    emit('upload-complete', uploadedFiles);
+    await fetchMediaFiles(); // Refresh the media library
+    
+    // Don't clear selectedFiles, add the new uploads to it
     selectedFiles.value = [
       ...selectedFiles.value,
-      ...uploadedFiles
+      ...successfulUploads
     ];
+    
+    emit('upload-complete', successfulUploads);
+    
+    // Only clear preview files, not selected files
     previewFiles.value = [];
     showPreviewModal.value = false;
   } catch (error) {
@@ -522,9 +597,11 @@ async function handleBatchUpload(mediaData: any[]) {
 
 // Update the closePreviewModal function
 function closePreviewModal() {
-  // Clear all preview data
+  // Clear only preview data, not selected files
   previewMediaItems.value.forEach((item: any) => {
-    URL.revokeObjectURL(item.url);
+    if (item.url.startsWith('blob:')) {
+      URL.revokeObjectURL(item.url);
+    }
   });
   
   previewFiles.value = [];
