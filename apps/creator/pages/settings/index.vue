@@ -180,9 +180,6 @@ const { t } = useI18n();
 definePageMeta({
 	middleware: ['auth'],
 	layout: 'creator',
-	meta: {
-		requiresAuth: true,
-	},
 });
 
 const userStore = useUserStore();

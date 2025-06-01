@@ -135,7 +135,7 @@
               
 							<div class="mt-4 flex text-sm text-gray-600 dark:text-gray-300">
 								<span class="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300">
-									{{ t('uploadFiles') || 'Upload files' }}
+									{{ t('content.uploadFiles') }}
 								</span>
 								<p class="pl-1">or drag and drop</p>
 							</div>
@@ -154,7 +154,7 @@
 						/>
             
 						<p class="mt-1 text-xs text-gray-500 dark:text-gray-200">
-							{{ t('uploadMediaHint') || 'Upload images or videos to share with your subscribers' }}
+							{{ t('uploadMediaHint') }}
 						</p>
 						<p v-if="errorMessage" class="form-error mt-2">{{ errorMessage }}</p>
 					</div>
@@ -284,7 +284,7 @@
 				class="px-4 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full"
 				@click="saveDraft"
 			>
-				{{ t('saveDraft') || 'Save Draft' }}
+				{{ t('content.saveDraft') }}
 			</button>
 
 			<!-- Debug info (remove in production) -->

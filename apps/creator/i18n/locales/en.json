@@ -283,7 +283,9 @@
 			"content": "Content",
 			"price": "Price"
 		},
-		"untitledDraft": "Untitled Draft"
+		"untitledDraft": "Untitled Draft",
+    "saveDraft": "Save Draft",
+    "uploadFiles": "Upload files"
 	},
 	"upload": {
 		"title": "Upload files",
@@ -539,7 +541,6 @@
 	"previous": "Previous",
 	"next": "Next",
 	"showingResults": "Showing {start} to {end} of {total} results",
-	// "subscribers": "Subscribers",
 	"manageSubscribers": "Manage your subscribers and view subscription analytics.",
 	"fromLastMonth": "from last month",
 	"searchSubscribers": "Search subscribers...",

@@ -205,10 +205,6 @@ import { useNotification } from '../../composables/useNotifications';
 definePageMeta({
   layout: 'creator',
   middleware: ['auth'],
-  meta: {
-    requiresAuth: true,
-    requiresCreator: true,
-  },
 });
 
 const { t } = useI18n();
