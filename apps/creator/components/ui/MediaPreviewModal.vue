@@ -279,6 +279,7 @@ import { Navigation as SwiperNavigation, Keyboard as SwiperKeyboard } from 'swip
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { useI18n } from 'vue-i18n';
+import { useNotification } from '../../composables/useNotifications';
 
 const Navigation = SwiperNavigation;
 const Keyboard = SwiperKeyboard;
@@ -343,6 +344,7 @@ const emit = defineEmits([
   'remove-media'
 ]);
 const { t } = useI18n();
+const notification = useNotification();
 
 // Internal state management
 const internalCurrentIndex = ref(props.currentIndex);
@@ -505,9 +507,18 @@ function getCurrentVideoRef() {
 function close() {
   // Pause all videos
   videoRefs.value.forEach(video => {
-    video.pause();
+    if (video) video.pause();
   });
   isVideoPlaying.value = false;
+  
+  // Clean up blob URLs but don't emit anything
+  props.mediaItems.forEach((item: any) => {
+    if (item.url?.startsWith('blob:')) {
+      URL.revokeObjectURL(item.url);
+    }
+  });
+  
+  // Just emit the close event without any data
   emit('close');
 }
 
@@ -684,15 +695,16 @@ async function onAddMedia(e: Event) {
   // Check file limit
   const remainingSlots = props.maxFiles - props.mediaItems.length;
   if (remainingSlots <= 0) {
-    alert(`Maximum ${props.maxFiles} files allowed`);
+    notification.error(`Maximum ${props.maxFiles} files allowed`);
     return;
   }
   
   const filesToAdd = Array.from(files).slice(0, remainingSlots);
   if (filesToAdd.length < files.length) {
-    alert(`Only ${filesToAdd.length} files added. Maximum ${props.maxFiles} files allowed.`);
+    notification.warning(`Only ${filesToAdd.length} files added. Maximum ${props.maxFiles} files allowed.`);
   }
   
+  // Emit the new files to be added
   emit('add-media', filesToAdd);
   
   // Clear the input
@@ -703,16 +715,19 @@ async function onAddMedia(e: Event) {
 
 function handleNext() {
   if (props.mediaItems.length === 0) return;
-  
+
+  // Prepare the media data to emit
   const mediaData = props.mediaItems.map((media, index) => {
     const baseData = {
+      id: media.id || `temp-${index}`,
       name: media.name || media.file?.name || `media-${index}`,
       size: media.size || media.file?.size || 0,
-      type: media.file?.type || (media.type === 'image' ? 'image/jpeg' : 'video/mp4'), // More specific type
-      originalData: media // Keep reference to original data
+      type: media.type || (media.file?.type?.startsWith('image/') ? 'image' : 'video'),
+      url: media.url,
+      file: media.file // Include the actual file object if it exists
     };
-    
-    if (media.type === 'video') {
+
+    if (baseData.type === 'video') {
       const state = getVideoState(index);
       return {
         ...baseData,
@@ -722,12 +737,24 @@ function handleNext() {
         muted: isMuted.value
       };
     }
-    
+
     return baseData;
   });
-  
+
+  // Clean up blob URLs before emitting
+  props.mediaItems.forEach((item: any) => {
+    if (item.url?.startsWith('blob:')) {
+      URL.revokeObjectURL(item.url);
+    }
+  });
+
+  // Emit the prepared data
   emit('next', mediaData);
+  
+  // Close the modal after emitting
+  close();
 }
+
 </script>
 
 <style>

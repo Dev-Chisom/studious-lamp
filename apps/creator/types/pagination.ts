@@ -1,6 +1,7 @@
+// types/pagination.ts
 export interface PaginationProps {
-  currentPage: number;
   totalItems: number;
+  currentPage: number;
   perPage: number;
   maxVisiblePages?: number;
   perPageOptions?: number[];
@@ -21,4 +22,11 @@ export interface PaginationData {
   isLastPage: boolean;
   perPage: number;
   perPageOptions: number[];
+}
+
+export interface PaginationEmits {
+  (e: 'update:currentPage', value: number): void;
+  (e: 'update:perPage', value: number): void;
+  (e: 'page-change', value: number): void;
+  (e: 'per-page-change', value: number): void;
 }

@@ -27,30 +27,32 @@
 			</div>
 
 			<!-- Media Library Sub-tabs -->
-			<div v-if="activeTab === 'library'" class="flex border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-				<button
-					v-for="subTab in mediaSubTabs"
-					:key="subTab.key"
-					type="button"
-					:class="[
-						'flex-1 py-2 text-center text-sm font-medium transition',
-						activeMediaTab === subTab.key
-							? 'border-b-2 border-primary-600 dark:border-primary-400 text-primary-600 dark:text-primary-400 bg-white dark:bg-gray-700'
-							: 'text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400'
-					]"
-					@click="activeMediaTab = subTab.key"
-				>
-					{{ t(subTab.label) || (subTab.key === 'all' ? 'All' : subTab.key === 'images' ? 'Images' : 'Videos') }}
-				</button>
-			</div>
+	  <div v-if="activeTab === 'library'" class="flex pl-6 justify-end">
+    <button
+      v-for="subTab in mediaSubTabs"
+      :key="subTab.key"
+      type="button"
+      :class="[
+        'py-2 px-4 text-sm font-medium transition',
+        activeMediaTab === subTab.key
+          ? 'border-b-2 border-primary-600 dark:border-primary-400 text-primary-600 dark:text-primary-400'
+          : 'text-gray-500 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400'
+      ]"
+      @click="activeMediaTab = subTab.key"
+    >
+      {{ t(subTab.label) || (subTab.key === 'images' ? 'Media images' : 'Media videos') }}
+    </button>
+  </div>
       
 			<!-- Tab Content -->
 			<div class="p-6">
 				<!-- Media Library Tab -->
 				<div v-if="activeTab === 'library'">
-					<div v-if="loading" class="flex justify-center items-center py-8">
-						<Icon name="lucide:loader-2" class="animate-spin h-6 w-6 text-primary-600 dark:text-primary-400" />
-					</div>
+        <div v-if="loading" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div v-for="n in 9" :key="n" class="relative rounded-lg overflow-hidden">
+					  <SkeletonLoader variant="image" width="100%" height="5rem" class="mx-auto my-8" />
+          </div>
+        </div>
 					<div v-else-if="filteredMedia.length === 0" class="text-center text-gray-500 dark:text-gray-400 py-8">
 						{{ activeMediaTab === 'images' 
 							? (t('mediaLibrary.noImages') || 'No images found') 
@@ -70,7 +72,7 @@
 							]"
 							@click="toggleSelect(media)"
 						>
-							<img v-if="media.type === 'image'" :src="media.url" class="w-full h-32 object-cover" />
+							<img v-if="media.type === 'image'" :src="media.thumbnailUrl" class="w-full h-32 object-cover" />
 							<div v-else-if="media.type === 'video'" class="relative w-full h-32">
 								<video :src="media.url" class="w-full h-full object-cover" />
 								<div class="absolute inset-0 flex items-center justify-center">
@@ -95,8 +97,10 @@
 						:current-page="currentPage"
 						:per-page="perPage"
 						:total-items="totalItems"
-						@update:current-page="(val: number) => { currentPage.value = val }"
-						@update:per-page="(val: number) => { perPage.value = val }"
+            :show-range="false"
+            :show-per-page="false"
+						@update:current-page="(val: number) => { currentPage = val }"
+						@update:per-page="(val: number) => { perPage = val }"
 					/>
 				</div>
 				
@@ -203,6 +207,7 @@ import MediaPreviewModal from './MediaPreviewModal.vue';
 import { createCreatorApi } from '@whispers/api';
 import { useNotification } from '../../composables/useNotifications';
 import Pagination from './Pagination.vue';
+import SkeletonLoader from './SkeletonLoader.vue';
 
 const props = defineProps<{ isOpen: boolean }>();
 
@@ -237,7 +242,7 @@ const mediaSubTabs = [
 ];
 
 const activeTab = ref<'library' | 'device'>('device');
-const activeMediaTab = ref<'all' | 'images' | 'videos'>('all');
+const activeMediaTab = ref<'images' | 'videos'>('images');
 
 const loading = ref(false);
 const mediaFiles = ref<MediaItem[]>([]);
@@ -277,8 +282,9 @@ const fetchMediaFiles = async () => {
     }
     
     const response = await creatorApi.getMediaFiles(params);
+    console.log(response, 'fkjfhjf')
     
-    mediaFiles.value = (response.mediaFiles || []).map((file: any) => ({
+    mediaFiles.value = (response.data.mediaFiles || []).map((file: any) => ({
       id: file._id,
       url: file.url,
       name: file.url.split('/').pop() || 'media',
@@ -287,8 +293,8 @@ const fetchMediaFiles = async () => {
       duration: file.duration
     }));
     
-    totalItems.value = response.pagination?.total || 0;
-    totalPages.value = response.pagination?.pages || 1;
+    totalItems.value = response.data.pagination?.total || 0;
+    totalPages.value = response.data.pagination?.pages || 1;
   } catch (error) {
     notification.error(t('notifications.contentLoadFailed'));
     mediaFiles.value = [];
@@ -573,7 +579,7 @@ async function handleBatchUpload(mediaData: any[]) {
     // Filter out failed uploads
     const successfulUploads = uploadedFiles.filter(Boolean);
     
-    notification.success(t('notifications.contentCreated'));
+    notification.success(t('notifications.mediaUploaded'));
     await fetchMediaFiles(); // Refresh the media library
     
     // Don't clear selectedFiles, add the new uploads to it

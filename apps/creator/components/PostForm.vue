@@ -137,7 +137,7 @@
 								<span class="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300">
 									{{ t('content.uploadFiles') }}
 								</span>
-								<p class="pl-1">or drag and drop</p>
+								<!-- <p class="pl-1">or drag and drop</p> -->
 							</div>
               
 							<p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
@@ -276,35 +276,31 @@
 			</div>
 		</div>
 
-		<div class="bg-gray-50 dark:bg-gray-800 py-3 flex justify-end gap-3 px-1 md:px-6 w-full">
+		<div class="bg-gray-50 dark:bg-gray-800 py-3 flex justify-end gap-3 px-1 md:px-6 sm:w-full">
 			<!-- Draft button for creation mode -->
-			<button
-				v-if="!isEditMode"
-				type="button"
-				class="px-4 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full"
-				@click="saveDraft"
-			>
-				{{ t('content.saveDraft') }}
-			</button>
+      <button
+        v-if="!isEditMode"
+        type="button"
+        class="w-full sm:w-auto px-4 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        @click="saveDraft"
+      >
+        {{ t('content.saveDraft') }}
+      </button>
 
-			<!-- Debug info (remove in production) -->
-			<div v-if="debug" class="text-xs text-gray-500 mr-4">
-				Valid: {{ meta.valid }}, Errors: {{ Object.keys(errors).length }}
-			</div>
-
-			<!-- Submit button -->
-			<button
-				type="submit"
-				class="px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2 w-full"
-				:disabled="!meta.valid || loading"
-				:class="{
-					'bg-primary-600 text-white hover:bg-primary-700': meta.valid && !loading,
-					'bg-primary-500 text-white cursor-wait': loading,
-					'bg-gray-300 text-gray-500 cursor-not-allowed': !meta.valid || loading,
-				}">
-				<Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5" />
-				{{ getSubmitButtonText() }}
-			</button>
+      <!-- Submit button -->
+      <button
+        type="submit"
+        class="w-full sm:w-auto px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2"
+        :disabled="!meta.valid || loading"
+        :class="{
+          'bg-primary-600 text-white hover:bg-primary-700': meta.valid && !loading,
+          'bg-primary-500 text-white cursor-wait': loading,
+          'bg-gray-300 text-gray-500 cursor-not-allowed': !meta.valid || loading,
+        }"
+      >
+        <Icon v-if="loading" name="lucide:loader-2" class="animate-spin h-5 w-5" />
+        {{ getSubmitButtonText() }}
+      </button>
 		</div>
 
     <!-- Media Preview Modal -->
@@ -355,7 +351,6 @@ interface PostFormProps {
   loading?: boolean
   minScheduleDate?: string
   isEditMode?: boolean
-  debug?: boolean
 }
 
 interface PostFormEmits {
@@ -377,7 +372,6 @@ const props = withDefaults(defineProps<PostFormProps>(), {
   loading: false,
   minScheduleDate: '',
   isEditMode: false,
-  debug: false
 });
 
 const emit = defineEmits<PostFormEmits>();
