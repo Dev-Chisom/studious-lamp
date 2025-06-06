@@ -8,7 +8,7 @@
       />
 
       <!-- Main Content -->
-      <div class="flex flex-col">
+      <div class="flex flex-col h-[600px]">
         <!-- Tab Navigation -->
         <MediaGalleryTabs 
           :active-tab="activeTab"
