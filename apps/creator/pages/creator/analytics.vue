@@ -238,6 +238,7 @@ import { useI18n } from 'vue-i18n';
 definePageMeta({
 	layout: 'creator',
 	middleware: ['auth', 'creator'],
+  requiresCreator: true
 });
 
 interface StatCard {

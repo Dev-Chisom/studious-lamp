@@ -359,7 +359,8 @@ interface Filters {
 
 definePageMeta({
 	layout: 'creator',
-	middleware: ['auth', 'creator']
+	middleware: ['auth', 'creator'],
+  requiresCreator: true
 })
 
 const { t } = useI18n()

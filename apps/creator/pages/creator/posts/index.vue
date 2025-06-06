@@ -347,10 +347,7 @@ import { useI18n } from 'vue-i18n';
 definePageMeta({
 	layout: 'creator',
 	middleware: ['auth'],
-	meta: {
-		requiresAuth: true,
-		requiresCreator: true,
-	},
+  requiresCreator: true
 });
 
 interface Post {
