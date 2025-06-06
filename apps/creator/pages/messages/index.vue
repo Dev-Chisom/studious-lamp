@@ -387,7 +387,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
-import MediaPreviewModal from '~/components/ui/MediaPreviewModal.vue'
+import MediaPreviewModal from '~/components/ui/Media/MediaPreviewModal.vue'
 
 definePageMeta({
 	middleware: ['auth'],

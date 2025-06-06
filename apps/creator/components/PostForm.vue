@@ -322,8 +322,8 @@ import { useI18n } from 'vue-i18n';
 import { Form, Field } from 'vee-validate';
 import * as yup from 'yup';
 import FormInput from '../components/ui/BaseInput.vue';
-import MediaGallery from '../components/ui/MediaGallery.vue';
-import MediaPreviewModal from '../components/ui/MediaPreviewModal.vue';
+import MediaGallery from './ui/Media/MediaGallery.vue';
+import MediaPreviewModal from './ui/Media/MediaPreviewModal.vue';
 
 type Visibility = 'public' | 'subscribers' | 'pay-to-view'
 

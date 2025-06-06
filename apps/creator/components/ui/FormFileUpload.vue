@@ -93,7 +93,7 @@
 <script setup lang="ts">
 import { ref, computed, reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
-import MediaPreviewModal from './MediaPreviewModal.vue';
+import MediaPreviewModal from './Media/MediaPreviewModal.vue';
 
 const { t } = useI18n();
 

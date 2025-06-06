@@ -157,7 +157,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useI18n } from 'vue-i18n';
-import MediaPreviewModal from './ui/MediaPreviewModal.vue';
+import MediaPreviewModal from './ui/Media/MediaPreviewModal.vue';
 import Tooltip from './ui/Tooltip.vue';
 
 interface User {

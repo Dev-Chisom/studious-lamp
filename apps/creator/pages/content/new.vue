@@ -36,8 +36,8 @@ import { useContentStore } from '../../store/content';
 import PostForm from '../../components/PostForm.vue';
 import { useApiRequest } from '../../composables/useApiRequest';
 import { useNotification } from '../../composables/useNotifications';
-const { success, error, info } = useNotification();
 
+const { success, error, info } = useNotification();
 const router = useRouter();
 const contentStore = useContentStore();
 const { t } = useI18n();
