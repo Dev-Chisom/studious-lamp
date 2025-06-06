@@ -329,6 +329,7 @@
 <script setup lang="ts">
 import { ref, computed } from '#imports'
 import { useI18n } from 'vue-i18n'
+import FormInput from '@/components/ui/BaseInput.vue';
 
 interface Subscriber {
 	id: string
