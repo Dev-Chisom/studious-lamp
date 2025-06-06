@@ -18,7 +18,7 @@
 				<div class="absolute right-0 top-0 pr-4 pt-4">
 					<button
 						type="button"
-						class="rounded-md bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+						class="rounded-md bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
 						@click="emit('close')"
 					>
 						<span class="sr-only">Close</span> <Icon name="lucide:x" class="h-6 w-6" />

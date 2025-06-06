@@ -37,7 +37,7 @@
 			<div class="flex items-center gap-4">
 				<select
 					v-model="visibilityFilter"
-					class="block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 dark:text-gray-100 dark:bg-gray-800 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:ring-2 focus:ring-primary-600 sm:text-sm sm:leading-6">
+					class="block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 dark:text-gray-100 dark:bg-gray-800 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:ring-1 focus:ring-primary-600 sm:text-sm sm:leading-6">
 					<option value="all">{{ $t('content.management.filters.all') }}</option>
 					<option value="public">{{ $t('content.management.filters.public') }}</option>
 					<option value="subscribers">{{ $t('content.management.filters.private') }}</option>
@@ -171,13 +171,13 @@
 								<div class="mt-4 flex justify-end space-x-3">
 									<button
 										type="button"
-										class="inline-flex justify-center rounded-md border border-transparent bg-red-100 dark:bg-red-900/30 px-4 py-2 text-sm font-medium text-red-900 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+										class="inline-flex justify-center rounded-md border border-transparent bg-red-100 dark:bg-red-900/30 px-4 py-2 text-sm font-medium text-red-900 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 focus:outline-none focus-visible:ring-1 focus-visible:ring-red-500 focus-visible:ring-offset-2"
 										@click="deleteContent">
 										{{ $t('content.management.delete.confirm') }}
 									</button>
 									<button
 										type="button"
-										class="inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+										class="inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring-1 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
 										@click="closeDeleteModal">
 										{{ $t('content.management.delete.cancel') }}
 									</button>

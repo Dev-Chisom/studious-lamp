@@ -290,7 +290,7 @@
       <!-- Submit button -->
       <button
         type="submit"
-        class="w-full sm:w-auto px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2"
+        class="w-full sm:w-auto px-4 py-3 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2"
         :disabled="!meta.valid || loading"
         :class="{
           'bg-primary-600 text-white hover:bg-primary-700': meta.valid && !loading,

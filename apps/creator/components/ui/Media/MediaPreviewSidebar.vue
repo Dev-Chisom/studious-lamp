@@ -1,20 +1,22 @@
 <template>
-  <div class="w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-l border-white/20 flex flex-col">
+  <div class="w-100 md:w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-l border-white/20 flex flex-col h-full">
     <!-- Header -->
     <div class="p-4 border-b border-white/10">
       <div class="flex items-center justify-between">
-        <h3 class="text-base text-gray-900 dark:text-white">Media Details</h3>
-        <div class="text-sm text-gray-500 dark:text-gray-400">
+        <h3 class="text-base text-gray-900 dark:text-white">{{ title }}</h3>
+        <div v-if="!showComments" class="text-sm text-gray-500 dark:text-gray-400">
           {{ currentIndex + 1 }} of {{ totalItems }}
         </div>
       </div>
     </div>
 
-    <!-- Content -->
-    <div class="flex-1 overflow-y-auto">
-      <!-- File Information -->
-      <div class="p-4 border-b border-white/10">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-3">File Information</h4>
+    <!-- Main Content Container -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Scrollable Content -->
+      <div class="flex-1 overflow-y-auto">
+        <!-- File Information -->
+        <div v-if="!showComments" class="p-4 border-b border-white/10">
+           <h4 class="font-medium text-gray-900 dark:text-white mb-3">File Information</h4>
         <div class="space-y-2 text-sm">
           <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400">Name:</span>
@@ -32,11 +34,11 @@
             <span class="text-gray-900 dark:text-white">{{ formatFileSize(currentMedia.size) }}</span>
           </div>
         </div>
-      </div>
+        </div>
 
-      <!-- Video Cover Selection -->
-      <div v-if="enableVideoEdit && currentMedia?.type === 'video'" class="p-4 border-b border-white/10">
-        <h4 class="font-medium text-gray-900 dark:text-white mb-3">Cover Photo</h4>
+        <!-- Video Cover Selection -->
+        <div v-if="enableVideoEdit && currentMedia?.type === 'video'" class="p-4 border-b border-white/10">
+            <h4 class="font-medium text-gray-900 dark:text-white mb-3">Cover Photo</h4>
         <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
           Select a thumbnail to use as the cover photo
         </p>
@@ -47,11 +49,11 @@
             v-for="(thumb, i) in videoThumbnails"
             :key="i"
             class="relative aspect-video rounded border-2 overflow-hidden transition-all duration-200 hover:scale-105"
-            :class="i === selectedCoverIndex && !customCover ? 'border-pink-500 ring-2 ring-pink-500/20' : 'border-gray-200 dark:border-gray-600 hover:border-pink-300'"
+            :class="i === selectedCoverIndex && !customCover ? 'border-primary-500 ring-1 ring-primary-500/20' : 'border-gray-200 dark:border-gray-600 hover:border-primary-300'"
             @click="$emit('select-cover', i)"
           >
             <img :src="thumb" class="w-full h-full object-cover" />
-            <div v-if="i === selectedCoverIndex && !customCover" class="absolute top-1 right-1 bg-pink-500 text-white rounded-full p-1">
+            <div v-if="i === selectedCoverIndex && !customCover" class="absolute top-1 right-1 bg-primary-500 text-white rounded-full p-1">
               <Icon name="lucide:check" class="w-3 h-3" />
             </div>
           </button>
@@ -59,11 +61,11 @@
           <!-- Custom Cover Display -->
           <div 
             v-if="customCover" 
-            class="relative aspect-video rounded border-2 border-pink-500 ring-2 ring-pink-500/20 overflow-hidden cursor-pointer"
+            class="relative aspect-video rounded border-2 border-primary-500 ring-1 ring-primary-500/20 overflow-hidden cursor-pointer"
             @click="$emit('clear-cover')"
           >
             <img :src="customCover" class="w-full h-full object-cover" />
-            <div class="absolute top-1 right-1 bg-pink-500 text-white rounded-full p-1">
+            <div class="absolute top-1 right-1 bg-primary-500 text-white rounded-full p-1">
               <Icon name="lucide:check" class="w-3 h-3" />
             </div>
             <div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
@@ -89,7 +91,7 @@
           </button>
           <div v-else></div>
 
-          <label class="text-sm text-pink-500 hover:text-pink-600 cursor-pointer transition-colors">
+          <label class="text-sm text-primary-500 hover:text-primary-600 cursor-pointer transition-colors">
             Upload custom
             <input 
               type="file" 
@@ -99,14 +101,12 @@
             />
           </label>
         </div>
-      </div>
+        </div>
 
-      <!-- Comments Section -->
-      <div v-if="showComments" class="flex-1 flex flex-col">
-        <!-- Messages -->
-        <div class="flex-1 p-4 space-y-4 overflow-y-auto">
+        <!-- Comments Section -->
+        <div v-if="showComments" class="p-4 space-y-4">
           <div v-for="(message, index) in messages" :key="index" class="flex items-start space-x-3">
-            <img :src="message.user.avatar" class="w-8 h-8 rounded-full flex-shrink-0" />
+              <img :src="message.user.avatar" class="w-8 h-8 rounded-full flex-shrink-0 object-cover" />
             <div class="flex-1 min-w-0">
               <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
                 <p class="font-medium text-sm text-gray-900 dark:text-white">{{ message.user.name }}</p>
@@ -120,27 +120,27 @@
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Comment Input -->
-        <div class="p-4 border-t border-white/10">
-          <div class="flex items-center space-x-3">
-            <img :src="currentUser.avatar" class="w-8 h-8 rounded-full flex-shrink-0" />
-            <input
-              v-model="newComment"
-              type="text"
-              placeholder="Add a comment..."
-              class="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full py-2 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
-              @keydown.enter.prevent="sendComment"
-            />
-            <button
-              class="text-pink-500 hover:text-pink-600 font-medium text-sm disabled:opacity-50 transition-colors"
-              type="button"
-              :disabled="!newComment.trim()"
-              @click="sendComment"
-            >
-              Post
-            </button>
-          </div>
+      <!-- Fixed Comment Input (only shown when showComments is true) -->
+      <div v-if="showComments" class="sticky bottom-4 md:bottom-0 p-4 border-t border-white/10 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm">
+        <div class="flex items-center space-x-3">
+          <img :src="currentUser.avatar" class="w-8 h-8 rounded-full flex-shrink-0" />
+          <input
+            v-model="newComment"
+            type="text"
+            placeholder="Add a comment..."
+            class="flex-1 bg-gray-100 dark:bg-gray-800 rounded-full py-2 px-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500"
+            @keydown.enter.prevent="sendComment"
+          />
+          <button
+            class="text-primary-500 hover:text-primary-600 font-medium text-sm disabled:opacity-50 transition-colors"
+            type="button"
+            :disabled="!newComment.trim()"
+            @click="sendComment"
+          >
+            Post
+          </button>
         </div>
       </div>
     </div>
@@ -161,6 +161,7 @@ const props = defineProps<{
   isGeneratingThumbs: boolean
   messages: any[]
   currentUser: any
+  title: string
 }>()
 
 const emit = defineEmits<{

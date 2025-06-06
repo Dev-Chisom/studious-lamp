@@ -283,7 +283,7 @@
 			<button
 				type="submit"
 				:disabled="!meta.valid || apiLoading"
-				class="w-full sm:w-auto px-6 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2"
+				class="w-full sm:w-auto px-6 py-3 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2"
 				:class="{
 					'bg-primary-600 text-white hover:bg-primary-700': meta.valid && !apiLoading,
 					'bg-primary-500 text-white cursor-wait': apiLoading,

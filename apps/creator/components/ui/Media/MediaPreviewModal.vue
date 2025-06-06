@@ -4,38 +4,64 @@
     class="fixed inset-0 z-[999] bg-black/90 backdrop-blur-sm"
     @click.self="handleBackdropClick"
   >
-    <div class="relative w-full h-full flex">
-      <!-- Close Button -->
+    <div class="relative w-full h-full flex flex-col md:flex-row">
+      <!-- Mobile Header -->
+      <div class="md:hidden flex items-center justify-between p-4 bg-black/20 backdrop-blur-sm">
+        <button
+          v-if="showEdit && mediaItems.length < maxFiles"
+          type="button"
+          class="w-10 h-10 btn-primary rounded-full flex items-center justify-center shadow-lg"
+          @click="triggerAddMedia"
+        >
+          <Icon name="lucide:plus" class="w-5 h-5 text-white" />
+        </button>
+        
+        <div v-else-if="showEdit && mediaItems.length >= maxFiles" class="bg-amber-500/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-medium">
+          Max {{ maxFiles }} files
+        </div>
+        
+        <div v-else></div>
+        
+        <button
+          type="button"
+          class="w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200"
+          @click="handleClose"
+        >
+          <Icon name="lucide:x" class="w-5 h-5 text-white" />
+        </button>
+      </div>
+
+      <!-- Desktop Close Button -->
       <button
         type="button"
-        class="absolute top-6 right-6 z-50 w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+        class="hidden md:block absolute top-2 right-6 z-50 w-12 h-12 bg-white/10 dark:bg-gray-900/10 hover:bg-white/20 dark:hover:bg-gray-900/20 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
         @click="handleClose"
       >
-        <Icon name="lucide:x" class="w-6 h-6 text-white" />
+        <Icon name="lucide:x" class="w-6 h-6 text-gray-900 dark:text-white" />
       </button>
 
-      <!-- Add Media Button -->
+      <!-- Desktop Add Media Button -->
       <button
         v-if="showEdit && mediaItems.length < maxFiles"
         type="button"
-        class="absolute top-6 left-6 z-50 w-12 h-12 btn-primary rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-lg"
+        class="hidden md:block absolute top-6 left-6 z-50 w-12 h-12 btn-primary rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-lg"
         @click="triggerAddMedia"
       >
         <Icon name="lucide:plus" class="w-6 h-6 text-white" />
       </button>
 
-      <!-- File Limit Warning -->
+      <!-- Desktop File Limit Warning -->
       <div 
         v-if="showEdit && mediaItems.length >= maxFiles"
-        class="absolute top-6 left-6 z-50 bg-amber-500/90 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium"
+        class="hidden md:block absolute top-6 left-6 z-50 bg-amber-500/90 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium"
       >
         Maximum {{ maxFiles }} files reached
       </div>
 
       <!-- Main Content Area -->
-      <div class="flex-1 flex">
+      <div class="flex-1 flex flex-col md:flex-row min-h-0">
         <!-- Media Display Area -->
-        <div class="flex-1 relative flex items-center justify-center p-6">
+        <div class="flex-1 relative flex items-center justify-center p-3 md:p-6 min-h-0">
           <MediaCarousel
             v-if="mediaItems.length > 0"
             :media-items="mediaItems"
@@ -49,34 +75,44 @@
           
           <!-- Empty State -->
           <div v-else class="text-center text-white/60">
-            <Icon name="lucide:image-off" class="w-20 h-20 mx-auto mb-4 opacity-50" />
-            <h3 class="text-xl font-medium mb-2">No media selected</h3>
-            <p>Add some files to get started</p>
+            <Icon name="lucide:image-off" class="w-16 md:w-20 h-16 md:h-20 mx-auto mb-4 opacity-50" />
+            <h3 class="text-lg md:text-xl font-medium mb-2">No media selected</h3>
+            <p class="text-sm md:text-base">Add some files to get started</p>
           </div>
         </div>
 
-        <!-- Sidebar -->
-        <MediaPreviewSidebar
+        <!-- Sidebar - Mobile: Bottom Sheet, Desktop: Right Sidebar -->
+        <div
           v-if="showSidebar || (enableVideoEdit && currentMedia?.type === 'video')"
-          :current-media="currentMedia"
-          :current-index="internalCurrentIndex"
-          :enable-video-edit="enableVideoEdit"
-          :show-comments="showSidebar"
-          :video-thumbnails="getVideoThumbnails(internalCurrentIndex)"
-          :selected-cover-index="getSelectedCoverIndex(internalCurrentIndex)"
-          :custom-cover="getCustomCover(internalCurrentIndex)"
-          :is-generating-thumbs="isGeneratingThumbs"
-          :messages="messages"
-          :current-user="currentUser"
-          @select-cover="selectCover"
-          @clear-cover="clearCover"
-          @custom-cover-change="onCustomCoverChange"
-          @send-message="sendMessage"
-        />
+          class="w-full md:w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-t md:border-l md:border-t-0 border-white/20 flex flex-col max-h-[40vh] md:max-h-none"
+        >
+          <!-- Mobile Sidebar Handle -->
+          <div class="md:hidden flex justify-center py-2 border-b border-white/10">
+            <div class="w-12 h-1 bg-gray-400 rounded-full"></div>
+          </div>
+          
+          <MediaPreviewSidebar
+            :current-media="currentMedia"
+            :current-index="internalCurrentIndex"
+            :enable-video-edit="enableVideoEdit"
+            :show-comments="showSidebar"
+            :video-thumbnails="getVideoThumbnails(internalCurrentIndex)"
+            :selected-cover-index="getSelectedCoverIndex(internalCurrentIndex)"
+            :custom-cover="getCustomCover(internalCurrentIndex)"
+            :is-generating-thumbs="isGeneratingThumbs"
+            :title="title"
+            :messages="messages"
+            :current-user="currentUser"
+            @select-cover="selectCover"
+            @clear-cover="clearCover"
+            @custom-cover-change="onCustomCoverChange"
+            @send-message="sendMessage"
+          />
+        </div>
       </div>
 
       <!-- Bottom Controls -->
-      <div class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex items-center space-x-6">
+      <div class="absolute bottom-4 md:bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-6">
         <!-- Navigation Dots -->
         <div v-if="mediaItems.length > 1" class="flex space-x-2">
           <button
@@ -84,7 +120,7 @@
             :key="index"
             type="button"
             :class="[
-              'w-3 h-3 rounded-full transition-all duration-200',
+              'w-2.5 h-2.5 md:w-3 md:h-3 rounded-full transition-all duration-200',
               index === internalCurrentIndex 
                 ? 'bg-white scale-125' 
                 : 'bg-white/40 hover:bg-white/60'
@@ -98,16 +134,18 @@
           v-if="showNextButton"
           type="button"
           :disabled="mediaItems.length === 0 || isUploading"
-          class="btn-primary disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-medium py-3 px-8 rounded-full transition-all duration-200 hover:scale-105 shadow-lg"
+          class="btn-primary disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-medium py-2.5 px-6 md:py-3 md:px-8 rounded-full transition-all duration-200 hover:scale-105 shadow-lg text-sm md:text-base"
           @click="handleUpload"
         >
           <span v-if="isUploading" class="flex items-center space-x-2">
-            <Icon name="lucide:loader-2" class="animate-spin w-5 h-5" />
-            <span>Uploading {{ uploadProgress.completed }}/{{ uploadProgress.total }}...</span>
+            <Icon name="lucide:loader-2" class="animate-spin w-4 h-4 md:w-5 md:h-5" />
+            <span class="hidden sm:inline">Uploading {{ uploadProgress.completed }}/{{ uploadProgress.total }}...</span>
+            <span class="sm:hidden">{{ uploadProgress.completed }}/{{ uploadProgress.total }}</span>
           </span>
           <span v-else class="flex items-center space-x-2">
-            <Icon name="lucide:upload" class="w-5 h-5" />
-            <span>Upload & Continue</span>
+            <Icon name="lucide:upload" class="w-4 h-4 md:w-5 md:h-5" />
+            <span class="hidden sm:inline">Upload & Continue</span>
+            <span class="sm:hidden">Upload</span>
           </span>
         </button>
       </div>
@@ -131,7 +169,6 @@ import { useI18n } from 'vue-i18n'
 import { useNotification } from '../../../composables/useNotifications';
 import MediaPreviewSidebar from '../../../components/ui/Media/MediaPreviewSidebar.vue';
 import MediaCarousel from './MediaCarousel.vue';
-
 
 const props = defineProps({
   isOpen: Boolean,
@@ -178,6 +215,10 @@ const props = defineProps({
   uploadProgress: {
     type: Object,
     default: () => ({ completed: 0, total: 0 })
+  },
+  title: {
+    type: String,
+    default: 'Media Preview'
   }
 })
 

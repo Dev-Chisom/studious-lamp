@@ -14,7 +14,7 @@
 					<input
 						v-model="searchQuery"
 						placeholder="Search conversations..."
-						class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-1 focus:ring-blue-500 focus:border-transparent"
 					/>
 				</div>
 			</div>
@@ -219,7 +219,7 @@
 										:key="reaction.emoji"
 										@click="toggleReaction(message, reaction.emoji)"
 										class="inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs bg-white/20 hover:bg-white/30 transition-colors"
-										:class="{ 'ring-2 ring-yellow-400': reaction.users.includes('currentUser') }"
+										:class="{ 'ring-1 ring-yellow-400': reaction.users.includes('currentUser') }"
 									>
 										<span>{{ reaction.emoji }}</span>
 										<span>{{ reaction.count }}</span>

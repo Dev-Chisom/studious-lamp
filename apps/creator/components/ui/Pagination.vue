@@ -218,7 +218,7 @@ const rangeText = computed(() => {
 					page:</label>
 				<select
 					id="per-page-select"
-					class="appearance-none bg-gray-100 dark:bg-gray-800 border border-transparent rounded-md px-3 py-1.5 pr-8 text-sm text-gray-900 dark:text-gray-100 cursor-pointer bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E')] bg-no-repeat bg-[right_0.5rem_center] bg-[length:1rem] focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+					class="appearance-none bg-gray-100 dark:bg-gray-800 border border-transparent rounded-md px-3 py-1.5 pr-8 text-sm text-gray-900 dark:text-gray-100 cursor-pointer bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E')] bg-no-repeat bg-[right_0.5rem_center] bg-[length:1rem] focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
 					:value="localPerPage" :disabled="disabled" @change="changePerPage">
 					<option v-for="option in perPageOptions" :key="option" :value="option">
 						{{ option }}

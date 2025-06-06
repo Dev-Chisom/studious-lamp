@@ -147,7 +147,7 @@
 		</div>
 
 		<MediaPreviewModal
-			v-if="showModal" :is-open="showModal" :media-items="mediaItemsForModal"
+			v-if="showModal" :is-open="showModal" :media-items="mediaItemsForModal" title="Comments"
 			:current-index="currentMediaIndex" :show-sidebar="true" :messages="allCommentsForModal"
 			:current-user="currentUser" @close="closeModal" @update:current-index="updateMediaIndex"
 			@send-message="handleNewComment" />

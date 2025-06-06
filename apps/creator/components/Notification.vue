@@ -36,7 +36,7 @@
 
 						<div class="ml-4 flex-shrink-0 flex">
 							<button
-								class="rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+								class="rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500"
 								@click="dismissNotification(notification.id)"
 							>
 								<span class="sr-only">Close</span> <Icon name="lucide:x" class="h-5 w-5" />
