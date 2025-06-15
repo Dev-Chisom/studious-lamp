@@ -148,8 +148,6 @@ async function processUploads(mediaData: any[], creatorApi: any) {
       fileType: file.type === 'video' ? 'video' : 'image',
       size: file.size
     };
-
-    console.log('Processing uploads:', mediaData, file);
     // For videos, include coverName if coverFile is present
     if (file.type === 'video' && file.coverFile) {
       payload.coverName = file.coverFile.name;
@@ -238,7 +236,6 @@ function toggleSelect(media: MediaItem) {
 }
 
 function onFilesSelected(files: File[]) {
-  console.log('onFilesSelected - Input files:', files, previewFiles.value);
 
   const remainingSlots = MAX_FILES - selectedFiles.value.length;
   if (remainingSlots <= 0) {
@@ -369,32 +366,25 @@ async function handleBatchUpload(mediaData: any[]) {
     const creatorApi = createCreatorApi();
     const results = await processUploads(mediaData, creatorApi);
 
-    // Log the raw upload results from processUploads
-    console.log('Raw upload results:', results);
-    // Log the structure being emitted to the parent
    const emittedResults = results.map((r, index) => {
   // Find the original file object in mediaData
   const original = mediaData[index];
-  console.log(original, 'jhdjh')
   return {
     id: r.mediaFileId,
-    name: original?.name, // Always include the original name
+    name: original?.name,
     type: original?.type,
     url: r.fileUrl || r.url,
     thumbnailUrl: original?.type === 'image' ? (r.fileUrl || r.url) : undefined,
     coverUrl: original?.type === 'video' ? r.coverUrl : undefined,
-    // ...other fields as needed
   };
 });
 emit('upload-complete', emittedResults);
-    console.log('Emitting upload-complete with:', emittedResults);
     emit('upload-complete', emittedResults);
     previewFiles.value = [];
     showPreviewModal.value = false;
 
   } catch (error) {
     notification.error(t('notifications.mediaUploadFailed'));
-    console.error('Upload failed:', error);
   } finally {
     isUploading.value = false;
   }

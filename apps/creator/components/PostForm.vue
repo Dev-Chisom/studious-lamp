@@ -544,7 +544,6 @@ function addMediaFromGallery(selectedMedia: any[], setFieldValue: Function) {
 }
 
 function handleUploadComplete(results: any[], setFieldValue: Function) {
-  console.log('[handleUploadComplete] received results:', results);
 
   // Filter out any results with blob URLs
   const validResults = results.filter(result => !isBlobUrl(result.url || result.fileUrl || ''));
@@ -582,11 +581,9 @@ function handleUploadComplete(results: any[], setFieldValue: Function) {
     );
 
   uploadedMediaFiles.value = merged;
-  console.log('[handleUploadComplete] uploadedMediaFiles after update:', uploadedMediaFiles.value);
 
   const ids = uploadedMediaFiles.value.map(r => r.id);
   setFieldValue('mediaFiles', ids);
-  console.log('[handleUploadComplete] setFieldValue mediaFiles:', ids);
 }
 
 // Add a watcher to log changes to uploadedMediaFiles and filter out blob URLs
@@ -595,12 +592,10 @@ watch(uploadedMediaFiles, (newVal, oldVal) => {
   const filtered = newVal.filter(media => !isBlobUrl(media.url || ''));
   
   if (filtered.length !== newVal.length) {
-    console.warn('[watch] Filtered out blob URLs from uploadedMediaFiles');
     uploadedMediaFiles.value = filtered;
     return;
   }
   
-  console.log('[watch] uploadedMediaFiles changed:', newVal);
 }, { deep: true });
 
 function removeMediaFile(index: number, setFieldValue: Function) {
