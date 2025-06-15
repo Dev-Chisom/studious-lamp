@@ -3,11 +3,11 @@
     <div class="flex items-center justify-between">
       <!-- Progress/Status -->
       <div class="flex items-center space-x-3">
-        <div v-if="isUploading" class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+        <div v-if="isUploading" class="flex items-center space-x-2 text-xs md:text-sm text-gray-600 dark:text-gray-400">
           <Icon name="lucide:loader-2" class="w-4 h-4 animate-spin" />
           <span>Uploading...</span>
         </div>
-        <div v-else-if="canProceed" class="flex items-center space-x-2 text-sm text-green-600 dark:text-green-400">
+        <div v-else-if="canProceed" class="flex items-center space-x-2 text-xs md:text-sm text-green-600 dark:text-green-400">
           <Icon name="lucide:check-circle" class="w-4 h-4" />
           <span>Ready to proceed</span>
         </div>
@@ -18,7 +18,7 @@
         type="button"
         :disabled="!canProceed || isUploading"
         :class="[
-          'px-8 py-3 rounded-xl font-medium transition-all duration-200 transform btn-primary',
+          'px-8 py-3 rounded-xl font-medium transition-all duration-200 transform btn-primary text-sm md:text-base',
           canProceed && !isUploading
             ? 'hover:scale-105 shadow-lg hover:shadow-xl'
             : 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'

@@ -69,12 +69,12 @@
 
         <!-- Media Info Overlay -->
         <div class="absolute bottom-0 left-0 right-0 bg-primary p-4">
-          <h3 class="text-white font-medium text-lg">{{ currentMedia.name }}</h3>
-          <div class="flex items-center space-x-4 text-white/80 text-sm mt-1">
-            <span class="flex items-center space-x-1">
+          <!-- <h3 class="text-white font-medium text-lg">{{ currentMedia.name }}</h3>-->
+          <div class="flex items-center space-x-4 text-white/80 text-sm mt-1"> 
+            <!-- <span class="flex items-center space-x-1">
               <Icon :name="currentMedia.type === 'image' ? 'lucide:image' : 'lucide:video'" class="w-4 h-4" />
               <span>{{ currentMedia.type }}</span>
-            </span>
+            </span> -->
             <span v-if="currentMedia.size">{{ formatFileSize(currentMedia.size) }}</span>
             <span v-if="currentMedia.duration">{{ formatDuration(currentMedia.duration) }}</span>
           </div>

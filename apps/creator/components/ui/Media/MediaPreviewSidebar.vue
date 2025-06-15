@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="p-4 border-b border-white/10">
       <div class="flex items-center justify-between">
-        <h3 class="text-base text-gray-900 dark:text-white">{{ title }}</h3>
+        <h3 class="text-sm md:text-base text-gray-900 dark:text-white">{{ title }}</h3>
         <div v-if="!showComments" class="text-sm text-gray-500 dark:text-gray-400">
           {{ currentIndex + 1 }} of {{ totalItems }}
         </div>
@@ -16,8 +16,8 @@
       <div class="flex-1 overflow-y-auto">
         <!-- File Information -->
         <div v-if="!showComments" class="p-4 border-b border-white/10">
-           <h4 class="font-medium text-gray-900 dark:text-white mb-3">File Information</h4>
-        <div class="space-y-2 text-sm">
+           <h4 class="font-medium text-gray-900 dark:text-white mb-3 text-xs md:text-sm">File Information</h4>
+        <div class="space-y-2 text-[11px] md:text-sm">
           <div class="flex justify-between">
             <span class="text-gray-500 dark:text-gray-400">Name:</span>
             <span class="text-gray-900 dark:text-white font-medium truncate ml-2">{{ currentMedia?.name }}</span>

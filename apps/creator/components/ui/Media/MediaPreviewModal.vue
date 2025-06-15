@@ -76,8 +76,8 @@
           <!-- Empty State -->
           <div v-else class="text-center text-white/60">
             <Icon name="lucide:image-off" class="w-16 md:w-20 h-16 md:h-20 mx-auto mb-4 opacity-50" />
-            <h3 class="text-lg md:text-xl font-medium mb-2">No media selected</h3>
-            <p class="text-sm md:text-base">Add some files to get started</p>
+            <h3 class="text-base md:text-xl font-medium mb-2">No media selected</h3>
+            <p class="text-xs md:text-base">Add some files to get started</p>
           </div>
         </div>
 
@@ -478,6 +478,7 @@ function handleUpload() {
   const mediaData = props.mediaItems.map((media, index) => {
     const baseData = {
       id: media.id || `temp-${index}`,
+      tempId: media.tempId,
       name: media.name || media.file?.name || `media-${index}`,
       size: media.size || media.file?.size || 0,
       type: media.type || (media.file?.type?.startsWith('image/') ? 'image' : 'video'),

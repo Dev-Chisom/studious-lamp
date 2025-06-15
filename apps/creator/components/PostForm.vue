@@ -63,7 +63,7 @@
 									<!-- Image Display -->
 									<img
 										v-if="media.type === 'image'"
-										:src="media.url"
+										:src="media.thumbnailUrl || media.url"
 										:alt="media.name"
 										class="w-full h-full object-cover"
 									/>
@@ -137,7 +137,6 @@
 								<span class="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500 dark:hover:text-primary-300">
 									{{ t('content.uploadFiles') }}
 								</span>
-								<!-- <p class="pl-1">or drag and drop</p> -->
 							</div>
               
 							<p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
@@ -317,7 +316,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { Form, Field } from 'vee-validate';
 import * as yup from 'yup';
@@ -335,6 +334,8 @@ interface MediaFile {
   size?: number
   cover?: string
   duration?: number
+  thumbnailUrl?: string
+  tempId?: string
 }
 
 interface FormData {
@@ -383,6 +384,9 @@ const existingMediaFiles = ref<MediaFile[]>([]);
 const uploadedMediaFiles = ref<MediaFile[]>([]);
 const isScheduled = ref(false);
 const showMediaGallery = ref(false);
+
+// Keep track of blob URLs to clean them up
+const blobUrls = ref<Set<string>>(new Set());
 
 // Media preview modal state
 const previewModal = ref({
@@ -463,6 +467,27 @@ const schema = computed(() => yup.object({
     ),
 }));
 
+// Utility function to check if URL is a blob URL
+function isBlobUrl(url: string): boolean {
+  return url.startsWith('blob:');
+}
+
+// Utility function to clean up blob URLs
+function cleanupBlobUrl(url: string) {
+  if (isBlobUrl(url)) {
+    URL.revokeObjectURL(url);
+    blobUrls.value.delete(url);
+  }
+}
+
+// Clean up all blob URLs
+function cleanupAllBlobUrls() {
+  blobUrls.value.forEach(url => {
+    URL.revokeObjectURL(url);
+  });
+  blobUrls.value.clear();
+}
+
 // Get submit button text based on mode and state
 function getSubmitButtonText(): string {
   if (props.isEditMode) {
@@ -474,6 +499,9 @@ function getSubmitButtonText(): string {
 
 // Reset form function
 const resetForm = () => {
+  // Clean up any blob URLs before resetting
+  cleanupAllBlobUrls();
+  
   mediaFiles.value = [];
   existingMediaFiles.value = [];
   uploadedMediaFiles.value = [];
@@ -481,7 +509,11 @@ const resetForm = () => {
 };
 
 function onSubmit(values: any) {
-  const mediaFileIds = uploadedMediaFiles.value.map(m => m.id).filter(Boolean);
+  const mediaFileIds = uploadedMediaFiles.value
+    .filter(m => m.id && !isBlobUrl(m.url)) // Filter out blob URLs
+    .map(m => m.id)
+    .filter(Boolean);
+    
   const submitData = {
     title: values.title,
     body: values.content,
@@ -495,23 +527,90 @@ function onSubmit(values: any) {
 }
 
 function saveDraft() {
-  const mediaFileIds = uploadedMediaFiles.value.map(m => m.id).filter(Boolean);
+  const mediaFileIds = uploadedMediaFiles.value
+    .filter(m => m.id && !isBlobUrl(m.url)) // Filter out blob URLs
+    .map(m => m.id)
+    .filter(Boolean);
+    
   emit('draft', { mediaFiles: mediaFileIds });
 }
 
 function addMediaFromGallery(selectedMedia: any[], setFieldValue: Function) {
-  uploadedMediaFiles.value = [...uploadedMediaFiles.value, ...selectedMedia];
+  // Filter out any items with blob URLs
+  const validMedia = selectedMedia.filter(media => !isBlobUrl(media.url || ''));
+  
+  uploadedMediaFiles.value = [...uploadedMediaFiles.value, ...validMedia];
   setFieldValue('mediaFiles', uploadedMediaFiles.value);
 }
 
 function handleUploadComplete(results: any[], setFieldValue: Function) {
-  const successfulUploads = results.filter(result => result.success);
-  const newMedia = successfulUploads.map(result => result.data);
-  uploadedMediaFiles.value = [...uploadedMediaFiles.value, ...newMedia];
-  setFieldValue('mediaFiles', uploadedMediaFiles.value);
+  console.log('[handleUploadComplete] received results:', results);
+
+  // Filter out any results with blob URLs
+  const validResults = results.filter(result => !isBlobUrl(result.url || result.fileUrl || ''));
+
+  // Find the temp objects that match the new uploads (by file name or tempId)
+  const tempObjects = uploadedMediaFiles.value.filter(m => String(m.id).startsWith('temp-'));
+
+  // Map new uploads, merging the name from the temp object if available, and set correct thumbnail/cover
+  const newMedia = validResults.map(result => {
+    const match = tempObjects.find(
+      t => t.name === result.name || t.tempId === result.tempId
+    );
+    
+    return {
+      id: result.mediaFileId || result._id,
+      name: result.name || (match && match.name),
+      type: result.type,
+      url: result.fileUrl || result.url,
+      thumbnailUrl: result.type === 'image' ? (result.fileUrl || result.url) : result.thumbnailUrl,
+      coverUrl: result.type === 'video' ? result.coverUrl : undefined,
+      ...result
+    };
+  });
+
+  // Remove all temp objects from the array
+  const filtered = uploadedMediaFiles.value.filter(
+    m => !String(m.id).startsWith('temp-')
+  );
+
+  // Only keep unique IDs (avoid duplicates) and filter out blob URLs
+  const merged = [...filtered, ...newMedia]
+    .filter(item => !isBlobUrl(item.url || ''))
+    .filter((item, index, self) =>
+      index === self.findIndex((t) => t.id === item.id)
+    );
+
+  uploadedMediaFiles.value = merged;
+  console.log('[handleUploadComplete] uploadedMediaFiles after update:', uploadedMediaFiles.value);
+
+  const ids = uploadedMediaFiles.value.map(r => r.id);
+  setFieldValue('mediaFiles', ids);
+  console.log('[handleUploadComplete] setFieldValue mediaFiles:', ids);
 }
 
+// Add a watcher to log changes to uploadedMediaFiles and filter out blob URLs
+watch(uploadedMediaFiles, (newVal, oldVal) => {
+  // Filter out any blob URLs that might have been added
+  const filtered = newVal.filter(media => !isBlobUrl(media.url || ''));
+  
+  if (filtered.length !== newVal.length) {
+    console.warn('[watch] Filtered out blob URLs from uploadedMediaFiles');
+    uploadedMediaFiles.value = filtered;
+    return;
+  }
+  
+  console.log('[watch] uploadedMediaFiles changed:', newVal);
+}, { deep: true });
+
 function removeMediaFile(index: number, setFieldValue: Function) {
+  const mediaToRemove = uploadedMediaFiles.value[index];
+  
+  // Clean up blob URL if it exists
+  if (mediaToRemove && isBlobUrl(mediaToRemove.url || '')) {
+    cleanupBlobUrl(mediaToRemove.url);
+  }
+  
   uploadedMediaFiles.value.splice(index, 1);
   setFieldValue('mediaFiles', uploadedMediaFiles.value);
 }
@@ -547,6 +646,11 @@ function handleCoverUpdate(data: { index: number, cover: string | null }) {
     uploadedMediaFiles.value[data.index].cover = data.cover || undefined;
   }
 }
+
+// Clean up blob URLs when component is unmounted
+onUnmounted(() => {
+  cleanupAllBlobUrls();
+});
 
 defineExpose({
   resetForm

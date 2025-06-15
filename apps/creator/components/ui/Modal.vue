@@ -15,17 +15,22 @@
 					'max-w-full': size === 'full'
 				}"
 			>
-				<div class="absolute right-0 top-0 pr-4 pt-4">
-					<button
-						type="button"
-						class="rounded-md bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-						@click="emit('close')"
-					>
-						<span class="sr-only">Close</span> <Icon name="lucide:x" class="h-6 w-6" />
-					</button>
+				<div class="relative">
+					<slot name="header" />
+					<div class="absolute right-0 top-0 pr-4 pt-4 z-20">
+						<button
+							type="button"
+							class="rounded-md bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+							@click="emit('close')"
+						>
+							<span class="sr-only">Close</span> <Icon name="lucide:x" class="h-6 w-6" />
+						</button>
+					</div>
+					<template v-if="showDivider">
+						<div class="border-b border-gray-200 dark:border-gray-700"></div>
+					</template>
 				</div>
-
-				<div class="py-6">
+				<div class="py-4">
 					<slot />
 				</div>
 			</div>
@@ -40,10 +45,12 @@ interface ModalEmits {
 
 interface ModalProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'
+  showDivider?: boolean
 }
 
 withDefaults(defineProps<ModalProps>(), {
-  size: 'lg' // Default to large size (max-w-2xl)
+  size: 'lg', // Default to large size (max-w-2xl)
+  showDivider: false
 });
 
 const emit = defineEmits<ModalEmits>();

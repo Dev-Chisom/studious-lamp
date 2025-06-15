@@ -1,78 +1,39 @@
 <template>
   <Modal v-if="isOpen" size="xl" @close="close">
+    <template #header>
+      <MediaGalleryHeader :title="t('mediaLibrary.title') || 'Media Library'" />
+    </template>
     <div class="overflow-hidden">
-      <!-- Header -->
-      <MediaGalleryHeader 
-        :title="t('mediaLibrary.title') || 'Media Library'"
-        @close="close"
-      />
-
       <!-- Main Content -->
       <div class="flex flex-col h-[600px]">
         <!-- Tab Navigation -->
-        <MediaGalleryTabs 
-          :active-tab="activeTab"
-          :tabs="tabs"
-          @update:active-tab="activeTab = $event"
-        />
+        <MediaGalleryTabs :active-tab="activeTab" :tabs="tabs" @update:active-tab="activeTab = $event" />
 
         <!-- Content Area -->
         <div class="flex-1 overflow-hidden">
           <!-- Media Library Tab -->
-          <MediaLibraryTab
-            v-if="activeTab === 'library'"
-            :loading="loading"
-            :media-files="mediaFiles"
-            :selected-ids="selectedIds"
-            :current-page="currentPage"
-            :per-page="perPage"
-            :total-pages="totalPages"
-            :total-items="totalItems"
-            :active-media-tab="activeMediaTab"
-            @update:active-media-tab="activeMediaTab = $event"
-            @update:current-page="currentPage = $event"
-            @update:per-page="perPage = $event"
-            @toggle-select="toggleSelect"
-            @search="handleSearch"
-          />
+          <MediaLibraryTab v-if="activeTab === 'library'" :loading="loading" :media-files="mediaFiles"
+            :selected-ids="selectedIds" :current-page="currentPage" :per-page="perPage" :total-pages="totalPages"
+            :total-items="totalItems" :active-media-tab="activeMediaTab"
+            @update:active-media-tab="activeMediaTab = $event" @update:current-page="currentPage = $event"
+            @update:per-page="perPage = $event" @toggle-select="toggleSelect" @search="handleSearch" />
 
           <!-- Device Upload Tab -->
-          <DeviceUploadTab
-            v-else
-            :selected-files="selectedFiles"
-            :max-files="MAX_FILES"
-            @files-selected="onFilesSelected"
-            @remove-file="removeSelectedFile"
-          />
+          <DeviceUploadTab v-else :selected-files="selectedFiles" :max-files="MAX_FILES"
+            @files-selected="onFilesSelected" @remove-file="removeSelectedFile" />
         </div>
 
         <!-- Footer -->
-        <MediaGalleryFooter
-          :can-proceed="canProceed"
-          :is-uploading="isUploading"
-          @next="handleNext"
-        />
+        <MediaGalleryFooter :can-proceed="canProceed" :is-uploading="isUploading" @next="handleNext" />
       </div>
     </div>
 
     <!-- Preview Modal -->
     <Teleport to="body">
-      <MediaPreviewModal
-        v-if="showPreviewModal"
-        :is-open="showPreviewModal"
-        :media-items="previewMediaItems"
-        :current-index="previewCurrentIndex"
-        :enable-video-edit="true"
-        :show-edit="true"
-        :show-next-button="true"
-        :max-files="MAX_FILES"
-        :is-uploading="isUploading"
-        :upload-progress="uploadProgress"
-        @close="closePreviewModal"
-        @add-media="onAddMedia"
-        @update:current-index="updatePreviewIndex"
-        @next="handleBatchUpload"
-      />
+      <MediaPreviewModal v-if="showPreviewModal" :is-open="showPreviewModal" :media-items="previewMediaItems"
+        :current-index="previewCurrentIndex" :enable-video-edit="true" :show-edit="true" :show-next-button="true"
+        :max-files="MAX_FILES" :is-uploading="isUploading" :upload-progress="uploadProgress" @close="closePreviewModal"
+        @add-media="onAddMedia" @update:current-index="updatePreviewIndex" @next="handleBatchUpload" />
     </Teleport>
   </Modal>
 </template>
@@ -109,6 +70,7 @@ interface MediaItem {
   duration?: number
   file?: File
   thumbnailUrl?: string
+  tempId?: string // Added for temporary ID tracking
 }
 
 const MAX_FILES = 10;
@@ -140,62 +102,24 @@ const perPage = ref(12);
 const totalItems = ref(0);
 const totalPages = ref(1);
 
-// const fetchMediaFiles = async () => {
-//   loading.value = true;
-//   try {
-//     const creatorApi = createCreatorApi();
-//     const params: any = { 
-//       page: currentPage.value.toString(), 
-//       limit: perPage.value.toString(),
-//       search: searchQuery.value
-//     };
-    
-//     if (activeMediaTab.value === 'images') {
-//       params.type = 'image';
-//     } else if (activeMediaTab.value === 'videos') {
-//       params.type = 'video';
-//     }
-    
-//     const response = await creatorApi.getMediaFiles(params);
-    
-//     mediaFiles.value = (response.data.mediaFiles || []).map((file: any) => ({
-//       id: file._id,
-//       url: file.url,
-//       thumbnailUrl: file.thumbnailUrl || file.url,
-//       name: file.url.split('/').pop() || 'media',
-//       type: file.type,
-//       size: file.size,
-//       duration: file.duration
-//     }));
-    
-//     totalItems.value = response.data.pagination?.total || 0;
-//     totalPages.value = response.data.pagination?.pages || 1;
-//   } catch (error) {
-//     notification.error(t('notifications.contentLoadFailed'));
-//     mediaFiles.value = [];
-//   } finally {
-//     loading.value = false;
-//   }
-// };
-
 const fetchMediaFiles = async () => {
   loading.value = true;
   try {
     const creatorApi = createCreatorApi();
-    const params: any = { 
-      page: currentPage.value.toString(), 
+    const params: any = {
+      page: currentPage.value.toString(),
       limit: perPage.value.toString(),
       search: searchQuery.value
     };
-    
+
     if (activeMediaTab.value === 'images') {
       params.type = 'image';
     } else if (activeMediaTab.value === 'videos') {
       params.type = 'video';
     }
-    
+
     const response = await creatorApi.getMediaFiles(params);
-    
+
     mediaFiles.value = (response.data.mediaFiles || []).map((file: any) => ({
       id: file._id,
       url: file.url,
@@ -205,7 +129,7 @@ const fetchMediaFiles = async () => {
       size: file.size,
       duration: file.duration
     }));
-    
+
     totalItems.value = response.data.pagination?.total || 0;
     totalPages.value = response.data.pagination?.pages || 1;
   } catch (error) {
@@ -216,6 +140,53 @@ const fetchMediaFiles = async () => {
   }
 };
 
+async function processUploads(mediaData: any[], creatorApi: any) {
+  const filesPayload = mediaData.map(file => {
+    const payload: any = {
+      uuid: file.uuid || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15)),
+      fileName: file.name,
+      fileType: file.type === 'video' ? 'video' : 'image',
+      size: file.size
+    };
+
+    console.log('Processing uploads:', mediaData, file);
+    // For videos, include coverName if coverFile is present
+    if (file.type === 'video' && file.coverFile) {
+      payload.coverName = file.coverFile.name;
+    }
+    return payload;
+  });
+  const response = await creatorApi.uploadMediaFile({ files: filesPayload });
+  const uploadResults = [];
+  for (let i = 0; i < response.data.length; i++) {
+    const { uploadUrl, fileKey, mediaFileId, coverUploadUrl } = response.data[i];
+    const fileObj = mediaData[i].file;
+    await fetch(uploadUrl, {
+      method: 'PUT',
+      body: fileObj,
+      headers: {
+        'Content-Type': fileObj.type
+      }
+    });
+    // For videos, upload the cover image if present
+    if (coverUploadUrl && mediaData[i].coverFile) {
+      await fetch(coverUploadUrl, {
+        method: 'PUT',
+        body: mediaData[i].coverFile,
+        headers: {
+          'Content-Type': mediaData[i].coverFile.type
+        }
+      });
+    }
+    uploadResults.push({
+      ...response.data[i],
+      fileKey,
+      mediaFileId
+    });
+  }
+  return uploadResults;
+}
+
 onMounted(() => {
   if (props.isOpen) {
     fetchMediaFiles();
@@ -224,7 +195,6 @@ onMounted(() => {
 
 watch(() => props.isOpen, (isOpen: boolean) => {
   if (isOpen) {
-    // Reset all state when modal opens
     selectedIds.value = [];
     selectedFiles.value = [];
     previewFiles.value = [];
@@ -249,11 +219,12 @@ const canProceed = computed(() => {
 
 const previewMediaItems = computed(() =>
   previewFiles.value.map((file: File, index: number) => ({
-    id: `preview-${index}`,
+    id: (file as any)?._id || (file as any)?.tempId || (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15)),
     url: URL.createObjectURL(file),
-    name: file.name,
+    name: file.name || file?.fileName,
     type: file.type.startsWith('image/') ? 'image' : 'video',
-    file
+    file,
+    tempId: (file as any)?.tempId // Include tempId if it exists
   }))
 );
 
@@ -267,6 +238,8 @@ function toggleSelect(media: MediaItem) {
 }
 
 function onFilesSelected(files: File[]) {
+  console.log('onFilesSelected - Input files:', files, previewFiles.value);
+
   const remainingSlots = MAX_FILES - selectedFiles.value.length;
   if (remainingSlots <= 0) {
     notification.error(`Maximum ${MAX_FILES} files allowed`);
@@ -274,21 +247,20 @@ function onFilesSelected(files: File[]) {
   }
 
   const filesToAdd = files.slice(0, remainingSlots).map((file) => {
+    const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
     const mediaItem = {
-      id: `selected-${Date.now()}-${Math.random()}`,
+      id: file?._id || file?.mediaFileId || tempId,
       url: URL.createObjectURL(file),
-      name: file.name,
+      name: file.name || file?.fileName,
       type: file.type.startsWith('image/') ? 'image' : 'video',
       size: file.size,
-      file
+      file,
+      tempId
     };
     return { mediaItem, file };
   });
 
-  // Add to selected files
   selectedFiles.value.push(...filesToAdd.map(item => item.mediaItem));
-  
-  // Add to preview files and show modal
   previewFiles.value = [...previewFiles.value, ...filesToAdd.map(item => item.file)];
   previewCurrentIndex.value = Math.max(0, previewFiles.value.length - filesToAdd.length);
   showPreviewModal.value = true;
@@ -300,8 +272,8 @@ function removeSelectedFile(index: number) {
     URL.revokeObjectURL(file.url);
   }
   selectedFiles.value.splice(index, 1);
-  
-  const previewIndex = previewFiles.value.findIndex(f => 
+
+  const previewIndex = previewFiles.value.findIndex(f =>
     file.file ? f === file.file : f.name === file.name
   );
   if (previewIndex > -1) {
@@ -313,51 +285,48 @@ function updatePreviewIndex(newIndex: number) {
   previewCurrentIndex.value = newIndex;
 }
 
-async function onAddMedia(files: File[]) {
+function onAddMedia(files: File[]) {
   if (!files || files.length === 0) return;
-  
+
   const remainingSlots = MAX_FILES - previewFiles.value.length;
   if (remainingSlots <= 0) {
     notification.error(`Maximum ${MAX_FILES} files allowed`);
     return;
   }
-  
+
   const filesToAdd = files.slice(0, remainingSlots);
   if (filesToAdd.length < files.length) {
     notification.warning(`Only ${filesToAdd.length} files added. Maximum ${MAX_FILES} files allowed.`);
   }
-  
+
   filesToAdd.forEach(file => {
+    const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
     const mediaItem = {
-      id: `selected-${Date.now()}-${Math.random()}`,
+      id: tempId,
       url: URL.createObjectURL(file),
-      name: file.name,
+      name: file.name || file?.fileName,
       type: file.type.startsWith('image/') ? 'image' : 'video',
       size: file.size,
-      file
+      file,
+      tempId
     };
     selectedFiles.value.push(mediaItem);
   });
-  
+
   previewFiles.value = [...previewFiles.value, ...filesToAdd];
 }
 
-// Fixed closePreviewModal function
 function closePreviewModal() {
-  // Clean up blob URLs for preview items
   previewMediaItems.value.forEach((item: any) => {
     if (item.url.startsWith('blob:')) {
       URL.revokeObjectURL(item.url);
     }
   });
-  
-  // Clear preview files
+
   previewFiles.value = [];
   showPreviewModal.value = false;
   previewCurrentIndex.value = 0;
-  
-  // IMPORTANT: Clear selectedFiles when closing without upload
-  // This fixes the issue where items show in gallery without being uploaded
+
   selectedFiles.value.forEach((file: any) => {
     if (file.url.startsWith('blob:')) {
       URL.revokeObjectURL(file.url);
@@ -369,36 +338,66 @@ function closePreviewModal() {
 async function handleBatchUpload(mediaData: any[]) {
   if (mediaData.length === 0) return;
 
+  // Helper to convert base64 to File
+  function base64ToFile(base64: string, filename: string, mimeType?: string) {
+    const arr = base64.split(',');
+    const match = arr[0].match(/:(.*?);/);
+    const mime = mimeType || (match ? match[1] : '');
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+  }
+
+  // Convert base64 cover to File for videos
+  mediaData.forEach(item => {
+    if (item.type === 'video' && item.cover && !item.coverFile) {
+      // Use the video file name as a prefix for the cover file name
+      const baseName = item.name ? item.name.replace(/\.[^/.]+$/, "") : `cover-${Date.now()}`;
+      const coverFileName = `${baseName}-cover.jpg`;
+      item.coverFile = base64ToFile(item.cover, coverFileName, 'image/jpeg');
+    }
+  });
+
   isUploading.value = true;
   uploadProgress.value = { completed: 0, total: mediaData.length };
 
   try {
-    // Upload logic here (same as original)
     const creatorApi = createCreatorApi();
-    
-    // Process uploads...
     const results = await processUploads(mediaData, creatorApi);
-    
-    notification.success(t('notifications.mediaUploaded'));
-    await fetchMediaFiles();
-    
-    emit('upload-complete', results);
-    
-    // Clear all preview data after successful upload
+
+    // Log the raw upload results from processUploads
+    console.log('Raw upload results:', results);
+    // Log the structure being emitted to the parent
+   const emittedResults = results.map((r, index) => {
+  // Find the original file object in mediaData
+  const original = mediaData[index];
+  console.log(original, 'jhdjh')
+  return {
+    id: r.mediaFileId,
+    name: original?.name, // Always include the original name
+    type: original?.type,
+    url: r.fileUrl || r.url,
+    thumbnailUrl: original?.type === 'image' ? (r.fileUrl || r.url) : undefined,
+    coverUrl: original?.type === 'video' ? r.coverUrl : undefined,
+    // ...other fields as needed
+  };
+});
+emit('upload-complete', emittedResults);
+    console.log('Emitting upload-complete with:', emittedResults);
+    emit('upload-complete', emittedResults);
     previewFiles.value = [];
     showPreviewModal.value = false;
-    
+
   } catch (error) {
     notification.error(t('notifications.mediaUploadFailed'));
     console.error('Upload failed:', error);
   } finally {
     isUploading.value = false;
   }
-}
-
-async function processUploads(mediaData: any[], creatorApi: any) {
-  // Implementation of upload logic
-  return [];
 }
 
 function handleSearch(query: string) {
@@ -408,14 +407,17 @@ function handleSearch(query: string) {
 
 function handleNext() {
   if (!canProceed.value) return;
-  
+
   if (activeTab.value === 'library') {
     const selected = mediaFiles.value.filter((m: any) => selectedIds.value.includes(m.id));
     emit('select', selected);
   } else {
     emit('select', selectedFiles.value);
+    // Ensure we're only emitting files with real IDs (not temp IDs)
+    // const validFiles = selectedFiles.value.filter(file => !file.tempId);
+    // emit('select', validFiles);
   }
-  
+
   close();
 }
 
@@ -431,13 +433,13 @@ function close() {
       URL.revokeObjectURL(item.url);
     }
   });
-  
+
   // Reset all state
   selectedFiles.value = [];
   selectedIds.value = [];
   previewFiles.value = [];
   showPreviewModal.value = false;
-  
+
   emit('close');
 }
 </script>

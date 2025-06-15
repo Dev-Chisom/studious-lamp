@@ -5,6 +5,8 @@ import { createAuthApi } from './auth';
 // const isDev = process.env.NODE_ENV === 'development'
 let BASE_URL = 'https://x-zunk.onrender.com';
 
+// let BASE_URL = 'https://1fe3-102-88-104-247.ngrok-free.app/';
+
 export function setApiBaseUrl(url: string) {
 	BASE_URL = url;
 }
@@ -27,7 +29,6 @@ export function createApiService(
 		},
 	});
 
-	// Store the current token in closure for updating
 	let currentToken = token;
 	let isLoggingOut = false;
 

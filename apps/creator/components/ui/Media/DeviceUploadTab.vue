@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex flex-col p-6">
+  <div class="h-full flex flex-col p-4">
     <!-- Upload Area -->
     <div class="flex-1 flex flex-col">
       <!-- Drag & Drop Zone -->

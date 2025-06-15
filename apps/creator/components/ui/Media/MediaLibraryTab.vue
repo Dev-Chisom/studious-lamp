@@ -1,7 +1,7 @@
 <template>
   <div class="h-full flex flex-col">
     <!-- Search and Filter Bar -->
-    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+    <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
       <div class="flex items-center justify-between space-x-4">
         <!-- Search Input -->
         <div class="flex-1 relative">
@@ -34,14 +34,11 @@
     <!-- Media Grid -->
     <div class="flex-1 overflow-y-auto p-6">
       <!-- Custom grid with SkeletonLoader image variant -->
-      <div v-if="loading" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-4">
-        <div v-for="n in 12" :key="n" class="relative rounded-xl overflow-hidden">
+      <div v-if="loading" class="grid md:grid-cols-3 grid-cols-2 lg:grid-cols-4 gap-4">
+        <div v-for="n in 12" :key="n" class="relative rounded-xl overflow-hidden aspect-square">
           <SkeletonLoader 
             variant="image" 
-            height="100%" 
-            width="100%" 
-            aspectRatio="1/1"
-            class="rounded-xl"
+            class="rounded-xl w-full h-full"
           />
           
           <!-- Add video play icon overlay to some items -->
@@ -70,7 +67,7 @@
         <p class="text-sm text-center">Try adjusting your search or upload some content</p>
       </div>
       
-      <div v-else class="grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-4">
+      <div v-else class="grid md:grid-cols-3 grid-cols-2 lg:grid-cols-4 gap-4">
         <MediaGridItem
           v-for="media in filteredMedia"
           :key="media.id"

@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'relative aspect-square rounded-xl overflow-hidden cursor-pointer group transition-all duration-200 hover:scale-105',
+      'relative aspect-[4/3] rounded-xl overflow-hidden cursor-pointer group transition-all duration-200 hover:scale-105',
       selected
         ? 'ring-4 ring-primary-500 shadow-lg shadow-primary-500/25'
         : 'hover:shadow-xl hover:shadow-black/10'
@@ -11,15 +11,15 @@
     <!-- Media Content -->
     <div class="w-full h-full bg-gray-100 dark:bg-gray-800">
       <img 
-        v-if="media.type === 'image'" 
-        :src="media.thumbnailUrl || media.url" 
-        :alt="media.name"
+        v-if="media?.type === 'image'" 
+        :src="media?.thumbnailUrl || media?.url" 
+        :alt="media?.name"
         class="w-full h-full object-cover"
         loading="lazy"
       />
-      <div v-else-if="media.type === 'video'" class="relative w-full h-full">
+      <div v-else-if="media?.type === 'video'" class="relative w-full h-full">
         <video 
-          :src="media.url" 
+          :src="media?.url" 
           class="w-full h-full object-cover"
           muted
           preload="metadata"
@@ -31,8 +31,8 @@
           </div>
         </div>
         <!-- Duration Badge -->
-        <div v-if="media.duration" class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
-          {{ formatDuration(media.duration) }}
+        <div v-if="media?.duration" class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+          {{ formatDuration(media?.duration) }}
         </div>
       </div>
     </div>
@@ -48,8 +48,8 @@
     <!-- Hover Overlay -->
     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
       <div class="absolute bottom-3 left-3 right-3">
-        <p class="text-white text-sm font-medium truncate">{{ media.name }}</p>
-        <p v-if="media.size" class="text-white/80 text-xs">{{ formatFileSize(media.size) }}</p>
+        <p class="text-white text-xs sm:text-sm font-medium truncate">{{ media?.name }}</p>
+        <p v-if="media?.size" class="text-white/80 text-[10px] sm:text-xs">{{ formatFileSize(media?.size) }}</p>
       </div>
     </div>
   </div>
