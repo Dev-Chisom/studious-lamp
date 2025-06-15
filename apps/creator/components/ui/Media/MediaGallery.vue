@@ -236,7 +236,6 @@ function toggleSelect(media: MediaItem) {
 }
 
 function onFilesSelected(files: File[]) {
-
   const remainingSlots = MAX_FILES - selectedFiles.value.length;
   if (remainingSlots <= 0) {
     notification.error(`Maximum ${MAX_FILES} files allowed`);
@@ -245,6 +244,10 @@ function onFilesSelected(files: File[]) {
 
   const filesToAdd = files.slice(0, remainingSlots).map((file) => {
     const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    
+    // Add tempId to the file object for better tracking
+    (file as any).tempId = tempId;
+    
     const mediaItem = {
       id: file?._id || file?.mediaFileId || tempId,
       url: URL.createObjectURL(file),
@@ -254,27 +257,47 @@ function onFilesSelected(files: File[]) {
       file,
       tempId
     };
-    return { mediaItem, file };
+    return mediaItem;
   });
 
-  selectedFiles.value.push(...filesToAdd.map(item => item.mediaItem));
-  previewFiles.value = [...previewFiles.value, ...filesToAdd.map(item => item.file)];
+  selectedFiles.value.push(...filesToAdd);
+  previewFiles.value.push(...filesToAdd.map(item => item.file));
+  
   previewCurrentIndex.value = Math.max(0, previewFiles.value.length - filesToAdd.length);
   showPreviewModal.value = true;
 }
 
 function removeSelectedFile(index: number) {
   const file = selectedFiles.value[index];
+  if (!file) return;
+  
+  // Clean up blob URL
   if (file.url.startsWith('blob:')) {
     URL.revokeObjectURL(file.url);
   }
+  
+  // Remove from selectedFiles
   selectedFiles.value.splice(index, 1);
-
-  const previewIndex = previewFiles.value.findIndex(f =>
-    file.file ? f === file.file : f.name === file.name
-  );
+  
+  // Find and remove from previewFiles using tempId or file reference
+  const previewIndex = previewFiles.value.findIndex(f => {
+    // Use tempId for better matching if available
+    if (file.tempId && (f as any).tempId) {
+      return (f as any).tempId === file.tempId;
+    }
+    // Fallback to file reference or name comparison
+    return f === file.file || f.name === file.name;
+  });
+  
   if (previewIndex > -1) {
     previewFiles.value.splice(previewIndex, 1);
+  }
+  
+  // Adjust preview index if necessary
+  if (previewCurrentIndex.value >= previewFiles.value.length && previewFiles.value.length > 0) {
+    previewCurrentIndex.value = previewFiles.value.length - 1;
+  } else if (previewFiles.value.length === 0) {
+    previewCurrentIndex.value = 0;
   }
 }
 
@@ -400,12 +423,18 @@ function handleNext() {
 
   if (activeTab.value === 'library') {
     const selected = mediaFiles.value.filter((m: any) => selectedIds.value.includes(m.id));
+    console.log('Emitting library selection:', selected); // Debug log
     emit('select', selected);
   } else {
+    console.log('Emitting device files:', selectedFiles.value); // Debug log
+    
+    // Make sure we're not emitting empty arrays
+    if (selectedFiles.value.length === 0) {
+      console.warn('Attempting to emit empty selectedFiles array');
+      return;
+    }
+    
     emit('select', selectedFiles.value);
-    // Ensure we're only emitting files with real IDs (not temp IDs)
-    // const validFiles = selectedFiles.value.filter(file => !file.tempId);
-    // emit('select', validFiles);
   }
 
   close();
