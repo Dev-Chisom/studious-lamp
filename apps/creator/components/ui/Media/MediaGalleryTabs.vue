@@ -21,12 +21,21 @@
 </template>
 
 <script setup lang="ts">
+// import { useI18n } from 'vue-i18n';
+
+// const { t } = useI18n();
+
 defineProps<{
-  activeTab: string
-  tabs: Array<{ key: string; label: string; icon: string }>
-}>()
+  activeTab: string;
+  tabs: Array<{ key: string; label: string; icon: string }>;
+}>();
 
 defineEmits<{
-  (e: 'update:active-tab', tab: string): void
-}>()
+  (e: 'update:active-tab', tab: string): void;
+}>();
+
+// const tabs = [
+//   { key: 'device', label: t('mediaLibrary.tabs.uploadNew'), icon: 'lucide:upload' },
+//   { key: 'library', label: t('mediaLibrary.tabs.mediaLibrary'), icon: 'lucide:folder' }
+// ];
 </script>

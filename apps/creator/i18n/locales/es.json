@@ -212,13 +212,13 @@
 		"preferencesFailed": "Error al obtener las preferencias del creador",
 		"contentDeleted": "Contenido eliminado con éxito",
 		"contentDeleteFailed": "Error al eliminar el contenido. Por favor, inténtalo de nuevo.",
-		"contentLoadFailed": "Error al cargar el contenido. Por favor, inténtalo de nuevo.",
+		"contentLoadFailed": "No se pudo cargar el contenido.",
 		"contentUpdated": "Publicación actualizada con éxito",
 		"contentUpdateFailed": "Error al actualizar la publicación. Por favor, inténtalo de nuevo.",
 		"draftSaved": "Borrador guardado con éxito",
 		"contentCreated": "Publicación creada con éxito",
 		"contentCreateFailed": "Error al crear la publicación. Por favor, inténtalo de nuevo.",
-		"mediaUploadFailed": "Error al subir archivos multimedia",
+		"mediaUploadFailed": "No se pudo subir el medio.",
 		"draftSaveFailed": "Error al guardar el borrador"
 	},
 	"time": {
@@ -284,8 +284,8 @@
 			"price": "Precio"
 		},
 		"untitledDraft": "Borrador sin título",
-    "saveDraft": "Guardar borrador",
-    "uploadFiles": "Subir archivos"
+		"saveDraft": "Guardar borrador",
+		"uploadFiles": "Subir archivos"
 	},
 	"upload": {
 		"title": "Subir archivos",
@@ -483,7 +483,7 @@
 			"offline": "Desconectado"
 		}
 	},
-  "searchUsersOrPosts": "Buscar usuarios o publicaciones",
+	"searchUsersOrPosts": "Buscar usuarios o publicaciones",
 	"unknownLocation": "Ubicación desconocida",
 	"subscribe": "Suscribirse",
 	"likes": "me gusta",
@@ -649,44 +649,44 @@
 		"blockConfirmation": "¿Estás seguro de que quieres bloquear a este suscriptor? Ya no podrá ver tu contenido ni enviarte mensajes.",
 		"block": "Bloquear",
 		"cancel": "Cancelar",
-    "stats": {
-      "totalSubscribers": "Total de suscriptores",
-      "activeSubscribers": "Suscriptores activos",
-      "monthlyRevenue": "Ingresos mensuales",
-      "totalRevenue": "Ingresos totales",
-      "fromLastMonth": "del mes pasado"
-    },
-    "filters": {
-      "search": "Buscar suscriptores...",
-      "allPlans": "Todos los planes",
-      "monthly": "Mensual",
-      "yearly": "Anual",
-      "allStatus": "Todos los estados",
-      "active": "Activo",
-      "expired": "Expirado",
-      "cancelled": "Cancelado"
-    },
-    "table": {
-      "subscriber": "Suscriptor",
-      "plan": "Plan",
-      "status": "Estado",
-      "revenue": "Ingresos",
-      "joined": "Se unió",
-      "actions": "Acciones",
-      "lifetimeValue": "Valor de por vida"
-    },
-    "pagination": {
-      "previous": "Anterior",
-      "next": "Siguiente",
-      "showing": "Mostrando",
-      "to": "a",
-      "of": "de",
-      "results": "resultados"
-    },
-    "actions": {
-      "message": "Mensaje al suscriptor",
-      "block": "Bloquear suscriptor"
-    }
+		"stats": {
+			"totalSubscribers": "Total de suscriptores",
+			"activeSubscribers": "Suscriptores activos",
+			"monthlyRevenue": "Ingresos mensuales",
+			"totalRevenue": "Ingresos totales",
+			"fromLastMonth": "del mes pasado"
+		},
+		"filters": {
+			"search": "Buscar suscriptores...",
+			"allPlans": "Todos los planes",
+			"monthly": "Mensual",
+			"yearly": "Anual",
+			"allStatus": "Todos los estados",
+			"active": "Activo",
+			"expired": "Expirado",
+			"cancelled": "Cancelado"
+		},
+		"table": {
+			"subscriber": "Suscriptor",
+			"plan": "Plan",
+			"status": "Estado",
+			"revenue": "Ingresos",
+			"joined": "Se unió",
+			"actions": "Acciones",
+			"lifetimeValue": "Valor de por vida"
+		},
+		"pagination": {
+			"previous": "Anterior",
+			"next": "Siguiente",
+			"showing": "Mostrando",
+			"to": "a",
+			"of": "de",
+			"results": "resultados"
+		},
+		"actions": {
+			"message": "Mensaje al suscriptor",
+			"block": "Bloquear suscriptor"
+		}
 	},
 	"categories": {
 		"art": "Arte",
@@ -701,27 +701,38 @@
 		"gaming": "Juegos"
 	},
 	"mediaLibrary": {
-		"title": "Multimedia",
-		"tabLibrary": "Biblioteca multimedia",
-		"tabDevice": "Desde dispositivo",
-		"search": "Buscar multimedia...",
-		"noMedia": "No se encontró multimedia.",
-		"uploadFromDevice": "Subir desde tu dispositivo",
-		"next": "Siguiente",
-		"open": "Elegir de la biblioteca multimedia",
-		"uploadFiles": "Subir archivos",
-		"videoFilesUpTo": "Archivos de video hasta",
-		"selectFromComputer": "Seleccionar desde computadora",
-		"coverPhoto": "Foto de portada",
-		"clearCover": "Limpiar portada",
-		"selectThumbnailToCover": "Seleccionar miniatura como portada"
+		"title": "Biblioteca",
+		"header": { "subtitle": "Sube y gestiona tu contenido" },
+		"search": { "placeholder": "Busca en tus medios..." },
+		"empty": { "title": "No se encontraron medios", "subtitle": "Intenta ajustar tu búsqueda o sube contenido" },
+		"device": {
+			"dropHere": "Suelta tus archivos aquí",
+			"browse": "o haz clic para buscar desde tu dispositivo",
+			"chooseFiles": "Elegir archivos",
+			"maxFiles": "Máximo {maxFiles} archivos • Imágenes y videos soportados",
+			"maxSize": "Hasta 100MB por archivo"
+		},
+		"preview": {
+			"emptyTitle": "Ningún medio seleccionado",
+			"emptySubtitle": "Agrega archivos para comenzar"
+		},
+		"footer": {
+			"uploading": "Subiendo...",
+			"ready": "Listo para continuar",
+			"processing": "Procesando...",
+			"continue": "Continuar"
+		},
+		"tabs": {
+			"uploadNew": "Subir nuevo",
+			"mediaLibrary": "Biblioteca"
+		}
 	},
 	"postForm": {
 		"title": "Título",
 		"content": "Contenido",
 		"visibility": "Visibilidad",
 		"price": "Precio",
-			"media": "Multimedia",
+		"media": "Multimedia",
 		"addMedia": "Añadir multimedia",
 		"remove": "Eliminar",
 		"next": "Siguiente",

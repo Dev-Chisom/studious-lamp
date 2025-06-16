@@ -699,20 +699,31 @@
     "gaming": "Jeux | Gaming"
   },
   "mediaLibrary": {
-    "title": "Médiathèque | Media",
-    "tabLibrary": "Bibliothèque | Media Library",
-    "tabDevice": "Appareil | From Device",
-    "search": "Rechercher... | Search media...",
-    "noMedia": "Aucun média | No media found.",
-    "uploadFromDevice": "Téléverser depuis appareil | Upload from your device",
-    "next": "Suivant | Next",
-    "open": "Ouvrir | Choose from Media Library",
-    "uploadFiles": "Téléverser | Upload files",
-    "videoFilesUpTo": "Vidéos jusqu'à {size} | Video files up to {size}",
-    "selectFromComputer": "Sélectionner | Select From Computer",
-    "coverPhoto": "Photo de couverture | Cover Photo",
-    "clearCover": "Effacer | Clear Cover",
-    "selectThumbnailToCover": "Sélectionner miniature | Select Thumbnail To Cover"
+    "title": "Bibliothèque",
+    "header": { "subtitle": "Téléversez et gérez votre contenu" },
+    "search": { "placeholder": "Recherchez dans vos médias..." },
+    "empty": { "title": "Aucun média trouvé", "subtitle": "Essayez d'ajuster votre recherche ou téléversez du contenu" },
+    "device": {
+      "dropHere": "Déposez vos fichiers ici",
+      "browse": "ou cliquez pour parcourir depuis votre appareil",
+      "chooseFiles": "Choisir des fichiers",
+      "maxFiles": "Maximum {maxFiles} fichiers • Images et vidéos pris en charge",
+      "maxSize": "Jusqu'à 100 Mo par fichier"
+    },
+    "preview": {
+      "emptyTitle": "Aucun média sélectionné",
+      "emptySubtitle": "Ajoutez des fichiers pour commencer"
+    },
+    "footer": {
+      "uploading": "Téléversement...",
+      "ready": "Prêt à continuer",
+      "processing": "Traitement...",
+      "continue": "Continuer"
+    },
+    "tabs": {
+      "uploadNew": "Téléverser",
+      "mediaLibrary": "Bibliothèque"
+    }
   },
   "postForm": {
     "title": "Titre | Title",

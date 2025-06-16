@@ -212,14 +212,14 @@
 		"preferencesFailed": "Failed to fetch creator preferences",
 		"contentDeleted": "Content deleted successfully",
 		"contentDeleteFailed": "Failed to delete content. Please try again.",
-		"contentLoadFailed": "Failed to load content. Please try again.",
+		"contentLoadFailed": "Failed to load content.",
 		"contentUpdated": "Post updated successfully",
 		"contentUpdateFailed": "Failed to update post. Please try again.",
 		"draftSaved": "Draft saved successfully",
 		"contentCreated": "Post published successfully",
-    "mediaUploaded": "media uploaded successfully",
+		"mediaUploaded": "media uploaded successfully",
 		"contentCreateFailed": "Failed to create post. Please try again.",
-		"mediaUploadFailed": "Failed to upload media files",
+		"mediaUploadFailed": "Failed to upload media.",
 		"draftSaveFailed": "Failed to save draft"
 	},
 	"time": {
@@ -285,8 +285,8 @@
 			"price": "Price"
 		},
 		"untitledDraft": "Untitled Draft",
-    "saveDraft": "Save Draft",
-    "uploadFiles": "Upload files"
+		"saveDraft": "Save Draft",
+		"uploadFiles": "Upload files"
 	},
 	"upload": {
 		"title": "Upload files",
@@ -484,7 +484,7 @@
 			"offline": "Offline"
 		}
 	},
-  "searchUsersOrPosts": "Search users or posts",
+	"searchUsersOrPosts": "Search users or posts",
 	"unknownLocation": "Unknown location",
 	"subscribe": "Subscribe",
 	"likes": "likes",
@@ -650,44 +650,44 @@
 		"blockConfirmation": "Are you sure you want to block this subscriber? They will no longer be able to view your content or message you.",
 		"block": "Block",
 		"cancel": "Cancel",
-    "stats": {
-      "totalSubscribers": "Total Subscribers",
-      "activeSubscribers": "Active Subscribers",
-      "monthlyRevenue": "Monthly Revenue",
-      "totalRevenue": "Total Revenue",
-      "fromLastMonth": "from last month"
-    },
-    "filters": {
-      "search": "Search subscribers...",
-      "allPlans": "All Plans",
-      "monthly": "Monthly",
-      "yearly": "Yearly",
-      "allStatus": "All Status",
-      "active": "Active",
-      "expired": "Expired",
-      "cancelled": "Cancelled"
-    },
-    "table": {
-      "subscriber": "Subscriber",
-      "plan": "Plan",
-      "status": "Status",
-      "revenue": "Revenue",
-      "joined": "Joined",
-      "actions": "Actions",
-      "lifetimeValue": "Lifetime value"
-    },
-    "pagination": {
-      "previous": "Previous",
-      "next": "Next",
-      "showing": "Showing",
-      "to": "to",
-      "of": "of",
-      "results": "results"
-    },
-    "actions": {
-      "message": "Message subscriber",
-      "block": "Block subscriber"
-    }
+		"stats": {
+			"totalSubscribers": "Total Subscribers",
+			"activeSubscribers": "Active Subscribers",
+			"monthlyRevenue": "Monthly Revenue",
+			"totalRevenue": "Total Revenue",
+			"fromLastMonth": "from last month"
+		},
+		"filters": {
+			"search": "Search subscribers...",
+			"allPlans": "All Plans",
+			"monthly": "Monthly",
+			"yearly": "Yearly",
+			"allStatus": "All Status",
+			"active": "Active",
+			"expired": "Expired",
+			"cancelled": "Cancelled"
+		},
+		"table": {
+			"subscriber": "Subscriber",
+			"plan": "Plan",
+			"status": "Status",
+			"revenue": "Revenue",
+			"joined": "Joined",
+			"actions": "Actions",
+			"lifetimeValue": "Lifetime value"
+		},
+		"pagination": {
+			"previous": "Previous",
+			"next": "Next",
+			"showing": "Showing",
+			"to": "to",
+			"of": "of",
+			"results": "results"
+		},
+		"actions": {
+			"message": "Message subscriber",
+			"block": "Block subscriber"
+		}
 	},
 	"categories": {
 		"art": "Art",
@@ -702,22 +702,31 @@
 		"gaming": "Gaming"
 	},
 	"mediaLibrary": {
-		"title": "Media",
-		"tabLibrary": "Media Library",
-		"tabDevice": "From Device",
-		"search": "Search media...",
-		"noMedia": "No media found.",
-		"uploadFromDevice": "Upload from your device",
-		"next": "Next",
-		"open": "Choose from Media Library",
-		"uploadFiles": "Upload files",
-		"videoFilesUpTo": "Video files up to",
-		"selectFromComputer": "Select From Computer",
-		"coverPhoto": "Cover Photo",
-		"clearCover": "Clear Cover",
-		"selectThumbnailToCover": "Select Thumbnail To Cover",
-    "tabImages": "Media Images",
-    "tabVideos": "Media Videos"
+		"title": "Media Library",
+		"header": { "subtitle": "Upload and manage your content" },
+		"search": { "placeholder": "Search your media..." },
+		"empty": { "title": "No media found", "subtitle": "Try adjusting your search or upload some content" },
+		"device": {
+			"dropHere": "Drop your files here",
+			"browse": "or click to browse from your device",
+			"chooseFiles": "Choose Files",
+			"maxFiles": "Maximum {maxFiles} files • Images and videos supported",
+			"maxSize": "Up to 100MB per file"
+		},
+		"preview": {
+			"emptyTitle": "No media selected",
+			"emptySubtitle": "Add some files to get started"
+		},
+		"footer": {
+			"uploading": "Uploading...",
+			"ready": "Ready to proceed",
+			"processing": "Processing...",
+			"continue": "Continue"
+		},
+		"tabs": {
+			"uploadNew": "Upload New",
+			"mediaLibrary": "Media Library"
+		}
 	},
 	"postForm": {
 		"title": "Title",
