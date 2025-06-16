@@ -238,21 +238,14 @@ function removeFile(index) {
 	emit('update:modelValue', files.value);
 }
 
-// ... existing code ...
 function openPreview(index) {
-  console.log('Opening preview at index:', index);
-  
-  // Directly update the reactive object's properties
-  previewModal.items = previewUrls.value.map(item => ({
-    type: item.type,
-    url: item.url
-  }));
-  previewModal.currentIndex = index;
-  previewModal.isOpen = true;
-  
-  console.log('Modal state:', previewModal);
+	previewModal.items = previewUrls.value.map(item => ({
+		type: item.type,
+		url: item.url
+	}));
+	previewModal.currentIndex = index;
+	previewModal.isOpen = true;
 }
-// ... existing code ...
 
 function closePreview() {
 	previewModal.isOpen = false;

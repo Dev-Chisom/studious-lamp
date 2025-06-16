@@ -36,7 +36,7 @@ import type { SocialMediaItem, Legal } from '@/types';
 export interface Pricing {
 	amount: number
 	tiers: {
-		[key: string]: number // quarterly, biAnnual, yearly discounts
+		[key: string]: number
 	}
 }
 

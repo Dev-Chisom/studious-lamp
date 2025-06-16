@@ -70,7 +70,7 @@ interface MediaItem {
   duration?: number
   file?: File
   thumbnailUrl?: string
-  tempId?: string // Added for temporary ID tracking
+  tempId?: string
 }
 
 const MAX_FILES = 10;
@@ -80,7 +80,6 @@ const tabs = [
   { key: 'library', label: 'Media Library', icon: 'lucide:folder' }
 ];
 
-// State
 const activeTab = ref<'library' | 'device'>('device');
 const activeMediaTab = ref<'images' | 'videos'>('images');
 const loading = ref(false);
@@ -89,14 +88,12 @@ const selectedIds = ref<string[]>([]);
 const selectedFiles = ref<MediaItem[]>([]);
 const searchQuery = ref('');
 
-// Preview modal state
-const showPreviewModal = ref(false);
+const showPreviewModal = ref<boolean>(false);
 const previewFiles = ref<File[]>([]);
-const previewCurrentIndex = ref(0);
-const isUploading = ref(false);
-const uploadProgress = ref({ completed: 0, total: 0 });
+const previewCurrentIndex = ref<number>(0);
+const isUploading = ref<boolean>(false);
+const uploadProgress = ref<{ completed: number; total: number }>({ completed: 0, total: 0 });
 
-// Pagination
 const currentPage = ref(1);
 const perPage = ref(12);
 const totalItems = ref(0);
@@ -148,7 +145,6 @@ async function processUploads(mediaData: any[], creatorApi: any) {
       fileType: file.type === 'video' ? 'video' : 'image',
       size: file.size
     };
-    // For videos, include coverName if coverFile is present
     if (file.type === 'video' && file.coverFile) {
       payload.coverName = file.coverFile.name;
     }
@@ -166,7 +162,6 @@ async function processUploads(mediaData: any[], creatorApi: any) {
         'Content-Type': fileObj.type
       }
     });
-    // For videos, upload the cover image if present
     if (coverUploadUrl && mediaData[i].coverFile) {
       await fetch(coverUploadUrl, {
         method: 'PUT',
@@ -222,7 +217,7 @@ const previewMediaItems = computed(() =>
     name: file.name || file?.fileName,
     type: file.type.startsWith('image/') ? 'image' : 'video',
     file,
-    tempId: (file as any)?.tempId // Include tempId if it exists
+    tempId: (file as any)?.tempId
   }))
 );
 
@@ -245,7 +240,6 @@ function onFilesSelected(files: File[]) {
   const filesToAdd = files.slice(0, remainingSlots).map((file) => {
     const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
     
-    // Add tempId to the file object for better tracking
     (file as any).tempId = tempId;
     
     const mediaItem = {
@@ -270,22 +264,17 @@ function onFilesSelected(files: File[]) {
 function removeSelectedFile(index: number) {
   const file = selectedFiles.value[index];
   if (!file) return;
-  
-  // Clean up blob URL
+
   if (file.url.startsWith('blob:')) {
     URL.revokeObjectURL(file.url);
   }
   
-  // Remove from selectedFiles
   selectedFiles.value.splice(index, 1);
-  
-  // Find and remove from previewFiles using tempId or file reference
+
   const previewIndex = previewFiles.value.findIndex(f => {
-    // Use tempId for better matching if available
     if (file.tempId && (f as any).tempId) {
       return (f as any).tempId === file.tempId;
     }
-    // Fallback to file reference or name comparison
     return f === file.file || f.name === file.name;
   });
   
@@ -293,7 +282,6 @@ function removeSelectedFile(index: number) {
     previewFiles.value.splice(previewIndex, 1);
   }
   
-  // Adjust preview index if necessary
   if (previewCurrentIndex.value >= previewFiles.value.length && previewFiles.value.length > 0) {
     previewCurrentIndex.value = previewFiles.value.length - 1;
   } else if (previewFiles.value.length === 0) {
@@ -358,7 +346,7 @@ function closePreviewModal() {
 async function handleBatchUpload(mediaData: any[]) {
   if (mediaData.length === 0) return;
 
-  // Helper to convert base64 to File
+  //convert base64 to File
   function base64ToFile(base64: string, filename: string, mimeType?: string) {
     const arr = base64.split(',');
     const match = arr[0].match(/:(.*?);/);
@@ -375,7 +363,6 @@ async function handleBatchUpload(mediaData: any[]) {
   // Convert base64 cover to File for videos
   mediaData.forEach(item => {
     if (item.type === 'video' && item.cover && !item.coverFile) {
-      // Use the video file name as a prefix for the cover file name
       const baseName = item.name ? item.name.replace(/\.[^/.]+$/, "") : `cover-${Date.now()}`;
       const coverFileName = `${baseName}-cover.jpg`;
       item.coverFile = base64ToFile(item.cover, coverFileName, 'image/jpeg');
@@ -390,7 +377,6 @@ async function handleBatchUpload(mediaData: any[]) {
     const results = await processUploads(mediaData, creatorApi);
 
    const emittedResults = results.map((r, index) => {
-  // Find the original file object in mediaData
   const original = mediaData[index];
   return {
     id: r.mediaFileId,
@@ -423,20 +409,13 @@ function handleNext() {
 
   if (activeTab.value === 'library') {
     const selected = mediaFiles.value.filter((m: any) => selectedIds.value.includes(m.id));
-    console.log('Emitting library selection:', selected); // Debug log
     emit('select', selected);
   } else {
-    console.log('Emitting device files:', selectedFiles.value); // Debug log
-    
-    // Make sure we're not emitting empty arrays
     if (selectedFiles.value.length === 0) {
-      console.warn('Attempting to emit empty selectedFiles array');
       return;
     }
-    
     emit('select', selectedFiles.value);
   }
-
   close();
 }
 
