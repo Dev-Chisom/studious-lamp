@@ -171,7 +171,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { toast } from 'vue3-toastify';
+import { useNotification } from '../../composables/useNotifications'
 import { useI18n } from 'vue-i18n';
 import { useUserStore } from '~/store/user';
 import { useAuthStore } from '~/store/auth';
@@ -186,6 +186,8 @@ definePageMeta({
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
+
+const notification = useNotification()
 
 const loading = ref(false);
 const loadingDelete = ref(false);
@@ -263,7 +265,7 @@ function handleImageUpload(event) {
 	}
 
 	profileImage.value = URL.createObjectURL(file);
-	toast.success('Profile picture updated');
+	notification.success(t('notifications.settings.saveSuccess'));
 }
 
 function updateProfile() {
@@ -276,9 +278,9 @@ function updateProfile() {
 			return;
 		}
 
-		toast.success('Profile updated successfully');
+		notification.success(t('notifications.settings.saveSuccess'));
 	} catch {
-		toast.error('Failed to update profile');
+		notification.error(t('notifications.settings.saveError'));
 	} finally {
 		loading.value = false;
 	}
@@ -298,12 +300,12 @@ function updateEmail() {
 			return;
 		}
 
-		toast.success('Email updated successfully');
+		notification.success(t('notifications.settings.saveSuccess'));
 		email.value.current = email.value.new;
 		email.value.new = '';
 		email.value.password = '';
 	} catch {
-		toast.error('Failed to update email');
+		notification.error(t('notifications.settings.saveError'));
 	} finally {
 		loading.value = false;
 	}
@@ -327,10 +329,10 @@ function updatePassword() {
 			return;
 		}
 
-		toast.success('Password updated successfully');
+		notification.success(t('notifications.settings.saveSuccess'));
 		password.value = { current: '', new: '', confirm: '' };
 	} catch {
-		toast.error('Failed to update password');
+		notification.error(t('notifications.settings.saveError'));
 	} finally {
 		loading.value = false;
 	}
@@ -340,9 +342,9 @@ function updateNotifications() {
 	loading.value = true;
 
 	try {
-		toast.success('Notification preferences updated');
-	} catch (error) {
-		toast.error('Failed to update notification preferences');
+		notification.success(t('notifications.settings.saveSuccess'));
+	} catch {
+		notification.error(t('notifications.settings.saveError'));
 	} finally {
 		loading.value = false;
 	}
@@ -354,7 +356,7 @@ async function confirmDeleteAccount() {
 		try {
 			// Simulate API call
 			await new Promise(resolve => setTimeout(resolve, 1000));
-			toast.success('Account deleted successfully');
+			notification.success(t('notifications.settings.saveSuccess'));
 			authStore.logout();
 			navigateTo('/');
 		} finally {

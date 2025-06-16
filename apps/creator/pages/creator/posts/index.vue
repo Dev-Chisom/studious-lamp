@@ -344,7 +344,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { toast } from 'vue3-toastify';
+import { useNotification } from '../../../composables/useNotifications'
 import { useI18n } from 'vue-i18n';
 // import { useContentStore } from '../../../store/content';
 
@@ -388,6 +388,8 @@ const filters = ref<Filters>({
 });
 
 const { t } = useI18n();
+
+const notification = useNotification()
 
 // Mock data for posts
 const posts = ref<Post[]>([
@@ -535,7 +537,7 @@ onMounted(async () => {
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 		loading.value = false;
 	} catch {
-		toast.error('Failed to load posts');
+		notification.error(t('notifications.posts.loadError'));
 		loading.value = false;
 	}
 });

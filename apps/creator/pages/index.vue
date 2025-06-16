@@ -60,7 +60,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { toast } from 'vue3-toastify';
+import { useNotification } from '../composables/useNotifications'
 import { useUserStore } from '~/store/user';
 import Modal from '~/components/ui/Modal.vue';
 import BaseButton from '~/components/ui/BaseButton.vue';
@@ -101,6 +101,7 @@ interface SuggestionUser {
 }
 
 const userStore = useUserStore();
+const notification = useNotification()
 
 const posts = ref<Post[]>([
   {
@@ -215,9 +216,9 @@ const isSubscribedToCreator = (creatorId: string): boolean => {
 const subscribeToCreator = async (creatorId: string): Promise<void> => {
   try {
     await userStore.addSubscription(creatorId);
-    toast.success('Successfully subscribed to creator!');
+    notification.success(t('notifications.subscription.success', { name: creator.name }));
   } catch {
-    toast.error('Failed to subscribe to creator');
+    notification.error(t('notifications.subscription.error'));
   }
 };
 
@@ -233,10 +234,10 @@ const sendTip = async (): Promise<void> => {
   isSendingTip.value = true;
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    toast.success(`Successfully sent tip to ${selectedPost.value.creator.name}!`);
+    notification.success(t('notifications.tip.success', { name: selectedPost.value.creator.name }));
     showingTipModal.value = false;
   } catch {
-    toast.error('Failed to send tip');
+    notification.error(t('notifications.tip.error'));
   } finally {
     isSendingTip.value = false;
   }

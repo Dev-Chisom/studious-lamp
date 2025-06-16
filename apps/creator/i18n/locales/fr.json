@@ -219,7 +219,30 @@
     "contentCreated": "Publication réussie",
     "contentCreateFailed": "Échec de publication | Failed to create post",
     "mediaUploadFailed": "Échec d'envoi | Failed to upload media files",
-    "draftSaveFailed": "Échec d'enregistrement | Failed to save draft"
+    "draftSaveFailed": "Échec d'enregistrement | Failed to save draft",
+    "subscription": {
+      "success": "Abonnement réussi à {name} !",
+      "error": "Échec de l'abonnement au créateur"
+    },
+    "tip": {
+      "success": "Pourboire envoyé avec succès à {name} !",
+      "error": "Échec de l'envoi du pourboire"
+    },
+    "posts": {
+      "loadError": "Échec du chargement des publications"
+    },
+    "settings": {
+      "saveSuccess": "Paramètres enregistrés avec succès",
+      "saveError": "Échec de l'enregistrement des paramètres"
+    },
+    "collections": {
+      "createSuccess": "Collection créée avec succès",
+      "createError": "Échec de la création de la collection",
+      "updateSuccess": "Collection mise à jour avec succès",
+      "updateError": "Échec de la mise à jour de la collection",
+      "deleteSuccess": "Collection supprimée avec succès",
+      "deleteError": "Échec de la suppression de la collection"
+    }
   },
   "time": {
     "minutesAgo": "il y a {count} min | {count}m ago",

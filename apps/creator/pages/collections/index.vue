@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { toast } from 'vue3-toastify';
+import { useNotification } from '../../composables/useNotifications'
 import { useUserStore } from '~/store/user';
 import BaseButton from '~/components/ui/BaseButton.vue';
 import CollectionCard from '~/components/collections/CollectionCard.vue';
@@ -51,15 +51,17 @@ const isCreating = ref(false);
 
 const { t } = useI18n();
 
+const notification = useNotification()
+
 const createNewCollection = async (name: string): Promise<void> => {
 	isCreating.value = true;
 	try {
 		await userStore.createCollection(name);
 		collections.value = userStore.getCollections;
 		showNewCollectionModal.value = false;
-		toast.success('Collection created successfully!');
+		notification.success(t('notifications.collections.createSuccess'));
 	} catch {
-		toast.error('Failed to create collection');
+		notification.error(t('notifications.collections.createError'));
 	} finally {
 		isCreating.value = false;
 	}

@@ -220,7 +220,30 @@
 		"mediaUploaded": "media uploaded successfully",
 		"contentCreateFailed": "Failed to create post. Please try again.",
 		"mediaUploadFailed": "Failed to upload media.",
-		"draftSaveFailed": "Failed to save draft"
+		"draftSaveFailed": "Failed to save draft",
+		"subscription": {
+			"success": "Successfully subscribed to {name}!",
+			"error": "Failed to subscribe to creator"
+		},
+		"tip": {
+			"success": "Successfully sent tip to {name}!",
+			"error": "Failed to send tip"
+		},
+		"posts": {
+			"loadError": "Failed to load posts"
+		},
+		"settings": {
+			"saveSuccess": "Settings saved successfully",
+			"saveError": "Failed to save settings"
+		},
+		"collections": {
+			"createSuccess": "Collection created successfully",
+			"createError": "Failed to create collection",
+			"updateSuccess": "Collection updated successfully",
+			"updateError": "Failed to update collection",
+			"deleteSuccess": "Collection deleted successfully",
+			"deleteError": "Failed to delete collection"
+		}
 	},
 	"time": {
 		"minutesAgo": "{count}m ago",

@@ -219,7 +219,30 @@
 		"contentCreated": "Publicación creada con éxito",
 		"contentCreateFailed": "Error al crear la publicación. Por favor, inténtalo de nuevo.",
 		"mediaUploadFailed": "No se pudo subir el medio.",
-		"draftSaveFailed": "Error al guardar el borrador"
+		"draftSaveFailed": "Error al guardar el borrador",
+		"subscription": {
+			"success": "¡Suscripción exitosa a {name}!",
+			"error": "No se pudo suscribir al creador"
+		},
+		"tip": {
+			"success": "¡Propina enviada con éxito a {name}!",
+			"error": "No se pudo enviar la propina"
+		},
+		"posts": {
+			"loadError": "No se pudieron cargar las publicaciones"
+		},
+		"settings": {
+			"saveSuccess": "Configuración guardada con éxito",
+			"saveError": "No se pudo guardar la configuración"
+		},
+		"collections": {
+			"createSuccess": "Colección creada con éxito",
+			"createError": "No se pudo crear la colección",
+			"updateSuccess": "Colección actualizada con éxito",
+			"updateError": "No se pudo actualizar la colección",
+			"deleteSuccess": "Colección eliminada con éxito",
+			"deleteError": "No se pudo eliminar la colección"
+		}
 	},
 	"time": {
 		"minutesAgo": "hace {count} min",
