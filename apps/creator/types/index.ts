@@ -1,3 +1,6 @@
+export * from './content';
+export * from './pagination';
+
 export interface Subscriber {
 	id: string
 	name: string
@@ -22,4 +25,15 @@ export interface Filters {
 	search: string
 	plan: string
 	status: string
+}
+
+export interface SocialMediaItem {
+	platform: string;
+	url: string;
+}
+
+export interface Legal {
+	termsOfService: boolean;
+	contentGuidelines: boolean;
+	isAdult: boolean;
 } 

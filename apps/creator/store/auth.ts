@@ -1,16 +1,17 @@
 import { defineStore } from 'pinia';
 import { createAuthApi } from '@whispers/api';
 import { useCookie } from '#app';
+import type { User } from '@/types';
 
 export const useAuthStore = defineStore('user', {
 	state: () => ({
-		profile: null as null | Record<string, any>,
+		profile: null as null | User,
 		accessToken: null as null | string,
 		refreshToken: null as null | string,
 	}),
 
 	actions: {
-		setProfile(profile: any) {
+		setProfile(profile: User) {
 			this.profile = profile;
 		},
 		setTokens(accessToken: string, refreshToken: string) {

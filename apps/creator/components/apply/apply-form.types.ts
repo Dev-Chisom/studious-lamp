@@ -1,3 +1,5 @@
+import type { SocialMediaItem, Legal } from '@/types';
+
 // export interface Discounts {
 //   quarterly: string;
 //   biAnnual: string;
@@ -31,22 +33,11 @@
 //   yearlyPrice: number;
 // }
 
-export interface SocialMediaItem {
-	platform: string
-	url: string
-}
-
 export interface Pricing {
 	amount: number
 	tiers: {
 		[key: string]: number // quarterly, biAnnual, yearly discounts
 	}
-}
-
-export interface Legal {
-	termsOfService: boolean
-	contentGuidelines: boolean
-	isAdult: boolean
 }
 
 export interface FormValues {

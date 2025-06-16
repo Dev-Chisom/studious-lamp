@@ -5,7 +5,7 @@ interface PaystackConfig {
 	amount: number
 	publicKey: string
 	reference?: string
-	callback: (response: any) => void
+	callback: (response: unknown) => void
 	onClose: () => void
 }
 
@@ -21,7 +21,7 @@ export function usePaystack() {
 				email: config.email,
 				amount: config.amount * 100, // Convert to kobo
 				ref: config.reference || generateReference(),
-				callback: (response: any) => {
+				callback: (response: unknown) => {
 					isLoading.value = false;
 					config.callback(response);
 				},
@@ -31,8 +31,8 @@ export function usePaystack() {
 				},
 			});
 			handler.openIframe();
-		} catch (e: any) {
-			error.value = e.message;
+		} catch (e: unknown) {
+			error.value = e instanceof Error ? e.message : String(e);
 			isLoading.value = false;
 		}
 	};

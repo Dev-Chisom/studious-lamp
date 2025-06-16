@@ -6,7 +6,7 @@ interface BaniConfig {
 	firstName: string
 	lastName: string
 	phoneNumber: string
-	onSuccess: (response: any) => void
+	onSuccess: (response: unknown) => void
 	onClose: () => void
 }
 
@@ -23,7 +23,7 @@ export function useBani() {
 				firstName: config.firstName,
 				lastName: config.lastName,
 				phoneNumber: config.phoneNumber,
-				onSuccess: (response: any) => {
+				onSuccess: (response: unknown) => {
 					isLoading.value = false;
 					config.onSuccess(response);
 				},
@@ -33,8 +33,8 @@ export function useBani() {
 				},
 			});
 			bani.initialize();
-		} catch (e: any) {
-			error.value = e.message;
+		} catch (e: unknown) {
+			error.value = e instanceof Error ? e.message : String(e);
 			isLoading.value = false;
 		}
 	};
