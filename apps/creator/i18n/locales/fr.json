@@ -20,7 +20,8 @@
     "reply": "Répondre | Reply",
     "like": "J'aime | Like",
     "close": "Fermer | Close",
-    "select": "Sélectionner | Select"
+    "select": "Sélectionner | Select",
+    "search": "Rechercher"
   },
   "nav": {
     "home": "Accueil | Home",
@@ -502,7 +503,11 @@
     "status": {
       "online": "En ligne | Online",
       "offline": "Hors ligne | Offline"
-    }
+    },
+    "voiceMessage": "Message vocal",
+    "photo": "Photo",
+    "video": "Vidéo",
+    "now": "maintenant"
   },
   "searchUsersOrPosts": "Rechercher des utilisateurs ou des publications",
   "unknownLocation": "Localisation inconnue | Unknown location",

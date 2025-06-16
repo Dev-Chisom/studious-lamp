@@ -4,7 +4,7 @@
 		:placeholder="placeholder"
 		:type="type"
 		class="block w-full rounded-md border-0 py-1.5 pl-10 pr-3 text-gray-900 dark:text-gray-100 dark:bg-gray-800 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6"
-		aria-label="Search"
+		:aria-label="t('common.search')"
 		@input="onInput"
 	/>
 </template>

@@ -20,7 +20,8 @@
 		"reply": "Reply",
 		"like": "Like",
 		"close": "Close",
-		"select": "Select"
+		"select": "Select",
+		"search": "Search"
 	},
 	"nav": {
 		"home": "Home",
@@ -505,7 +506,11 @@
 		"status": {
 			"online": "Online",
 			"offline": "Offline"
-		}
+		},
+		"voiceMessage": "Voice message",
+		"photo": "Photo",
+		"video": "Video",
+		"now": "now"
 	},
 	"searchUsersOrPosts": "Search users or posts",
 	"unknownLocation": "Unknown location",

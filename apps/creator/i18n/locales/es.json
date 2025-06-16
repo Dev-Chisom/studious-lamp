@@ -504,7 +504,11 @@
 		"status": {
 			"online": "En línea",
 			"offline": "Desconectado"
-		}
+		},
+		"voiceMessage": "Mensaje de voz",
+		"photo": "Foto",
+		"video": "Vídeo",
+		"now": "ahora"
 	},
 	"searchUsersOrPosts": "Buscar usuarios o publicaciones...",
 	"unknownLocation": "Ubicación desconocida",
