@@ -321,13 +321,17 @@
 							type="button"
 							class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-error-600 text-base font-medium text-white hover:bg-error-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-error-500 sm:ml-3 sm:w-auto sm:text-sm"
 							@click="deletePost"
+							:disabled="loadingDelete"
 						>
-							{{ t('delete') }}
+							<Icon v-if="loadingDelete" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
+							<span v-if="loadingDelete">{{ t('deleting') }}</span>
+							<span v-else>{{ t('delete') }}</span>
 						</button>
 						<button
 							type="button"
 							class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-700 shadow-sm px-4 py-2 bg-white dark:bg-gray-900 text-base font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
 							@click="showDeleteModal = false"
+							:disabled="loadingDelete"
 						>
 							{{ t('cancel') }}
 						</button>
@@ -375,6 +379,7 @@ interface Filters {
 const loading = ref<boolean>(true);
 const currentPage = ref<number>(1);
 const itemsPerPage = 10;
+const loadingDelete = ref(false);
 
 const filters = ref<Filters>({
 	search: '',
@@ -514,10 +519,13 @@ function editPost(id: string): void {
 	navigateTo(`/content/edit/${id}`);
 }
 
-function confirmDelete(id: string): void {
-	console.log(id);
-	// Implement delete confirmation logic
-	toast.info('Delete functionality to be implemented');
+async function deletePost() {
+	loadingDelete.value = true;
+	try {
+		// ... existing delete logic ...
+	} finally {
+		loadingDelete.value = false;
+	}
 }
 
 // Load posts on mount

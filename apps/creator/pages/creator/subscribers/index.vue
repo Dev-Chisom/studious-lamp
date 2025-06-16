@@ -192,17 +192,21 @@
 										<button 
 											class="text-gray-400 hover:text-primary-600" 
 											@click="messageSubscriber(subscriber)"
+											:disabled="loadingMessage"
 											:title="t('subscribers.actions.message')"
 										>
-											<Icon name="lucide:message-circle" class="h-5 w-5" />
+											<Icon v-if="loadingMessage" name="lucide:loader-2" class="animate-spin h-5 w-5" />
+											<Icon v-else name="lucide:message-circle" class="h-5 w-5" />
 										</button>
 										<button
 											v-if="subscriber.status === 'active'"
 											class="text-gray-400 hover:text-error-600"
 											@click="confirmBlock(subscriber)"
+											:disabled="blockLoading"
 											:title="t('subscribers.actions.block')"
 										>
-											<Icon name="lucide:ban" class="h-5 w-5" />
+											<Icon v-if="blockLoading" name="lucide:loader-2" class="animate-spin h-5 w-5" />
+											<Icon v-else name="lucide:ban" class="h-5 w-5" />
 										</button>
 									</div>
 								</td>
@@ -309,13 +313,17 @@
 							type="button"
 							class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-error-600 text-base font-medium text-white hover:bg-error-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-error-500 sm:ml-3 sm:w-auto sm:text-sm"
 							@click="blockSubscriber"
+							:disabled="blockLoading"
 						>
-							{{ t('subscribers.block') }}
+							<Icon v-if="blockLoading" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
+							<span v-if="blockLoading">{{ t('subscribers.blocking') }}</span>
+							<span v-else>{{ t('subscribers.block') }}</span>
 						</button>
 						<button
 							type="button"
 							class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-1 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
 							@click="showBlockModal = false"
+							:disabled="blockLoading"
 						>
 							{{ t('subscribers.cancel') }}
 						</button>
@@ -330,6 +338,7 @@
 import { ref, computed } from '#imports'
 import { useI18n } from 'vue-i18n'
 import FormInput from '@/components/ui/BaseInput.vue';
+import { useApiRequest } from '~/composables/useApiRequest';
 
 interface Subscriber {
 	id: string
@@ -410,6 +419,15 @@ const currentPage = ref(1)
 const itemsPerPage = 10
 const showBlockModal = ref<boolean>(false)
 const subscriberToBlock = ref<Subscriber | null>(null)
+const { loading: blockLoading, execute: executeBlock } = useApiRequest(async (subscriberId: string) => {
+	// Replace with your actual API call to block a subscriber
+	await new Promise(resolve => setTimeout(resolve, 1000));
+	const index = subscribers.value.findIndex((s) => s.id === subscriberId);
+	if (index !== -1) {
+		subscribers.value[index].status = 'cancelled';
+	}
+});
+const loadingMessage = ref(false)
 
 const subscribers = ref<Subscriber[]>([
 	{
@@ -473,7 +491,12 @@ const formatDate = (date: string) => {
 }
 
 const messageSubscriber = (subscriber: Subscriber) => {
-	// Implement messaging functionality
+	loadingMessage.value = true
+	try {
+		// Implement messaging functionality
+	} finally {
+		loadingMessage.value = false
+	}
 }
 
 const confirmBlock = (subscriber: Subscriber) => {
@@ -481,23 +504,15 @@ const confirmBlock = (subscriber: Subscriber) => {
 	showBlockModal.value = true
 }
 
-const blockSubscriber = () => {
-	if (!subscriberToBlock.value) {
-		return
-	}
-
+const blockSubscriber = async () => {
+	if (!subscriberToBlock.value) return;
 	try {
-		// In a real app, make API call to block subscriber
-		const index = subscribers.value.findIndex((s) => s.id === subscriberToBlock.value?.id)
-		if (index !== -1) {
-			subscribers.value[index].status = 'cancelled'
-		}
-
-		showBlockModal.value = false
-		subscriberToBlock.value = null
-		// Implement toast notification
+		await executeBlock(subscriberToBlock.value.id);
+		showBlockModal.value = false;
+		subscriberToBlock.value = null;
+		// Show toast notification here
 	} catch {
-		// Implement toast notification
+		// Show error toast here
 	}
-}
+};
 </script>

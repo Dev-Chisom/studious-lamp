@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue';
 import type { PaginationProps, PaginationData } from '../../types/pagination';
 import PaginationButton from './PaginationButton.vue';
+import { useI18n } from 'vue-i18n';
 
 const props = withDefaults(defineProps<PaginationProps>(), {
   maxVisiblePages: 5,
@@ -174,6 +175,32 @@ const rangeText = computed(() => {
 
   return `${start} - ${end} of ${props.totalItems}`;
 });
+
+const { t } = useI18n();
+
+const displayedPages = computed(() => {
+  const pages: number[] = [];
+  const maxPages = 5;
+
+  if (totalPages.value <= maxPages) {
+    for (let i = 1; i <= totalPages.value; i++) {
+      pages.push(i);
+    }
+  } else {
+    let start = Math.max(1, localCurrentPage.value - 2);
+    const end = Math.min(totalPages.value, start + maxPages - 1);
+
+    if (end - start < maxPages - 1) {
+      start = Math.max(1, end - maxPages + 1);
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+  }
+
+  return pages;
+});
 </script>
 
 <template>
@@ -196,7 +223,7 @@ const rangeText = computed(() => {
 					aria-label="Go to previous page" @click="goToPrevPage" />
 
 				<div class="flex items-center gap-1">
-					<template v-for="(page, index) in visiblePages" :key="index">
+					<template v-for="(page, index) in displayedPages" :key="index">
 						<PaginationButton
 							v-if="typeof page === 'number'" :label="page" :active="page === localCurrentPage"
 							:disabled="disabled" :aria-label="`Go to page ${page}`" @click="goToPage(page)" />

@@ -158,8 +158,10 @@
 						{{ $t('settings.deleteAccount.description') }}
 					</p>
 
-					<button class="btn-outline border-error-300 text-error-700 hover:bg-error-50" @click="confirmDeleteAccount">
-						{{ $t('settings.deleteAccount.deleteAccount') }}
+					<button class="btn-outline border-error-300 text-error-700 hover:bg-error-50" @click="confirmDeleteAccount" :disabled="loadingDelete">
+						<Icon v-if="loadingDelete" name="lucide:loader-2" class="animate-spin h-5 w-5 mr-2" />
+						<span v-if="loadingDelete">{{ t('deleting') }}</span>
+						<span v-else>{{ $t('settings.deleteAccount.deleteAccount') }}</span>
 					</button>
 				</div>
 			</div>
@@ -186,6 +188,7 @@ const userStore = useUserStore();
 const authStore = useAuthStore();
 
 const loading = ref(false);
+const loadingDelete = ref(false);
 const profileImage = ref(userStore.user?.profileImage || '');
 const errors = ref({});
 
@@ -345,11 +348,18 @@ function updateNotifications() {
 	}
 }
 
-function confirmDeleteAccount() {
+async function confirmDeleteAccount() {
 	if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-		toast.success('Account deleted successfully');
-		authStore.logout();
-		navigateTo('/');
+		loadingDelete.value = true;
+		try {
+			// Simulate API call
+			await new Promise(resolve => setTimeout(resolve, 1000));
+			toast.success('Account deleted successfully');
+			authStore.logout();
+			navigateTo('/');
+		} finally {
+			loadingDelete.value = false;
+		}
 	}
 }
 
