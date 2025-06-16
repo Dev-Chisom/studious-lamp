@@ -1,5 +1,4 @@
 import { ref } from 'vue';
-// import type { ApiResponse } from '@/types';
 
 export function useApiRequest<T = unknown, Args extends unknown[] = unknown[]>(apiCall: (...args: Args) => Promise<T>) {
 	const loading = ref(false);
@@ -14,7 +13,6 @@ export function useApiRequest<T = unknown, Args extends unknown[] = unknown[]>(a
 			data.value = result;
 			return result;
 		} catch (err: unknown) {
-			// You can further type this if you have a custom error type
 			error.value = (err as any)?.response?.data?.error || (err as any)?.response?.data?.message || (err as any)?.message || 'Unknown error';
 			throw err;
 		} finally {
