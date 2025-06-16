@@ -483,7 +483,7 @@
 			"offline": "Desconectado"
 		}
 	},
-	"searchUsersOrPosts": "Buscar usuarios o publicaciones",
+	"searchUsersOrPosts": "Buscar usuarios o publicaciones...",
 	"unknownLocation": "Ubicación desconocida",
 	"subscribe": "Suscribirse",
 	"likes": "me gusta",
@@ -517,11 +517,8 @@
 	"publishNow": "Publicar ahora",
 	"myCollections": "Mis colecciones",
 	"newCollection": "Nueva colección",
-	"viewCollection": "Ver colección",
-	"createNewCollection": "Crear nueva colección",
-	"collectionName": "Nombre de la colección",
 	"posts": "Publicaciones",
-	"manageAndCreatePosts": "Gestiona y crea nuevas publicaciones para tus suscriptores.",
+	"manageAndCreatePosts": "Gestiona y crea tus publicaciones",
 	"createNewPost": "Crear nueva publicación",
 	"searchPosts": "Buscar publicaciones...",
 	"allVisibility": "Toda visibilidad",
@@ -530,7 +527,7 @@
 	"mostPopular": "Más populares",
 	"highestEarnings": "Mayores ganancias",
 	"loadingPosts": "Cargando publicaciones...",
-	"noPostsFound": "No se encontraron publicaciones",
+	"noPostsFound": "No se encontraron publicaciones.",
 	"tryAdjustingSearch": "Intenta ajustar tu búsqueda o filtros.",
 	"getStartedCreatePost": "Comienza creando tu primera publicación.",
 	"stats": "Estadísticas",
@@ -603,7 +600,7 @@
 	"unfollow": "Dejar de seguir",
 	"shareWithFollowers": "Comparte algo con tus seguidores...",
 	"noPostsYet": "Aún no hay publicaciones.",
-	"suggestions": "SUGERENCIAS",
+	"suggestions": "Sugerencias",
 	"sendTipTo": "Enviar propina a {name}",
 	"sendTip": "Enviar propina",
 	"analytics": {
@@ -785,5 +782,13 @@
 		"cancel": "Cancelar",
 		"save": "Guardar",
 		"uploadCustomCover": "Subir portada personalizada"
-	}
+	},
+	"addMore": "Añadir Más",
+	"deletePost": "Eliminar publicación",
+	"areYouSureYouWantToDeleteThisPost": "¿Estás seguro de que deseas eliminar esta publicación?",
+	"deleting": "Eliminando...",
+	"showing": "Mostrando",
+	"to": "a",
+	"of": "de",
+	"results": "resultados"
 }

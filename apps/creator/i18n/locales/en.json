@@ -522,7 +522,7 @@
 	"createNewCollection": "Create New Collection",
 	"collectionName": "Collection Name",
 	"posts": "Posts",
-	"manageAndCreatePosts": "Manage and create new posts for your subscribers.",
+	"manageAndCreatePosts": "Manage and create your posts",
 	"createNewPost": "Create New Post",
 	"searchPosts": "Search posts...",
 	"allVisibility": "All Visibility",
@@ -531,7 +531,7 @@
 	"mostPopular": "Most Popular",
 	"highestEarnings": "Highest Earnings",
 	"loadingPosts": "Loading posts...",
-	"noPostsFound": "No posts found",
+	"noPostsFound": "No posts found.",
 	"tryAdjustingSearch": "Try adjusting your search or filters.",
 	"getStartedCreatePost": "Get started by creating your first post.",
 	"stats": "Stats",
@@ -604,7 +604,7 @@
 	"unfollow": "Unfollow",
 	"shareWithFollowers": "Share something with your followers...",
 	"noPostsYet": "No posts yet.",
-	"suggestions": "SUGGESTIONS",
+	"suggestions": "Suggestions",
 	"sendTipTo": "Send Tip to {name}",
 	"sendTip": "Send Tip",
 	"analytics": {
@@ -786,5 +786,13 @@
 		"cancel": "Cancel",
 		"save": "Save",
 		"uploadCustomCover": "Upload custom cover"
-	}
+	},
+	"addMore": "Add More",
+	"deletePost": "Delete Post",
+	"areYouSureYouWantToDeleteThisPost": "Are you sure you want to delete this post?",
+	"deleting": "Deleting...",
+	"showing": "Showing",
+	"to": "to",
+	"of": "of",
+	"results": "results"
 }
