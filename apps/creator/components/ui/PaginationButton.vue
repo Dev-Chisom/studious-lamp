@@ -1,13 +1,13 @@
 <!-- PaginationButton.vue -->
 <script setup lang="ts">
-defineProps({
+const props = defineProps({
   label: {
     type: [String, Number],
     required: true
   },
   icon: {
     type: String,
-    validator: (value: string) => ['first', 'prev', 'next', 'last'].includes(value),
+    validator: (value: string) => ['', 'first', 'prev', 'next', 'last'].includes(value),
     default: ''
   },
   active: {
@@ -20,7 +20,7 @@ defineProps({
   }
 });
 
-const emit = defineEmits(['click']);
+const emit = defineEmits<{ (e: 'click'): void }>();
 </script>
 
 <template>
