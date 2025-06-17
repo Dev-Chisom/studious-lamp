@@ -48,11 +48,6 @@ onMounted(async () => {
 			const profile = await authApi.getProfile();
 			authStore.setProfile(profile);
 			notification.success(t('auth.loginSuccess'));
-			if (typeof window !== 'undefined') {
-				const authChannel = new BroadcastChannel('auth');
-				authChannel.postMessage({ type: 'login' });
-				authChannel.close();
-			}
 			await router.replace('/');
 		} catch {
 			try {
@@ -62,11 +57,6 @@ onMounted(async () => {
 				const profile = await authApi.getProfile();
 				authStore.setProfile(profile);
 				notification.success(t('auth.loginSuccess'));
-				if (typeof window !== 'undefined') {
-					const authChannel = new BroadcastChannel('auth');
-					authChannel.postMessage({ type: 'login' });
-					authChannel.close();
-				}
 				await router.replace('/');
 			} catch {
 				notification.error(apiError.value);
