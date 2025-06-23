@@ -10,34 +10,38 @@
   >
     <!-- Media Content -->
     <div class="w-full h-full bg-gray-100 dark:bg-gray-800">
-      <img 
-        v-if="media?.type === 'image'" 
-        :src="media?.thumbnailUrl || media?.url" 
-        :alt="media?.name"
-        class="w-full h-full object-cover"
-        loading="lazy"
-      />
-      <div v-else-if="media?.type === 'video'" class="relative w-full h-full">
-        <video 
-          :src="media?.url" 
+        <img 
+          v-if="media?.type === 'image'" 
+          :src="media?.thumbnailUrl || media?.url" 
+          :alt="media?.name"
           class="w-full h-full object-cover"
-          muted
-          preload="metadata"
+          loading="lazy"
         />
-        <!-- Video Overlay -->
-        <div class="absolute inset-0 bg-black/20 flex items-center justify-center">
-          <div class="bg-white/90 rounded-full p-3 group-hover:scale-110 transition-transform">
-            <Icon name="lucide:play" class="w-6 h-6 text-gray-800" />
-          </div>
-        </div>
-        <!-- Duration Badge -->
-        <div v-if="media?.duration" class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
-          {{ formatDuration(media?.duration) }}
+
+        <div v-else-if="media?.type === 'video'" class="relative w-full h-full">
+          <video 
+            :src="media?.url" 
+            class="w-full h-full object-cover"
+            muted
+            preload="metadata"
+          />
+          <!-- Video Overlay with coverUrl fallback -->
+            <div 
+              class="absolute inset-0 flex items-center justify-center"
+              :style="media?.thumbnailUrl ? `background-image: url('${media.thumbnailUrl}')` : ''"
+              :class="!media?.thumbnailUrl ? 'bg-black/20' : 'bg-cover bg-center'"
+            >
+              <div class="bg-white/90 rounded-full p-3 group-hover:scale-110 transition-transform">
+                <Icon name="lucide:play" class="w-6 h-6 text-gray-800" />
+              </div>
+            </div>
+            <!-- Duration Badge -->
+            <div v-if="media?.duration" class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
+              {{ formatDuration(media?.duration) }}
+            </div>
         </div>
       </div>
-    </div>
 
-    <!-- Selection Indicator -->
     <div 
       v-if="selected" 
       class="absolute top-3 left-3 bg-primary-500 text-white rounded-full p-2 shadow-lg"
@@ -45,7 +49,6 @@
       <Icon name="lucide:check" class="w-4 h-4" />
     </div>
 
-    <!-- Hover Overlay -->
     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
       <div class="absolute bottom-3 left-3 right-3">
         <p class="text-white text-xs sm:text-sm font-medium truncate">{{ media?.name }}</p>

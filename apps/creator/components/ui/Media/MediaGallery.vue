@@ -120,7 +120,7 @@ const fetchMediaFiles = async () => {
     mediaFiles.value = (response.data.mediaFiles || []).map((file: any) => ({
       id: file._id,
       url: file.url,
-      thumbnailUrl: file.thumbnailUrl || file.url,
+      thumbnailUrl: file.type === 'video' ? file.coverUrl : file.thumbnailUrl || file.url,
       name: file.url.split('/').pop() || 'media',
       type: file.type,
       size: file.size,

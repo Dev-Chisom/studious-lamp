@@ -612,7 +612,7 @@ function formatTime(date) {
 	const hours = Math.floor(diff / (1000 * 60 * 60))
 	const days = Math.floor(diff / (1000 * 60 * 60 * 24))
 
-	if (minutes < 1) return 'now'
+	if (minutes < 1) return t('messages.now')
 	if (minutes < 60) return `${minutes}m`
 	if (hours < 24) return `${hours}h`
 	if (days < 7) return `${days}d`
@@ -626,9 +626,9 @@ function formatMessageContent(content) {
 }
 
 function getLastMessagePreview(lastMessage) {
-	if (lastMessage.type === 'voice') return 'Voice message'
-	if (lastMessage.type === 'image') return 'Photo'
-	if (lastMessage.type === 'video') return 'Video'
+	if (lastMessage.type === 'voice') return t('messages.voiceMessage')
+	if (lastMessage.type === 'image') return t('messages.photo')
+	if (lastMessage.type === 'video') return t('messages.video')
 	return lastMessage.content
 }
 
@@ -821,8 +821,7 @@ function updateMediaIndex(index) {
 }
 
 function handleNewComment(comment) {
-	// Handle new comment from media preview modal
-	console.log('New comment:', comment)
+	// Optionally handle new comment from media preview modal
 }
 
 function sendMessage() {

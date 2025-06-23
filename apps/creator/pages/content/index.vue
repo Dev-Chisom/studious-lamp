@@ -1,12 +1,13 @@
 <template>
-  <div class="max-w-6xl mx-auto p-4">
+  <div class="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
     <Head>
       <Title>{{ t('content.management.title') }} - Whispers</Title>
     </Head>
 
-    <div class="sm:flex sm:items-center sm:justify-between mb-6">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+    <!-- Header Section -->
+    <div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 mb-6">
+      <div class="flex-1 min-w-0">
+        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 truncate">
           {{ t('content.management.title') }}
         </h1>
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -14,44 +15,53 @@
         </p>
       </div>
 
-      <div class="mt-4 sm:mt-0">
+      <div class="flex-shrink-0">
         <NuxtLink 
           to="/content/new" 
-          class="btn-primary"
+          class="btn-primary w-full sm:w-auto flex items-center justify-center"
         >
           <Icon name="lucide:plus" class="mr-2 h-4 w-4" /> 
-          {{ t('content.management.createNew') }}
+          <span class="hidden sm:inline">{{ t('content.management.createNew') }}</span>
+          <span class="sm:hidden">{{ t('content.management.createNew') }}</span>
         </NuxtLink>
       </div>
     </div>
 
+    <!-- Filters Section -->
     <ContentFilters
       v-model:search="search"
       v-model:visibility-filter="visibilityFilter"
       class="mb-6"
     />
 
-    <ContentTable
-      :content="paginatedContent"
-      :loading="loading"
-      @edit="editContent"
-      @delete="confirmDelete"
-      class="mb-6"
-    />
+    <!-- Content Table Section -->
+    <div class="mb-6">
+      <ContentTable
+        :content="paginatedContent"
+        :loading="loading"
+        @edit="editContent"
+        @delete="confirmDelete"
+      />
+    </div>
 
-    <Pagination
-      v-if="pagination.pages > 1"
-      :current-page="page"
-      :per-page="limit"
-      :total-items="pagination.total"
-      :per-page-options="[10, 20, 50, 100]"
-      :show-end-buttons="true"
-      :show-per-page="true"
-      :show-range="true"
-      @update:current-page="updatePage"
-      @update:per-page="updateLimit"
-    />
+    <!-- Pagination Section -->
+    <div class="flex justify-center sm:justify-between items-center">
+      <Pagination
+        v-if="pagination.pages > 1"
+        :current-page="page"
+        :per-page="limit"
+        :total-items="pagination.total"
+        :per-page-options="[10, 20, 50, 100]"
+        :show-end-buttons="true"
+        :show-per-page="true"
+        :show-range="true"
+        class="w-full"
+        @update:current-page="updatePage"
+        @update:per-page="updateLimit"
+      />
+    </div>
 
+    <!-- Delete Modal -->
     <DeleteContentModal
       v-model="showDeleteModal"
       :content="contentToDelete"
