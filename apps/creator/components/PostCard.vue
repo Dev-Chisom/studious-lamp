@@ -6,7 +6,7 @@
 				<div class="flex items-center">
 					<NuxtLink to="/@user" class="flex-shrink-0">
 						<img
-							:src="post.creator.avatar" :alt="post.creator.name"
+							:src="post.creator?.avatar" :alt="post.creator.name"
 							class="w-8 h-8 rounded-full object-cover border border-gray-200 dark:border-gray-700" />
 					</NuxtLink>
 
