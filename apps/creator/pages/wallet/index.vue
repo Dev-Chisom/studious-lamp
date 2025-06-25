@@ -4,7 +4,7 @@
 			<Title>Subscribers - Creator Dashboard</Title>
 		</Head>
 		<div class="mb-6">
-			<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ t('wallet') }}</h1>
+			<h1 class="text-2xl font-bold text-gray-900 dark:text-gray-100">{{ t('nav.wallet') }}</h1>
 		</div>
 
 		<div class="bg-white dark:bg-gray-900 rounded-xl shadow-soft p-6 mb-8">
