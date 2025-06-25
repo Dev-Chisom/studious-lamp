@@ -21,7 +21,11 @@
     "like": "J'aime | Like",
     "close": "Fermer | Close",
     "select": "Sélectionner | Select",
-    "search": "Rechercher"
+    "search": "Rechercher",
+    "monthly": "Mensuel",
+    "month": "Mois",
+    "yearly": "Annuel",
+    "year": "Année"
   },
   "nav": {
     "home": "Accueil | Home",
@@ -774,7 +778,8 @@
     "uploadSize": "Taille max : {size} | Max file size: {size}",
     "uploading": "Envoi... | Uploading...",
     "uploadFailed": "Échec | Upload failed",
-    "uploadSuccess": "Réussi | Upload successful"
+    "uploadSuccess": "Réussi | Upload successful",
+    "updatePost": "Mettre à jour la publication | Update Post"
   },
   "mediaGallery": {
     "title": "Galerie | Media Library",

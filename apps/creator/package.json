@@ -10,6 +10,7 @@
 		"postinstall": "nuxt prepare"
 	},
 	"dependencies": {
+		"@api.video/player-sdk": "^1.2.33",
 		"@headlessui/vue": "^1.7.23",
 		"@nuxtjs/color-mode": "^3.5.2",
 		"@nuxtjs/i18n": "^9.1.0",

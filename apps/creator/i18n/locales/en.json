@@ -21,7 +21,11 @@
 		"like": "Like",
 		"close": "Close",
 		"select": "Select",
-		"search": "Search"
+		"search": "Search",
+		"monthly": "Monthly",
+		"month": "Month",
+		"yearly": "Yearly",
+		"year": "Year"
 	},
 	"nav": {
 		"home": "Home",
@@ -780,7 +784,8 @@
 		"uploadSize": "Max file size: {size}",
 		"uploading": "Uploading...",
 		"uploadFailed": "Upload failed",
-		"uploadSuccess": "Upload successful"
+		"uploadSuccess": "Upload successful",
+		"updatePost": "Update Post"
 	},
 	"mediaGallery": {
 		"title": "Media Library",

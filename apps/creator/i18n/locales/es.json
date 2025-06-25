@@ -20,7 +20,11 @@
 		"reply": "Responder",
 		"like": "Me gusta",
 		"close": "Cerrar",
-		"select": "Seleccionar"
+		"select": "Seleccionar",
+		"monthly": "Mensual",
+		"month": "Mes",
+		"yearly": "Anual",
+		"year": "Año"
 	},
 	"nav": {
 		"home": "Inicio",
@@ -570,8 +574,6 @@
 	"fromLastMonth": "del mes pasado",
 	"searchSubscribers": "Buscar suscriptores...",
 	"allPlans": "Todos los planes",
-	"monthly": "Mensual",
-	"yearly": "Anual",
 	"allStatus": "Todos los estados",
 	"active": "Activo",
 	"expired": "Expirado",
@@ -775,7 +777,8 @@
 		"uploadSize": "Tamaño máximo: {size}",
 		"uploading": "Subiendo...",
 		"uploadFailed": "Error al subir",
-		"uploadSuccess": "Subida exitosa"
+		"uploadSuccess": "Subida exitosa",
+		"updatePost": "Actualizar publicación | Update Post"
 	},
 	"mediaGallery": {
 		"title": "Biblioteca multimedia",

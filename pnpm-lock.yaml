@@ -96,6 +96,9 @@ importers:
 
   apps/creator:
     dependencies:
+      '@api.video/player-sdk':
+        specifier: ^1.2.33
+        version: 1.2.33
       '@headlessui/vue':
         specifier: ^1.7.23
         version: 1.7.23(vue@3.5.13(typescript@5.8.3))
@@ -336,6 +339,9 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
+
+  '@api.video/player-sdk@1.2.33':
+    resolution: {integrity: sha512-v646Da9WiGXFDI33S16KpK+23Ut6i6fsr5R1oG0Q+98h4pcSJq0tj7FYw9iF1Qr8bRxXppFQuS0nBvns/CGzbg==}
 
   '@babel/code-frame@7.27.1':
     resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
@@ -6131,6 +6137,11 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
+
+  '@api.video/player-sdk@1.2.33':
+    dependencies:
+      core-js: 3.42.0
+      url-polyfill: 1.1.13
 
   '@babel/code-frame@7.27.1':
     dependencies:

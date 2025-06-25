@@ -491,7 +491,7 @@ function cleanupAllBlobUrls() {
 // Get submit button text based on mode and state
 function getSubmitButtonText(): string {
   if (props.isEditMode) {
-    return isScheduled.value ? (t('updateSchedule') || 'Update Schedule') : (t('updatePost') || 'Update Post');
+    return isScheduled.value ? (t('updateSchedule') || 'Update Schedule') : (t('postForm.updatePost') || 'Update Post');
   } else {
     return isScheduled.value ? (t('schedulePost') || 'Schedule Post') : (t('publishNow') || 'Publish Now');
   }

@@ -42,7 +42,7 @@
         @edit="editContent"
         @delete="confirmDelete"
       />
-    </div>
+    </div> 
 
     <!-- Pagination Section -->
     <div class="flex justify-center sm:justify-between items-center">
@@ -195,15 +195,13 @@ function updateLimit(newLimit: number): void {
 }
 
 async function loadContent(): Promise<void> {
+  loading.value = true;
   try {
-    loading.value = true
-    await contentStore.fetchContent()
+    await contentStore.fetchContent();
   } catch (err) {
-    console.error('Error loading content:', err)
-    error(t('notifications.contentLoadFailed'))
-  } finally {
-    loading.value = false
+    error(t('notifications.contentLoadFailed'));
   }
+  loading.value = false;
 }
 
 // Watchers
