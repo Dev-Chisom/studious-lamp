@@ -258,7 +258,9 @@
     "signInTitle": "Connexion | Sign in to your account",
     "authenticationFailed": "Échec d'authentification | Authentication failed",
     "continueWithGoogle": "Continuer avec Google | Continue with Google",
-    "continueWithTwitter": "Continuer avec Twitter | Continue with Twitter"
+    "continueWithTwitter": "Continuer avec Twitter | Continue with Twitter",
+    "processingLogin": "Connexion en cours...",
+    "loginFailed": "Échec de la connexion. {{error}}"
   },
   "content": {
     "premium": {

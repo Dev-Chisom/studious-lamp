@@ -259,7 +259,9 @@
 		"signInTitle": "Sign in to your account",
 		"authenticationFailed": "Authentication failed. Please try again.",
 		"continueWithGoogle": "Continue with Google",
-		"continueWithTwitter": "Continue with Twitter"
+		"continueWithTwitter": "Continue with Twitter",
+		"processingLogin": "Processing login...",
+		"loginFailed": "Login failed. {{error}}"
 	},
 	"content": {
 		"premium": {

@@ -20,7 +20,9 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Facebook, Instagram, Twitter, Music, Send, Loader2, AlertCircle } from "lucide-react"
+import { Facebook, Instagram, Twitter, LucideFacebook, 
+  LucideInstagram,
+  LucideTwitter, Music, Send, Loader2, AlertCircle } from "lucide-react"
 
 // Placeholder for i18n - replace with your i18n solution
 const t = (key: string, fallback: string) => fallback

@@ -1,0 +1,18 @@
+"use client"
+
+import type React from "react"
+import { AuthGuard } from "@/lib/auth-guard"
+import DashboardLayoutComponent from "@/components/DashboardLayout"
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    // AuthGuard protects the entire dashboard section
+    <AuthGuard requiresAuth={true}>
+      <DashboardLayoutComponent>{children}</DashboardLayoutComponent>
+    </AuthGuard>
+  )
+}

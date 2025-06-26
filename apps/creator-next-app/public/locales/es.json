@@ -257,7 +257,9 @@
 		"signInTitle": "Inicia sesión en tu cuenta",
 		"authenticationFailed": "Error de autenticación. Por favor, inténtalo de nuevo.",
 		"continueWithGoogle": "Continuar con Google",
-		"continueWithTwitter": "Continuar con Twitter"
+		"continueWithTwitter": "Continuar con Twitter",
+		"processingLogin": "Procesando inicio de sesión...",
+		"loginFailed": "Error de inicio de sesión. {{error}}"
 	},
 	"content": {
 		"premium": {
