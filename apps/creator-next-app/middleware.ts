@@ -29,19 +29,16 @@ export function middleware(request: NextRequest) {
   // Get route configuration
   const routeConfig = getRouteConfig(pathname)
 
-  // console.log(`🛡️ Middleware checking: ${pathname}`, {
-  //   requiresAuth: routeConfig?.requiresAuth,
-  //   requiresCreator: routeConfig?.requiresCreator,
-  //   hasToken: !!accessToken,
-  // })
+  console.log(`🛡️ Middleware checking: ${pathname}`, {
+    requiresAuth: routeConfig?.requiresAuth,
+    requiresCreator: routeConfig?.requiresCreator,
+    hasToken: !!accessToken,
+  })
 
-  // If no route config found, treat as protected by default
   const requiresAuth = routeConfig?.requiresAuth ?? true
   const requiresCreator = routeConfig?.requiresCreator ?? false
 
-  // If route doesn't require auth, allow
   if (!requiresAuth) {
-    // But if user is authenticated and trying to access auth page, redirect to home
     if (accessToken && pathname === "/auth") {
       console.log(`✅ Authenticated user accessing auth page, redirecting to /`)
       const url = request.nextUrl.clone()
@@ -53,7 +50,7 @@ export function middleware(request: NextRequest) {
 
   // Route requires auth but no token - redirect to auth
   if (!accessToken) {
-    // console.log(`🚫 No token for protected route, redirecting to /auth`)
+    console.log(`🚫 No token for protected route, redirecting to /auth`)
     const url = request.nextUrl.clone()
     url.pathname = "/auth"
     return NextResponse.redirect(url)
@@ -89,21 +86,11 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  console.log(`✅ Middleware passed for ${pathname}`)
   return NextResponse.next()
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - locales (translation files)
-     * - Any file with an extension (images, etc.)
-     */
     "/((?!api|_next/static|_next/image|favicon.ico|locales|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js)$).*)",
   ],
 }

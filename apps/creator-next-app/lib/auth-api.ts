@@ -36,7 +36,6 @@ export function createAuthApi(token?: string) {
   }
 }
 
-// Standalone functions for convenience (optional)
 export async function getProfile(token: string): Promise<UserProfile> {
   const authApi = createAuthApi(token)
   return authApi.getProfile()

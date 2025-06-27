@@ -16,22 +16,26 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
           await i18n.init()
         }
 
-        // Force normalize the language
-        const currentLang = i18n.language || "en"
-        const supportedLanguages = ["en", "es", "fr"]
-        const baseLang = currentLang.split("-")[0].toLowerCase()
-        const normalizedLang = supportedLanguages.includes(baseLang) ? baseLang : "en"
+        // Only normalize on client side
+        if (typeof window !== "undefined") {
+          const currentLang = i18n.language || "en"
+          const supportedLanguages = ["en", "es", "fr"]
+          const baseLang = currentLang.split("-")[0].toLowerCase()
+          const normalizedLang = supportedLanguages.includes(baseLang) ? baseLang : "en"
 
-        if (currentLang !== normalizedLang) {
-          console.log(`I18nProvider: Normalizing ${currentLang} to ${normalizedLang}`)
-          await i18n.changeLanguage(normalizedLang)
+          if (currentLang !== normalizedLang) {
+            console.log(`I18nProvider: Normalizing ${currentLang} to ${normalizedLang}`)
+            await i18n.changeLanguage(normalizedLang)
+          }
         }
 
         setIsReady(true)
       } catch (error) {
         console.error("Failed to initialize i18n:", error)
         // Fallback to English
-        await i18n.changeLanguage("en")
+        if (typeof window !== "undefined") {
+          await i18n.changeLanguage("en")
+        }
         setIsReady(true)
       }
     }
@@ -39,8 +43,8 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     initializeI18n()
   }, [])
 
-  // Show loading state while i18n is initializing
-  if (!isReady) {
+  // Don't show loading on server side to prevent hydration mismatch
+  if (!isReady && typeof window !== "undefined") {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

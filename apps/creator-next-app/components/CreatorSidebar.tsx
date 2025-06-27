@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuthStore } from "@/lib/auth-store"
-import SidebarNavigationItem from "@/components/sidebar-navigation-item"
+import SidebarNavigationItem from "@/components/SidebarNavigationItem"
 import Image from "next/image"
 
 interface NavigationItem {
@@ -76,7 +76,7 @@ export default function CreatorSidebar({ isMobileOpen, onClose }: CreatorSidebar
               <div className="px-4 py-6 bg-primary-700 dark:bg-primary-900 sm:px-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Image src="/logo-white.svg" alt="Whispers" width={32} height={32} className="h-8 w-auto" />
+                    <Image src="/logo-white.svg?width=48&height=48" alt="Logo" width={48} height={48} className="mb-2" />
                     <span className="text-xl font-bold text-white dark:text-gray-100">{t("nav.creatorStudio")}</span>
                   </div>
                   <Button
@@ -107,7 +107,7 @@ export default function CreatorSidebar({ isMobileOpen, onClose }: CreatorSidebar
           <div className="flex flex-col h-0 flex-1">
             <div className="px-4 py-6 bg-primary-700 dark:bg-primary-900 flex items-center">
               <div className="flex items-center space-x-2">
-                <Image src="/logo-white.svg" alt="Whispers" width={32} height={32} className="h-8 w-auto" />
+                <Image src="/logo-white.svg?width=48&height=48" alt="Logo" width={48} height={48} className="mb-2" />
                 <span className="text-xl font-bold text-white dark:text-gray-100">{t("creatorStudio")}</span>
               </div>
             </div>

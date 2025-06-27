@@ -1,53 +1,77 @@
 "use client"
 
 import type React from "react"
-
 import { useEffect } from "react"
 import { useAuthStore } from "./auth-store"
-import { useLogin } from "./api-hooks"
 import { createApiService } from "./api.service"
 
 interface AuthProviderProps {
   children: React.ReactNode
 }
 
+// Cookie utilities
+const getCookie = (name: string): string | null => {
+  if (typeof document === "undefined") return null
+  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`))
+  return match ? match[2] : null
+}
+
+const deleteCookie = (name: string) => {
+  if (typeof document === "undefined") return
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/`
+}
+
 export function AuthProvider({ children }: AuthProviderProps) {
   const { accessToken, refreshToken, setTokens, setProfile, logout, isAuthenticated } = useAuthStore()
-  const loginMutation = useLogin()
 
   useEffect(() => {
     const initializeAuth = async () => {
-      // Check for tokens in cookies (set by middleware or login)
-      const cookieAccessToken = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("accessToken="))
-        ?.split("=")[1]
+      console.log("🔐 AuthProvider initializing...")
 
-      const cookieRefreshToken = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("refreshToken="))
-        ?.split("=")[1]
+      // Get tokens from cookies
+      const cookieAccessToken = getCookie("accessToken")
+      const cookieRefreshToken = getCookie("refreshToken")
 
+      console.log("🔐 Cookie tokens:", {
+        cookieAccessToken: cookieAccessToken ? "YES" : "NO",
+        cookieRefreshToken: cookieRefreshToken ? "YES" : "NO",
+        storeAccessToken: accessToken ? "YES" : "NO",
+      })
+
+      // Sync store with cookies if different
       if (cookieAccessToken && cookieAccessToken !== accessToken) {
-        setTokens(cookieAccessToken, cookieRefreshToken || null)
+        console.log("🔐 Syncing tokens from cookies to store")
+        useAuthStore.setState({
+          accessToken: cookieAccessToken,
+          refreshToken: cookieRefreshToken,
+        })
       }
 
       // If we have tokens but no profile, fetch it
-      if (isAuthenticated() && !useAuthStore.getState().profile) {
+      const currentToken = accessToken || cookieAccessToken
+      if (currentToken && !useAuthStore.getState().profile) {
+        console.log("🔐 Have token but no profile, fetching...")
         try {
           const api = createApiService(
-            accessToken || cookieAccessToken,
+            currentToken,
             refreshToken || cookieRefreshToken,
             (newToken) => setTokens(newToken, refreshToken || cookieRefreshToken),
-            () => logout(),
+            () => {
+              console.log("🔐 Auth error in provider, logging out")
+              logout()
+            },
           )
 
           const profile = await api.get("/auth/profile")
+          console.log("🔐 Profile fetched successfully:", profile)
           setProfile(profile)
         } catch (error) {
+          console.error("🔐 Failed to fetch profile:", error)
+
           // If profile fetch fails, try to refresh token
           if (refreshToken || cookieRefreshToken) {
             try {
+              console.log("🔐 Trying to refresh token...")
               const api = createApiService()
               const { accessToken: newAccessToken } = await api.post("/auth/refresh-token", {
                 refreshToken: refreshToken || cookieRefreshToken,
@@ -55,20 +79,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
               setTokens(newAccessToken, refreshToken || cookieRefreshToken)
 
-              // Set new token in cookie
-              document.cookie = `accessToken=${newAccessToken}; path=/; max-age=${7 * 24 * 60 * 60}`
-
               // Try to fetch profile again
               const newApi = createApiService(newAccessToken)
               const profile = await newApi.get("/auth/profile")
               setProfile(profile)
+              console.log("🔐 Profile fetched after token refresh")
             } catch (refreshError) {
+              console.error("🔐 Token refresh failed, logging out")
               logout()
-              // Clear cookies
-              document.cookie = "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT"
-              document.cookie = "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT"
             }
           } else {
+            console.log("🔐 No refresh token available, logging out")
             logout()
           }
         }
@@ -76,7 +97,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
 
     initializeAuth()
-  }, [accessToken, refreshToken, setTokens, setProfile, logout, isAuthenticated])
+  }, []) // Remove dependencies to prevent loops
 
   return <>{children}</>
 }

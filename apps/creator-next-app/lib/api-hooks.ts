@@ -1,4 +1,3 @@
-// Custom hooks that integrate your API service with TanStack Query
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { useAuthStore } from "./auth-store"
@@ -19,7 +18,6 @@ export function useAuthenticatedApi() {
   )
 }
 
-// Hook for fetching user profile
 export function useProfile() {
   const { accessToken, setProfile } = useAuthStore()
 
@@ -29,16 +27,15 @@ export function useProfile() {
       if (!accessToken) throw new Error("No access token")
       const authApi = createAuthApi(accessToken)
       const profile = await authApi.getProfile()
-      setProfile(profile) // Update Zustand store
+      setProfile(profile)
       return profile
     },
     enabled: !!accessToken,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    throwOnError: false, // Handle errors manually
+    staleTime: 5 * 60 * 1000,
+    throwOnError: false,
   })
 }
 
-// Hook for login mutation - Fixed to handle QueryClient properly
 export function useLogin() {
   const { setTokens, setProfile, setLoading, setError } = useAuthStore()
 
@@ -50,32 +47,57 @@ export function useLogin() {
       accessToken: string
       refreshToken: string | null
     }) => {
+      console.log("🔐 Login mutation started")
       setLoading(true)
       setError(null)
 
       try {
+        console.log("🔐 Setting tokens in store")
         setTokens(accessToken, refreshToken)
+
+        console.log("🔐 Creating auth API client")
         const authApi = createAuthApi(accessToken)
+
+        console.log("🔐 Fetching user profile")
         const profile = await authApi.getProfile()
+
+        console.log("🔐 Profile fetched successfully:", profile)
         return profile
       } catch (error) {
+        console.log("🔐 Primary login failed, trying refresh token")
+
         if (refreshToken) {
-          const authApi = createAuthApi()
-          const { accessToken: newAccessToken } = await authApi.refreshToken(refreshToken)
-          setTokens(newAccessToken, refreshToken)
-          const newAuthApi = createAuthApi(newAccessToken)
-          const profile = await newAuthApi.getProfile()
-          return profile
+          try {
+            const authApi = createAuthApi()
+            console.log("🔐 Attempting token refresh")
+            const { accessToken: newAccessToken } = await authApi.refreshToken(refreshToken)
+
+            console.log("🔐 Token refresh successful")
+            setTokens(newAccessToken, refreshToken)
+
+            const newAuthApi = createAuthApi(newAccessToken)
+            const profile = await newAuthApi.getProfile()
+
+            console.log("🔐 Profile fetched with new token:", profile)
+            return profile
+          } catch (refreshError) {
+            console.error("🔐 Token refresh failed:", refreshError)
+            throw refreshError
+          }
         }
+
+        console.error("🔐 Login failed:", error)
         throw error
       }
     },
     onSuccess: (profile) => {
+      console.log("🔐 Login mutation success")
       setProfile(profile)
       setLoading(false)
       toast.success("Login successful!")
     },
     onError: (error: Error) => {
+      console.error("🔐 Login mutation error:", error)
       setError(error.message)
       setLoading(false)
       toast.error(error.message || "Login failed")
@@ -83,7 +105,6 @@ export function useLogin() {
   })
 }
 
-// Hook for logout mutation - Fixed to handle QueryClient properly
 export function useLogout() {
   const { accessToken, logout } = useAuthStore()
 
@@ -97,11 +118,9 @@ export function useLogout() {
     onSuccess: () => {
       logout()
       toast.success("Logged out successfully")
-      // Redirect to login page
       window.location.href = "/auth"
     },
     onError: (error: Error) => {
-      // Even if logout API call fails, clear local state
       logout()
       toast.error("Logout failed, but local session cleared")
       window.location.href = "/auth"

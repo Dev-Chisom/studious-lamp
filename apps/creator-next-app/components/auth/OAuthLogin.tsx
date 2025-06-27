@@ -1,10 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { Loader2, Chrome, Twitter } from "lucide-react"
-import { getOAuthUrl } from "@/lib/auth-api" // Updated: Use the correct import
+import { getOAuthUrl } from "@/lib/auth-api"
 import { cn } from "@/lib/utils"
 
 interface OAuthButtonsProps {
@@ -15,21 +14,40 @@ interface OAuthButtonsProps {
 export default function OAuthLogin({ loading: parentLoading = false, className }: OAuthButtonsProps) {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [twitterLoading, setTwitterLoading] = useState(false)
-  const { t } = useTranslation("auth")
 
   const handleLoginWithGoogle = () => {
     if (!parentLoading && !googleLoading) {
+      console.log("🔐 Starting Google OAuth flow")
       setGoogleLoading(true)
-      // Updated: Use the real OAuth URL from your API
-      window.location.href = getOAuthUrl("google")
+
+      try {
+        // Add current URL as redirect parameter so OAuth can return here
+        const redirectUri = `${window.location.origin}/auth`
+        const oauthUrl = `${getOAuthUrl("google")}?redirect_uri=${encodeURIComponent(redirectUri)}`
+        console.log("🔐 Redirecting to:", oauthUrl)
+        window.location.href = oauthUrl
+      } catch (error) {
+        console.error("🔐 Failed to get OAuth URL:", error)
+        setGoogleLoading(false)
+      }
     }
   }
 
   const handleLoginWithTwitter = () => {
     if (!parentLoading && !twitterLoading) {
+      console.log("🔐 Starting Twitter OAuth flow")
       setTwitterLoading(true)
-      // Updated: Use the real OAuth URL from your API
-      window.location.href = getOAuthUrl("x")
+
+      try {
+        // Add current URL as redirect parameter so OAuth can return here
+        const redirectUri = `${window.location.origin}/auth`
+        const oauthUrl = `${getOAuthUrl("x")}?redirect_uri=${encodeURIComponent(redirectUri)}`
+        console.log("🔐 Redirecting to:", oauthUrl)
+        window.location.href = oauthUrl
+      } catch (error) {
+        console.error("🔐 Failed to get OAuth URL:", error)
+        setTwitterLoading(false)
+      }
     }
   }
 
@@ -42,7 +60,7 @@ export default function OAuthLogin({ loading: parentLoading = false, className }
         onClick={handleLoginWithGoogle}
       >
         {googleLoading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Chrome className="h-5 w-5 mr-2" />}
-        {t("auth.continueWithGoogle")}
+        Continue with Google
       </Button>
       <Button
         variant="outline"
@@ -51,7 +69,7 @@ export default function OAuthLogin({ loading: parentLoading = false, className }
         onClick={handleLoginWithTwitter}
       >
         {twitterLoading ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : <Twitter className="h-5 w-5 mr-2" />}
-        {t("auth.continueWithTwitter")}
+        Continue with Twitter
       </Button>
     </div>
   )
