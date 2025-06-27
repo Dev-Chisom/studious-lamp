@@ -1,47 +1,46 @@
-import { createApiService, getApiBaseUrl } from "./api.service"
+import { api } from "./api.service"
+import type { AuthResponse, User } from "./api-types"
 
-interface RefreshTokenResponse {
-  accessToken: string
-  refreshToken?: string
-}
-
-export interface UserProfile {
-  id: string
+export interface LoginCredentials {
   email: string
-  name: string
-  avatar?: string
-  walletBalance: number
-  isCreator: boolean
-  subscriptions: string[]
-  collections: {
-    id: string
-    name: string
-    posts: string[]
-  }[]
+  password: string
 }
 
-export function getOAuthUrl(provider: "google" | "x") {
-  return `${getApiBaseUrl()}/auth/${provider}`
+export interface RegisterData {
+  email: string
+  password: string
+  username: string
+  displayName?: string
 }
 
-export function createAuthApi(token?: string) {
-  const api = createApiService(token)
+export const authApi = {
+  // OAuth flow - get redirect URL for provider
+  getOAuthUrl: (provider: "google" | "x") => {
+    const baseUrl = "https://x-zunk.onrender.com"
+    return `${baseUrl}/auth/${provider}`
+  },
 
-  return {
-    setToken: api.setToken,
-    getProfile: (): Promise<UserProfile> => api.get("/auth/profile"),
-    refreshToken: (refreshToken: string): Promise<RefreshTokenResponse> =>
-      api.post<RefreshTokenResponse>("/auth/refresh-token", { refreshToken }),
-    logout: () => api.patch("/auth/logout"),
-  }
-}
+  // Traditional auth
+  login: (credentials: LoginCredentials) => api.post<AuthResponse>("/auth/login", credentials),
 
-export async function getProfile(token: string): Promise<UserProfile> {
-  const authApi = createAuthApi(token)
-  return authApi.getProfile()
-}
+  register: (data: RegisterData) => api.post<AuthResponse>("/auth/register", data),
 
-export async function refreshTokenApi(refreshToken: string): Promise<RefreshTokenResponse> {
-  const authApi = createAuthApi()
-  return authApi.refreshToken(refreshToken)
+  // Profile management
+  getProfile: () => api.get<User>("/auth/profile"),
+
+  updateProfile: (data: Partial<User>) => api.put<User>("/auth/profile", data),
+
+  // Token management
+  refreshToken: (refreshToken: string) =>
+    api.post<{ accessToken: string; refreshToken?: string }>("/auth/refresh-token", { refreshToken }),
+
+  logout: () => api.post("/auth/logout"),
+
+  // Password management
+  changePassword: (currentPassword: string, newPassword: string) =>
+    api.post("/auth/change-password", { currentPassword, newPassword }),
+
+  requestPasswordReset: (email: string) => api.post("/auth/forgot-password", { email }),
+
+  resetPassword: (token: string, newPassword: string) => api.post("/auth/reset-password", { token, newPassword }),
 }

@@ -1,16 +1,15 @@
 "use client"
 
-import type React from "react"
-
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import type React from "react"
+
 import { cn } from "@/lib/utils"
-import * as Icons from "lucide-react"
 
 interface NavigationItem {
   name: string
   href: string
-  icon: string
+  icon: React.ComponentType<{ className?: string }>
   divider?: boolean
 }
 
@@ -24,8 +23,8 @@ export default function SidebarNavigationItem({ item, onClick }: SidebarNavigati
 
   const isActive = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)
 
-  // Get the icon component dynamically
-  const IconComponent = Icons[item.icon as keyof typeof Icons] as React.ComponentType<{ className?: string }>
+  // Use the icon component directly
+  const IconComponent = item.icon
 
   return (
     <div className="mb-2">
@@ -40,16 +39,14 @@ export default function SidebarNavigationItem({ item, onClick }: SidebarNavigati
             : "text-gray-700 hover:text-primary-700 hover:bg-gray-50 dark:text-gray-200 dark:hover:text-primary-200 dark:hover:bg-gray-800",
         )}
       >
-        {IconComponent && (
-          <IconComponent
-            className={cn(
-              "mr-4 flex-shrink-0 h-6 w-6",
-              isActive
-                ? "text-primary-600 dark:text-primary-300"
-                : "text-gray-500 group-hover:text-primary-600 dark:text-gray-400 dark:group-hover:text-primary-300",
-            )}
-          />
-        )}
+        <IconComponent
+          className={cn(
+            "mr-4 flex-shrink-0 h-6 w-6",
+            isActive
+              ? "text-primary-600 dark:text-primary-300"
+              : "text-gray-500 group-hover:text-primary-600 dark:text-gray-400 dark:group-hover:text-primary-300",
+          )}
+        />
         {item.name}
       </Link>
     </div>

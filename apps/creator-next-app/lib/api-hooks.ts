@@ -1,129 +1,141 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { toast } from "sonner"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { authApi } from "./auth-api"
 import { useAuthStore } from "./auth-store"
-import { createAuthApi } from "./auth-api"
-import { createApiService } from "./api.service"
+import { toast } from "sonner"
+import { useCallback } from "react"
+import type { LoginCredentials, RegisterData } from "./auth-api"
 
-export function useAuthenticatedApi() {
-  const { accessToken, refreshToken, setTokens, logout } = useAuthStore()
-
-  return createApiService(
-    accessToken || undefined,
-    refreshToken || undefined,
-    (newToken) => setTokens(newToken, refreshToken), // onTokenRefresh
-    () => {
-      logout()
-      toast.error("Session expired. Please log in again.")
-    }, // onAuthError
-  )
+// Auth query keys
+export const authKeys = {
+  profile: ["auth", "profile"] as const,
+  user: ["auth", "user"] as const,
 }
 
-export function useProfile() {
-  const { accessToken, setProfile } = useAuthStore()
-
+// Auth queries
+export const useProfile = () => {
+  const { accessToken, isAuthenticated } = useAuthStore()
+  
   return useQuery({
-    queryKey: ["profile"],
-    queryFn: async () => {
-      if (!accessToken) throw new Error("No access token")
-      const authApi = createAuthApi(accessToken)
-      const profile = await authApi.getProfile()
-      setProfile(profile)
-      return profile
+    queryKey: authKeys.profile,
+    queryFn: authApi.getProfile,
+    enabled: isAuthenticated() && !!accessToken,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes (renamed from cacheTime)
+    retry: (failureCount, error: any) => {
+      // Don't retry on 401 errors
+      if (error?.status === 401) return false
+      return failureCount < 3
     },
-    enabled: !!accessToken,
-    staleTime: 5 * 60 * 1000,
-    throwOnError: false,
+    refetchOnWindowFocus: false, // Prevent unnecessary refetches
+    refetchOnMount: false, // Only refetch if data is stale
   })
 }
 
-export function useLogin() {
-  const { setTokens, setProfile, setLoading, setError } = useAuthStore()
+// Auth mutations
+export const useLogin = () => {
+  const { setAuth } = useAuthStore()
+  const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({
-      accessToken,
-      refreshToken,
-    }: {
-      accessToken: string
-      refreshToken: string | null
-    }) => {
-      console.log("🔐 Login mutation started")
-      setLoading(true)
-      setError(null)
-
-      try {
-        console.log("🔐 Setting tokens in store")
-        setTokens(accessToken, refreshToken)
-
-        console.log("🔐 Creating auth API client")
-        const authApi = createAuthApi(accessToken)
-
-        console.log("🔐 Fetching user profile")
-        const profile = await authApi.getProfile()
-
-        console.log("🔐 Profile fetched successfully:", profile)
-        return profile
-      } catch (error) {
-        console.log("🔐 Primary login failed, trying refresh token")
-
-        if (refreshToken) {
-          try {
-            const authApi = createAuthApi()
-            console.log("🔐 Attempting token refresh")
-            const { accessToken: newAccessToken } = await authApi.refreshToken(refreshToken)
-
-            console.log("🔐 Token refresh successful")
-            setTokens(newAccessToken, refreshToken)
-
-            const newAuthApi = createAuthApi(newAccessToken)
-            const profile = await newAuthApi.getProfile()
-
-            console.log("🔐 Profile fetched with new token:", profile)
-            return profile
-          } catch (refreshError) {
-            console.error("🔐 Token refresh failed:", refreshError)
-            throw refreshError
-          }
-        }
-
-        console.error("🔐 Login failed:", error)
-        throw error
-      }
+    mutationFn: (credentials: LoginCredentials) => authApi.login(credentials),
+    onSuccess: (response) => {
+      const { user, accessToken, refreshToken } = response.data
+      setAuth(accessToken, refreshToken, user)
+      
+      // Set query data to prevent immediate refetch
+      queryClient.setQueryData(authKeys.profile, user)
+      
+      toast.success("Successfully logged in!")
     },
-    onSuccess: (profile) => {
-      console.log("🔐 Login mutation success")
-      setProfile(profile)
-      setLoading(false)
-      toast.success("Login successful!")
-    },
-    onError: (error: Error) => {
-      console.error("🔐 Login mutation error:", error)
-      setError(error.message)
-      setLoading(false)
-      toast.error(error.message || "Login failed")
+    onError: (error: any) => {
+      const message = error?.message || "Login failed"
+      toast.error(message)
+      console.error("Login error:", error)
     },
   })
 }
 
-export function useLogout() {
-  const { accessToken, logout } = useAuthStore()
+export const useRegister = () => {
+  const { setAuth } = useAuthStore()
+  const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async () => {
-      if (accessToken) {
-        const authApi = createAuthApi(accessToken)
-        await authApi.logout()
-      }
+    mutationFn: (data: RegisterData) => authApi.register(data),
+    onSuccess: (response) => {
+      const { user, accessToken, refreshToken } = response.data
+      setAuth(accessToken, refreshToken, user)
+      
+      // Set query data to prevent immediate refetch
+      queryClient.setQueryData(authKeys.profile, user)
+      
+      toast.success("Account created successfully!")
     },
+    onError: (error: any) => {
+      const message = error?.message || "Registration failed"
+      toast.error(message)
+      console.error("Register error:", error)
+    },
+  })
+}
+
+export const useLogout = () => {
+  const { clearAuth } = useAuthStore()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: authApi.logout,
     onSuccess: () => {
-      logout()
-      toast.success("Logged out successfully")
-      window.location.href = "/auth"
+      clearAuth()
+      queryClient.clear()
+      toast.success("Successfully logged out")
     },
-    onError: (error: Error) => {
-      logout()
-      toast.error("Logout failed, but local session cleared")
-      window.location.href = "/auth"
+    onError: (error: any) => {
+      // Still clear auth even if logout fails
+      clearAuth()
+      queryClient.clear()
+      console.error("Logout error:", error)
     },
   })
+}
+
+export const useUpdateProfile = () => {
+  const { setUser } = useAuthStore()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: authApi.updateProfile,
+    onSuccess: (updatedUser) => {
+      // Update both store and query cache
+      setUser(updatedUser)
+      queryClient.setQueryData(authKeys.profile, updatedUser)
+      
+      toast.success("Profile updated successfully!")
+    },
+    onError: (error: any) => {
+      const message = error?.message || "Failed to update profile"
+      toast.error(message)
+      console.error("Update profile error:", error)
+    },
+  })
+}
+
+// OAuth helper
+export const useOAuthRedirect = () => {
+  return {
+    redirectToOAuth: useCallback((provider: "google" | "x") => {
+      const oauthUrl = authApi.getOAuthUrl(provider)
+      window.location.href = oauthUrl
+    }, []),
+  }
+}
+
+// Custom hook to check auth status without causing re-renders
+export const useAuthStatus = () => {
+  const store = useAuthStore()
+  
+  return {
+    isAuthenticated: store.isAuthenticated(),
+    user: store.user,
+    loading: false, // Since we're not making API calls here
+  }
 }

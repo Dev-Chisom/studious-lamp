@@ -1,8 +1,21 @@
 "use client"
 
+import type React from "react"
+
 import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
-import { X } from "lucide-react"
+import {
+  X,
+  Home,
+  MessageCircle,
+  Wallet,
+  CreditCard,
+  ImageIcon,
+  BarChart,
+  Users,
+  DollarSign,
+  UserPlus,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuthStore } from "@/lib/auth-store"
 import SidebarNavigationItem from "@/components/sidebar-navigation-item"
@@ -11,7 +24,7 @@ import Image from "next/image"
 interface NavigationItem {
   name: string
   href: string
-  icon: string
+  icon: React.ComponentType<{ className?: string }>
   divider?: boolean
 }
 
@@ -25,24 +38,25 @@ export default function CreatorSidebar({ isMobileOpen, onClose }: CreatorSidebar
   const { profile } = useAuthStore()
 
   const navigationItems = useMemo(() => {
-    const creatorStatus = profile?.isCreator
-    const isApprovedCreator = creatorStatus === true
+    const creatorStatus = profile?.data?.creatorProfile?.status
+    console.log("🔍 Creator status:", creatorStatus)
+    const isApprovedCreator = creatorStatus === "approved"
 
     // Base navigation items that everyone sees
     const baseItems: NavigationItem[] = [
-      { name: t("nav.home"), href: "/", icon: "home" },
-      { name: t("nav.messages"), href: "/messages", icon: "message-circle" },
-      { name: t("nav.wallet"), href: "/wallet", icon: "wallet" },
-      { name: t("nav.subscriptions"), href: "/subscriptions", icon: "credit-card" },
-      { name: t("nav.content"), href: "/content", icon: "image" },
+      { name: t("nav.home"), href: "/", icon: Home },
+      { name: t("nav.messages"), href: "/messages", icon: MessageCircle },
+      { name: t("nav.wallet"), href: "/wallet", icon: Wallet },
+      { name: t("nav.subscriptions"), href: "/subscriptions", icon: CreditCard },
+      { name: t("nav.content"), href: "/content", icon: ImageIcon },
     ]
 
     // Creator-specific navigation items
     const creatorItems: NavigationItem[] = isApprovedCreator
       ? [
-          { name: t("nav.analytics"), href: "/creator/analytics", icon: "bar-chart" },
-          { name: t("nav.subscribers"), href: "/creator/subscribers", icon: "users" },
-          { name: t("nav.earnings"), href: "/creator/earnings", icon: "dollar-sign" },
+          { name: t("nav.analytics"), href: "/creator/analytics", icon: BarChart },
+          { name: t("nav.subscribers"), href: "/creator/subscribers", icon: Users },
+          { name: t("nav.earnings"), href: "/creator/earnings", icon: DollarSign },
         ]
       : []
 
@@ -52,14 +66,14 @@ export default function CreatorSidebar({ isMobileOpen, onClose }: CreatorSidebar
           {
             name: t("nav.becomeCreator"),
             href: "/apply",
-            icon: "user-plus",
+            icon: UserPlus,
             divider: true,
           },
         ]
       : []
 
     return [...baseItems, ...creatorItems, ...becomeCreatorItem]
-  }, [profile?.isCreator, t])
+  }, [profile?.data?.creatorProfile?.status, t])
 
   return (
     <div>
@@ -76,7 +90,7 @@ export default function CreatorSidebar({ isMobileOpen, onClose }: CreatorSidebar
               <div className="px-4 py-6 bg-primary-700 dark:bg-primary-900 sm:px-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <Image src="/logo-white.svg?width=48&height=48" alt="Logo" width={48} height={48} className="mb-2" />
+                    <Image src="/logo-white.svg" alt="Logo" width={38} height={38} className="h-8 w-auto mb-2" />
                     <span className="text-xl font-bold text-white dark:text-gray-100">{t("nav.creatorStudio")}</span>
                   </div>
                   <Button
@@ -102,13 +116,13 @@ export default function CreatorSidebar({ isMobileOpen, onClose }: CreatorSidebar
       )}
 
       {/* Desktop Sidebar */}
-      <div className="sticky bottom-0 top-0 hidden lg:flex lg:flex-shrink-0 bg-white dark:bg-gray-800 h-screen">
+      <div className="sticky bottom-0 top-0 hidden lg:flex lg:flex-shrink-0 bg-white dark:bg-gray-900 dark:bg-gray-800 h-screen">
         <div className="flex flex-col w-64">
           <div className="flex flex-col h-0 flex-1">
             <div className="px-4 py-6 bg-primary-700 dark:bg-primary-900 flex items-center">
               <div className="flex items-center space-x-2">
-                <Image src="/logo-white.svg?width=48&height=48" alt="Logo" width={48} height={48} className="mb-2" />
-                <span className="text-xl font-bold text-white dark:text-gray-100">{t("creatorStudio")}</span>
+                <Image src="/logo-white.svg" alt="Logo" width={38} height={38} />
+                <span className="text-xl font-bold text-white dark:text-gray-100">{t("nav.creatorStudio")}</span>
               </div>
             </div>
 

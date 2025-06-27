@@ -19,58 +19,106 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
   const { t } = useTranslation()
   const router = useRouter()
   const pathname = usePathname()
-  const { isAuthenticated, profile } = useAuthStore()
-  const { data: profileData, isPending, error } = useProfile()
+  
+  // Get auth state directly from store (don't call isAuthenticated() in render)
+  const { user, accessToken } = useAuthStore()
+  const isAuth = Boolean(user && accessToken)
+  
   const [isChecking, setIsChecking] = useState(true)
+  const [hasChecked, setHasChecked] = useState(false)
 
   // Get route config or use props
   const routeConfig = getRouteConfig(pathname)
   const needsAuth = requiresAuth ?? routeConfig?.requiresAuth ?? false
   const needsCreator = requiresCreator ?? routeConfig?.requiresCreator ?? false
 
-  const currentProfile = profileData || profile
+  // Only fetch profile if authenticated and need creator check
+  const shouldFetchProfile = isAuth && needsCreator
+  const { data: profileData, isPending, error } = useProfile()
+  
+  // Use profile from API if available, otherwise use store user
+  const currentProfile = profileData || user
 
   useEffect(() => {
-    const checkAuth = async () => {
-      setIsChecking(true)
+    // Prevent multiple checks
+    if (hasChecked) return
 
-      if (needsAuth && !isAuthenticated()) {
+    const checkAuth = () => {
+      console.log("🔍 AuthGuard checking:", { 
+        pathname, 
+        needsAuth, 
+        needsCreator, 
+        isAuth,
+        hasProfile: !!currentProfile 
+      })
+
+      // Check 1: Route needs auth but user is not authenticated
+      if (needsAuth && !isAuth) {
+        console.log("❌ Auth required but not authenticated, redirecting to", redirectTo)
         router.replace(redirectTo)
         return
       }
 
-      if (isAuthenticated() && pathname === "/auth") {
+      // Check 2: User is authenticated but on auth page
+      if (isAuth && pathname === "/auth") {
+        console.log("✅ Authenticated user on auth page, redirecting to home")
         router.replace("/")
         return
       }
 
-      if (needsCreator && isAuthenticated()) {
-        if (!isPending) {
-          if (error) {
-            router.replace("/auth")
+      // Check 3: Creator route checks
+      if (needsCreator && isAuth) {
+        if (shouldFetchProfile && isPending) {
+          console.log("⏳ Waiting for profile data...")
+          return // Still loading profile
+        }
+
+        if (error) {
+          console.log("❌ Profile fetch error, redirecting to auth")
+          router.replace("/auth")
+          return
+        }
+
+        if (currentProfile) {
+          const isApprovedCreator = currentProfile?.creatorProfile?.status === "approved"
+          console.log(isApprovedCreator ? "✅ User is an approved creator" : "🚫 User is not an approved creator")
+
+          if (!isApprovedCreator) {
+            console.log("❌ Not approved creator, redirecting to apply")
+            router.replace("/apply")
             return
-          }
-
-          if (currentProfile) {
-            const isApprovedCreator = currentProfile?.creatorProfile?.status === "approved"
-            console.log(isApprovedCreator ? "✅ User is an approved creator" : "🚫 User is not an approved creator ")
-
-            if (!isApprovedCreator) {
-              router.replace("/apply")
-              return
-            }
           }
         }
       }
 
+      console.log("✅ Auth check passed")
       setIsChecking(false)
+      setHasChecked(true)
     }
 
     checkAuth()
-  }, [isAuthenticated, currentProfile, isPending, error, needsAuth, needsCreator, router, redirectTo, pathname])
+  }, [
+    hasChecked,
+    pathname,
+    needsAuth,
+    needsCreator,
+    isAuth,
+    currentProfile,
+    isPending,
+    error,
+    router,
+    redirectTo,
+    shouldFetchProfile
+  ])
+
+  // Reset checking state when route changes
+  useEffect(() => {
+    setHasChecked(false)
+    setIsChecking(true)
+  }, [pathname])
 
   // Show loading while checking
-  if (isChecking || (needsAuth && !isAuthenticated()) || (needsCreator && isPending)) {
+  if (isChecking || (needsCreator && isAuth && isPending)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

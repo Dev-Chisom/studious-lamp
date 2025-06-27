@@ -344,7 +344,7 @@ export default function MediaPreviewModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-[999] bg-black/90 backdrop-blur-sm" onClick={handleBackdropClick}>
+    <div className="fixed inset-0 z-[999] bg-black/90 backdrop-blur-sm h-100" onClick={handleBackdropClick}>
       <div className="relative w-full h-full flex flex-col md:flex-row">
         {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between p-4 bg-black/20 backdrop-blur-sm">

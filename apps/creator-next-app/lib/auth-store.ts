@@ -1,181 +1,225 @@
 import { create } from "zustand"
-import { persist, createJSONStorage } from "zustand/middleware"
+import { persist } from "zustand/middleware"
+import { jwtDecode } from "jwt-decode"
 
-export interface CreatorProfile {
-  status: "pending" | "approved" | "rejected"
+interface User {
+  id: string
+  name: string
+  email: string
+  avatar?: string
+  isCreator?: boolean
+  creatorProfile?: {
+    status: string
+    tier?: string
+  }
 }
 
-export interface UserProfile {
-  id: string
+interface JWTPayload {
+  userId: string
   email: string
-  name: string
-  avatar?: string
-  walletBalance: number
-  isCreator: boolean
-  subscriptions: string[]
-  collections: {
-    id: string
-    name: string
-    posts: string[]
-  }[]
-  creatorProfile?: CreatorProfile
+  name?: string
+  isCreator?: boolean
+  creatorProfile?: {
+    status: string
+    tier?: string
+  }
+  exp: number
 }
 
 interface AuthState {
+  user: User | null
   accessToken: string | null
   refreshToken: string | null
-  profile: UserProfile | null
-  loading: boolean
-  error: string | null
+}
 
-  // Actions
+interface AuthActions {
+  setAuth: (accessToken: string, refreshToken: string, user?: User) => void
+  setUser: (user: User) => void
+  setTokens: (accessToken: string, refreshToken: string) => void
+  clearAuth: () => void
+  updateUser: (updates: Partial<User>) => void
   isAuthenticated: () => boolean
-  setTokens: (accessToken: string, refreshToken: string | null) => void
-  setProfile: (profile: UserProfile) => void
-  updateWalletBalance: (amount: number) => void
-  setLoading: (loading: boolean) => void
-  setError: (error: string | null) => void
-  logout: () => void
-
-  // Getters (computed values)
-  getIsCreator: () => boolean
-  getIsApprovedCreator: () => boolean
-  getWalletBalance: () => number
-  getSubscriptions: () => string[]
-  getCollections: () => UserProfile["collections"]
+  isTokenValid: (token: string) => boolean
 }
 
-// Cookie utilities
+// Improved cookie utilities
 const setCookie = (name: string, value: string, days = 7) => {
-  if (typeof document === "undefined") return
-  const expires = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toUTCString()
-  document.cookie = `${name}=${value}; expires=${expires}; path=/; SameSite=Lax; Secure=${location.protocol === "https:"}`
-}
+  if (typeof window === "undefined") return
 
-const getCookie = (name: string): string | null => {
-  if (typeof document === "undefined") return null
-  const match = document.cookie.match(new RegExp(`(^| )${name}=([^;]+)`))
-  return match ? match[2] : null
+  const expires = new Date()
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
+
+  const cookieValue = `${name}=${encodeURIComponent(value)};expires=${expires.toUTCString()};path=/;SameSite=Lax${
+    process.env.NODE_ENV === "production" ? ";Secure" : ""
+  }`
+
+  document.cookie = cookieValue
 }
 
 const deleteCookie = (name: string) => {
-  if (typeof document === "undefined") return
-  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/`
+  if (typeof window === "undefined") return
+  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`
 }
 
-export const useAuthStore = create<AuthState>()(
+const getUserFromToken = (accessToken: string): User => {
+  try {
+    const decoded = jwtDecode<JWTPayload>(accessToken)
+    return {
+      id: decoded.userId,
+      email: decoded.email,
+      name: decoded.name || decoded.email,
+      isCreator: decoded.isCreator,
+      creatorProfile: decoded.creatorProfile,
+    }
+  } catch (error) {
+    console.error("Failed to decode JWT:", error)
+    throw new Error("Invalid access token")
+  }
+}
+
+// Check if token is valid and not expired
+const isTokenValid = (token: string): boolean => {
+  if (!token) return false
+  
+  try {
+    const decoded = jwtDecode<JWTPayload>(token)
+    const currentTime = Date.now() / 1000
+    return decoded.exp > currentTime
+  } catch (error) {
+    return false
+  }
+}
+
+export const useAuthStore = create<AuthState & AuthActions & {
+  getSubscriptions: () => string[]
+  logout: () => void
+  setProfile: (user: User) => void
+}>()(
   persist(
     (set, get) => ({
+      // State
+      user: null,
       accessToken: null,
       refreshToken: null,
-      profile: null,
-      loading: false,
-      error: null,
 
       // Actions
-      isAuthenticated: () => {
-        const state = get()
-        // Check both store and cookies for tokens
-        const storeToken = state.accessToken
-        const cookieToken = getCookie("accessToken")
-        const hasValidToken = !!(storeToken || cookieToken)
-        const hasProfile = !!state.profile
+      setAuth: (accessToken, refreshToken, user) => {
+        // Validate token before setting
+        if (!isTokenValid(accessToken)) {
+          console.error("Invalid or expired access token")
+          get().clearAuth()
+          return
+        }
 
-        console.log("🔐 Auth check:", {
-          hasValidToken,
-          hasProfile,
-          storeToken: storeToken ? `${storeToken.substring(0, 10)}...` : null,
-          cookieToken: cookieToken ? `${cookieToken.substring(0, 10)}...` : null,
-          profileId: state.profile?.id,
+        // If no user provided, decode from JWT
+        let userData = user
+        if (!userData) {
+          try {
+            userData = getUserFromToken(accessToken)
+          } catch (error) {
+            console.error("Failed to decode user from token:", error)
+            get().clearAuth()
+            return
+          }
+        }
+
+        // Set in Zustand store
+        set({
+          accessToken,
+          refreshToken,
+          user: userData,
         })
 
-        return hasValidToken && hasProfile
+        // Set cookies for middleware access
+        setCookie("accessToken", accessToken, 7)
+        setCookie("refreshToken", refreshToken, 30)
+        setCookie("userProfile", JSON.stringify(userData), 7)
+      },
+
+      setUser: (user) => {
+        set({ user })
+        setCookie("userProfile", JSON.stringify(user), 7)
       },
 
       setTokens: (accessToken, refreshToken) => {
-        console.log("🔐 Setting tokens in both store and cookies:", {
-          accessToken: accessToken ? `${accessToken.substring(0, 10)}...` : null,
-          refreshToken: refreshToken ? `${refreshToken.substring(0, 10)}...` : null,
-        })
+        // Validate new access token
+        if (!isTokenValid(accessToken)) {
+          console.error("Invalid or expired access token")
+          get().clearAuth()
+          return
+        }
 
-        // Set in store
-        set({ accessToken, refreshToken: refreshToken ?? get().refreshToken })
-
-        // Set in cookies for middleware access
+        set({ accessToken, refreshToken })
         setCookie("accessToken", accessToken, 7)
-        if (refreshToken) {
-          setCookie("refreshToken", refreshToken, 30) // Longer expiry for refresh token
-        }
+        setCookie("refreshToken", refreshToken, 30)
       },
 
-      setProfile: (profile) => {
-        console.log("🔐 Setting profile:", { id: profile.id, name: profile.name })
-        set({ profile, error: null })
-      },
-
-      updateWalletBalance: (amount) => {
-        const state = get()
-        if (state.profile) {
-          set({ profile: { ...state.profile, walletBalance: amount } })
-        }
-      },
-
-      setLoading: (loading) => set({ loading }),
-      setError: (error) => set({ error }),
-
-      logout: () => {
-        console.log("🔐 Logging out - clearing all auth state and cookies")
-
-        // Clear store
+      clearAuth: () => {
+        // Clear Zustand store
         set({
+          user: null,
           accessToken: null,
           refreshToken: null,
-          profile: null,
-          loading: false,
-          error: null,
         })
 
         // Clear cookies
         deleteCookie("accessToken")
         deleteCookie("refreshToken")
+        deleteCookie("userProfile")
       },
 
-      // Getters
-      getIsCreator: () => get().profile?.isCreator || false,
-      getIsApprovedCreator: () => get().profile?.creatorProfile?.status === "approved",
-      getWalletBalance: () => get().profile?.walletBalance ?? 0,
-      getSubscriptions: () => get().profile?.subscriptions ?? [],
-      getCollections: () => get().profile?.collections ?? [],
-    }),
-    {
-      name: "auth-storage",
-      storage: createJSONStorage(() => localStorage),
-      // Only persist profile, not tokens (tokens go in cookies)
-      partialize: (state) => ({
-        profile: state.profile,
-        // Don't persist tokens in localStorage anymore
-      }),
-      onRehydrateStorage: () => (state) => {
-        console.log("🔐 Rehydrating auth state:", {
-          hasProfile: !!state?.profile,
-          profileId: state?.profile?.id,
-        })
-
-        // After rehydration, sync tokens from cookies
-        if (typeof window !== "undefined") {
-          const cookieAccessToken = getCookie("accessToken")
-          const cookieRefreshToken = getCookie("refreshToken")
-
-          if (cookieAccessToken) {
-            console.log("🔐 Syncing tokens from cookies after rehydration")
-            // Update store with cookie tokens (but don't set cookies again)
-            useAuthStore.setState({
-              accessToken: cookieAccessToken,
-              refreshToken: cookieRefreshToken,
-            })
-          }
+      updateUser: (updates) => {
+        const currentUser = get().user
+        if (currentUser) {
+          const updatedUser = { ...currentUser, ...updates }
+          set({ user: updatedUser })
+          setCookie("userProfile", JSON.stringify(updatedUser), 7)
         }
       },
+
+      isTokenValid: (token: string) => isTokenValid(token),
+
+      isAuthenticated: () => {
+        const state = get()
+        
+        // Check if we have both token and user
+        if (!state.accessToken || !state.user) {
+          return false
+        }
+
+        // Check if token is valid and not expired
+        if (!isTokenValid(state.accessToken)) {
+          // Token expired, clear auth
+          get().clearAuth()
+          return false
+        }
+
+        return true
+      },
+
+      getSubscriptions: () => {
+        // Return an array of creator IDs the user is subscribed to (mock)
+        return ["creator1", "creator2"]
+      },
+
+      logout: () => {
+        get().clearAuth()
+      },
+
+      setProfile: (user) => {
+        set({ user })
+        setCookie("userProfile", JSON.stringify(user), 7)
+      },
+    }),
+    {
+      name: "auth-storage", 
+      partialize: (state) => ({
+        user: state.user,
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
+      }),
+      // Add version to handle store migration if needed
+      version: 1,
     },
   ),
 )
