@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { AuthGuard } from "@/lib/auth-guard"
-import DashboardLayoutComponent from "@/components/DashboardLayout"
+import DashboardLayoutComponent from "@/components/dashboard-layout"
 
 export default function DashboardLayout({
   children,

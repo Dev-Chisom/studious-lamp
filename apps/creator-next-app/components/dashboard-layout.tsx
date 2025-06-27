@@ -5,10 +5,10 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import CreatorSidebar from "@/components/CreatorSidebar"
-import NotificationBell from "@/components/NotificationBell"
-import UserDropdown from "@/components/UserDropdown"
-import LanguageSwitcher from "@/components/LanguageSwitcher"
+import CreatorSidebar from "@/components/creator-sidebar"
+import NotificationBell from "@/components/notification-bell"
+import UserDropdown from "@/components/user-dropdown"
+import LanguageSwitcher from "@/components/language-switcher"
 
 interface DashboardLayoutProps {
   children: React.ReactNode

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import { Bell, BellOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import NotificationItem from "@/components/NotificationItem"
+import NotificationItem from "@/components/notification-item"
 
 type NotificationType = "subscription" | "tip" | "message" | "post_like" | "post_comment" | "other"
 

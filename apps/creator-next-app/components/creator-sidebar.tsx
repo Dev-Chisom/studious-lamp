@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuthStore } from "@/lib/auth-store"
-import SidebarNavigationItem from "@/components/SidebarNavigationItem"
+import SidebarNavigationItem from "@/components/sidebar-navigation-item"
 import Image from "next/image"
 
 interface NavigationItem {
