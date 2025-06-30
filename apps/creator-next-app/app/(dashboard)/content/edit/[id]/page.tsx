@@ -124,16 +124,16 @@ export default function EditContentPage() {
   }
 
   const initialValues = {
-    title: contentData.title,
-    content: contentData.body,
-    visibility: (contentData.visibility === "private"
+    title: contentData?.post?.title,
+    content: contentData?.post?.body,
+    visibility: (contentData?.post?.visibility === "private"
       ? "subscribers"
-      : contentData.visibility === "premium"
+      : contentData?.post?.visibility === "premium"
       ? "pay-to-view"
       : "public") as "public" | "subscribers" | "pay-to-view",
-    price: contentData.price || 4.99,
-    mediaUrls: contentData.mediaFiles
-      ? contentData.mediaFiles.map((file: any) => ({
+    price: contentData?.post?.price || 4.99,
+    mediaUrls: contentData?.post?.mediaFiles
+      ? contentData?.post?.mediaFiles.map((file: any) => ({
           id: file.id || file._id,
           url: file.url || file.fileUrl,
           type: file.type,
@@ -144,9 +144,9 @@ export default function EditContentPage() {
           size: file.size,
         }))
       : [],
-    ...(typeof (contentData as any).scheduledDate === "string" ? { scheduledDate: (contentData as any).scheduledDate } : {}),
+    ...(typeof (contentData as any)?.post?.scheduledDate === "string" ? { scheduledDate: (contentData as any)?.post?.scheduledDate } : {}),
   }
-
+  
   return (
     <div className="max-w-6xl mx-auto p-6">
       <div className="mb-6">
