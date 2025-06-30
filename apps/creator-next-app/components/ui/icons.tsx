@@ -1,56 +1,79 @@
+"use client"
+
+import type React from "react"
+
 import {
   AlertCircle,
+  ArrowLeft,
   ArrowRight,
   Check,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
   Command,
   CreditCard,
+  DollarSign,
+  Edit,
   File,
   FileText,
+  Globe,
   HelpCircle,
   Image,
   Laptop,
   Loader2,
-  type LightbulbIcon as LucideProps,
   Moon,
   MoreVertical,
   Pizza,
+  Play,
   Plus,
+  RefreshCwIcon as Refresh,
   Settings,
   SunMedium,
   Trash,
+  Upload,
   User,
+  Users,
   X,
-  RefreshCwIcon as Refresh,
   type LucideIcon,
   Eye,
   EyeOff,
   Mail,
   Lock,
   Search,
-  ChevronDown,
-  ChevronUp,
 } from "lucide-react"
 
 export type Icon = LucideIcon
 
-const Google = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="none" {...props}>
-    <g>
-      <path fill="#4285F4" d="M21.805 10.023h-9.765v3.955h5.627c-.243 1.3-1.51 3.82-5.627 3.82-3.386 0-6.145-2.8-6.145-6.25s2.759-6.25 6.145-6.25c1.93 0 3.23.82 3.97 1.53l2.71-2.63C17.09 2.7 14.97 1.5 12.04 1.5 6.48 1.5 2 5.98 2 11.5s4.48 10 10.04 10c5.77 0 9.56-4.04 9.56-9.74 0-.66-.07-1.16-.16-1.64z"/>
-      <path fill="#34A853" d="M3.153 7.345l3.27 2.4c.89-1.7 2.59-2.8 4.62-2.8 1.13 0 2.13.39 2.92 1.03l2.71-2.63C15.09 2.7 13.09 1.5 10.04 1.5c-3.86 0-7.1 2.7-8.36 6.34z"/>
-      <path fill="#FBBC05" d="M12.04 21.5c2.97 0 5.45-.98 7.27-2.67l-3.34-2.74c-.93.63-2.13 1.01-3.93 1.01-3.01 0-5.57-2.01-6.48-4.7l-3.27 2.53c1.25 3.6 4.49 6.57 9.75 6.57z"/>
-      <path fill="#EA4335" d="M21.805 10.023h-9.765v3.955h5.627c-.243 1.3-1.51 3.82-5.627 3.82-3.386 0-6.145-2.8-6.145-6.25s2.759-6.25 6.145-6.25c1.93 0 3.23.82 3.97 1.53l2.71-2.63C17.09 2.7 14.97 1.5 12.04 1.5 6.48 1.5 2 5.98 2 11.5s4.48 10 10.04 10c5.77 0 9.56-4.04 9.56-9.74 0-.66-.07-1.16-.16-1.64z"/>
-    </g>
+const Google = ({ ...props }: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" {...props}>
+    <path
+      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      fill="#4285F4"
+    />
+    <path
+      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      fill="#34A853"
+    />
+    <path
+      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+      fill="#FBBC05"
+    />
+    <path
+      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+      fill="#EA4335"
+    />
   </svg>
-);
+)
 
-const TwitterIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-    <path d="M22.46 5.924c-.793.352-1.646.59-2.54.698a4.48 4.48 0 0 0 1.965-2.475 8.94 8.94 0 0 1-2.828 1.082A4.48 4.48 0 0 0 16.11 4c-2.48 0-4.49 2.014-4.49 4.496 0 .352.04.696.116 1.025C7.728 9.37 4.1 7.6 1.67 4.905c-.386.664-.607 1.437-.607 2.26 0 1.56.793 2.94 2.003 3.75-.736-.023-1.428-.225-2.034-.563v.057c0 2.18 1.55 4.002 3.604 4.418-.377.104-.775.16-1.186.16-.29 0-.567-.028-.84-.08.568 1.77 2.22 3.06 4.18 3.09A8.98 8.98 0 0 1 2 19.54a12.68 12.68 0 0 0 6.88 2.017c8.26 0 12.78-6.84 12.78-12.77 0-.195-.004-.39-.013-.583A9.14 9.14 0 0 0 24 4.59a8.98 8.98 0 0 1-2.54.697z" />
+const TwitterIcon = ({ ...props }: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" {...props}>
+    <path
+      d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+      fill="currentColor"
+    />
   </svg>
-);
+)
 
 export const Icons = {
   logo: Command,
@@ -69,6 +92,7 @@ export const Icons = {
   warning: AlertCircle,
   user: User,
   arrowRight: ArrowRight,
+  arrowLeft: ArrowLeft,
   help: HelpCircle,
   pizza: Pizza,
   sun: SunMedium,
@@ -86,4 +110,13 @@ export const Icons = {
   search: Search,
   chevronDown: ChevronDown,
   chevronUp: ChevronUp,
+  edit: Edit,
+  fileText: FileText,
+  globe: Globe,
+  users: Users,
+  dollarSign: DollarSign,
+  upload: Upload,
+  play: Play,
+  plus: Plus,
+  x: X,
 }
