@@ -22,7 +22,7 @@ interface NavLink {
 }
 
 export default function UserDropdown() {
-  const { profile } = useAuthStore()
+  const { user } = useAuthStore()
   const logoutMutation = useLogout()
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
@@ -33,7 +33,7 @@ export default function UserDropdown() {
   }, [])
 
   const userInitials = useMemo((): string => {
-    const name = profile?.name || ""
+    const name = user?.data?.name || ""
     if (!name) {
       return "?"
     }
@@ -43,14 +43,14 @@ export default function UserDropdown() {
       return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
     }
     return name.substring(0, 2).toUpperCase()
-  }, [profile?.name, profile])
+  }, [user?.data?.name, user])
 
   const profileHref = useMemo((): string => {
-    if (profile && profile.name) {
-      return `/@${encodeURIComponent(profile.name)}`
+    if (user && user.data?.name) {
+      return `/@${encodeURIComponent(user.data?.name)}`
     }
     return "/@user"
-  }, [profile?.name, profile])
+  }, [user?.data?.name, user])
 
   const userLinks: NavLink[] = useMemo(
     () => [
@@ -87,19 +87,19 @@ export default function UserDropdown() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="flex items-center space-x-2">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={profile?.avatar || "/placeholder.svg"} alt={profile?.name} />
+            <AvatarImage src={user?.data?.creatorProfile?.profilePicture || "/placeholder.svg"} alt={user?.name} />
             <AvatarFallback>{userInitials}</AvatarFallback>
           </Avatar>
           <span className="hidden md:block text-sm font-medium text-gray-900 dark:text-gray-100">
-            {profile?.name || "Account"}
+            {user?.name || "Account"}
           </span>
           <ChevronDown className="h-4 w-4 text-gray-500 dark:text-gray-400" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
-        <div className="px-4 py-2 text-sm text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-gray-700">
-          <p className="font-medium">{profile?.name || "User"}</p>
-          <p className="text-gray-500 dark:text-gray-400 truncate">{profile?.email || "user@example.com"}</p>
+        <div className="px-2 py-2 text-sm text-gray-900 dark:text-gray-100 border-b border-gray-100 dark:border-gray-700">
+          <p className="font-medium">{user?.data?.name || "User"}</p>
+          <p className="text-gray-500 dark:text-gray-400 truncate">{user?.data?.email || "user@example.com"}</p>
         </div>
 
         {userLinks.map((item) => (
@@ -113,7 +113,7 @@ export default function UserDropdown() {
           {theme === "dark" ? "Light Mode" : "Dark Mode"}
         </DropdownMenuItem>
 
-        {profile?.isCreator && (
+        {Boolean(user?.creatorProfile) && (
           <>
             <DropdownMenuSeparator />
             {creatorLinks.map((item) => (

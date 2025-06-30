@@ -1,18 +1,7 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import { jwtDecode } from "jwt-decode"
-
-interface User {
-  id: string
-  name: string
-  email: string
-  avatar?: string
-  isCreator?: boolean
-  creatorProfile?: {
-    status: string
-    tier?: string
-  }
-}
+import type { User } from "./api-types"
 
 interface JWTPayload {
   userId: string
@@ -65,11 +54,17 @@ const getUserFromToken = (accessToken: string): User => {
   try {
     const decoded = jwtDecode<JWTPayload>(accessToken)
     return {
-      id: decoded.userId,
+      _id: decoded.userId,
+      createdAt: '',
+      updatedAt: '',
       email: decoded.email,
       name: decoded.name || decoded.email,
-      isCreator: decoded.isCreator,
-      creatorProfile: decoded.creatorProfile,
+      provider: '',
+      providerId: '',
+      refreshToken: '',
+      status: 'active',
+      creatorProfile: undefined,
+      referralCode: undefined,
     }
   } catch (error) {
     console.error("Failed to decode JWT:", error)

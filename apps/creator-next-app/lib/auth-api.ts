@@ -15,10 +15,7 @@ export interface RegisterData {
 
 export const authApi = {
   // OAuth flow - get redirect URL for provider
-  getOAuthUrl: (provider: "google" | "x") => {
-    const baseUrl = "https://x-zunk.onrender.com"
-    return `${baseUrl}/auth/${provider}`
-  },
+  getOAuthUrl: (provider: "google" | "x") => api.post(`/auth/${provider}`),
 
   // Traditional auth
   login: (credentials: LoginCredentials) => api.post<AuthResponse>("/auth/login", credentials),

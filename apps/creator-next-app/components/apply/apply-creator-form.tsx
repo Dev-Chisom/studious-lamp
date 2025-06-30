@@ -64,8 +64,14 @@ export default function ApplyCreatorForm() {
   const form = useForm<ApplyFormValues>({
     defaultValues: initialFormValues,
     onSubmit: async ({ value }) => {
+      console.log('Form submit called');
       setFormError(null)
       setFormSuccess(null)
+
+       if (createCreatorMutation.isPending) {
+    console.log('Already submitting, ignoring');
+    return;
+  }
 
       try {
         // Validate with Zod

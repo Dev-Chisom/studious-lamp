@@ -13,21 +13,13 @@ export const authKeys = {
 
 // Auth queries
 export const useProfile = () => {
-  const { accessToken, isAuthenticated } = useAuthStore()
-  
+  const { isAuthenticated, accessToken } = useAuthStore()
   return useQuery({
-    queryKey: authKeys.profile,
+    queryKey: ["profile"],
     queryFn: authApi.getProfile,
     enabled: isAuthenticated() && !!accessToken,
     staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes (renamed from cacheTime)
-    retry: (failureCount, error: any) => {
-      // Don't retry on 401 errors
-      if (error?.status === 401) return false
-      return failureCount < 3
-    },
-    refetchOnWindowFocus: false, // Prevent unnecessary refetches
-    refetchOnMount: false, // Only refetch if data is stale
+    retry: false,
   })
 }
 

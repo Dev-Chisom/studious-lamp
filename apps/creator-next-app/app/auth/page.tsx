@@ -16,16 +16,13 @@ export default function AuthPage() {
   const { setAuth, isAuthenticated } = useAuthStore()
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [pendingRedirect, setPendingRedirect] = useState(false)
 
+  // Handle OAuth callback and set auth state
   useEffect(() => {
-    console.log("🔍 Auth page loaded, checking authentication...")
-
-    // If user is already authenticated, redirect to dashboard
+    // If user is already authenticated, set pending redirect
     if (isAuthenticated()) {
-      console.log("✅ User already authenticated, redirecting...")
-      const redirectTo = sessionStorage.getItem("auth_redirect") || "/"
-      sessionStorage.removeItem("auth_redirect")
-      router.replace(redirectTo)
+      setPendingRedirect(true)
       return
     }
 
@@ -34,12 +31,6 @@ export default function AuthPage() {
     const refreshToken = searchParams.get("refreshToken")
     const error = searchParams.get("error")
     const errorDescription = searchParams.get("error_description")
-
-    console.log("🔍 URL params:", {
-      hasAccessToken: !!accessToken,
-      hasRefreshToken: !!refreshToken,
-      error,
-    })
 
     if (error) {
       const errorMessage = errorDescription || error || "Authentication failed"
@@ -51,41 +42,33 @@ export default function AuthPage() {
     }
 
     if (accessToken && refreshToken) {
-      console.log("🎯 Found tokens in URL, processing...")
       handleOAuthCallback(accessToken, refreshToken)
     }
-  }, [searchParams, isAuthenticated, router])
+  }, [searchParams, isAuthenticated])
+
+  // Redirect after authentication state is updated
+  useEffect(() => {
+    if (isAuthenticated() && pendingRedirect) {
+      const redirectTo = sessionStorage.getItem("auth_redirect") || "/"
+      sessionStorage.removeItem("auth_redirect")
+      window.history.replaceState({}, document.title, "/auth")
+      router.replace(redirectTo)
+      setPendingRedirect(false)
+    }
+  }, [isAuthenticated, pendingRedirect, router])
 
   const handleOAuthCallback = async (accessToken: string, refreshToken: string) => {
     try {
       setIsProcessing(true)
       setError(null)
-
-      console.log("🔐 Processing OAuth callback...")
-
-      // Set auth state directly using JWT decode (no API call needed)
       setAuth(accessToken, refreshToken)
-
-      // Get redirect URL from session storage
-      const redirectTo = sessionStorage.getItem("auth_redirect") || "/"
-      sessionStorage.removeItem("auth_redirect")
-
+      setPendingRedirect(true)
       toast.success("Successfully authenticated!")
-      console.log("✅ Authentication successful, redirecting to:", redirectTo)
-
-      // Clean URL and redirect
-      window.history.replaceState({}, document.title, "/auth")
-
-      // Small delay to ensure cookies are set
-      setTimeout(() => {
-        router.replace(redirectTo)
-      }, 100)
     } catch (error) {
       console.error("❌ OAuth callback error:", error)
       const errorMessage = error instanceof Error ? error.message : "Authentication failed"
       setError(errorMessage)
       toast.error(errorMessage)
-      // Clean URL parameters on error
       window.history.replaceState({}, document.title, "/auth")
     } finally {
       setIsProcessing(false)
@@ -94,13 +77,12 @@ export default function AuthPage() {
 
   const handleRetry = () => {
     setError(null)
-    // Clean URL parameters
     window.history.replaceState({}, document.title, "/auth")
   }
 
   if (isProcessing) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center justify-center p-8">
             <Icons.spinner className="h-8 w-8 animate-spin mb-4" />
@@ -113,11 +95,11 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Icons.user className="h-6 w-6 text-primary" />
+            <img src="/logo.svg" alt="Logo" className="h-12 w-12 mb-4" />
           </div>
           <CardTitle className="text-2xl">Sign in to your account</CardTitle>
           <CardDescription>Choose your preferred authentication method to continue</CardDescription>

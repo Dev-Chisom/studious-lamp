@@ -35,11 +35,10 @@ interface CreatorSidebarProps {
 
 export default function CreatorSidebar({ isMobileOpen, onClose }: CreatorSidebarProps) {
   const { t } = useTranslation("navigation")
-  const { profile } = useAuthStore()
+  const { user } = useAuthStore()
 
   const navigationItems = useMemo(() => {
-    const creatorStatus = profile?.data?.creatorProfile?.status
-    console.log("🔍 Creator status:", creatorStatus)
+    const creatorStatus = user?.data?.creatorProfile?.status
     const isApprovedCreator = creatorStatus === "approved"
 
     // Base navigation items that everyone sees
@@ -73,7 +72,7 @@ export default function CreatorSidebar({ isMobileOpen, onClose }: CreatorSidebar
       : []
 
     return [...baseItems, ...creatorItems, ...becomeCreatorItem]
-  }, [profile?.data?.creatorProfile?.status, t])
+  }, [user?.creatorProfile?.status, t])
 
   return (
     <div>
