@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuthStore } from "./auth-store"
-import { useProfile } from "./api-hooks"
 import { getRouteConfig } from "./route-config"
 
 interface AuthGuardProps {
@@ -32,12 +31,8 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
   const needsAuth = requiresAuth ?? routeConfig?.requiresAuth ?? false
   const needsCreator = requiresCreator ?? routeConfig?.requiresCreator ?? false
 
-  // Only fetch profile if authenticated and need creator check
-  const shouldFetchProfile = isAuth && needsCreator
-  const { data: profileData, isPending, error } = useProfile()
-  
-  // Use profile from API if available, otherwise use store user
-  const currentProfile = profileData || user
+  // Use only Zustand user
+  const currentProfile = user
 
   useEffect(() => {
     // Prevent multiple checks
@@ -68,17 +63,6 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
 
       // Check 3: Creator route checks
       if (needsCreator && isAuth) {
-        if (shouldFetchProfile && isPending) {
-          console.log("⏳ Waiting for profile data...")
-          return // Still loading profile
-        }
-
-        if (error) {
-          console.log("❌ Profile fetch error, redirecting to auth")
-          router.replace("/auth")
-          return
-        }
-
         if (currentProfile) {
           const isApprovedCreator = currentProfile?.creatorProfile?.status === "approved"
           console.log(isApprovedCreator ? "✅ User is an approved creator" : "🚫 User is not an approved creator")
@@ -104,11 +88,8 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
     needsCreator,
     isAuth,
     currentProfile,
-    isPending,
-    error,
     router,
-    redirectTo,
-    shouldFetchProfile
+    redirectTo
   ])
 
   // Reset checking state when route changes
@@ -118,7 +99,7 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
   }, [pathname])
 
   // Show loading while checking
-  if (isChecking || (needsCreator && isAuth && isPending)) {
+  if (isChecking || (needsCreator && isAuth)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

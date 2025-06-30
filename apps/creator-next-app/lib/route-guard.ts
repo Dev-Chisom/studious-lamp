@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuthStore } from "./auth-store"
-import { useProfile } from "./api-hooks"
 
 // Hook to handle route protection logic
 export function useRouteGuard() {
@@ -26,9 +25,8 @@ export function useRouteGuard() {
 
   // Only fetch profile if authenticated and on creator route
   const shouldFetchProfile = isAuth && isCreatorRoute
-  const { data: profileData, isPending } = useProfile()
-  
-  const currentProfile = profileData || user
+  // Use only Zustand user
+  const currentProfile = user
 
   useEffect(() => {
     // Reset check when pathname changes
@@ -65,7 +63,7 @@ export function useRouteGuard() {
 
       // Check 3: Creator route requires approved creator status
       if (isCreatorRoute && isAuth) {
-        if (shouldFetchProfile && isPending) {
+        if (shouldFetchProfile) {
           console.log("⏳ Creator route: waiting for profile...")
           return // Don't mark as checked yet
         }
@@ -93,8 +91,7 @@ export function useRouteGuard() {
     isCreatorRoute,
     isAuth,
     currentProfile,
-    isPending,
-    router,
-    shouldFetchProfile
+    shouldFetchProfile,
+    router
   ])
 }

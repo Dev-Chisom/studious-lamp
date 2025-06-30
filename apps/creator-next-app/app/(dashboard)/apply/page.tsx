@@ -3,15 +3,22 @@
 import { useTranslation } from "react-i18next"
 import { useEffect, useState } from "react"
 import ApplyCreatorForm from "@/components/apply/apply-creator-form"
+import { useRouter } from "next/navigation"
+import { useAuthStore } from "@/lib/auth-store"
 
 export default function ApplyPage() {
   const { t } = useTranslation()
   const [mounted, setMounted] = useState(false)
+  const router = useRouter()
+  const { user } = useAuthStore()
 
   // Prevent hydration mismatch by only rendering after mount
   useEffect(() => {
     setMounted(true)
-  }, [])
+    if (user?.data?.creatorProfile?.status === "approved") {
+      router.replace("/")
+    }
+  }, [user, router])
 
   if (!mounted) {
     return (
@@ -43,8 +50,8 @@ export default function ApplyPage() {
               {t("nav.becomeCreator", "Become a Creator")}
             </h1>
           </div>
-          <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm overflow-hidden">
-            <div className="p-6 sm:p-8">
+          <div className="overflow-hidden">
+            <div>
               <ApplyCreatorForm />
             </div>
           </div>

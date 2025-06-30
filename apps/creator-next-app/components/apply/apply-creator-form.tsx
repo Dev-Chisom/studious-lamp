@@ -203,7 +203,7 @@ export default function ApplyCreatorForm() {
   }
 
   return (
-    <Card className="w-full max-w-3xl mx-auto my-8">
+    <Card className="bg-white dark:bg-gray-900 w-full my-8">
       <CardHeader>
         <CardTitle>{t("apply.title", "Apply to be a Creator")}</CardTitle>
         <CardDescription>{t("apply.description", "Fill out the form below to start your journey.")}</CardDescription>
@@ -470,7 +470,7 @@ export default function ApplyCreatorForm() {
             <form.Field
               name="acceptTerms"
               children={(field) => (
-                <div className="flex items-start mt-2">
+                <div className="flex items-center my-2">
                   <div className="flex items-center h-5">
                     <Checkbox
                       id="accept-terms"
@@ -493,7 +493,7 @@ export default function ApplyCreatorForm() {
             <form.Field
               name="confirmAge"
               children={(field) => (
-                <div className="flex items-start mt-4">
+                <div className="flex items-center">
                   <div className="flex items-center h-5">
                     <Checkbox
                       id="confirm-age"
