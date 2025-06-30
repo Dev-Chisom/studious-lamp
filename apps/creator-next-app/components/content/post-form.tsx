@@ -11,7 +11,6 @@ import { useForm } from "@tanstack/react-form"
 import { zodValidator } from "@tanstack/zod-form-adapter"
 import { Upload, Play, X, Loader2 } from "lucide-react"
 import * as z from "zod"
-// Make sure the file exists at this path, or update the path if needed
 import MediaGallery from "../home/media-gallery"
 import MediaPreviewModal from "../home/media-preview-modal"
 
