@@ -1,7 +1,7 @@
 "use client"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { useAuthStore } from "../auth-store"
+import { useAuthStore } from "../auth/auth-store"
 import { createApiService } from "../api.service"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"

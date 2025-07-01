@@ -1,5 +1,5 @@
 import { createApiService } from "./../api.service"
-import { useAuthStore } from "./../auth-store"
+import { useAuthStore } from "../auth/auth-store"
 
 // Create API service instance with auth
 function getApiService() {

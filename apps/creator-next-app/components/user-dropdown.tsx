@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { useAuthStore } from "@/lib/auth-store"
+import { useAuthStore } from "@/lib/auth/auth-store"
 import { useLogout } from "@/lib/api-hooks"
 
 interface NavLink {

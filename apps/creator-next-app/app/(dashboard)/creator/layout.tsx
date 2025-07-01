@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { AuthGuard } from "@/lib/auth-guard"
+import { AuthGuard } from "@/lib/auth/auth-guard"
 
 export default function CreatorLayout({
   children,

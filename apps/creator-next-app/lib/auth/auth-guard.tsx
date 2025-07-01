@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useRouter, usePathname } from "next/navigation"
 import { useAuthStore } from "./auth-store"
-import { getRouteConfig } from "./route-config"
+import { getRouteConfig } from "./../route-config"
 
 interface AuthGuardProps {
   children: React.ReactNode
@@ -18,11 +18,9 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
   const { t } = useTranslation()
   const router = useRouter()
   const pathname = usePathname()
-  
-  // Get auth state directly from store (don't call isAuthenticated() in render)
-  const { user, accessToken } = useAuthStore()
-  const isAuth = Boolean(user && accessToken)
-  
+
+  // Get auth state directly from store
+  const { user, accessToken, isAuthenticatedFn } = useAuthStore()
   const [isChecking, setIsChecking] = useState(true)
   const [hasChecked, setHasChecked] = useState(false)
 
@@ -31,7 +29,8 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
   const needsAuth = requiresAuth ?? routeConfig?.requiresAuth ?? false
   const needsCreator = requiresCreator ?? routeConfig?.requiresCreator ?? false
 
-  // Use only Zustand user
+  // Use the function to check authentication
+  const isAuth = isAuthenticatedFn()
   const currentProfile = user
 
   useEffect(() => {
@@ -39,12 +38,13 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
     if (hasChecked) return
 
     const checkAuth = () => {
-      console.log("🔍 AuthGuard checking:", { 
-        pathname, 
-        needsAuth, 
-        needsCreator, 
+      console.log("🔍 AUTH GUARD CHECKING:", {
+        pathname,
+        needsAuth,
+        needsCreator,
         isAuth,
-        hasProfile: !!currentProfile 
+        hasProfile: !!currentProfile,
+        hasAccessToken: !!accessToken,
       })
 
       // Check 1: Route needs auth but user is not authenticated
@@ -81,16 +81,7 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
     }
 
     checkAuth()
-  }, [
-    hasChecked,
-    pathname,
-    needsAuth,
-    needsCreator,
-    isAuth,
-    currentProfile,
-    router,
-    redirectTo
-  ])
+  }, [hasChecked, pathname, needsAuth, needsCreator, isAuth, currentProfile, router, redirectTo, accessToken])
 
   // Reset checking state when route changes
   useEffect(() => {
@@ -99,7 +90,7 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
   }, [pathname])
 
   // Show loading while checking
-  if (isChecking || (needsCreator && isAuth)) {
+  if (isChecking) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

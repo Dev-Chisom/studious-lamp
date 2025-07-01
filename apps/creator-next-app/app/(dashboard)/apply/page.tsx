@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import { useEffect, useState } from "react"
 import ApplyCreatorForm from "@/components/apply/apply-creator-form"
 import { useRouter } from "next/navigation"
-import { useAuthStore } from "@/lib/auth-store"
+import { useAuthStore } from "@/lib/auth/auth-store"
 
 export default function ApplyPage() {
   const { t } = useTranslation()

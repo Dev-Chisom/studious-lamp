@@ -1,9 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { authApi } from "./auth-api"
-import { useAuthStore } from "./auth-store"
+import { authApi } from "./auth/auth-api"
+import { useAuthStore } from "./auth/auth-store"
 import { toast } from "sonner"
 import { useCallback } from "react"
-import type { LoginCredentials, RegisterData } from "./auth-api"
+import type { LoginCredentials, RegisterData } from "./auth/auth-api"
 
 // Auth query keys
 export const authKeys = {

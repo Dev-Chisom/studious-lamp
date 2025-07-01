@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import { useRouter, usePathname } from "next/navigation"
-import { useAuthStore } from "./auth-store"
+import { useAuthStore } from "./auth/auth-store"
 
 // Hook to handle route protection logic
 export function useRouteGuard() {

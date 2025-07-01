@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { Icons } from "@/components/ui/icons"
 import { useWalletBalance, useTransactionHistory, usePaystackPayment, useBaniPayment } from "@/lib/wallet/wallet-hooks"
-import { useAuthStore } from "@/lib/auth-store"
+import { useAuthStore } from "@/lib/auth/auth-store"
 import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 

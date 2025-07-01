@@ -17,7 +17,7 @@ import {
   UserPlus,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useAuthStore } from "@/lib/auth-store"
+import { useAuthStore } from "@/lib/auth/auth-store"
 import SidebarNavigationItem from "@/components/sidebar-navigation-item"
 import Image from "next/image"
 
