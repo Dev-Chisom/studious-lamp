@@ -135,7 +135,7 @@ export function useSubscriptions() {
       await mockApiDelay(800) // Simulate API delay
       return mockSubscriptions
     },
-    enabled: isAuthenticated() && typeof window !== "undefined",
+    enabled: isAuthenticated && typeof window !== "undefined",
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: false, // Don't retry for mock data
   })
@@ -281,7 +281,7 @@ export function useSubscriptionStats() {
         totalSpent,
       }
     },
-    enabled: isAuthenticated() && typeof window !== "undefined",
+    enabled: isAuthenticated && typeof window !== "undefined",
     staleTime: 10 * 60 * 1000, // 10 minutes
   })
 }

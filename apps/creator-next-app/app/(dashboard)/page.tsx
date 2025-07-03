@@ -10,11 +10,7 @@ import PostCard from "@/components/home/post-card"
 import UserSwiperList from "@/components/user-swiper-list"
 import TipModal from "@/components/tip-modal"
 import type { Post, SuggestionUser } from "@/types/dashboard"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Users, DollarSign, Eye, TrendingUp } from "lucide-react"
 
-// Mock data - replace with API calls
 const mockPosts: Post[] = [
   {
     id: "1",

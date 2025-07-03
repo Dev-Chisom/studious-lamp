@@ -15,57 +15,27 @@ export interface RegisterData {
 
 export const authApi = {
   // OAuth flow - get redirect URL for provider
-  getOAuthUrl: (provider: "google" | "x") => {
-    console.log(`🔗 Getting OAuth URL for ${provider}`)
-    return api.post(`/auth/${provider}`)
-  },
+  getOAuthUrl: (provider: "google" | "x") => api.post(`/auth/${provider}`),
 
   // Traditional auth
-  login: (credentials: LoginCredentials) => {
-    console.log("🔐 Logging in user")
-    return api.post<AuthResponse>("/auth/login", credentials)
-  },
-
-  register: (data: RegisterData) => {
-    console.log("📝 Registering new user")
-    return api.post<AuthResponse>("/auth/register", data)
-  },
+  login: (credentials: LoginCredentials) => api.post<AuthResponse>("/auth/login", credentials),
+  register: (data: RegisterData) => api.post<AuthResponse>("/auth/register", data),
 
   // Profile management
   getProfile: () => {
-    console.log("👤 Fetching user profile")
+    console.log("📡 Making profile API request...")
     return api.get<User>("/auth/profile")
   },
-
-  updateProfile: (data: Partial<User>) => {
-    console.log("✏️ Updating user profile")
-    return api.put<User>("/auth/profile", data)
-  },
+  updateProfile: (data: Partial<User>) => api.put<User>("/auth/profile", data),
 
   // Token management
-  refreshToken: (refreshToken: string) => {
-    console.log("🔄 Refreshing token")
-    return api.post<{ accessToken: string; refreshToken?: string }>("/auth/refresh-token", { refreshToken })
-  },
-
-  logout: () => {
-    console.log("🚪 Logging out")
-    return api.post("/auth/logout")
-  },
+  refreshToken: (refreshToken: string) =>
+    api.post<{ accessToken: string; refreshToken?: string }>("/auth/refresh-token", { refreshToken }),
+  logout: () => api.post("/auth/logout"),
 
   // Password management
-  changePassword: (currentPassword: string, newPassword: string) => {
-    console.log("🔒 Changing password")
-    return api.post("/auth/change-password", { currentPassword, newPassword })
-  },
-
-  requestPasswordReset: (email: string) => {
-    console.log("📧 Requesting password reset")
-    return api.post("/auth/forgot-password", { email })
-  },
-
-  resetPassword: (token: string, newPassword: string) => {
-    console.log("🔑 Resetting password")
-    return api.post("/auth/reset-password", { token, newPassword })
-  },
+  changePassword: (currentPassword: string, newPassword: string) =>
+    api.post("/auth/change-password", { currentPassword, newPassword }),
+  requestPasswordReset: (email: string) => api.post("/auth/forgot-password", { email }),
+  resetPassword: (token: string, newPassword: string) => api.post("/auth/reset-password", { token, newPassword }),
 }

@@ -1,7 +1,9 @@
 "use client"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Icons } from "@/components/ui/icons"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useSubscriptions, useCancelSubscription } from "@/lib/subscription/subscription-hooks"
 import { useAuthStore } from "@/lib/auth/auth-store"
 import { useTranslation } from "react-i18next"
@@ -10,7 +12,7 @@ import Link from "next/link"
 
 export default function SubscriptionsPage() {
   const { t } = useTranslation()
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticatedFn } = useAuthStore()
   const { data: subscriptions, isLoading: loading, error } = useSubscriptions()
   const cancelMutation = useCancelSubscription()
 
@@ -20,7 +22,7 @@ export default function SubscriptionsPage() {
   }
 
   // Check authentication only after client hydration
-  if (!isAuthenticated()) {
+  if (!isAuthenticatedFn()) {
     return (
       <div className="container mx-auto max-w-6xl p-6">
         <div className="text-center py-12">
@@ -59,10 +61,40 @@ export default function SubscriptionsPage() {
     return (
       <div className="container mx-auto max-w-6xl p-6">
         <div className="space-y-6">
-          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4 animate-pulse"></div>
-          <div className="text-center py-12">
-            <Icons.spinner className="h-8 w-8 mx-auto animate-spin text-primary-500" />
-            <p className="mt-2 text-gray-500 dark:text-gray-200">{t("subscriptions.loading")}</p>
+          <Skeleton className="h-8 w-1/4" />
+
+          <div className="space-y-4">
+            <Skeleton className="h-6 w-1/5" />
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {[...Array(6)].map((_, i) => (
+                <Card key={i} className="bg-white dark:bg-gray-900">
+                  <CardContent className="p-6">
+                    <div className="flex items-center space-x-4">
+                      <Skeleton className="h-16 w-16 rounded-full" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-5 w-3/4" />
+                        <Skeleton className="h-4 w-1/2" />
+                      </div>
+                    </div>
+
+                    <div className="mt-4 space-y-3">
+                      {[...Array(4)].map((_, j) => (
+                        <div key={j} className="flex justify-between">
+                          <Skeleton className="h-4 w-1/3" />
+                          <Skeleton className="h-4 w-1/4" />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-6 flex space-x-3">
+                      <Skeleton className="h-10 flex-1" />
+                      <Skeleton className="h-10 w-20" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -88,13 +120,7 @@ export default function SubscriptionsPage() {
         {/* Active subscriptions */}
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4">{t("subscriptions.activeSubscriptions")}</h2>
-
-          {loading ? (
-            <div className="text-center py-12">
-              <Icons.spinner className="h-8 w-8 mx-auto animate-spin text-primary-500" />
-              <p className="mt-2 text-gray-500 dark:text-gray-200">{t("subscriptions.loading")}</p>
-            </div>
-          ) : activeSubscriptions.length === 0 ? (
+          {activeSubscriptions.length === 0 ? (
             <Card className="bg-white dark:bg-gray-900 rounded-lg shadow-sm">
               <CardContent className="p-8 text-center">
                 <Icons.user className="h-12 w-12 mx-auto text-gray-400" />

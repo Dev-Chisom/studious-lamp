@@ -44,7 +44,7 @@ export function useContent(params?: ContentListParams) {
       }
       throw new Error(response.message || "Failed to fetch content")
     },
-    enabled: isAuthenticated() && typeof window !== "undefined",
+    enabled: isAuthenticated && typeof window !== "undefined",
     staleTime: 5 * 60 * 1000,
   })
 }
@@ -64,7 +64,7 @@ export function useContentById(id: string) {
       }
       throw new Error(response.message || "Failed to fetch content")
     },
-    enabled: isAuthenticated() && typeof window !== "undefined" && !!id,
+    enabled: isAuthenticated && typeof window !== "undefined" && !!id,
     staleTime: 5 * 60 * 1000,
   })
 }
@@ -215,7 +215,7 @@ export function useContentStats() {
       }
       throw new Error(response.message || "Failed to fetch content stats")
     },
-    enabled: isAuthenticated() && typeof window !== "undefined",
+    enabled: isAuthenticated && typeof window !== "undefined",
     staleTime: 10 * 60 * 1000, // 10 minutes
   })
 }

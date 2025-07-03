@@ -122,7 +122,7 @@ export function useWalletBalance() {
       await mockApiDelay(800) // Simulate API delay
       return mockWalletBalance
     },
-    enabled: isAuthenticated() && typeof window !== "undefined",
+    enabled: isAuthenticated && typeof window !== "undefined",
     staleTime: 5 * 60 * 1000,
     retry: false, // Don't retry for mock data
   })
@@ -146,7 +146,7 @@ export function useTransactionHistory(params?: { page?: number; limit?: number }
 
       return mockTransactions
     },
-    enabled: isAuthenticated() && typeof window !== "undefined",
+    enabled: isAuthenticated && typeof window !== "undefined",
     staleTime: 2 * 60 * 1000,
     retry: false,
   })
@@ -319,7 +319,7 @@ export function useWalletStats() {
         ],
       }
     },
-    enabled: isAuthenticated() && typeof window !== "undefined",
+    enabled: isAuthenticated && typeof window !== "undefined",
     staleTime: 10 * 60 * 1000,
   })
 }

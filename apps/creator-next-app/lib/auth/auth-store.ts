@@ -32,6 +32,7 @@ interface AuthActions {
   setHydrated: () => void
   syncWithCookies: () => void
   isAuthenticatedFn: () => boolean
+  getSubscriptions: () => string[]
   setCookie: (name: string, value: string, days?: number) => void
   getCookie: (name: string) => string | null
   deleteCookie: (name: string) => void
@@ -379,6 +380,12 @@ export const useAuthStore = create<AuthStore>()(
         })
 
         return isAuth
+      },
+
+      getSubscriptions: () => {
+        // Mock subscriptions for now - replace with actual API call later
+        console.log("📋 Getting user subscriptions (mock data)")
+        return ["creator1", "creator2", "fil-1", "fil-2"]
       },
 
       setCookie,

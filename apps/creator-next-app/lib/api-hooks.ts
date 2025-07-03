@@ -17,7 +17,7 @@ export const useProfile = () => {
   return useQuery({
     queryKey: ["profile"],
     queryFn: authApi.getProfile,
-    enabled: isAuthenticated() && !!accessToken,
+    enabled: isAuthenticated && !!accessToken,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: false,
   })

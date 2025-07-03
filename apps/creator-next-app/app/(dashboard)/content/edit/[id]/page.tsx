@@ -38,7 +38,7 @@ export default function EditContentPage() {
     )
   }
 
-  if (!isAuthenticated()) {
+  if (!isAuthenticated) {
     return (
       <div className="max-w-6xl mx-auto p-6">
         <div className="text-center py-12">
@@ -112,7 +112,7 @@ export default function EditContentPage() {
     )
   }
 
-  if (error || !contentData) {
+  if (error || !contentData || !contentData?.post) {
     return (
       <div className="max-w-6xl mx-auto p-6">
         <div className="text-center py-12">

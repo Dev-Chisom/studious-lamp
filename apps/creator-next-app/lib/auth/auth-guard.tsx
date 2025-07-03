@@ -21,6 +21,8 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
 
   // Get auth state directly from store
   const { user, accessToken, isAuthenticatedFn } = useAuthStore()
+  const isAuth = isAuthenticatedFn()
+
   const [isChecking, setIsChecking] = useState(true)
   const [hasChecked, setHasChecked] = useState(false)
 
@@ -29,8 +31,7 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
   const needsAuth = requiresAuth ?? routeConfig?.requiresAuth ?? false
   const needsCreator = requiresCreator ?? routeConfig?.requiresCreator ?? false
 
-  // Use the function to check authentication
-  const isAuth = isAuthenticatedFn()
+  // Use only Zustand user
   const currentProfile = user
 
   useEffect(() => {
@@ -44,8 +45,15 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
         needsCreator,
         isAuth,
         hasProfile: !!currentProfile,
-        hasAccessToken: !!accessToken,
       })
+
+      // Skip auth checks for auth page during processing
+      if (pathname === "/auth") {
+        console.log("⏭️ Skipping auth guard for auth page")
+        setIsChecking(false)
+        setHasChecked(true)
+        return
+      }
 
       // Check 1: Route needs auth but user is not authenticated
       if (needsAuth && !isAuth) {
@@ -81,7 +89,7 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
     }
 
     checkAuth()
-  }, [hasChecked, pathname, needsAuth, needsCreator, isAuth, currentProfile, router, redirectTo, accessToken])
+  }, [hasChecked, pathname, needsAuth, needsCreator, isAuth, currentProfile, router, redirectTo])
 
   // Reset checking state when route changes
   useEffect(() => {
@@ -89,12 +97,38 @@ export function AuthGuard({ children, requiresAuth, requiresCreator, redirectTo 
     setIsChecking(true)
   }, [pathname])
 
-  // Show loading while checking
+  // Enhanced loading with logo and branding
   if (isChecking) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        <span className="ml-2">{t("creator.checkingPermissions")}</span>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        {/* Logo Container */}
+        <div className="relative mb-8">
+          {/* Animated Ring */}
+          <div className="absolute inset-0 rounded-full border-4 border-primary/20 animate-pulse"></div>
+          <div className="absolute inset-0 rounded-full border-t-4 border-primary animate-spin"></div>
+
+          {/* Logo */}
+          <div className="relative bg-white dark:bg-gray-800 rounded-full p-6 shadow-lg">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-xl">W</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Loading Text */}
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            {t("creator.checkingPermissions")}
+          </h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Verifying your access permissions...</p>
+        </div>
+
+        {/* Progress Dots */}
+        <div className="flex space-x-2 mt-6">
+          <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+          <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+          <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+        </div>
       </div>
     )
   }

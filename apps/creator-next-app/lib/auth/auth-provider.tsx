@@ -10,49 +10,79 @@ interface AuthProviderProps {
   children: React.ReactNode
 }
 
+export const useProfile = () => {
+  const { isAuthenticatedFn, accessToken } = useAuthStore()
+
+  return useQuery({
+    queryKey: ["profile"],
+    queryFn: () => {
+      console.log("🔍 Profile query function called")
+      return authApi.getProfile()
+    },
+    enabled: isAuthenticatedFn() && !!accessToken,
+    staleTime: 5 * 60 * 1000,
+    retry: (failureCount, error: any) => {
+      console.log("🔄 Profile query retry:", { failureCount, error: error?.message })
+      // Don't retry on 401 errors
+      if (error?.status === 401) {
+        return false
+      }
+      return failureCount < 2
+    },
+  })
+}
+
 export function AuthProvider({ children }: AuthProviderProps) {
-  const { setUser, clearAuth, isAuthenticatedFn, user, syncWithCookies } = useAuthStore()
+  const { setUser, clearAuth, isAuthenticatedFn, user } = useAuthStore()
+  const profileQuery = useQuery({
+    queryKey: ["profile"],
+    queryFn: () => {
+      console.log("🔍 Profile query function called")
+      return authApi.getProfile()
+    },
+    enabled: isAuthenticatedFn() && !!user && (!user?.email || !user?.name),
+    staleTime: 5 * 60 * 1000,
+    retry: (failureCount, error: any) => {
+      console.log("🔄 Profile query retry:", { failureCount, error: error?.message })
+      // Don't retry on 401 errors
+      if (error?.status === 401) {
+        return false
+      }
+      return failureCount < 2
+    },
+  })
 
-  // Only fetch profile if authenticated but don't have complete user data
-  const shouldFetchProfile = isAuthenticatedFn() && (!user?.email || !user?.name)
-
-  console.log("🔍 AUTH PROVIDER - SHOULD FETCH PROFILE:", {
+  console.log("🔍 AuthProvider render:", {
     isAuthenticated: isAuthenticatedFn(),
     hasUser: !!user,
     hasEmail: !!user?.email,
     hasName: !!user?.name,
-    shouldFetch: shouldFetchProfile,
-  })
-
-  const profileQuery = useQuery({
-    queryKey: ["profile"],
-    queryFn: authApi.getProfile,
-    enabled: shouldFetchProfile,
-    staleTime: 5 * 60 * 1000,
-    retry: false,
+    shouldFetchProfile: isAuthenticatedFn() && (!user?.email || !user?.name),
   })
 
   useEffect(() => {
-    console.log("🔄 AUTH PROVIDER: SYNCING WITH COOKIES ON MOUNT...")
-    // Re-enable syncWithCookies now that API is fixed
-    syncWithCookies()
-  }, [syncWithCookies])
+    console.log("🔍 AuthProvider profile query effect:", {
+      isSuccess: profileQuery.isSuccess,
+      isError: profileQuery.isError,
+      hasData: !!profileQuery.data,
+      error: profileQuery.error,
+    })
 
-  useEffect(() => {
     if (profileQuery.isSuccess && profileQuery.data) {
-      console.log("👤 PROFILE FETCHED, UPDATING USER DATA:", profileQuery.data)
+      console.log("✅ Profile fetched successfully, updating user")
       setUser(profileQuery.data)
     }
 
     if (profileQuery.isError) {
-      console.error("❌ PROFILE FETCH FAILED:", profileQuery.error)
+      console.error("❌ Profile fetch failed:", profileQuery.error)
       // Only clear auth if it's a real auth error, not a network error
-      if (profileQuery.error && "status" in profileQuery.error && profileQuery.error.status === 401) {
-        console.log("🧹 Clearing auth due to 401 error")
+      const error = profileQuery.error as any
+      if (error?.status === 401 || error?.status === 403) {
+        console.log("🚪 Clearing auth due to profile fetch error")
         clearAuth()
       }
     }
-  }, [profileQuery.isSuccess, profileQuery.isError, profileQuery.data, setUser, clearAuth])
+  }, [profileQuery.isSuccess, profileQuery.isError, profileQuery.data, profileQuery.error, setUser, clearAuth])
 
   return <>{children}</>
 }

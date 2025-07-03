@@ -26,33 +26,30 @@ export function createApiService(
     },
   })
 
+  const currentToken = token || useAuthStore.getState().accessToken
   let isLoggingOut = false
 
   // Request interceptor to add token to every request
   api.interceptors.request.use(
     (config) => {
-      // Get current token from auth store
-      const { accessToken } = useAuthStore.getState()
-      const currentToken = token || accessToken
+      // Get the latest token from auth store
+      const latestToken = useAuthStore.getState().accessToken
 
-      console.log("🌐 API REQUEST INTERCEPTOR:", {
-        url: config.url,
-        method: config.method,
-        hasToken: !!currentToken,
-        tokenStart: currentToken ? currentToken.substring(0, 20) + "..." : "none",
-      })
-
-      if (currentToken) {
-        config.headers.Authorization = `Bearer ${currentToken}`
-        console.log("✅ Added Authorization header to request")
+      if (latestToken) {
+        config.headers.Authorization = `Bearer ${latestToken}`
+        console.log(`🔑 API REQUEST: Adding token to ${config.method?.toUpperCase()} ${config.url}`, {
+          hasToken: !!latestToken,
+          tokenLength: latestToken.length,
+          url: config.url,
+        })
       } else {
-        console.warn("⚠️ No token available for API request")
+        console.log(`⚠️ API REQUEST: No token available for ${config.method?.toUpperCase()} ${config.url}`)
       }
 
       return config
     },
     (error) => {
-      console.error("❌ Request interceptor error:", error)
+      console.error("❌ REQUEST INTERCEPTOR ERROR:", error)
       return Promise.reject(error)
     },
   )
@@ -60,40 +57,37 @@ export function createApiService(
   // Response interceptor for refresh logic
   api.interceptors.response.use(
     (response) => {
-      console.log("✅ API RESPONSE SUCCESS:", {
-        url: response.config.url,
-        status: response.status,
-      })
+      console.log(
+        `✅ API RESPONSE: ${response.config.method?.toUpperCase()} ${response.config.url} - ${response.status}`,
+        {
+          status: response.status,
+          url: response.config.url,
+        },
+      )
       return response
     },
     async (error: AxiosError) => {
-      console.error("❌ API RESPONSE ERROR:", {
-        url: error.config?.url,
-        status: error.response?.status,
-        message: error.message,
-      })
-
       const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean }
 
-      if (error.response?.status === 401 && !originalRequest._retry && !isLoggingOut) {
+      console.error(
+        `❌ API ERROR: ${originalRequest.method?.toUpperCase()} ${originalRequest.url} - ${error.response?.status}`,
+        {
+          status: error.response?.status,
+          url: originalRequest.url,
+          message: error.message,
+        },
+      )
+
+      if (error.response?.status === 401 && refreshToken && !originalRequest._retry && !isLoggingOut) {
         originalRequest._retry = true
 
         console.log("🔄 Attempting token refresh...")
 
         try {
-          // Get refresh token from auth store
-          const { refreshToken: currentRefreshToken } = useAuthStore.getState()
-          const refreshTokenToUse = refreshToken || currentRefreshToken
-
-          if (!refreshTokenToUse) {
-            console.error("❌ No refresh token available")
-            throw new Error("No refresh token")
-          }
-
           const refreshResponse = await axios.post(
             `${BASE_URL}/auth/refresh`,
             {
-              refreshToken: refreshTokenToUse,
+              refreshToken,
             },
             {
               headers: { "Content-Type": "application/json" },
@@ -102,19 +96,19 @@ export function createApiService(
 
           if (refreshResponse.data?.accessToken) {
             const newToken = refreshResponse.data.accessToken
-            const newRefreshToken = refreshResponse.data.refreshToken || refreshTokenToUse
+            const newRefreshToken = refreshResponse.data.refreshToken || refreshToken
 
             console.log("✅ Token refresh successful")
 
-            // Update tokens in auth store
+            // Update auth store with new tokens
             useAuthStore.getState().setAuth(newToken, newRefreshToken)
+
+            if (onTokenRefresh) onTokenRefresh(newToken)
 
             // Update the original request with new token
             if (originalRequest.headers) {
               originalRequest.headers.Authorization = `Bearer ${newToken}`
             }
-
-            if (onTokenRefresh) onTokenRefresh(newToken)
 
             return api(originalRequest)
           }
@@ -129,6 +123,7 @@ export function createApiService(
       } else if (error.response?.status === 401 || error.response?.status === 403) {
         if (!isLoggingOut) {
           isLoggingOut = true
+          console.log("🚪 Clearing auth due to 401/403 error")
           useAuthStore.getState().clearAuth()
           if (onAuthError) onAuthError()
         }
@@ -140,7 +135,6 @@ export function createApiService(
 
   async function get<T>(endpoint: string, params?: any): Promise<T> {
     try {
-      console.log(`🌐 GET ${endpoint}`, { params })
       const response = await api.get<T>(endpoint, { params })
       return response.data
     } catch (error) {
@@ -150,7 +144,6 @@ export function createApiService(
 
   async function post<T>(endpoint: string, data?: any): Promise<T> {
     try {
-      console.log(`🌐 POST ${endpoint}`, { hasData: !!data })
       const response = await api.post<T>(endpoint, data)
       return response.data
     } catch (error) {
@@ -160,7 +153,6 @@ export function createApiService(
 
   async function put<T>(endpoint: string, data?: any): Promise<T> {
     try {
-      console.log(`🌐 PUT ${endpoint}`, { hasData: !!data })
       const response = await api.put<T>(endpoint, data)
       return response.data
     } catch (error) {
@@ -170,7 +162,6 @@ export function createApiService(
 
   async function del<T>(endpoint: string): Promise<T> {
     try {
-      console.log(`🌐 DELETE ${endpoint}`)
       const response = await api.delete<T>(endpoint)
       return response.data
     } catch (error) {
@@ -180,7 +171,6 @@ export function createApiService(
 
   async function patch<T>(endpoint: string, data?: any): Promise<T> {
     try {
-      console.log(`🌐 PATCH ${endpoint}`, { hasData: !!data })
       const response = await api.patch<T>(endpoint, data)
       return response.data
     } catch (error) {
@@ -203,22 +193,26 @@ export function createApiService(
     })
   }
 
-  function setToken(newToken: string) {
-    console.log("🔑 Setting new token in API service")
-    // Update the default authorization header
-    api.defaults.headers.common.Authorization = `Bearer ${newToken}`
-    if (onTokenRefresh) onTokenRefresh(newToken)
-  }
-
   return {
     get,
     post,
     put,
     delete: del,
     patch,
-    setToken,
   }
 }
 
-// Create the default API instance
-export const api = createApiService()
+// Create default API instance
+export const api = createApiService(
+  undefined,
+  undefined,
+  (newToken) => {
+    console.log("🔄 Token refreshed via API service")
+  },
+  () => {
+    console.log("🚪 Auth error - redirecting to login")
+    if (typeof window !== "undefined") {
+      window.location.href = "/auth"
+    }
+  },
+)
