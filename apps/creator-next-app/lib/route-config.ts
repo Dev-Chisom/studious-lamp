@@ -24,9 +24,9 @@ export const routeConfigs: RouteConfig[] = [
 
   // Creator routes
   { path: "/creator", requiresAuth: true, requiresCreator: true },
-  { path: "/analytics", requiresAuth: true, requiresCreator: true },
-  { path: "/earnings", requiresAuth: true, requiresCreator: true },
-  { path: "/subscribers", requiresAuth: true, requiresCreator: true },
+  { path: "/creator/analytics", requiresAuth: true, requiresCreator: true },
+  { path: "/creator/earnings", requiresAuth: true, requiresCreator: true },
+  { path: "/creator/subscribers", requiresAuth: true, requiresCreator: true },
 
   // Application route
   { path: "/apply", requiresAuth: true, requiresCreator: false },

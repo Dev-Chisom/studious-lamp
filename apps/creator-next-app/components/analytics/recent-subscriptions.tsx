@@ -30,7 +30,7 @@ export function RecentSubscriptions({ subscriptions }: RecentSubscriptionsProps)
   }
 
   return (
-    <Card>
+    <Card className="bg-gray-50 dark:bg-gray-900">
       <CardHeader className="border-b border-gray-200 dark:border-gray-700">
         <CardTitle className="text-lg font-medium text-gray-900 dark:text-gray-100">
           {t("recentSubscriptions")}

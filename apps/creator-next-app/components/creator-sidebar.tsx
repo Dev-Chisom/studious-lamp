@@ -72,7 +72,7 @@ export default function CreatorSidebar({ isMobileOpen, onClose }: CreatorSidebar
       : []
 
     return [...baseItems, ...creatorItems, ...becomeCreatorItem]
-  }, [user?.creatorProfile?.status, t])
+  }, [user?.data?.creatorProfile?.status, t])
 
   return (
     <div>

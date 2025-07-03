@@ -2,18 +2,46 @@ import { create } from "zustand"
 import { persist } from "zustand/middleware"
 import { jwtDecode } from "jwt-decode"
 
-interface User {
+interface CreatorProfile {
+  displayName: string
+  username: string
+  bio: string
+  status: string
+  socialMedia?: Array<{
+    platform: string
+    url: string
+    _id: string
+    createdAt: string
+    updatedAt: string
+  }>
+  legal?: {
+    termsOfService: boolean
+    legallyAnAdult: boolean
+  }
   _id: string
   createdAt: string
   updatedAt: string
+}
+
+interface UserData {
+  _id: string
   email: string
   name: string
   provider: string
   providerId: string
-  refreshToken: string
   status: string
-  creatorProfile?: any
+  createdAt: string
+  updatedAt: string
+  __v: number
+  refreshToken: string
+  creatorProfile?: CreatorProfile
   referralCode?: string
+}
+
+interface User {
+  success: boolean
+  data: UserData
+  message: string
 }
 
 interface AuthState {
@@ -56,7 +84,6 @@ const setCookie = (name: string, value: string, days = 30) => {
   try {
     const expires = new Date()
     expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
-
     // Use a simpler cookie format
     const cookieString = `${name}=${encodeURIComponent(value)}; expires=${expires.toUTCString()}; path=/; SameSite=Lax`
 
@@ -98,6 +125,7 @@ const getCookie = (name: string): string | null => {
         return value
       }
     }
+
     console.log(`🍪 COOKIE ${name} NOT FOUND`)
     return null
   } catch (error) {
@@ -127,18 +155,39 @@ const getUserFromToken = (accessToken: string): User => {
   try {
     const decoded = jwtDecode<JWTPayload>(accessToken)
     console.log("🔍 DECODED JWT:", decoded)
+
+    // Create a mock user structure that matches the API response format
     return {
-      _id: decoded.userId,
-      createdAt: "",
-      updatedAt: "",
-      email: "", // Will be filled by profile API call
-      name: "", // Will be filled by profile API call
-      provider: "",
-      providerId: "",
-      refreshToken: "",
-      status: "active",
-      creatorProfile: undefined,
-      referralCode: undefined,
+      success: true,
+      data: {
+        _id: decoded.userId,
+        email: `user-${decoded.userId}@example.com`,
+        name: `User ${decoded.userId}`,
+        provider: "mock",
+        providerId: decoded.userId,
+        status: "active",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        __v: 0,
+        refreshToken: "",
+        // Add mock creator profile for testing
+        creatorProfile: {
+          displayName: `Creator ${decoded.userId}`,
+          username: `creator_${decoded.userId}`,
+          bio: "Mock creator profile for testing",
+          status: "approved",
+          socialMedia: [],
+          legal: {
+            termsOfService: true,
+            legallyAnAdult: true,
+          },
+          _id: `mock_creator_${decoded.userId}`,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        referralCode: `ref_${decoded.userId}`,
+      },
+      message: "Mock user created from JWT",
     }
   } catch (error) {
     console.error("❌ FAILED TO DECODE JWT:", error)
@@ -189,6 +238,7 @@ export const useAuthStore = create<AuthStore>()(
           hasRefreshToken: !!refreshToken,
           refreshTokenLength: refreshToken?.length,
           hasUser: !!user,
+          userStructure: user ? Object.keys(user) : [],
         })
 
         // Add stack trace to see who called setAuth
@@ -215,6 +265,12 @@ export const useAuthStore = create<AuthStore>()(
         }
 
         console.log("💾 SETTING AUTH STATE IN ZUSTAND...")
+        console.log("👤 USER DATA STRUCTURE:", {
+          hasSuccess: userData.success,
+          hasData: !!userData.data,
+          hasCreatorProfile: !!userData.data?.creatorProfile,
+          creatorStatus: userData.data?.creatorProfile?.status,
+        })
 
         // Set in Zustand store first
         set({
@@ -258,11 +314,13 @@ export const useAuthStore = create<AuthStore>()(
           hasUser: !!currentState.user,
           hasAccessToken: !!currentState.accessToken,
           isAuthenticated: currentState.isAuthenticated,
+          creatorStatus: currentState.user?.data?.creatorProfile?.status,
         })
       },
 
       setUser: (user: User) => {
         console.log("👤 SETTING USER:", user)
+        console.log("👤 USER CREATOR STATUS:", user?.data?.creatorProfile?.status)
         set({ user })
         setCookie("userProfile", JSON.stringify(user), 7)
       },
@@ -328,10 +386,12 @@ export const useAuthStore = create<AuthStore>()(
 
           if (tokenIsValid) {
             let user = null
+
             if (userProfile) {
               try {
                 user = JSON.parse(decodeURIComponent(userProfile))
                 console.log("📝 PARSED USER FROM COOKIE:", user)
+                console.log("📝 PARSED USER CREATOR STATUS:", user?.data?.creatorProfile?.status)
               } catch (error) {
                 console.error("❌ FAILED TO PARSE USER PROFILE FROM COOKIE:", error)
               }
@@ -377,6 +437,7 @@ export const useAuthStore = create<AuthStore>()(
           hasUser: !!state.user,
           tokenValid,
           result: isAuth,
+          creatorStatus: state.user?.data?.creatorProfile?.status,
         })
 
         return isAuth

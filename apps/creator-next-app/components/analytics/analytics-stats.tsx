@@ -102,7 +102,7 @@ export function AnalyticsStats({ stats }: AnalyticsStatsProps) {
         const textColorClass = getColorClasses(stat.color, "text")
 
         return (
-          <Card key={index}>
+          <Card key={index} className="bg-gray-50 dark:bg-gray-900">
             <CardContent className="px-4 py-5 sm:p-6">
               <div className="flex items-center">
                 <div className={`${bgColorClass} rounded-md p-3`}>

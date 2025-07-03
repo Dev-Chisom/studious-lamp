@@ -17,7 +17,7 @@ export function useRouteGuard() {
   const lastPathnameRef = useRef(pathname)
 
   // Define route patterns
-  const creatorRoutePatterns = ["/creator", "/analytics", "/earnings", "/subscribers", "/content/create"]
+  const creatorRoutePatterns = ["/creator", "/creator/analytics", "/creator/earnings", "/creator/subscribers", "/content/create"]
   const protectedRoutePatterns = ["/dashboard", "/profile", "/settings", "/wallet", "/subscriptions"]
   
   const isCreatorRoute = creatorRoutePatterns.some((pattern) => pathname.startsWith(pattern))
@@ -69,8 +69,8 @@ export function useRouteGuard() {
         }
 
         if (currentProfile) {
-          const isApprovedCreator = currentProfile?.creatorProfile?.status === "approved"
-          console.log(`${isApprovedCreator ? "✅" : "❌"} Creator status: ${currentProfile?.creatorProfile?.status}`)
+          const isApprovedCreator = currentProfile?.data?.creatorProfile?.status === "approved"
+          console.log(`${isApprovedCreator ? "✅" : "❌"} Creator status: ${currentProfile?.data?.creatorProfile?.status}`)
 
           if (!isApprovedCreator) {
             console.log("❌ Not approved creator, redirecting to apply")

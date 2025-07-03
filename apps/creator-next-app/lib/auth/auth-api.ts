@@ -31,7 +31,7 @@ export const authApi = {
   // Token management
   refreshToken: (refreshToken: string) =>
     api.post<{ accessToken: string; refreshToken?: string }>("/auth/refresh-token", { refreshToken }),
-  logout: () => api.post("/auth/logout"),
+  logout: () => api.patch("/auth/logout"),
 
   // Password management
   changePassword: (currentPassword: string, newPassword: string) =>

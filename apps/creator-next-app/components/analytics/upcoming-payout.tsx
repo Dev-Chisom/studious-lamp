@@ -31,7 +31,7 @@ export function UpcomingPayout({ payout, onRequestEarlyPayout }: UpcomingPayoutP
   }
 
   return (
-    <Card>
+    <Card className="bg-gray-50 dark:bg-gray-900">
       <CardHeader className="border-b border-gray-200 dark:border-gray-700 flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-lg font-medium text-gray-900 dark:text-gray-100">{t("upcomingPayout")}</CardTitle>
         <Link href="/creator/earnings" className="text-sm text-primary-600 hover:text-primary-500 font-medium">
