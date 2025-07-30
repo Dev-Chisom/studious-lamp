@@ -23,14 +23,7 @@ export default function EditContentPage() {
   const { data: contentData, isLoading: loading, error } = useContentById(contentId)
   const updateMutation = useUpdateContent()
 
-  // Debug: Log the hook state
-  console.log("Content edit hook state:", { 
-    contentId, 
-    loading, 
-    error: error?.message, 
-    hasData: !!contentData,
-    dataTitle: contentData?.title 
-  })
+
 
   useEffect(() => {
     setIsClient(true)
