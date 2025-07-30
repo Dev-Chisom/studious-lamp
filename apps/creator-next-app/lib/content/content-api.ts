@@ -93,17 +93,17 @@ export function createContentApi() {
 
     getPostById: (id: string) => {
       const apiService = getApiService()
-      return apiService.get<{ success: boolean; data: Content; message: string }>(`/posts/${id}`)
+      return apiService.get<{ success: boolean; data: { post: Content }; message: string }>(`/posts/${id}`)
     },
 
     createPost: (data: CreateContentRequest) => {
       const apiService = getApiService()
-      return apiService.post<{ success: boolean; data: Content; message: string }>("/posts", data)
+      return apiService.post<{ success: boolean; data: { post: Content }; message: string }>("/posts", data)
     },
 
     updatePost: (id: string, data: UpdateContentRequest) => {
       const apiService = getApiService()
-      return apiService.put<{ success: boolean; data: Content; message: string }>(`/posts/${id}`, data)
+      return apiService.put<{ success: boolean; data: { post: Content }; message: string }>(`/posts/${id}`, data)
     },
 
     deletePost: (id: string) => {
@@ -119,12 +119,12 @@ export function createContentApi() {
 
     publishPost: (id: string) => {
       const apiService = getApiService()
-      return apiService.post<{ success: boolean; data: Content; message: string }>(`/posts/${id}/publish`)
+      return apiService.post<{ success: boolean; data: { post: Content }; message: string }>(`/posts/${id}/publish`)
     },
 
     schedulePost: (id: string, scheduledDate: string) => {
       const apiService = getApiService()
-      return apiService.post<{ success: boolean; data: Content; message: string }>(`/posts/${id}/schedule`, {
+      return apiService.post<{ success: boolean; data: { post: Content }; message: string }>(`/posts/${id}/schedule`, {
         scheduledDate,
       })
     },

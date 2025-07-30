@@ -379,7 +379,7 @@ export function PostForm({
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                     {uploadedMediaFiles.map((media, index) => (
                       <div
-                        key={media.id || index}
+                        key={media.id || media.url || index}
                         className="relative group overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 aspect-square cursor-pointer"
                         onClick={() => openMediaPreview(index)}
                       >

@@ -6,16 +6,14 @@
 	},
 	"extends": [
 		"eslint:recommended",
-		"plugin:vue/recommended",
 		"plugin:@typescript-eslint/recommended",
-		"@nuxtjs/eslint-config-typescript",
+		"next/core-web-vitals",
 		"prettier"
 	],
 	"parserOptions": {
 		"ecmaVersion": 2020,
 		"parser": "@typescript-eslint/parser",
-		"sourceType": "module",
-		"extraFileExtensions": [".vue"]
+		"sourceType": "module"
 	},
 	"plugins": ["@typescript-eslint"],
 	"rules": {
@@ -49,39 +47,16 @@
 				"ignoreRegExpLiterals": true
 			}
 		],
-		// Vue Specific
-		"vue/html-indent": [
-			"error",
-			"tab",
-			{
-				"attribute": 1,
-				"baseIndent": 1,
-				"closeBracket": 0,
-				"alignAttributesVertically": true
-			}
-		],
 		"@typescript-eslint/no-require-imports": [
 			"error",
 			{
-				"allow": ["tailwind.config.js", "tailwind.config.ts", "vite.config.ts", "nuxt.config.ts"]
+				"allow": ["tailwind.config.js", "tailwind.config.ts", "next.config.ts"]
 			}
-		],
-		"vue/multi-word-component-names": "off",
-		"vue/valid-v-model": "error",
-		"vue/no-v-model-argument": "off",
-		"vue/no-boolean-default": "warn",
-		"vue/no-undef-properties": "off",
-		"vue/no-v-for-template-key": "off",
-		"vue/no-v-for-template-key-on-child": "error",
-		"vue/no-unregistered-components": "off",
-		"vue/no-unused-components": "warn",
-		"vue/no-unused-properties": "warn",
-		"vue/no-unused-refs": "warn",
-		"vue/no-useless-mustaches": "warn"
+		]
 	},
 	"overrides": [
 		{
-			"files": ["**/tailwind.config.*", "*.vue"],
+			"files": ["**/tailwind.config.*"],
 			"rules": {
 				"indent": "off"
 			}

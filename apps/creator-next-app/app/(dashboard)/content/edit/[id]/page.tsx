@@ -23,6 +23,15 @@ export default function EditContentPage() {
   const { data: contentData, isLoading: loading, error } = useContentById(contentId)
   const updateMutation = useUpdateContent()
 
+  // Debug: Log the hook state
+  console.log("Content edit hook state:", { 
+    contentId, 
+    loading, 
+    error: error?.message, 
+    hasData: !!contentData,
+    dataTitle: contentData?.title 
+  })
+
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -61,7 +70,6 @@ export default function EditContentPage() {
       visibility: formData.visibility,
       mediaFiles: mediaFileIds,
       ...(formData.visibility === "pay-to-view" && { price: formData.price }),
-      ...(formData.scheduledDate && { scheduledDate: formData.scheduledDate }),
     }
 
     updateMutation.mutate(
@@ -112,7 +120,8 @@ export default function EditContentPage() {
     )
   }
 
-  if (error || !contentData || !contentData?.post) {
+  // Only show error if we're not loading and there's an actual error
+  if (!loading && error && !contentData) {
     return (
       <div className="max-w-6xl mx-auto p-6">
         <div className="text-center py-12">
@@ -123,28 +132,41 @@ export default function EditContentPage() {
     )
   }
 
+
+
+  // Show error if no data after loading is complete
+  if (!contentData) {
+    return (
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="text-center py-12">
+          <h2 className="text-xl font-semibold text-red-600 mb-4">No content data found</h2>
+          <Button onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      </div>
+    )
+  }
+
   const initialValues = {
-    title: contentData?.post?.title,
-    content: contentData?.post?.body,
-    visibility: (contentData?.post?.visibility === "private"
+    title: contentData?.title || "",
+    content: contentData?.body || "",
+    visibility: (contentData?.visibility === "private"
       ? "subscribers"
-      : contentData?.post?.visibility === "premium"
+      : contentData?.visibility === "premium"
       ? "pay-to-view"
       : "public") as "public" | "subscribers" | "pay-to-view",
-    price: contentData?.post?.price || 4.99,
-    mediaUrls: contentData?.post?.mediaFiles
-      ? contentData?.post?.mediaFiles.map((file: any) => ({
-          id: file.id || file._id,
-          url: file.url || file.fileUrl,
-          type: file.type,
-          name: file.name,
-          thumbnailUrl: file.thumbnailUrl,
-          cover: file.cover || file.coverUrl,
-          duration: file.duration,
-          size: file.size,
+    price: contentData?.price || 4.99,
+    mediaUrls: contentData?.mediaFiles
+      ? contentData?.mediaFiles.map((fileId: string) => ({
+          id: fileId,
+          url: "",
+          type: "image",
+          name: "",
+          thumbnailUrl: "",
+          cover: "",
+          duration: 0,
+          size: 0,
         }))
       : [],
-    ...(typeof (contentData as any)?.post?.scheduledDate === "string" ? { scheduledDate: (contentData as any)?.post?.scheduledDate } : {}),
   }
   
   return (

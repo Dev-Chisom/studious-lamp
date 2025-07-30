@@ -60,11 +60,13 @@ export function useContentById(id: string) {
 
       const response = await contentApi.getPostById(id)
       if (response.success) {
-        return transformContent(response.data)
+        return transformContent(response.data.post)
       }
       throw new Error(response.message || "Failed to fetch content")
     },
     enabled: isAuthenticated && typeof window !== "undefined" && !!id,
+    retry: 1,
+    retryDelay: 1000,
     staleTime: 5 * 60 * 1000,
   })
 }
@@ -106,7 +108,7 @@ export function useCreateContent() {
 
       const response = await contentApi.createPost(createData)
       if (response.success) {
-        return transformContent(response.data)
+        return transformContent(response.data.post)
       }
       throw new Error(response.message || "Failed to create content")
     },
@@ -166,7 +168,7 @@ export function useUpdateContent() {
 
       const response = await contentApi.updatePost(id, updateData)
       if (response.success) {
-        return transformContent(response.data)
+        return transformContent(response.data.post)
       }
       throw new Error(response.message || "Failed to update content")
     },
@@ -228,7 +230,7 @@ export function usePublishContent() {
     mutationFn: async (id: string) => {
       const response = await contentApi.publishPost(id)
       if (response.success) {
-        return transformContent(response.data)
+        return transformContent(response.data.post)
       }
       throw new Error(response.message || "Failed to publish content")
     },
@@ -247,7 +249,7 @@ export function useScheduleContent() {
     mutationFn: async ({ id, scheduledDate }: { id: string; scheduledDate: string }) => {
       const response = await contentApi.schedulePost(id, scheduledDate)
       if (response.success) {
-        return transformContent(response.data)
+        return transformContent(response.data.post)
       }
       throw new Error(response.message || "Failed to schedule content")
     },
