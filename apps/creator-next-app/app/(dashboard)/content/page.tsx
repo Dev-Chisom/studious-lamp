@@ -17,21 +17,14 @@ import { useRouter } from 'next/navigation'
 interface Content {
   id: string
   title: string
-  description?: string
   body: string
   visibility: "public" | "private" | "premium"
   price?: number
-  tags?: string[]
-  status: "published" | "draft" | "scheduled"
+  status: string
   createdAt: string
   updatedAt: string
   scheduledDate?: string
-  mediaFiles?: Array<{
-    id: string
-    url: string
-    type: string
-    name: string
-  }>
+  mediaFiles?: string[]
 }
 
 export default function ContentManagementPage() {
@@ -65,8 +58,7 @@ export default function ContentManagementPage() {
       result = result.filter(
         (item) =>
           item.title?.toLowerCase().includes(searchTerm) ||
-          item.description?.toLowerCase().includes(searchTerm) ||
-          item.tags?.some((tag) => tag.toLowerCase().includes(searchTerm)),
+          item.body?.toLowerCase().includes(searchTerm),
       )
     }
 
@@ -309,7 +301,7 @@ export default function ContentManagementPage() {
                               {item.mediaFiles && item.mediaFiles.length > 0 ? (
                                 <img
                                   className="h-10 w-10 rounded-lg object-cover"
-                                  src={item.mediaFiles[0].thumbnailUrl || "/placeholder.svg"}
+                                  src="/placeholder.svg"
                                   alt={item.title}
                                 />
                               ) : (
@@ -322,9 +314,9 @@ export default function ContentManagementPage() {
                               <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate max-w-xs">
                                 {item.title}
                               </div>
-                              {item.description && (
+                              {item.body && (
                                 <div className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-xs">
-                                  {item.description}
+                                  {item.body}
                                 </div>
                               )}
                             </div>
