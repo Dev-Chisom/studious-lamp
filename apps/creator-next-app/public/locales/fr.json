@@ -675,13 +675,16 @@
     "active": "Actif",
     "cancelled": "Annulé",
     "noSubscribers": "Aucun abonné",
+    "blockTitle": "Bloquer l'abonné",
     "blockConfirmation": "Confirmez le blocage ?",
     "block": "Bloquer",
+    "blocking": "Blocage...",
     "cancel": "Annuler",
     "stats": {
       "totalSubscribers": "Total abonnés",
       "activeSubscribers": "Abonnés actifs",
       "monthlyRevenue": "Revenu mensuel",
+      "churnRate": "Taux de désabonnement",
       "totalRevenue": "Revenu total",
       "fromLastMonth": "depuis le mois dernier"
     },

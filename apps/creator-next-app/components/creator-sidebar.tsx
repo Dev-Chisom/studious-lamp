@@ -44,7 +44,7 @@ export default function CreatorSidebar({ isMobileOpen, onClose }: CreatorSidebar
     // Base navigation items that everyone sees
     const baseItems: NavigationItem[] = [
       { name: t("nav.home"), href: "/", icon: Home },
-      { name: t("nav.messages"), href: "/messages", icon: MessageCircle },
+      { name: t("nav.messages"), href: "/creator/messages", icon: MessageCircle },
       { name: t("nav.wallet"), href: "/wallet", icon: Wallet },
       { name: t("nav.subscriptions"), href: "/subscriptions", icon: CreditCard },
       { name: t("nav.content"), href: "/content", icon: ImageIcon },

@@ -681,13 +681,16 @@
 		"active": "Active",
 		"cancelled": "Cancelled",
 		"noSubscribers": "No subscribers yet.",
+		"blockTitle": "Block Subscriber",
 		"blockConfirmation": "Are you sure you want to block this subscriber? They will no longer be able to view your content or message you.",
 		"block": "Block",
+		"blocking": "Blocking...",
 		"cancel": "Cancel",
 		"stats": {
 			"totalSubscribers": "Total Subscribers",
 			"activeSubscribers": "Active Subscribers",
 			"monthlyRevenue": "Monthly Revenue",
+			"churnRate": "Churn Rate",
 			"totalRevenue": "Total Revenue",
 			"fromLastMonth": "from last month"
 		},

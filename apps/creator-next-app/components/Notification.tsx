@@ -58,7 +58,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
             <div className="p-4">
               <div className="flex items-start">
                 <div className="flex-shrink-0">
-                  <img src={notification.creator.avatar} className="h-10 w-10 rounded-full" alt={notification.creator.name} />
+                  <img src={notification.creator.avatar} className="h-10 w-10 rounded-full object-cover" alt={notification.creator.name} />
                 </div>
                 <div className="ml-3 w-0 flex-1">
                   <p className="text-sm font-medium text-gray-900">{notification.creator.name}</p>

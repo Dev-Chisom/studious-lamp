@@ -674,13 +674,16 @@
 		"active": "Activo",
 		"cancelled": "Cancelado",
 		"noSubscribers": "Aún no hay suscriptores.",
+		"blockTitle": "Bloquear Suscriptor",
 		"blockConfirmation": "¿Estás seguro de que quieres bloquear a este suscriptor? Ya no podrá ver tu contenido ni enviarte mensajes.",
 		"block": "Bloquear",
+		"blocking": "Bloqueando...",
 		"cancel": "Cancelar",
 		"stats": {
 			"totalSubscribers": "Total de suscriptores",
 			"activeSubscribers": "Suscriptores activos",
 			"monthlyRevenue": "Ingresos mensuales",
+			"churnRate": "Tasa de abandono",
 			"totalRevenue": "Ingresos totales",
 			"fromLastMonth": "del mes pasado"
 		},
