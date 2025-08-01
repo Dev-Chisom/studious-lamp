@@ -367,22 +367,12 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       syncWithCookies: () => {
-        console.log("🔄 ===== SYNC WITH COOKIES CALLED =====")
-        console.log("📍 SYNC CALLED FROM:", new Error().stack)
-
         const accessToken = getCookie("accessToken")
         const refreshToken = getCookie("refreshToken")
         const userProfile = getCookie("userProfile")
 
-        console.log("🔍 FOUND COOKIES:", {
-          hasAccessToken: !!accessToken,
-          hasRefreshToken: !!refreshToken,
-          hasUserProfile: !!userProfile,
-        })
-
         if (accessToken && refreshToken) {
           const tokenIsValid = isTokenValid(accessToken)
-          console.log("🔍 TOKEN VALIDITY CHECK:", tokenIsValid)
 
           if (tokenIsValid) {
             let user = null
@@ -390,19 +380,15 @@ export const useAuthStore = create<AuthStore>()(
             if (userProfile) {
               try {
                 user = JSON.parse(decodeURIComponent(userProfile))
-                console.log("📝 PARSED USER FROM COOKIE:", user)
-                console.log("📝 PARSED USER CREATOR STATUS:", user?.data?.creatorProfile?.status)
               } catch (error) {
-                console.error("❌ FAILED TO PARSE USER PROFILE FROM COOKIE:", error)
+                // Failed to parse user profile from cookie
               }
             }
 
             if (!user) {
               try {
                 user = getUserFromToken(accessToken)
-                console.log("📝 CREATED USER FROM TOKEN:", user)
               } catch (error) {
-                console.error("❌ FAILED TO CREATE USER FROM TOKEN - CALLING CLEARAUTH")
                 get().clearAuth()
                 return
               }
@@ -414,14 +400,10 @@ export const useAuthStore = create<AuthStore>()(
               user,
               isAuthenticated: true,
             })
-
-            console.log("✅ SYNCED AUTH STATE FROM COOKIES")
           } else {
-            console.log("❌ INVALID TOKEN - CALLING CLEARAUTH")
             get().clearAuth()
           }
         } else {
-          console.log("❌ NO VALID TOKENS IN COOKIES - CALLING CLEARAUTH")
           get().clearAuth()
         }
       },
@@ -431,21 +413,11 @@ export const useAuthStore = create<AuthStore>()(
         const tokenValid = state.accessToken ? isTokenValid(state.accessToken) : false
         const isAuth = state.isAuthenticated && !!state.accessToken && !!state.user && tokenValid
 
-        console.log("🔍 ISAUTHENTICATED CHECK:", {
-          isAuthenticated: state.isAuthenticated,
-          hasAccessToken: !!state.accessToken,
-          hasUser: !!state.user,
-          tokenValid,
-          result: isAuth,
-          creatorStatus: state.user?.data?.creatorProfile?.status,
-        })
-
         return isAuth
       },
 
       getSubscriptions: () => {
         // Mock subscriptions for now - replace with actual API call later
-        console.log("📋 Getting user subscriptions (mock data)")
         return ["creator1", "creator2", "fil-1", "fil-2"]
       },
 
@@ -456,7 +428,6 @@ export const useAuthStore = create<AuthStore>()(
     {
       name: "auth-storage",
       onRehydrateStorage: () => (state) => {
-        console.log("💧 ===== HYDRATING AUTH STORE =====")
         if (state) {
           state.setHydrated()
         }
