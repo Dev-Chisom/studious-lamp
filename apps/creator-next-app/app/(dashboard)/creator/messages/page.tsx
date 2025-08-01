@@ -310,7 +310,7 @@ export default function CreatorMessagesPage() {
     )
   })
 
-  const canSendMessage = newMessage.trim() || mediaPreview.length > 0
+  const canSendMessage = !!newMessage.trim() || mediaPreview.length > 0
 
   const formatTime = (date: Date): string => {
     const now = new Date()
