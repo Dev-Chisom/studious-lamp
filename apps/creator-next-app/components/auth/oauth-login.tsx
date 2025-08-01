@@ -22,7 +22,7 @@ export function OAuthLogin({ onError, redirectTo = "/" }: OAuthButtonsProps) {
       }
 
       // Redirect to external OAuth endpoint
-      const oauthUrl = `https://x-zunk.onrender.com/auth/${provider}`
+      const oauthUrl = `https://x-z72i.onrender.com/auth/${provider}`
       console.log(`🔗 Redirecting to ${provider} OAuth:`, oauthUrl)
 
       window.location.href = oauthUrl

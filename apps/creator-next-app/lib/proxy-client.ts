@@ -1,4 +1,4 @@
-const EXTERNAL_API_URL = "https://x-zunk.onrender.com"
+const EXTERNAL_API_URL = "https://x-z72i.onrender.com"
 
 interface ProxyRequestOptions {
   method: string

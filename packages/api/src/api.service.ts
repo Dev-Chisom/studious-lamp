@@ -3,7 +3,7 @@ import axios from 'axios';
 import { createAuthApi } from './auth';
 
 // const isDev = process.env.NODE_ENV === 'development'
-let BASE_URL = 'https://x-zunk.onrender.com';
+let BASE_URL = 'https://x-z72i.onrender.com';
 
 // let BASE_URL = 'https://1fe3-102-88-104-247.ngrok-free.app/';
 
