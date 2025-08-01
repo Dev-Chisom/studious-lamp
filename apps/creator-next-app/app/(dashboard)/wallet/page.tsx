@@ -78,32 +78,32 @@ export default function WalletPage() {
   }
 
   const initializePaystack = async () => {
-    if (!user?.email) {
+    if (!user?.data?.email) {
       toast.error(t("wallet.userEmailNotFound"))
       return
     }
 
     paystackMutation.mutate({
       amount: fundingAmount,
-      email: user.email,
+      email: user.data.email,
       callback_url: `${window.location.origin}/wallet/callback?provider=paystack`,
     })
   }
 
   const initializeBani = async () => {
-    if (!user?.email) {
+    if (!user?.data?.email) {
       toast.error(t("wallet.userInfoNotFound"))
       return
     }
 
-    // Extract name parts from user.name or use defaults
-    const nameParts = user.name?.split(" ") || ["User", "Name"]
+    // Extract name parts from user.data.name or use defaults
+    const nameParts = user.data.name?.split(" ") || ["User", "Name"]
     const firstName = nameParts[0] || "User"
     const lastName = nameParts.slice(1).join(" ") || "Name"
 
     baniMutation.mutate({
       amount: fundingAmount,
-      email: user.email,
+      email: user.data.email,
       firstName,
       lastName,
       phoneNumber: "08012345678",

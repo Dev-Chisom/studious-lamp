@@ -63,9 +63,7 @@ export default function CreatorSettingsPage() {
   const [loadingDelete, setLoadingDelete] = useState(false)
 
   // Profile image
-  const [profileImage, setProfileImage] = useState<string>(
-    user?.data?.creatorProfile?.avatarUrl || "/placeholder.svg?height=96&width=96&text=Avatar",
-  )
+  const [profileImage, setProfileImage] = useState<string>("/placeholder.svg?height=96&width=96&text=Avatar")
 
   // Form states
   const [profile, setProfile] = useState<ProfileForm>({

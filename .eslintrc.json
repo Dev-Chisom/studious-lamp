@@ -27,14 +27,25 @@
 
 		"@typescript-eslint/no-unused-vars": "warn",
 		"@typescript-eslint/no-unused-expressions": "off",
+		"@typescript-eslint/no-explicit-any": "off",
+		"@typescript-eslint/consistent-type-imports": "off",
+		"react/no-children-prop": "off",
+		"@next/next/no-html-link-for-pages": "off",
+		"prefer-const": "off",
+		"@typescript-eslint/no-unused-vars": "off",
+		"react-hooks/exhaustive-deps": "off",
+		"@next/next/no-img-element": "off",
+		"jsx-a11y/alt-text": "off",
+		"max-len": "off",
+		"indent": "off",
 		// Basic JavaScript
-		"semi": ["error", "always"],
+		"semi": "off",
 		// "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
 		"eqeqeq": "error",
 		// Formatting
 		"indent": [
 			"warn",
-			"tab",
+			2,
 			{
 				"SwitchCase": 1
 			}

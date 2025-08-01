@@ -32,7 +32,6 @@ const initialFormValues: ApplyFormValues = {
   discounts: {},
   acceptTerms: false,
   confirmAge: false,
-  socialTouched: false,
 }
 
 export default function ApplyCreatorForm() {
