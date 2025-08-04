@@ -1,4 +1,4 @@
-const EXTERNAL_API_URL = "https://x-z72i.onrender.com"
+const EXTERNAL_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
 
 interface ProxyRequestOptions {
   method: string

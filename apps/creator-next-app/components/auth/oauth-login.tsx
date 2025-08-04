@@ -21,8 +21,9 @@ export function OAuthLogin({ onError, redirectTo = "/" }: OAuthButtonsProps) {
         sessionStorage.setItem("auth_redirect", redirectTo)
       }
 
-      // Redirect to external OAuth endpoint
-      const oauthUrl = `https://x-z72i.onrender.com/auth/${provider}`
+      // Use environment variable for API URL or fallback to localhost for development
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+      const oauthUrl = `${apiBaseUrl}/auth/${provider}`
       console.log(`🔗 Redirecting to ${provider} OAuth:`, oauthUrl)
 
       window.location.href = oauthUrl

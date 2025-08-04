@@ -214,7 +214,7 @@ export default function CreatorEarningsPage() {
 
   const handleDownloadCsv = () => {
     // Implement CSV download functionality
-    console.log("Downloading CSV...")
+
   }
 
   // Show loading skeleton while client-side hydration completes

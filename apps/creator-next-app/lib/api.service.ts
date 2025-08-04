@@ -3,7 +3,7 @@ import axios from "axios"
 import { useAuthStore } from "./auth/auth-store"
 import { ApiError } from "./api-types"
 
-let BASE_URL = "https://x-z72i.onrender.com"
+let BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
 
 export function setApiBaseUrl(url: string) {
   BASE_URL = url
