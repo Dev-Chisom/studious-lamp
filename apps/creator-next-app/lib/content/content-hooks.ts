@@ -29,6 +29,10 @@ const transformContent = (apiContent: Content): Content & { id: string } => ({
   id: apiContent._id,
   status: apiContent.status as "published" | "draft" | "scheduled",
   visibility: apiContent.visibility,
+  // Transform mediaFiles to just IDs if they're objects
+  mediaFiles: Array.isArray(apiContent.mediaFiles) 
+    ? apiContent.mediaFiles.map((file: any) => typeof file === 'string' ? file : file._id)
+    : apiContent.mediaFiles || [],
 })
 
 // Get all content
@@ -39,13 +43,24 @@ export function useContent(params?: ContentListParams) {
     queryKey: contentKeys.list(params || {}),
     queryFn: async (): Promise<(Content & { id: string })[]> => {
       const response = await contentApi.getAllPosts(params)
-      if (response.success) {
+      if (response.success && response.data?.posts) {
         return response.data.posts.map(transformContent)
       }
       throw new Error(response.message || "Failed to fetch content")
     },
     enabled: isAuthenticated && typeof window !== "undefined",
     staleTime: 5 * 60 * 1000,
+    // Better error handling
+    retry: (failureCount, error: any) => {
+      // Don't retry on 401/403 (auth errors)
+      if (error?.status === 401 || error?.status === 403) {
+        return false
+      }
+      // Retry up to 2 times for other errors
+      return failureCount < 2
+    },
+    // Don't throw errors globally
+    throwOnError: false,
   })
 }
 
@@ -59,8 +74,12 @@ export function useContentById(id: string) {
       if (!id) return null
 
       const response = await contentApi.getPostById(id)
-      if (response.success) {
+      if (response.success && response.data?.post) {
         return transformContent(response.data.post)
+      }
+      // If it's a 404, return null instead of throwing
+      if (response.message?.includes("not found") || response.message?.includes("404")) {
+        return null
       }
       throw new Error(response.message || "Failed to fetch content")
     },
@@ -68,6 +87,8 @@ export function useContentById(id: string) {
     retry: 1,
     retryDelay: 1000,
     staleTime: 5 * 60 * 1000,
+    // Don't throw errors globally
+    throwOnError: false,
   })
 }
 
@@ -107,7 +128,7 @@ export function useCreateContent() {
       }
 
       const response = await contentApi.createPost(createData)
-      if (response.success) {
+      if (response.success && response.data?.post) {
         return transformContent(response.data.post)
       }
       throw new Error(response.message || "Failed to create content")
@@ -167,7 +188,7 @@ export function useUpdateContent() {
       }
 
       const response = await contentApi.updatePost(id, updateData)
-      if (response.success) {
+      if (response.success && response.data?.post) {
         return transformContent(response.data.post)
       }
       throw new Error(response.message || "Failed to update content")
@@ -229,7 +250,7 @@ export function usePublishContent() {
   return useMutation({
     mutationFn: async (id: string) => {
       const response = await contentApi.publishPost(id)
-      if (response.success) {
+      if (response.success && response.data?.post) {
         return transformContent(response.data.post)
       }
       throw new Error(response.message || "Failed to publish content")
@@ -248,7 +269,7 @@ export function useScheduleContent() {
   return useMutation({
     mutationFn: async ({ id, scheduledDate }: { id: string; scheduledDate: string }) => {
       const response = await contentApi.schedulePost(id, scheduledDate)
-      if (response.success) {
+      if (response.success && response.data?.post) {
         return transformContent(response.data.post)
       }
       throw new Error(response.message || "Failed to schedule content")

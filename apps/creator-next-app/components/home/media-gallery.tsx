@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Upload, Folder } from 'lucide-react'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
@@ -11,7 +11,7 @@ import MediaLibraryTab from './media-library-tab'
 import DeviceUploadTab from './device-upload-tab'
 import MediaGalleryFooter from './media-gallery-footer'
 import MediaPreviewModal from './media-preview-modal'
-import { creatorApi } from '@/lib/creator/creator-api'
+import { useMediaFiles, useUploadMediaFiles } from '@/lib/content/media-hooks'
 
 interface MediaItem {
 	id: string
@@ -36,6 +36,10 @@ const MAX_FILES = 10
 
 export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComplete }: MediaGalleryProps) {
 	const { t } = useTranslation()
+	
+	// Add unique identifier for debugging
+	const instanceId = useMemo(() => Math.random().toString(36).substring(2, 9), [])
+	console.log(`🎨 MediaGallery instance ${instanceId} rendered, isOpen:`, isOpen)
 
 	// Tab configuration
 	const tabs = [
@@ -46,8 +50,6 @@ export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComple
 	// State management
 	const [activeTab, setActiveTab] = useState<'library' | 'device'>('device')
 	const [activeMediaTab, setActiveMediaTab] = useState<'images' | 'videos' | 'all'>('images')
-	const [loading, setLoading] = useState(false)
-	const [mediaFiles, setMediaFiles] = useState<MediaItem[]>([])
 	const [selectedIds, setSelectedIds] = useState<string[]>([])
 	const [selectedFiles, setSelectedFiles] = useState<MediaItem[]>([])
 	const [searchQuery, setSearchQuery] = useState('')
@@ -62,48 +64,39 @@ export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComple
 	// Pagination state
 	const [currentPage, setCurrentPage] = useState(1)
 	const [perPage, setPerPage] = useState(12)
-	const [totalItems, setTotalItems] = useState(0)
-	const [totalPages, setTotalPages] = useState(1)
 
-	// Fetch media files from API
-	const fetchMediaFiles = async () => {
-		setLoading(true)
-		try {
-			const params: any = {
-				page: currentPage.toString(),
-				limit: perPage.toString(),
-				search: searchQuery,
-			}
-
-			if (activeMediaTab === 'images') {
-				params.type = 'image'
-			} else if (activeMediaTab === 'videos') {
-				params.type = 'video'
-			}
-
-			const response = await creatorApi.getMediaFiles(params)
-
-			const mediaFiles = (response.data.mediaFiles || []).map((file: any) => ({
-				id: file._id,
-				url: file.url,
-				thumbnailUrl: file.type === 'video' ? file.coverUrl : file.thumbnailUrl || file.url,
-				name: file.url.split('/').pop() || 'media',
-				type: file.type,
-				size: file.size,
-				duration: file.duration,
-			}))
-
-			setMediaFiles(mediaFiles)
-			setTotalItems(response.data.pagination?.total || 0)
-			setTotalPages(response.data.pagination?.pages || 1)
-		} catch (error) {
-			console.log(error, 'error')
-			toast.error(t('notifications.contentLoadFailed') || 'Failed to load media files')
-			setMediaFiles([])
-		} finally {
-			setLoading(false)
+	// React Query hooks for media files
+	const mediaQueryParams = useMemo(() => {
+		const params: any = {
+			page: currentPage,
+			limit: perPage,
+			search: searchQuery,
 		}
-	}
+
+		if (activeMediaTab === 'images') {
+			params.type = 'image'
+		} else if (activeMediaTab === 'videos') {
+			params.type = 'video'
+		}
+
+		return params
+	}, [currentPage, perPage, activeMediaTab, searchQuery])
+
+	const { data: mediaData, isLoading: loading, error } = useMediaFiles(mediaQueryParams)
+	const uploadMediaMutation = useUploadMediaFiles()
+
+	// Extract data from query
+	const mediaFiles = mediaData?.mediaFiles || []
+	const totalItems = mediaData?.pagination?.total || 0
+	const totalPages = mediaData?.pagination?.pages || 1
+
+	// Handle query error
+	useEffect(() => {
+		if (error && isOpen) {
+			console.error('Media files query error:', error)
+			toast.error(t('notifications.contentLoadFailed') || 'Failed to load media files')
+		}
+	}, [error, isOpen, t])
 
 	// Process file uploads
 	const processUploads = async (mediaData: any[]) => {
@@ -126,11 +119,11 @@ export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComple
 			return payload
 		})
 
-		const response = await creatorApi.uploadMediaFile({ files: filesPayload })
+		const response = await uploadMediaMutation.mutateAsync({ files: filesPayload })
 		const uploadResults = []
 
-		for (let i = 0; i < response.data.length; i++) {
-			const { uploadUrl, fileKey, mediaFileId, coverUploadUrl } = response.data[i]
+		for (let i = 0; i < response.length; i++) {
+			const { uploadUrl, fileKey, mediaFileId, coverUploadUrl } = response[i]
 			const fileObj = mediaData[i].file
 
 			// Upload main file
@@ -154,7 +147,7 @@ export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComple
 			}
 
 			uploadResults.push({
-				...response.data[i],
+				...response[i],
 				fileKey,
 				mediaFileId,
 			})
@@ -177,30 +170,21 @@ export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComple
 		return new File([u8arr], filename, { type: mime })
 	}
 
-	// Effects
+	// Effect to handle modal open/close state reset
 	useEffect(() => {
+		console.log(`🎯 [${instanceId}] Modal effect triggered:`, { isOpen })
+		
 		if (isOpen) {
-			fetchMediaFiles()
-		}
-	}, [isOpen])
-
-	useEffect(() => {
-		if (isOpen) {
+			// Reset state when modal opens
 			setSelectedIds([])
 			setSelectedFiles([])
 			setPreviewFiles([])
 			setShowPreviewModal(false)
-			setLoading(false)
 			setIsUploading(false)
 			setUploadProgress({ completed: 0, total: 0 })
 			setSearchQuery('')
-			fetchMediaFiles()
 		}
 	}, [isOpen])
-
-	useEffect(() => {
-		fetchMediaFiles()
-	}, [currentPage, perPage, activeMediaTab, searchQuery])
 
 	// Computed values
 	const canProceed = useMemo(() => {

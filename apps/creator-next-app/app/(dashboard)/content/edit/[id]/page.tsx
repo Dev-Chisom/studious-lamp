@@ -113,8 +113,8 @@ export default function EditContentPage() {
     )
   }
 
-  // Only show error if we're not loading and there's an actual error
-  if (!loading && error && !contentData) {
+  // Show error only if we're not loading and there's an actual error
+  if (!loading && error) {
     return (
       <div className="max-w-6xl mx-auto p-6">
         <div className="text-center py-12">
@@ -125,15 +125,13 @@ export default function EditContentPage() {
     )
   }
 
-
-
-  // Show error if no data after loading is complete
-  if (!contentData) {
+  // Show error if no data after loading is complete and no error (meaning content doesn't exist)
+  if (!loading && !error && !contentData) {
     return (
       <div className="max-w-6xl mx-auto p-6">
         <div className="text-center py-12">
-          <h2 className="text-xl font-semibold text-red-600 mb-4">No content data found</h2>
-          <Button onClick={() => window.location.reload()}>Retry</Button>
+          <h2 className="text-xl font-semibold text-red-600 mb-4">Content not found</h2>
+          <Button onClick={() => router.push("/content")}>Back to Content</Button>
         </div>
       </div>
     )

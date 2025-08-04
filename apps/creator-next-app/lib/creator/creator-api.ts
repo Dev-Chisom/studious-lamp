@@ -41,6 +41,19 @@ export const creatorApi = {
   getCreatorMedia: (creatorId: string, params?: { page?: number; limit?: number; type?: string }) =>
     api.get<MediaFilesResponse>(`/creators/${creatorId}/media`, { params }),
 
+  // Media files (for MediaGallery component)
+  getMediaFiles: (params?: {
+    page?: number;
+    limit?: number;
+    type?: 'image' | 'video';
+    status?: 'active' | 'inactive';
+    uploadStatus?: 'pending' | 'uploaded' | 'failed';
+    search?: string;
+  }) => api.get<MediaFilesResponse>("/media-files", { params }),
+
+  uploadMediaFile: (payload: { files: Array<{ uuid: string; fileName: string; fileType: string; size: number; coverName?: string }> }) =>
+    api.post<Array<{ uploadUrl: string; fileKey: string; fileUrl: string; mediaFileId: string; status: string; coverUploadUrl?: string }>>("/media-files", payload),
+
   uploadMedia: (data: MediaUploadRequest) => api.post<MediaUploadResponse>("/media-files", data),
 
   updateMedia: (id: string, data: Partial<MediaFile>) => api.put<MediaFile>(`/media/${id}`, data),

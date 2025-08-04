@@ -198,7 +198,12 @@ export default function ContentManagementPage() {
     return (
       <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
         <div className="text-center py-12">
-          <h2 className="text-xl font-semibold text-red-600 mb-4">Failed to load content</h2>
+          <h2 className="text-xl font-semibold text-red-600 mb-4">
+            {error.message || "Failed to load content"}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            Please try again or contact support if the problem persists.
+          </p>
           <Button onClick={() => window.location.reload()}>Retry</Button>
         </div>
       </div>

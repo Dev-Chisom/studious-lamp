@@ -19,9 +19,13 @@ function makeQueryClient() {
           }
           return failureCount < 3
         },
+        // Don't throw errors globally - let components handle them
+        throwOnError: false,
       },
       mutations: {
         retry: 1,
+        // Don't throw errors globally - let components handle them
+        throwOnError: false,
       },
     },
   })
