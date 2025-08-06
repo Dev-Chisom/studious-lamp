@@ -25,7 +25,7 @@ export default function MediaTabs({ activeTab, tabs, onUpdateActiveTab }: MediaT
             key={tab.key}
             type="button"
             className={cn(
-              "flex-1 flex items-center justify-center space-x-2 py-4 px-6 font-medium transition-all duration-200",
+              "flex-1 flex items-center justify-center space-x-2 py-4 px-6 font-medium transition-all duration-200 cursor-pointer",
               activeTab === tab.key
                 ? "bg-white dark:bg-gray-900 text-primary-400 border-b-2 border-primary-400 shadow-sm"
                 : "text-gray-600 dark:text-gray-400 hover:text-primary-600",

@@ -275,7 +275,8 @@ export default function MediaPreviewModal({
     onSendMessage?.(message)
   }
 
-  const triggerAddMedia = () => {
+  const triggerAddMedia = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent event from bubbling up
     addMediaInputRef.current?.click()
   }
 
@@ -296,7 +297,9 @@ export default function MediaPreviewModal({
     }
   }
 
-  const handleUpload = () => {
+  const handleUpload = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent event from bubbling up
+    console.log('Upload button clicked!')
     if (mediaItems.length === 0) return
 
     const mediaData = mediaItems.map((media, index) => {
@@ -326,7 +329,8 @@ export default function MediaPreviewModal({
     onNext?.(mediaData)
   }
 
-  const handleClose = () => {
+  const handleClose = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
     // Clean up blob URLs
     mediaItems.forEach((item) => {
       if (item.url?.startsWith("blob:")) {
@@ -337,15 +341,30 @@ export default function MediaPreviewModal({
     onClose()
   }
 
-  const handleBackdropClick = () => {
-    handleClose()
+  // Only close on backdrop click, not on any click within the modal content
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    // Only close if clicking the backdrop itself, not any child element
+    if (e.target === e.currentTarget) {
+      handleClose()
+    }
+  }
+
+  const handleContentClick = (e: React.MouseEvent) => {
+    // Stop propagation to prevent closing when clicking modal content
+    e.stopPropagation()
   }
 
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-[999] bg-black/90 backdrop-blur-sm h-full" onClick={handleBackdropClick}>
-      <div className="relative w-full h-full flex flex-col md:flex-row">
+    <div 
+      className="fixed inset-0 z-[999] bg-black/90 backdrop-blur-sm h-full"
+      onClick={handleBackdropClick} // Only trigger on backdrop clicks
+    >
+      <div 
+        className="relative w-full h-full flex flex-col md:flex-row"
+        onClick={handleContentClick} // Stop propagation for content clicks
+      >
         {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between p-4 bg-black/20 backdrop-blur-sm">
           {showEdit && mediaItems.length < maxFiles ? (
@@ -464,7 +483,10 @@ export default function MediaPreviewModal({
                   className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full transition-all duration-200 ${
                     index === internalCurrentIndex ? "bg-white scale-125" : "bg-white/40 hover:bg-white/60"
                   }`}
-                  onClick={() => goToSlide(index)}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    goToSlide(index)
+                  }}
                 />
               ))}
             </div>
@@ -474,7 +496,7 @@ export default function MediaPreviewModal({
           {showNextButton && (
             <Button
               disabled={mediaItems.length === 0 || isUploading}
-              className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-medium py-2.5 px-6 md:py-3 md:px-8 rounded-full transition-all duration-200 hover:scale-105 shadow-lg text-sm md:text-base"
+              className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-medium py-2.5 px-6 md:py-3 md:px-8 rounded-full transition-all duration-200 hover:scale-105 shadow-lg text-sm md:text-base relative z-50"
               onClick={handleUpload}
             >
               {isUploading ? (

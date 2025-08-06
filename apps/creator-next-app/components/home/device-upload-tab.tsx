@@ -126,7 +126,7 @@ export default function DeviceUploadTab({
               </h4>
               <button
                 type="button"
-                className="text-sm text-gray-500 hover:text-red-500 transition-colors"
+                className="text-sm text-gray-500 hover:text-red-500 transition-colors cursor-pointer"
                 onClick={clearAllFiles}
               >
                 Clear All

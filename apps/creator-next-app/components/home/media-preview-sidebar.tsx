@@ -95,6 +95,17 @@ export default function MediaPreviewSidebar({
     }
   }
 
+  const handleThumbnailClick = (e: React.MouseEvent, index: number) => {
+    e.stopPropagation() // Prevent event from bubbling up
+    console.log('Cover thumbnail clicked:', index)
+    onSelectCover(index)
+  }
+
+  const handleClearCover = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent event from bubbling up
+    onClearCover()
+  }
+
   return (
     <div className="w-100 md:w-80 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-l border-white/20 flex flex-col h-full">
       {/* Header */}
@@ -149,12 +160,13 @@ export default function MediaPreviewSidebar({
                   {videoThumbnails.map((thumb, i) => (
                     <button
                       key={i}
-                      className={`relative aspect-video rounded border-2 overflow-hidden transition-all duration-200 hover:scale-105 ${
+                      type="button"
+                      className={`relative aspect-video rounded border-2 overflow-hidden transition-all duration-200 hover:scale-105 cursor-pointer ${
                         i === selectedCoverIndex && !customCover
                           ? "border-primary-500 ring-1 ring-primary-500/20"
                           : "border-gray-200 dark:border-gray-600 hover:border-primary-300"
                       }`}
-                      onClick={() => onSelectCover(i)}
+                      onClick={(e) => handleThumbnailClick(e, i)}
                     >
                       <img
                         src={thumb || "/placeholder.svg"}
@@ -171,9 +183,10 @@ export default function MediaPreviewSidebar({
 
                   {/* Custom Cover Display */}
                   {customCover && (
-                    <div
+                    <button
+                      type="button"
                       className="relative aspect-video rounded border-2 border-primary-500 ring-1 ring-primary-500/20 overflow-hidden cursor-pointer"
-                      onClick={onClearCover}
+                      onClick={handleClearCover}
                     >
                       <img
                         src={customCover || "/placeholder.svg"}
@@ -186,7 +199,7 @@ export default function MediaPreviewSidebar({
                       <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                         <X className="w-4 h-4 text-white" />
                       </div>
-                    </div>
+                    </button>
                   )}
                 </div>
               ) : (
@@ -203,8 +216,8 @@ export default function MediaPreviewSidebar({
                 {selectedCoverIndex !== null || customCover ? (
                   <button
                     type="button"
-                    className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
-                    onClick={onClearCover}
+                    className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors cursor-pointer"
+                    onClick={handleClearCover}
                   >
                     Clear cover
                   </button>
@@ -214,7 +227,12 @@ export default function MediaPreviewSidebar({
 
                 <label className="text-sm text-primary-500 hover:text-primary-600 cursor-pointer transition-colors">
                   Upload custom
-                  <input type="file" accept="image/*" className="hidden" onChange={handleCustomCoverChange} />
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={handleCustomCoverChange}
+                  />
                 </label>
               </div>
             </div>

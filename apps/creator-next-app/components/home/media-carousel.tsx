@@ -2,9 +2,10 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ApiVideoPlayer } from "@/components/ui/api-video-player"
 
 interface MediaItem {
   url: string
@@ -34,6 +35,12 @@ export default function MediaCarousel({
   onVideoLoaded,
 }: MediaCarouselProps) {
   const [videoRef, setVideoRef] = useState<HTMLVideoElement | null>(null)
+  const [isClient, setIsClient] = useState(false)
+
+  // Prevent hydration issues
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const currentMedia = mediaItems[currentIndex]
 
@@ -106,25 +113,49 @@ export default function MediaCarousel({
           />
         ) : (
           <div className="relative">
-            <video
-              ref={setVideoRef}
-              src={currentMedia.url}
-              className="max-w-full max-h-full object-contain"
-              controls
-              onLoadedData={handleVideoLoaded}
-              onPlay={onPlay}
-              onPause={onPause}
-            />
+            {/* Check if this is an api.video video */}
+            {isClient && (currentMedia?.url?.includes('api.video') || currentMedia?.id?.startsWith('vi')) ? (
+              <ApiVideoPlayer
+                videoId={currentMedia.id || currentMedia.url.split('/').pop() || ''}
+                autoplay={false}
+                muted={false}
+                controls={true}
+                loop={false}
+                preload="metadata"
+                width="100%"
+                height="100%"
+                className="max-w-full max-h-full object-contain"
+                onLoad={() => {
+                  if (onVideoLoaded) {
+                    onVideoLoaded({} as Event, currentIndex)
+                  }
+                }}
+                onPlay={onPlay}
+                onPause={onPause}
+              />
+            ) : (
+              <video
+                ref={setVideoRef}
+                src={currentMedia.url}
+                className="max-w-full max-h-full object-contain"
+                controls
+                onLoadedData={handleVideoLoaded}
+                onPlay={onPlay}
+                onPause={onPause}
+              />
+            )}
 
-            {/* Custom Play/Pause Button Overlay */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white rounded-full w-16 h-16"
-              onClick={togglePlayPause}
-            >
-              {isPlaying ? <Pause className="w-8 h-8" /> : <Play className="w-8 h-8" />}
-            </Button>
+            {/* Custom Play/Pause Button Overlay for regular videos */}
+            {!currentMedia?.url?.includes('api.video') && !currentMedia?.id?.startsWith('vi') && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black/20 hover:bg-black/40 text-white rounded-full w-16 h-16"
+                onClick={togglePlayPause}
+              >
+                {isPlaying ? <Pause className="w-8 h-8" /> : <Play className="w-8 h-8" />}
+              </Button>
+            )}
           </div>
         )}
       </div>

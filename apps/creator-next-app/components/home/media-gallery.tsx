@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Upload, Folder } from 'lucide-react'
-import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { CustomModal } from '@/components/ui/custom-modal'
 import { toast } from 'sonner'
 import MediaGalleryHeader from './media-gallery-header'
 import MediaTabs from './media-tabs'
@@ -11,7 +11,7 @@ import MediaLibraryTab from './media-library-tab'
 import DeviceUploadTab from './device-upload-tab'
 import MediaGalleryFooter from './media-gallery-footer'
 import MediaPreviewModal from './media-preview-modal'
-import { useMediaFiles, useUploadMediaFiles } from '@/lib/content/media-hooks'
+import { useMediaFiles, useUploadMediaFiles, useUploadVideoWithApiVideo } from '@/lib/content/media-hooks'
 
 interface MediaItem {
 	id: string
@@ -36,10 +36,6 @@ const MAX_FILES = 10
 
 export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComplete }: MediaGalleryProps) {
 	const { t } = useTranslation()
-	
-	// Add unique identifier for debugging
-	const instanceId = useMemo(() => Math.random().toString(36).substring(2, 9), [])
-	console.log(`🎨 MediaGallery instance ${instanceId} rendered, isOpen:`, isOpen)
 
 	// Tab configuration
 	const tabs = [
@@ -84,6 +80,14 @@ export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComple
 
 	const { data: mediaData, isLoading: loading, error } = useMediaFiles(mediaQueryParams)
 	const uploadMediaMutation = useUploadMediaFiles()
+	const {
+		uploadVideoWithApiVideo,
+		isUploading: isApiVideoUploading,
+		error: apiVideoError,
+	} = useUploadVideoWithApiVideo()
+
+	// Combined upload state
+	const isAnyUploading = isUploading || isApiVideoUploading
 
 	// Extract data from query
 	const mediaFiles = mediaData?.mediaFiles || []
@@ -98,59 +102,76 @@ export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComple
 		}
 	}, [error, isOpen, t])
 
-	// Process file uploads
+	// Process file uploads with api.video support
 	const processUploads = async (mediaData: any[]) => {
-		const filesPayload = mediaData.map((file) => {
-			const payload: any = {
-				uuid:
-					file.uuid ||
-					(typeof crypto !== 'undefined' && crypto.randomUUID
-						? crypto.randomUUID()
-						: Math.random().toString(36).substring(2, 15)),
-				fileName: file.name,
-				fileType: file.type === 'video' ? 'video' : 'image',
-				size: file.size,
-			}
-
-			if (file.type === 'video' && file.coverFile) {
-				payload.coverName = file.coverFile.name
-			}
-
-			return payload
-		})
-
-		const response = await uploadMediaMutation.mutateAsync({ files: filesPayload })
 		const uploadResults = []
 
-		for (let i = 0; i < response.length; i++) {
-			const { uploadUrl, fileKey, mediaFileId, coverUploadUrl } = response[i]
+		for (let i = 0; i < mediaData.length; i++) {
 			const fileObj = mediaData[i].file
 
-			// Upload main file
-			await fetch(uploadUrl, {
-				method: 'PUT',
-				body: fileObj,
-				headers: {
-					'Content-Type': fileObj.type,
-				},
-			})
+			try {
+				if (fileObj.type.startsWith('video/')) {
+					// Upload video to api.video
+					const apiVideoResult = await uploadVideoWithApiVideo({
+						file: fileObj,
+						title: fileObj.name,
+						description: `Uploaded via MediaGallery`,
+						tags: ['media-gallery'],
+						metadata: {
+							uploadedVia: 'media-gallery',
+							originalSize: fileObj.size,
+						},
+						onProgress: (progress) => {
+							console.log(`Upload progress for ${fileObj.name}: ${progress}%`)
+						},
+					})
 
-			// Upload cover if exists
-			if (coverUploadUrl && mediaData[i].coverFile) {
-				await fetch(coverUploadUrl, {
-					method: 'PUT',
-					body: mediaData[i].coverFile,
-					headers: {
-						'Content-Type': mediaData[i].coverFile.type,
-					},
-				})
+					uploadResults.push({
+						id: apiVideoResult.videoId,
+						url: apiVideoResult.url,
+						thumbnailUrl: apiVideoResult.thumbnailUrl,
+						posterUrl: apiVideoResult.posterUrl,
+						type: 'video',
+						name: fileObj.name,
+						size: fileObj.size,
+						mediaFileId: apiVideoResult.videoId,
+					})
+				} else {
+					// Upload image using existing method
+					const filesPayload = [
+						{
+							uuid:
+								typeof crypto !== 'undefined' && crypto.randomUUID
+									? crypto.randomUUID()
+									: Math.random().toString(36).substring(2, 15),
+							fileName: fileObj.name,
+							fileType: 'image',
+							size: fileObj.size,
+						},
+					]
+
+					const response = await uploadMediaMutation.mutateAsync({ files: filesPayload })
+					const { uploadUrl, fileKey, mediaFileId } = response[0]
+
+					// Upload file
+					await fetch(uploadUrl, {
+						method: 'PUT',
+						body: fileObj,
+						headers: {
+							'Content-Type': fileObj.type,
+						},
+					})
+
+					uploadResults.push({
+						...response[0],
+						fileKey,
+						mediaFileId,
+					})
+				}
+			} catch (error) {
+				console.error(`Failed to upload ${fileObj.name}:`, error)
+				// Continue with other files even if one fails
 			}
-
-			uploadResults.push({
-				...response[i],
-				fileKey,
-				mediaFileId,
-			})
 		}
 
 		return uploadResults
@@ -172,8 +193,6 @@ export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComple
 
 	// Effect to handle modal open/close state reset
 	useEffect(() => {
-		console.log(`🎯 [${instanceId}] Modal effect triggered:`, { isOpen })
-		
 		if (isOpen) {
 			// Reset state when modal opens
 			setSelectedIds([])
@@ -385,7 +404,9 @@ export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComple
 		setCurrentPage(1)
 	}
 
-	const handleNext = () => {
+	const handleNext = (e?: React.MouseEvent) => {
+		e?.stopPropagation() // Prevent event from bubbling up
+
 		if (!canProceed) return
 
 		if (activeTab === 'library') {
@@ -422,56 +443,63 @@ export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComple
 		onClose()
 	}
 
+
+
 	return (
 		<>
-			<Dialog open={isOpen} onOpenChange={handleClose}>
-				<DialogContent className="max-w-6xl h-[80vh] p-0 overflow-hidden">
-					<MediaGalleryHeader title={t('mediaLibrary.title') || 'Media Library'} />
+			<CustomModal
+				isOpen={isOpen}
+				onClose={handleClose}
+				title={t('mediaLibrary.title') || 'Media Library'}
+				description="Upload and manage your content"
+				className="max-w-6xl h-[80vh] p-0"
+				closeOnOutsideClick={false}
+			>
+				<MediaGalleryHeader title={t('mediaLibrary.title') || 'Media Library'} />
 
-					<div className="overflow-hidden">
-						{/* Main Content */}
-						<div className="flex flex-col h-[600px]">
-							{/* Tab Navigation */}
-							<MediaTabs activeTab={activeTab} tabs={tabs} onUpdateActiveTab={setActiveTab} />
+				<div className="overflow-hidden">
+					{/* Main Content */}
+					<div className="flex flex-col h-[600px]">
+						{/* Tab Navigation */}
+						<MediaTabs activeTab={activeTab} tabs={tabs} onUpdateActiveTab={setActiveTab} />
 
-							{/* Content Area */}
-							<div className="flex-1 overflow-hidden">
-								{/* Media Library Tab */}
-								{activeTab === 'library' && (
-									<MediaLibraryTab
-										loading={loading}
-										mediaFiles={mediaFiles}
-										selectedIds={selectedIds}
-										currentPage={currentPage}
-										perPage={perPage}
-										totalPages={totalPages}
-										totalItems={totalItems}
-										activeMediaTab={activeMediaTab}
-										onUpdateActiveMediaTab={setActiveMediaTab}
-										onUpdateCurrentPage={setCurrentPage}
-										onUpdatePerPage={setPerPage}
-										onToggleSelect={toggleSelect}
-										onSearch={handleSearch}
-									/>
-								)}
+						{/* Content Area */}
+						<div className="flex-1 overflow-hidden">
+							{/* Media Library Tab */}
+							{activeTab === 'library' && (
+								<MediaLibraryTab
+									loading={loading}
+									mediaFiles={mediaFiles}
+									selectedIds={selectedIds}
+									currentPage={currentPage}
+									perPage={perPage}
+									totalPages={totalPages}
+									totalItems={totalItems}
+									activeMediaTab={activeMediaTab}
+									onUpdateActiveMediaTab={setActiveMediaTab}
+									onUpdateCurrentPage={setCurrentPage}
+									onUpdatePerPage={setPerPage}
+									onToggleSelect={toggleSelect}
+									onSearch={handleSearch}
+								/>
+							)}
 
-								{/* Device Upload Tab */}
-								{activeTab === 'device' && (
-									<DeviceUploadTab
-										selectedFiles={selectedFiles}
-										maxFiles={MAX_FILES}
-										onFilesSelected={onFilesSelected}
-										onRemoveFile={removeSelectedFile}
-									/>
-								)}
-							</div>
-
-							{/* Footer */}
-							<MediaGalleryFooter canProceed={canProceed} isUploading={isUploading} onNext={handleNext} />
+							{/* Device Upload Tab */}
+							{activeTab === 'device' && (
+								<DeviceUploadTab
+									selectedFiles={selectedFiles}
+									maxFiles={MAX_FILES}
+									onFilesSelected={onFilesSelected}
+									onRemoveFile={removeSelectedFile}
+								/>
+							)}
 						</div>
+
+						{/* Footer */}
+						<MediaGalleryFooter canProceed={canProceed} isUploading={isAnyUploading} onNext={handleNext} />
 					</div>
-				</DialogContent>
-			</Dialog>
+				</div>
+			</CustomModal>
 
 			{/* Preview Modal */}
 			{showPreviewModal && (
@@ -483,7 +511,7 @@ export default function MediaGallery({ isOpen, onClose, onSelect, onUploadComple
 					showEdit={true}
 					showNextButton={true}
 					maxFiles={MAX_FILES}
-					isUploading={isUploading}
+					isUploading={isAnyUploading}
 					uploadProgress={uploadProgress}
 					onClose={closePreviewModal}
 					onAddMedia={onAddMedia}

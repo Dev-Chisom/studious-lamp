@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useAuthStore } from "../auth/auth-store"
 import { creatorApi } from "../creator/creator-api"
+import { useVideoUpload } from "../api-video/hooks"
 
 // Media query keys
 export const mediaKeys = {
@@ -102,4 +103,63 @@ export function useDeleteMediaFile() {
       console.error("Delete media error:", error)
     },
   })
+}
+
+// Upload video with api.video integration
+export function useUploadVideoWithApiVideo() {
+  const queryClient = useQueryClient()
+  const { uploadVideo, isCreating, isUploading, error } = useVideoUpload()
+
+  const uploadVideoWithApiVideo = useMutation({
+    mutationFn: async ({
+      file,
+      title,
+      description,
+      tags,
+      metadata,
+      onProgress,
+    }: {
+      file: File
+      title?: string
+      description?: string
+      tags?: string[]
+      metadata?: Record<string, any>
+      onProgress?: (progress: number) => void
+    }) => {
+      const videoId = await uploadVideo(
+        file,
+        {
+          title: title || file.name,
+          description,
+          tags,
+          metadata,
+          public: true,
+        },
+        onProgress
+      )
+
+      // Return the video ID and api.video URLs
+      return {
+        videoId,
+        url: `https://player.api.video/player/${videoId}`,
+        thumbnailUrl: `https://image.api.video/thumbnail/${videoId}?width=320&height=180`,
+        posterUrl: `https://image.api.video/poster/${videoId}`,
+        type: 'video',
+        name: file.name,
+        size: file.size,
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: mediaKeys.all })
+    },
+    onError: (error: any) => {
+      console.error("Upload video with api.video error:", error)
+    },
+  })
+
+  return {
+    uploadVideoWithApiVideo: uploadVideoWithApiVideo.mutateAsync,
+    isUploading: uploadVideoWithApiVideo.isPending || isCreating || isUploading,
+    error: uploadVideoWithApiVideo.error || error,
+  }
 } 

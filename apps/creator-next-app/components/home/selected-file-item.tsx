@@ -47,7 +47,7 @@ export default function SelectedFileItem({ file, onRemove }: SelectedFileItemPro
       {/* Remove Button */}
       <button
         type="button"
-        className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 flex items-center justify-center transition-colors"
+        className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 flex items-center justify-center transition-colors cursor-pointer"
         onClick={onRemove}
       >
         <X className="w-4 h-4" />

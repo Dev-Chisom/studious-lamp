@@ -1,7 +1,9 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Play, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { ApiVideoPlayer } from "@/components/ui/api-video-player"
 
 interface MediaFile {
   id: string
@@ -20,6 +22,13 @@ interface MediaGridItemProps {
 }
 
 export default function MediaGridItem({ media, selected, onToggleSelect }: MediaGridItemProps) {
+  const [isClient, setIsClient] = useState(false)
+
+  // Prevent hydration issues
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   const formatDuration = (seconds: number): string => {
     const mins = Math.floor(seconds / 60)
     const secs = Math.floor(seconds % 60)
@@ -52,7 +61,24 @@ export default function MediaGridItem({ media, selected, onToggleSelect }: Media
           />
         ) : (
           <div className="relative w-full h-full">
-            <video src={media?.url} className="w-full h-full object-cover" muted preload="metadata" />
+            {/* Check if this is an api.video video */}
+            {isClient && (media?.url?.includes('api.video') || media?.id?.startsWith('vi')) ? (
+              <ApiVideoPlayer
+                videoId={media.id}
+                autoplay={false}
+                muted={true}
+                controls={false}
+                loop={false}
+                preload="metadata"
+                poster={media.thumbnailUrl}
+                width="100%"
+                height="100%"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <video src={media?.url} className="w-full h-full object-cover" muted preload="metadata" />
+            )}
+            
             {/* Video Overlay with coverUrl fallback */}
             <div
               className={cn(
